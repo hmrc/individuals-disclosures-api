@@ -12,7 +12,7 @@ documentation:
  - title: Versioning
    content: !include https://developer.service.hmrc.gov.uk/api-documentation/assets/common/docs/versioning.md
  - title: Errors
-   content: !include docs/changeme.md
+   content: !include docs/errorsWithPaths.md
  - title: Changelog
    content: !include docs/changelog.md
  - title: Support
@@ -29,7 +29,7 @@ uses:
   errors: errors.raml
   headers: headers.raml
 
-'/mtd/template':
+'/individuals/disclosures':
   /{nino}:
     uriParameters:
       nino:
