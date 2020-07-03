@@ -42,7 +42,7 @@ class ApiDefinitionFactory @Inject()(appConfig: AppConfig) {
         )
       ),
       api = APIDefinition(
-        name = "Individuals Disclosures Api (MTD)",
+        name = "Individuals Disclosures (MTD)",
         description = "An API for providing individual disclosures data",
         context = appConfig.apiGatewayContext,
         categories = Seq("INCOME_TAX_MTD"),
