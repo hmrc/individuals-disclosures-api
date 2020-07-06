@@ -38,7 +38,7 @@ class DocumentationControllerISpec extends IntegrationBaseSpec {
     |      }
     |   ],
     |   "api":{
-    |      "name":"Individuals Disclosures Api (MTD)",
+    |      "name":"Individuals Disclosures (MTD)",
     |      "description":"An API for providing individual disclosures data",
     |      "context":"individuals/disclosures",
     |      "categories":[

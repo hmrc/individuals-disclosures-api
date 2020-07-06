@@ -56,7 +56,7 @@ class ApiDefinitionFactorySpec extends UnitSpec {
               )
             ),
             api = APIDefinition(
-              name = "Individuals Disclosures Api (MTD)",
+              name = "Individuals Disclosures (MTD)",
               description = "An API for providing individual disclosures data",
               context = "individuals/disclosures",
               categories = Seq("INCOME_TAX_MTD"),
@@ -85,7 +85,7 @@ class ApiDefinitionFactorySpec extends UnitSpec {
 
     "the 'apiStatus' parameter is present and invalid" should {
       "default to alpha" in new Test {
-        MockedAppConfig.apiStatus returns "ALPHO"
+        MockedAppConfig.apiStatus returns "ALPHA"
         apiDefinitionFactory.buildAPIStatus("1.0") shouldBe ALPHA
       }
     }
