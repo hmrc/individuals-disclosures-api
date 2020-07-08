@@ -1,10 +1,11 @@
 #%RAML 1.0
 ---
-title: MTD Template
+title: Individuals Disclosures (MTD)
+description: This is a draft spec for the Individuals Disclosures API.
 version: 1.0
-
 protocols: [ HTTPS ]
 baseUri: https://api.service.hmrc.gov.uk/
+mediaType: application/hal
 
 documentation:
  - title: Overview
@@ -12,15 +13,13 @@ documentation:
  - title: Versioning
    content: !include https://developer.service.hmrc.gov.uk/api-documentation/assets/common/docs/versioning.md
  - title: Errors
-   content: !include docs/errorsWithPaths.md
+   content: !include docs/errors.md
  - title: Changelog
    content: !include docs/changelog.md
  - title: Support
    content: !include docs/support.md
  - title: Testing
    content: !include docs/testing.md
-
-mediaType: application/hal+json
 
 uses:
   sec: https://developer.service.hmrc.gov.uk/api-documentation/assets/common/modules/securitySchemes.raml
@@ -40,9 +39,10 @@ uses:
       uriParameters:
         taxYear:
           description: 'The tax year the data applies to, for example, 2019-20. The start year and end year must not span two tax years. No gaps are allowed, for example, 2019-21 is not valid.'
-          example: "2017-18"
+          example: "2020-21"
       /sample-endpoint:
         (annotations.group):
           name: Sample Endpoint
           description: This is a sample endpoint
         post: !include sample_post.raml
+      delete: !include disclosures_delete.raml
