@@ -1,0 +1,9 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": 	"Amend Disclosures Response",
+  "description":"Amend Disclosures Response",
+  "type": "object",
+  "properties": {
+    "links": {"$ref": "amend_disclosures_definitions.json#/definitions/links"}
+  }
+}

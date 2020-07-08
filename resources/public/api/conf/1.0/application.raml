@@ -41,8 +41,10 @@ uses:
         taxYear:
           description: 'The tax year the data applies to, for example, 2019-20. The start year and end year must not span two tax years. No gaps are allowed, for example, 2019-21 is not valid.'
           example: "2017-18"
-      /sample-endpoint:
-        (annotations.group):
-          name: Sample Endpoint
-          description: This is a sample endpoint
-        post: !include sample_post.raml
+    (annotations.group):
+       name: Disclosures
+       description: This endpoint allows a developer to create or amend data related to disclosures, for a given tax year. A National Insurance number and tax year must be provided.
+    /other:
+      /{nino}:
+        /{taxYear}:
+          put: !include endpoints/disclosures/amend.raml

@@ -1,0 +1,9 @@
+{
+   "links":[
+      {
+         "href":"/individuals/disclosures/{nino}/{taxYear}",
+         "rel":"amend-disclosures",
+         "method":"PUT"
+      }
+   ]
+}
