@@ -90,17 +90,59 @@ class VersionRoutingRequestHandlerSpec extends UnitSpec with Inside with MockApp
 
   "Routing requests with no version" should {
     implicit val acceptHeader: None.type = None
-    "return default handler" in new Test {
-      requestHandler.routeRequest(buildRequest("/")) shouldBe Some(DefaultHandler)
-      requestHandler.routeRequest(buildRequest("")) shouldBe Some(DefaultHandler)
-    }
+
+    handleWithDefaultRoutes()
   }
 
   "Routing requests with valid version" should {
     implicit val acceptHeader: Some[String] = Some("application/vnd.hmrc.1.0+json")
-    "return default handler" in new Test {
-      requestHandler.routeRequest(buildRequest("/")) shouldBe Some(DefaultHandler)
-      requestHandler.routeRequest(buildRequest("")) shouldBe Some(DefaultHandler)
+
+    handleWithDefaultRoutes()
+  }
+
+  "Routing requests with v1" should {
+    implicit val acceptHeader: Some[String] = Some("application/vnd.hmrc.1.0+json")
+
+    handleWithVersionRoutes("/v1", V1Handler)
+  }
+
+  "Routing requests with v2" should {
+    implicit val acceptHeader: Some[String] = Some("application/vnd.hmrc.2.0+json")
+    handleWithVersionRoutes("/v2", V2Handler)
+  }
+
+  private def handleWithDefaultRoutes()(implicit acceptHeader: Option[String]): Unit = {
+    "if the request ends with a trailing slash" when {
+      "handler found" should {
+        "use it" in new Test {
+          requestHandler.routeRequest(buildRequest("/")) shouldBe Some(DefaultHandler)
+        }
+      }
+
+      "handler not found" should {
+        "try without the trailing slash" in new Test {
+
+          requestHandler.routeRequest(buildRequest("")) shouldBe Some(DefaultHandler)
+        }
+      }
+    }
+  }
+
+  private def handleWithVersionRoutes(path: String, handler: Handler)(implicit acceptHeader: Option[String]): Unit = {
+    "if the request ends with a trailing slash" when {
+      "handler found" should {
+        "use it" in new Test {
+
+          requestHandler.routeRequest(buildRequest(s"$path/")) shouldBe Some(handler)
+        }
+      }
+
+      "handler not found" should {
+        "try without the trailing slash" in new Test {
+
+          requestHandler.routeRequest(buildRequest(s"$path")) shouldBe Some(handler)
+        }
+      }
     }
   }
 
@@ -109,7 +151,7 @@ class VersionRoutingRequestHandlerSpec extends UnitSpec with Inside with MockApp
 
     "return 406" in new Test {
 
-      val request: RequestHeader = buildRequest("path")
+      val request: RequestHeader = buildRequest("/v1")
       inside(requestHandler.routeRequest(request)) {
         case Some(a: EssentialAction) =>
           val result = a.apply(request)
@@ -117,23 +159,6 @@ class VersionRoutingRequestHandlerSpec extends UnitSpec with Inside with MockApp
           status(result) shouldBe NOT_ACCEPTABLE
           contentAsJson(result) shouldBe Json.toJson(InvalidAcceptHeaderError)
       }
-    }
-  }
-
-  "Routing requests with v1" should {
-    implicit val acceptHeader: Some[String] = Some("application/vnd.hmrc.1.0+json")
-
-    "return default handler" in new Test {
-      requestHandler.routeRequest(buildRequest("/v1/")) shouldBe Some(V1Handler)
-      requestHandler.routeRequest(buildRequest("/v1")) shouldBe Some(V1Handler)
-    }
-  }
-
-  "Routing requests with v2" should {
-    implicit val acceptHeader: Some[String] = Some("application/vnd.hmrc.2.0+json")
-    "return default handler" in new Test {
-      requestHandler.routeRequest(buildRequest("/v2/")) shouldBe Some(V2Handler)
-      requestHandler.routeRequest(buildRequest("/v2")) shouldBe Some(V2Handler)
     }
   }
 
