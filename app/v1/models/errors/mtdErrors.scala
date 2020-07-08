@@ -18,10 +18,14 @@ package v1.models.errors
 
 import play.api.libs.json.{Json, Writes}
 
-case class MtdError(code: String, message: String)
+case class MtdError(code: String, message: String, paths: Option[Seq[String]] = None)
 
 object MtdError {
   implicit val writes: Writes[MtdError] = Json.writes[MtdError]
+}
+
+object MtdErrorWithCustomMessage {
+  def unapply(arg: MtdError): Option[String] = Some(arg.code)
 }
 
 object NinoFormatError extends MtdError("FORMAT_NINO", "The provided NINO is invalid")
@@ -29,12 +33,15 @@ object TaxYearFormatError extends MtdError("FORMAT_TAX_YEAR", "The provided tax 
 
 // Rule Errors
 object RuleTaxYearNotSupportedError
-    extends MtdError("RULE_TAX_YEAR_NOT_SUPPORTED", "Tax year not supported, because it precedes the earliest allowable tax year")
+  extends MtdError("RULE_TAX_YEAR_NOT_SUPPORTED", "Tax year not supported, because it precedes the earliest allowable tax year")
 
 object RuleIncorrectOrEmptyBodyError extends MtdError("RULE_INCORRECT_OR_EMPTY_BODY_SUBMITTED", "An empty or non-matching body was submitted")
 
-object RuleTaxYearRangeExceededError
-    extends MtdError("RULE_TAX_YEAR_RANGE_EXCEEDED", "Tax year range exceeded. A tax year range of one year is required.")
+object RuleTaxYearRangeInvalidError
+  extends MtdError(
+    code = "RULE_TAX_YEAR_RANGE_INVALID",
+    message = "Tax year range invalid. A tax year range of one year is required"
+  )
 
 //Standard Errors
 object NotFoundError extends MtdError("MATCHING_RESOURCE_NOT_FOUND", "Matching resource not found")
@@ -52,8 +59,8 @@ object UnauthorisedError extends MtdError("CLIENT_OR_AGENT_NOT_AUTHORISED", "The
 object InvalidBearerTokenError extends MtdError("UNAUTHORIZED", "Bearer token is missing or not authorized")
 
 // Accept header Errors
-object  InvalidAcceptHeaderError extends MtdError("ACCEPT_HEADER_INVALID", "The accept header is missing or invalid")
+object InvalidAcceptHeaderError extends MtdError("ACCEPT_HEADER_INVALID", "The accept header is missing or invalid")
 
-object  UnsupportedVersionError extends MtdError("NOT_FOUND", "The requested resource could not be found")
+object UnsupportedVersionError extends MtdError("NOT_FOUND", "The requested resource could not be found")
 
 object InvalidBodyTypeError extends MtdError("INVALID_BODY_TYPE", "Expecting text/json or application/json body")

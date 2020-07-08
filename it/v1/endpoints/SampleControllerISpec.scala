@@ -129,12 +129,29 @@ class SampleControllerISpec extends IntegrationBaseSpec {
 
     "return error according to spec" when {
 
+      val validRequestBodyJson: JsValue = Json.parse(
+        """
+          |{
+          |"data": "someData"
+          |}
+        """.stripMargin
+      )
+
+      val nonsenseRequestBody: JsValue = Json.parse(
+        """
+          |{
+          |  "field": "value"
+          |}
+        """.stripMargin
+      )
+
       "validation error" when {
-        def validationErrorTest(requestNino: String, requestTaxYear: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
+        def validationErrorTest(requestNino: String, requestTaxYear: String, requestBody: JsValue, expectedStatus: Int, expectedBody: MtdError): Unit = {
           s"validation fails with ${expectedBody.code} error" in new SampleTest {
 
             override val nino: String = requestNino
             override val taxYear: String = requestTaxYear
+            override val requestJson: JsValue = requestBody
 
             override def setupStubs(): StubMapping = {
               AuditStub.audit()
@@ -149,9 +166,10 @@ class SampleControllerISpec extends IntegrationBaseSpec {
         }
 
         val input = Seq(
-          ("AA1123A", "2017-18", Status.BAD_REQUEST, NinoFormatError),
-          ("AA123456A", "20177", Status.BAD_REQUEST, TaxYearFormatError),
-          ("AA123456A", "2015-16", Status.BAD_REQUEST, RuleTaxYearNotSupportedError))
+          ("AA1123A", "2017-18", validRequestBodyJson,Status.BAD_REQUEST, NinoFormatError),
+          ("AA123456A", "20177", validRequestBodyJson, Status.BAD_REQUEST, TaxYearFormatError),
+          ("AA123456A", "2015-17", validRequestBodyJson, Status.BAD_REQUEST, RuleTaxYearRangeInvalidError),
+          ("AA123456A", "2017-18", nonsenseRequestBody, Status.BAD_REQUEST, RuleIncorrectOrEmptyBodyError))
 
 
         input.foreach(args => (validationErrorTest _).tupled(args))
