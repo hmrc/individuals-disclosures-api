@@ -1,10 +1,11 @@
 #%RAML 1.0
 ---
-title: MTD Template
+title: Individuals Disclosures (MTD)
+description: This is a draft spec for the Individuals Disclosures API.
 version: 1.0
-
 protocols: [ HTTPS ]
 baseUri: https://api.service.hmrc.gov.uk/
+mediaType: application/hal
 
 documentation:
  - title: Overview
@@ -12,15 +13,13 @@ documentation:
  - title: Versioning
    content: !include https://developer.service.hmrc.gov.uk/api-documentation/assets/common/docs/versioning.md
  - title: Errors
-   content: !include docs/errorsWithPaths.md
+   content: !include docs/errors.md
  - title: Changelog
    content: !include docs/changelog.md
  - title: Support
    content: !include docs/support.md
  - title: Testing
    content: !include docs/testing.md
-
-mediaType: application/hal+json
 
 uses:
   sec: https://developer.service.hmrc.gov.uk/api-documentation/assets/common/modules/securitySchemes.raml
@@ -30,21 +29,19 @@ uses:
   headers: headers.raml
 
 '/individuals/disclosures':
-  /{nino}:
-    uriParameters:
-      nino:
-        description: National Insurance number, in the format AA999999A.
-        type: string
-        example: TC663795B
-    /{taxYear}:
-      uriParameters:
-        taxYear:
-          description: 'The tax year the data applies to, for example, 2019-20. The start year and end year must not span two tax years. No gaps are allowed, for example, 2019-21 is not valid.'
-          example: "2017-18"
+  uriParameters:
+    nino:
+      description: "National Insurance number, in the format AA999999A."
+      type: string
+      example: "TC663795B"
+    taxYear:
+      description: "The tax year the data applies to, for example, 2019-20. The start year and end year must not span two tax years. No gaps are allowed, for example, 2019-21 is not valid."
+      example: "2020-21"
+  /disclosures:
     (annotations.group):
        name: Disclosures
-       description: This endpoint allows a developer to create or amend data related to disclosures, for a given tax year. A National Insurance number and tax year must be provided.
-    /other:
-      /{nino}:
-        /{taxYear}:
-          put: !include endpoints/disclosures/amend.raml
+       description: Resources relating to an individual's disclosures income
+    /{nino}:
+      /{taxYear}:
+        delete: !include endpoints/disclosures/delete.raml
+        put: !include endpoints/disclosures/amend.raml

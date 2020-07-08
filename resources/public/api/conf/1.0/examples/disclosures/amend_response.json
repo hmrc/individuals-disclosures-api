@@ -4,6 +4,16 @@
          "href":"/individuals/disclosures/{nino}/{taxYear}",
          "rel":"amend-disclosures",
          "method":"PUT"
+      },
+      {
+         "href":"/individuals/disclosures/{nino}/{taxYear}",
+         "rel":"self",
+         "method":"GET"
+      },
+      {
+         "href":"/individuals/disclosures/{nino}/{taxYear}",
+         "rel":"delete-disclosures",
+         "method":"DELETE"
       }
    ]
 }

@@ -38,14 +38,14 @@
             "description": "A label for the endpoint, which describes how it is related to the current resource. The ‘rel’ will be ‘self’ where the action is retrieval of the same resource.",
             "type": "string",
             "enum": [
-              "self", "amend-disclosures-income"
+              "self", "amend-disclosures", "delete-disclosures"
             ]
           },
           "method": {
             "description": "The HTTP method type for the endpoint.",
             "type": "string",
             "enum": [
-              "PUT"
+              "PUT", "GET", "DELETE"
             ]
           }
         },

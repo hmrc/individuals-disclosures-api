@@ -4,12 +4,12 @@ is:
   - errors.formatNino
   - errors.formatTaxYear
   - errors.ruleTaxYearRangeInvalid
+  - errors.srnInvalid
   - errors.clientOrAgentNotAuthorised
   - errors.notFound
-  - errors.formatSrn
   - errors.incorrectOrEmptyBody
 
-displayName: Amend Disclosures Income [test only]
+displayName: Amend Disclosures [test only]
 description: "This endpoint allows a developer to create or amend data related to disclosures, for a given tax year. A National Insurance number and tax year must be provided."
 (annotations.sandboxData): !include ../../scenarios/common.md
 (annotations.scope): "write:self-assessment"
