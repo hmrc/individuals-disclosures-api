@@ -43,5 +43,6 @@ uses:
        description: Resources relating to an individual's disclosures income
     /{nino}:
       /{taxYear}:
+        get: !include endpoints/disclosures/retrieve.raml
         delete: !include endpoints/disclosures/delete.raml
         put: !include endpoints/disclosures/amend.raml
