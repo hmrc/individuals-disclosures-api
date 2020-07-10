@@ -16,12 +16,13 @@
 
 package v1.models.request.disclosures
 
-import play.api.libs.json.{Json, OWrites, Reads}
+import play.api.libs.functional.syntax._
+import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 
 case class AmendDisclosuresRequestBody(taxAvoidance: Option[Seq[AmendTaxAvoidance]])
 
 object AmendDisclosuresRequestBody {
   val empty = AmendDisclosuresRequestBody(None)
   implicit val reads: Reads[AmendDisclosuresRequestBody] = Json.reads[AmendDisclosuresRequestBody]
-  implicit val writes: OWrites[AmendDisclosuresRequestBody] = Json.writes[AmendDisclosuresRequestBody]
+  implicit val writes: OWrites[AmendDisclosuresRequestBody] = (JsPath \ "taxAvoidance").write[Option[Seq[AmendTaxAvoidance]]].contramap(_.taxAvoidance)
 }

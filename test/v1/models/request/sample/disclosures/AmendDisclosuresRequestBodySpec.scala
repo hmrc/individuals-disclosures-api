@@ -31,28 +31,27 @@ class AmendDisclosuresRequestBodySpec extends UnitSpec {
         """.stripMargin
   )
   
-  "DisclosuresRequestBodyModel" when {
+  "AmendDisclosuresRequest" when {
     "read from valid JSON" should {
-      "produce the expected DisclosuresRequestBody object" in {
+      "produce the expected AmendDisclosuresRequest object" in {
         json.as[AmendDisclosuresRequestBody] shouldBe model
       }
     }
 
     "read from empty JSON" should {
-      "produce an empty DisclosuresRequestBody object" in {
+      "produce an empty AmendDisclosuresRequest object" in {
         val emptyJson = JsObject.empty
 
         emptyJson.as[AmendDisclosuresRequestBody] shouldBe AmendDisclosuresRequestBody.empty
       }
     }
 
-    "read from valid JSON with empty foreignDividend and dividendIncomeReceivedWhilstAbroad arrays" should {
-      "produce an empty DisclosuresRequestBody object" in {
+    "read from valid JSON with empty taxAvoidance arrays" should {
+      "produce an empty AmendDisclosuresRequest object" in {
         val json = Json.parse(
           """
             |{
-            |   "foreignDividend": [ ],
-            |   "dividendIncomeReceivedWhilstAbroad": [ ]
+            |   "taxAvoidance": [ ]
             |}
         """.stripMargin
         )
