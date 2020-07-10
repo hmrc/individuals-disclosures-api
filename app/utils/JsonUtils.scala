@@ -14,9 +14,23 @@
  * limitations under the License.
  */
 
-package v1.models.request.disclosures
+package utils
 
-import uk.gov.hmrc.domain.Nino
-import v1.models.domain.DesTaxYear
+import play.api.libs.json.Reads
 
-case class DisclosuresRequestData(nino: Nino, desTaxYear: DesTaxYear, body: DisclosuresRequestBody)
+trait JsonUtils {
+
+  /**
+    * Extension methods for reads of a optional sequence
+    */
+  implicit class OptSeqReadsOps[A](reads: Reads[Option[Seq[A]]]) {
+    /**
+      * Returns a Reads that maps the sequence to itself unless it is empty
+      */
+    def mapEmptySeqToNone: Reads[Option[Seq[A]]] =
+      reads.map {
+        case Some(Nil) => None
+        case other => other
+      }
+  }
+}

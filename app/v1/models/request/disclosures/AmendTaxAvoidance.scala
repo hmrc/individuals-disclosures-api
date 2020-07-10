@@ -16,11 +16,16 @@
 
 package v1.models.request.disclosures
 
-import play.api.libs.json.{Json, Reads}
+import play.api.libs.functional.syntax._
+import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 
-case class DisclosuresRequestBody(taxAvoidance: Option[Seq[TaxAvoidance]])
+case class AmendTaxAvoidance(srn: String, taxYear: String)
 
-object DisclosuresRequestBody {
-  implicit val reads: Reads[DisclosuresRequestBody] = Json.reads[DisclosuresRequestBody]
+object AmendTaxAvoidance {
+  implicit val reads: Reads[AmendTaxAvoidance] = Json.reads[AmendTaxAvoidance]
 
+  implicit val writes: OWrites[AmendTaxAvoidance] = (
+    (JsPath \ "srn").write[String] and
+      (JsPath \ "taxYear").write[String]
+    ) (unlift(AmendTaxAvoidance.unapply))
 }

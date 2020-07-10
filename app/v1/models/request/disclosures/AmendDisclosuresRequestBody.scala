@@ -16,7 +16,12 @@
 
 package v1.models.request.disclosures
 
-import play.api.libs.json.JsValue
-import v1.models.request.RawData
+import play.api.libs.json.{Json, OWrites, Reads}
 
-case class DisclosuresRawData(nino: String, taxYear: String, body: JsValue) extends RawData
+case class AmendDisclosuresRequestBody(taxAvoidance: Option[Seq[AmendTaxAvoidance]])
+
+object AmendDisclosuresRequestBody {
+  val empty = AmendDisclosuresRequestBody(None)
+  implicit val reads: Reads[AmendDisclosuresRequestBody] = Json.reads[AmendDisclosuresRequestBody]
+  implicit val writes: OWrites[AmendDisclosuresRequestBody] = Json.writes[AmendDisclosuresRequestBody]
+}

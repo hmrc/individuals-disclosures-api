@@ -16,10 +16,7 @@
 
 package v1.models.request.disclosures
 
-import play.api.libs.json.{Json, Reads}
+import uk.gov.hmrc.domain.Nino
+import v1.models.domain.DesTaxYear
 
-case class TaxAvoidance(srn: String, taxYear: String)
-
-object TaxAvoidance {
-  implicit val reads: Reads[TaxAvoidance] = Json.reads[TaxAvoidance]
-}
+case class AmendDisclosuresRequestData(nino: Nino, desTaxYear: DesTaxYear, body: AmendDisclosuresRequestBody)
