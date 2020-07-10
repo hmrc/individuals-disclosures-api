@@ -1,0 +1,10 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": 	"Retrieve Disclosures Response",
+  "description":"Retrieve Disclosures Response",
+  "type": "object",
+  "properties": {
+    "taxAvoidance": {"$ref": "retrieve_disclosures_definitions.json#/definitions/taxAvoidance"},
+    "links": {"$ref": "retrieve_disclosures_definitions.json#/definitions/links"}
+  }
+}
