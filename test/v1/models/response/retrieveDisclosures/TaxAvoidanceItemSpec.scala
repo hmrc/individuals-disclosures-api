@@ -32,9 +32,9 @@ class TaxAvoidanceItemSpec extends UnitSpec {
 
   private val model = TaxAvoidanceItem(srn = "14211123", taxYear = "2020-21")
 
-  "TaxAvoidance" when {
+  "TaxAvoidanceItem" when {
     "read from valid JSON" should {
-      "produce the expected TaxAvoidance object" in {
+      "produce the expected TaxAvoidanceItem object" in {
         json.as[TaxAvoidanceItem] shouldBe model
       }
     }

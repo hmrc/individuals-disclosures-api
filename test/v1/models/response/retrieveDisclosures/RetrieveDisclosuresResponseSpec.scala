@@ -52,7 +52,7 @@ class RetrieveDisclosuresResponseSpec extends UnitSpec {
       }
     }
 
-    "read from valid JSON with empty taxAvoidance arrays" should {
+    "read from valid JSON with empty taxAvoidance array" should {
       "produce an empty RetrieveDisclosuresResponse object" in {
         val json = Json.parse(
           """
