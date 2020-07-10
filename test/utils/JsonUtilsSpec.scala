@@ -14,20 +14,26 @@
  * limitations under the License.
  */
 
-package v1.controllers.requestParsers.validators.validations
+package utils
 
 import play.api.libs.json._
-import v1.models.errors.MtdError
+import support.UnitSpec
 
-object JsonFormatValidation {
+class JsonUtilsSpec extends UnitSpec with JsonUtils {
 
-  def validate[A](data: JsValue, error: MtdError)(implicit reads: Reads[A], writes: Writes[A]): List[MtdError] = {
-    if (data == JsObject.empty) List(error) else
-      data.validate[A] match {
-        case JsSuccess(body, _) =>
-          if (Json.toJson(body) == JsObject.empty) List(error) else NoValidationErrors
-        case _ => List(error)
-      }
+  "mapEmptySeqToNone" must {
+    val reads = __.readNullable[Seq[String]].mapEmptySeqToNone
+
+    "map non-empty sequence to Some(non-empty sequence)" in {
+      JsArray(Seq(JsString("value0"), JsString("value1"))).as(reads) shouldBe Some(Seq("value0", "value1"))
+    }
+
+    "map empty sequence to None" in {
+      JsArray.empty.as(reads) shouldBe None
+    }
+
+    "map None to None" in {
+      JsNull.as(reads) shouldBe None
+    }
   }
-
 }

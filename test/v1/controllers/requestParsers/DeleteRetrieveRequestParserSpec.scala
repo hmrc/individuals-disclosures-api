@@ -16,59 +16,53 @@
 
 package v1.controllers.requestParsers
 
-import play.api.libs.json.Json
-import play.api.mvc.AnyContentAsJson
 import support.UnitSpec
 import uk.gov.hmrc.domain.Nino
-import v1.mocks.validators.MockSampleValidator
+import v1.mocks.validators.MockDeleteRetrieveValidator
 import v1.models.domain.DesTaxYear
 import v1.models.errors._
-import v1.models.request.sample.{SampleRawData, SampleRequestBody, SampleRequestData}
+import v1.models.request.{DeleteRetrieveRawData, DeleteRetrieveRequest}
 
-class SampleRequestParserSpec extends UnitSpec {
-  val nino = "AA123456B"
-  val taxYear = "2017-18"
-  val calcId = "someCalcId"
+class DeleteRetrieveRequestParserSpec extends UnitSpec {
 
-  private val requestBodyJson = Json.parse(
-    """{
-      |  "data" : "someData"
-      |}
-    """.stripMargin)
+  val nino: String = "AA123456B"
+  val taxYear: String = "2017-18"
 
-  val inputData =
-    SampleRawData(nino, taxYear, AnyContentAsJson(requestBodyJson))
+  val deleteRetrieveDisclosuresRawData: DeleteRetrieveRawData = DeleteRetrieveRawData(
+    nino = nino,
+    taxYear = taxYear
+  )
 
-  trait Test extends MockSampleValidator {
-    lazy val parser = new SampleRequestParser(mockValidator)
+  trait Test extends MockDeleteRetrieveValidator {
+    lazy val parser: DeleteRetrieveRequestParser = new DeleteRetrieveRequestParser(
+      validator = mockDeleteRetrieveValidator
+    )
   }
 
   "parse" should {
-
     "return a request object" when {
       "valid request data is supplied" in new Test {
-        MockSampleValidator.validate(inputData).returns(Nil)
+        MockDeleteRetrieveValidator.validate(deleteRetrieveDisclosuresRawData).returns(Nil)
 
-        parser.parseRequest(inputData) shouldBe
-          Right(SampleRequestData(Nino(nino), DesTaxYear("2018"), SampleRequestBody("someData")))
+        parser.parseRequest(deleteRetrieveDisclosuresRawData) shouldBe
+          Right(DeleteRetrieveRequest(Nino(nino), DesTaxYear("2018")))
       }
     }
 
     "return an ErrorWrapper" when {
-
       "a single validation error occurs" in new Test {
-        MockSampleValidator.validate(inputData)
+        MockDeleteRetrieveValidator.validate(deleteRetrieveDisclosuresRawData)
           .returns(List(NinoFormatError))
 
-        parser.parseRequest(inputData) shouldBe
+        parser.parseRequest(deleteRetrieveDisclosuresRawData) shouldBe
           Left(ErrorWrapper(None, NinoFormatError, None))
       }
 
       "multiple validation errors occur" in new Test {
-        MockSampleValidator.validate(inputData)
+        MockDeleteRetrieveValidator.validate(deleteRetrieveDisclosuresRawData)
           .returns(List(NinoFormatError, TaxYearFormatError))
 
-        parser.parseRequest(inputData) shouldBe
+        parser.parseRequest(deleteRetrieveDisclosuresRawData) shouldBe
           Left(ErrorWrapper(None, BadRequestError, Some(Seq(NinoFormatError, TaxYearFormatError))))
       }
     }
