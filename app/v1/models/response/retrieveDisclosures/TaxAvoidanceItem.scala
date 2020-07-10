@@ -14,12 +14,18 @@
  * limitations under the License.
  */
 
-package v1.models.hateoas
+package v1.models.response.retrieveDisclosures
 
-object RelType {
-  val SAMPLE_ENDPOINT_REL = "sample-rel"
-  val AMEND_DISCLOSURES = "amend-disclosures"
-  val DELETE_DISCLOSURES = "delete-disclosures"
+import play.api.libs.functional.syntax._
+import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 
-  val SELF = "self"
+case class TaxAvoidanceItem(srn: String, taxYear: String)
+
+object TaxAvoidanceItem {
+  implicit val reads: Reads[TaxAvoidanceItem] = (
+    (JsPath \ "srn").read[String] and
+      (JsPath \ "taxYear").read[String]
+    ) (TaxAvoidanceItem.apply _)
+
+  implicit val writes: OWrites[TaxAvoidanceItem] = Json.writes[TaxAvoidanceItem]
 }
