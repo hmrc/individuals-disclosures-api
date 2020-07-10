@@ -14,12 +14,9 @@
  * limitations under the License.
  */
 
-package v1.models.response.sample.des
+package v1.models.request.disclosures
 
-import play.api.libs.json.{Json, Reads}
+import uk.gov.hmrc.domain.Nino
+import v1.models.domain.DesTaxYear
 
-case class DesSampleResponse(responseData: String)
-
-object DesSampleResponse {
-  implicit val reads: Reads[DesSampleResponse] = Json.reads[DesSampleResponse]
-}
+case class AmendDisclosuresRequest(nino: Nino, desTaxYear: DesTaxYear, body: AmendDisclosuresRequestBody)

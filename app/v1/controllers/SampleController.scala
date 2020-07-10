@@ -30,6 +30,7 @@ import v1.hateoas.HateoasFactory
 import v1.models.audit.{AuditEvent, SampleAuditDetail, SampleAuditResponse}
 import v1.models.auth.UserDetails
 import v1.models.errors._
+import v1.models.request
 import v1.models.request.sample
 import v1.models.request.sample.SampleRawData
 import v1.models.response.sample.SampleHateoasData
@@ -52,7 +53,7 @@ class SampleController @Inject()(val authService: EnrolmentsAuthService,
 
   def handleRequest(nino: String, taxYear: String): Action[JsValue] =
     authorisedAction(nino).async(parse.json) { implicit request =>
-      val rawData = sample.SampleRawData(nino, taxYear, AnyContentAsJson(request.body))
+      val rawData = SampleRawData(nino, taxYear, AnyContentAsJson(request.body))
       val result =
         for {
           parsedRequest <- EitherT.fromEither[Future](requestDataParser.parseRequest(rawData))

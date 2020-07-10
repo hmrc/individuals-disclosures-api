@@ -29,7 +29,8 @@ import v1.models.errors._
 import v1.models.hateoas.Method.GET
 import v1.models.hateoas.{HateoasWrapper, Link}
 import v1.models.outcomes.ResponseWrapper
-import v1.models.request.sample.{SampleRawData, SampleRequestBody, SampleRequestData}
+import v1.models.request.sample
+import v1.models.request.sample.{SampleRequestBody, SampleRequestData}
 import v1.models.response.sample.{SampleHateoasData, SampleResponse}
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -86,7 +87,7 @@ class SampleControllerSpec
 
   private val requestBody = SampleRequestBody("someData")
 
-  private val rawData     = SampleRawData(nino, taxYear, AnyContentAsJson(requestBodyJson))
+  private val rawData     = sample.SampleRawData(nino, taxYear, AnyContentAsJson(requestBodyJson))
   private val requestData = SampleRequestData(Nino(nino), DesTaxYear.fromMtd(taxYear), requestBody)
   val testHateoasLink = Link(href = "/foo/bar", method = GET, rel = "test-relationship")
 

@@ -21,16 +21,17 @@ import play.api.libs.json.Reads
 trait JsonUtils {
 
   /**
-    * Extension methods for reads of a optional sequence
-    */
+   * Extension methods for reads of a optional sequence
+   */
   implicit class OptSeqReadsOps[A](reads: Reads[Option[Seq[A]]]) {
     /**
-      * Returns a Reads that maps the sequence to itself unless it is empty
-      */
+     * Returns a Reads that maps the sequence to itself unless it is empty
+     */
     def mapEmptySeqToNone: Reads[Option[Seq[A]]] =
       reads.map {
         case Some(Nil) => None
         case other => other
       }
   }
+
 }

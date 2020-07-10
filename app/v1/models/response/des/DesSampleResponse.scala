@@ -14,9 +14,12 @@
  * limitations under the License.
  */
 
-package v1.models.request.sample
+package v1.models.response.des
 
-import play.api.mvc.AnyContentAsJson
-import v1.models.request.RawData
+import play.api.libs.json.{Json, Reads}
 
-case class SampleRawData(nino: String, taxYear: String, body: AnyContentAsJson) extends RawData
+case class DesSampleResponse(responseData: String)
+
+object DesSampleResponse {
+  implicit val reads: Reads[DesSampleResponse] = Json.reads[DesSampleResponse]
+}

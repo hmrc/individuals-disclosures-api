@@ -22,10 +22,10 @@ import uk.gov.hmrc.http.HeaderCarrier
 import v1.controllers.EndpointLogContext
 import v1.mocks.connectors.MockSampleConnector
 import v1.models.domain.DesTaxYear
-import v1.models.response.sample.des.DesSampleResponse
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.sample.{SampleRequestBody, SampleRequestData}
+import v1.models.response.des.DesSampleResponse
 import v1.models.response.sample.SampleResponse
 
 import scala.concurrent.ExecutionContext.Implicits.global

@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package v1.models.request.sample
+package v1.models.request.disclosures
 
 import play.api.mvc.AnyContentAsJson
 import v1.models.request.RawData
 
-case class SampleRawData(nino: String, taxYear: String, body: AnyContentAsJson) extends RawData
+case class AmendDisclosuresRawData(nino: String, taxYear: String, body: AnyContentAsJson) extends RawData

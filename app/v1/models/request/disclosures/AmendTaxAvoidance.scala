@@ -14,21 +14,18 @@
  * limitations under the License.
  */
 
-package v1.models.response.sample.des
+package v1.models.request.disclosures
 
-import play.api.libs.json.Json
-import support.UnitSpec
+import play.api.libs.functional.syntax._
+import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 
-class DesSampleResponseSpec extends UnitSpec {
-  "Json reads" should {
-    "use specified format" in {
-      val json = Json.parse(
-        """
-          |{
-          |  "responseData": "someResponse"
-          |}""".stripMargin)
+case class AmendTaxAvoidance(srn: String, taxYear: String)
 
-      json.as[DesSampleResponse] shouldBe DesSampleResponse("someResponse")
-    }
-  }
+object AmendTaxAvoidance {
+  implicit val reads: Reads[AmendTaxAvoidance] = Json.reads[AmendTaxAvoidance]
+
+  implicit val writes: OWrites[AmendTaxAvoidance] = (
+    (JsPath \ "srn").write[String] and
+      (JsPath \ "taxYear").write[String]
+    ) (unlift(AmendTaxAvoidance.unapply))
 }
