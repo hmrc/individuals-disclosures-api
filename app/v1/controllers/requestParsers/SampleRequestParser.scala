@@ -26,6 +26,6 @@ class SampleRequestParser @Inject()(val validator: SampleValidator)
   extends RequestParser[SampleRawData, SampleRequestData] {
 
   override protected def requestFor(data: SampleRawData): SampleRequestData =
-    SampleRequestData(Nino(data.nino), DesTaxYear.fromMtd(data.taxYear), data.body.as[SampleRequestBody])
+    SampleRequestData(Nino(data.nino), DesTaxYear.fromMtd(data.taxYear), data.body.json.as[SampleRequestBody])
 
 }

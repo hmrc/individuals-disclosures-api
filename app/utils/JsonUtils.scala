@@ -14,20 +14,23 @@
  * limitations under the License.
  */
 
-package v1.controllers.requestParsers.validators.validations
+package utils
 
-import play.api.libs.json._
-import v1.models.errors.MtdError
+import play.api.libs.json.Reads
 
-object JsonFormatValidation {
+trait JsonUtils {
 
-  def validate[A](data: JsValue, error: MtdError)(implicit reads: Reads[A], writes: Writes[A]): List[MtdError] = {
-    if (data == JsObject.empty) List(error) else
-      data.validate[A] match {
-        case JsSuccess(body, _) =>
-          if (Json.toJson(body) == JsObject.empty) List(error) else NoValidationErrors
-        case _ => List(error)
+  /**
+    * Extension methods for reads of a optional sequence
+    */
+  implicit class OptSeqReadsOps[A](reads: Reads[Option[Seq[A]]]) {
+    /**
+      * Returns a Reads that maps the sequence to itself unless it is empty
+      */
+    def mapEmptySeqToNone: Reads[Option[Seq[A]]] =
+      reads.map {
+        case Some(Nil) => None
+        case other => other
       }
   }
-
 }

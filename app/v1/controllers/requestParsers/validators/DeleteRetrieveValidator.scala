@@ -14,20 +14,24 @@
  * limitations under the License.
  */
 
-package v1.controllers.requestParsers.validators.validations
+package v1.controllers.requestParsers.validators
 
-import play.api.libs.json._
+import v1.controllers.requestParsers.validators.validations._
 import v1.models.errors.MtdError
+import v1.models.request.DeleteRetrieveRawData
 
-object JsonFormatValidation {
+class DeleteRetrieveValidator extends Validator[DeleteRetrieveRawData] {
 
-  def validate[A](data: JsValue, error: MtdError)(implicit reads: Reads[A], writes: Writes[A]): List[MtdError] = {
-    if (data == JsObject.empty) List(error) else
-      data.validate[A] match {
-        case JsSuccess(body, _) =>
-          if (Json.toJson(body) == JsObject.empty) List(error) else NoValidationErrors
-        case _ => List(error)
-      }
+  private val validationSet = List(parameterFormatValidation)
+
+  override def validate(data: DeleteRetrieveRawData): List[MtdError] = {
+    run(validationSet, data).distinct
   }
 
+  private def parameterFormatValidation: DeleteRetrieveRawData => List[List[MtdError]] = (data: DeleteRetrieveRawData) => {
+    List(
+      NinoValidation.validate(data.nino),
+      TaxYearValidation.validate(data.taxYear)
+    )
+  }
 }
