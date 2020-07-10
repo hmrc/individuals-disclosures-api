@@ -20,6 +20,7 @@ import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.AnyContentAsJson
 import support.UnitSpec
 import v1.models.errors._
+import v1.models.request.sample
 import v1.models.request.sample.SampleRawData
 
 class SampleValidatorSpec extends UnitSpec {
@@ -53,51 +54,51 @@ class SampleValidatorSpec extends UnitSpec {
   "running a validation" should {
     "return no errors" when {
       "a valid request is supplied" in {
-        validator.validate(SampleRawData(validNino, validTaxYear, validRawRequestBody)) shouldBe Nil
+        validator.validate(sample.SampleRawData(validNino, validTaxYear, validRawRequestBody)) shouldBe Nil
       }
     }
 
     "return NinoFormatError error" when {
       "an invalid nino is supplied" in {
-        validator.validate(SampleRawData("A12344A", validTaxYear, validRawRequestBody)) shouldBe
+        validator.validate(sample.SampleRawData("A12344A", validTaxYear, validRawRequestBody)) shouldBe
           List(NinoFormatError)
       }
     }
 
     "return TaxYearFormatError error" when {
       "an invalid tax year is supplied" in {
-        validator.validate(SampleRawData(validNino, "20178", validRawRequestBody)) shouldBe
+        validator.validate(sample.SampleRawData(validNino, "20178", validRawRequestBody)) shouldBe
           List(TaxYearFormatError)
       }
     }
 
     "return RuleTaxYearRangeInvalidError error" when {
       "an out of range tax year is supplied" in {
-        validator.validate(SampleRawData(validNino, "2016-18", validRawRequestBody)) shouldBe
+        validator.validate(sample.SampleRawData(validNino, "2016-18", validRawRequestBody)) shouldBe
           List(RuleTaxYearRangeInvalidError)
       }
     }
 
     "return RuleIncorrectOrEmptyBodyError error" when {
       "an empty JSON body is submitted" in {
-        validator.validate(SampleRawData(validNino, validTaxYear, emptyRawRequestBody)) shouldBe
+        validator.validate(sample.SampleRawData(validNino, validTaxYear, emptyRawRequestBody)) shouldBe
           List(RuleIncorrectOrEmptyBodyError)
       }
 
       "a non-empty JSON body is submitted without any expected fields" in {
-        validator.validate(SampleRawData(validNino, validTaxYear, nonsenseRawRequestBody)) shouldBe
+        validator.validate(sample.SampleRawData(validNino, validTaxYear, nonsenseRawRequestBody)) shouldBe
           List(RuleIncorrectOrEmptyBodyError)
       }
 
       "the submitted request body is not in the correct format" in {
-        validator.validate(SampleRawData(validNino, validTaxYear, nonValidRawRequestBody)) shouldBe
+        validator.validate(sample.SampleRawData(validNino, validTaxYear, nonValidRawRequestBody)) shouldBe
           List(RuleIncorrectOrEmptyBodyError)
       }
     }
 
     "return multiple errors" when {
       "request supplied has multiple errors" in {
-        validator.validate(SampleRawData("A12344A", "20178", validRawRequestBody)) shouldBe
+        validator.validate(sample.SampleRawData("A12344A", "20178", validRawRequestBody)) shouldBe
           List(NinoFormatError, TaxYearFormatError)
       }
     }

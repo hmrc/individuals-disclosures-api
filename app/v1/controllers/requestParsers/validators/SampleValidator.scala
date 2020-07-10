@@ -18,6 +18,7 @@ package v1.controllers.requestParsers.validators
 
 import v1.controllers.requestParsers.validators.validations._
 import v1.models.errors.{MtdError, RuleIncorrectOrEmptyBodyError}
+import v1.models.request.SampleRequestBody
 import v1.models.request.sample.{SampleRawData, SampleRequestBody}
 
 class SampleValidator extends Validator[SampleRawData] {

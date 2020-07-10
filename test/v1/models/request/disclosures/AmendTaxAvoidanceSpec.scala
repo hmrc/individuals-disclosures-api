@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v1.models.request.sample.disclosures
+package v1.models.request.disclosures
 
 import play.api.libs.json.{JsError, JsObject, Json}
 import support.UnitSpec

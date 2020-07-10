@@ -20,8 +20,8 @@ import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.connectors.{DesOutcome, SampleConnector}
-import v1.models.response.sample.des.DesSampleResponse
 import v1.models.request.sample.SampleRequestData
+import v1.models.response.des.DesSampleResponse
 
 import scala.concurrent.{ExecutionContext, Future}
 
