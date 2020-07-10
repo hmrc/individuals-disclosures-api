@@ -16,7 +16,7 @@
 
 package v1.models.request.sample.disclosures
 
-import play.api.libs.json.{JsError, Json}
+import play.api.libs.json.{JsError, JsObject, Json}
 import support.UnitSpec
 import v1.models.request.disclosures.AmendTaxAvoidance
 
@@ -42,13 +42,9 @@ class AmendTaxAvoidanceSpec extends UnitSpec {
 
     "read from invalid JSON" should {
       "produce a JsError" in {
-        val error = Json.parse(
-          """
-            |{"a":"b"}
-            |""".stripMargin
-        )
+        val invalidJson = JsObject.empty
 
-        error.validate[AmendTaxAvoidance] shouldBe a[JsError]
+        invalidJson.validate[AmendTaxAvoidance] shouldBe a[JsError]
       }
     }
 
