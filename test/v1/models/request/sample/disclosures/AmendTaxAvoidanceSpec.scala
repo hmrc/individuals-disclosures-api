@@ -22,19 +22,20 @@ import v1.models.request.disclosures.AmendTaxAvoidance
 
 class AmendTaxAvoidanceSpec extends UnitSpec {
 
-  private val json: JsValue = Json.parse(
+  private val json = Json.parse(
     """
-      |{
-      |   "srn":"123","taxYear":"12-12"
-      |}
-        """.stripMargin
+      |   {
+      |    "srn": "14211123",
+      |    "taxYear": "2020-21"
+      |   }
+    """.stripMargin
   )
 
-  private val taxAvoidanceModel: AmendTaxAvoidance = AmendTaxAvoidance("123","12-12")
+  private val taxAvoidanceModel: AmendTaxAvoidance = AmendTaxAvoidance("14211123","2020-21")
 
-  "taxAvoidanceModel" when {
+  "amendTaxAvoidanceModel" when {
     "read from valid JSON" should {
-      "produce the expected AmendDividendsRequestBody object" in {
+      "produce the expected amendTaxAvoidanceModel object" in {
         json.as[AmendTaxAvoidance] shouldBe taxAvoidanceModel
       }
     }

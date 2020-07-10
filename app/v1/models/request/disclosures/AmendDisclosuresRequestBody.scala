@@ -17,12 +17,18 @@
 package v1.models.request.disclosures
 
 import play.api.libs.functional.syntax._
-import play.api.libs.json.{JsPath, Json, OWrites, Reads}
+import play.api.libs.json.{JsPath, OWrites, Reads}
+import utils.JsonUtils
 
 case class AmendDisclosuresRequestBody(taxAvoidance: Option[Seq[AmendTaxAvoidance]])
 
-object AmendDisclosuresRequestBody {
+object AmendDisclosuresRequestBody extends JsonUtils {
   val empty = AmendDisclosuresRequestBody(None)
-  implicit val reads: Reads[AmendDisclosuresRequestBody] = Json.reads[AmendDisclosuresRequestBody]
+
+  implicit val reads: Reads[AmendDisclosuresRequestBody] =
+    (JsPath \ "taxAvoidance").readNullable[Seq[AmendTaxAvoidance]]
+      .mapEmptySeqToNone
+      .map(AmendDisclosuresRequestBody(_))
+
   implicit val writes: OWrites[AmendDisclosuresRequestBody] = (JsPath \ "taxAvoidance").write[Option[Seq[AmendTaxAvoidance]]].contramap(_.taxAvoidance)
 }

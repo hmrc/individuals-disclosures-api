@@ -22,15 +22,20 @@ import v1.models.request.disclosures.{AmendDisclosuresRequestBody, AmendTaxAvoid
 
 class AmendDisclosuresRequestBodySpec extends UnitSpec {
 
-  val model: AmendDisclosuresRequestBody = AmendDisclosuresRequestBody(Some(Seq(AmendTaxAvoidance("123","12-12"))))
-  val json = Json.parse(
+  val model: AmendDisclosuresRequestBody = AmendDisclosuresRequestBody(Some(Seq(AmendTaxAvoidance("14211123","2020-21"))))
+  private val json = Json.parse(
     """
       |{
-      |   "taxAvoidance": [{"srn":"123","taxYear":"12-12"}]
+      | "taxAvoidance":[
+      |   {
+      |    "srn": "14211123",
+      |    "taxYear": "2020-21"
+      |   }
+      | ]
       |}
-        """.stripMargin
+    """.stripMargin
   )
-  
+
   "AmendDisclosuresRequest" when {
     "read from valid JSON" should {
       "produce the expected AmendDisclosuresRequest object" in {
@@ -62,13 +67,20 @@ class AmendDisclosuresRequestBodySpec extends UnitSpec {
 
     "read from invalid JSON" should {
       "produce a JsError" in {
-        val error = Json.parse(
+        val invalidJson = Json.parse(
           """
-            |{"taxAvoidance":"b"}
-            |""".stripMargin
+            |{
+            | "taxAvoidance": [
+            | {
+            | "srn": true,
+            | "taxYear": "2020-21"
+            | }
+            | ]
+            |}
+          """.stripMargin
         )
 
-        error.validate[AmendDisclosuresRequestBody] shouldBe a[JsError]
+        invalidJson.validate[AmendDisclosuresRequestBody] shouldBe a[JsError]
       }
     }
 
