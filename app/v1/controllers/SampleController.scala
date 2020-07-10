@@ -53,7 +53,7 @@ class SampleController @Inject()(val authService: EnrolmentsAuthService,
 
   def handleRequest(nino: String, taxYear: String): Action[JsValue] =
     authorisedAction(nino).async(parse.json) { implicit request =>
-      val rawData = request.SampleRawData(nino, taxYear, AnyContentAsJson(request.body))
+      val rawData = SampleRawData(nino, taxYear, AnyContentAsJson(request.body))
       val result =
         for {
           parsedRequest <- EitherT.fromEither[Future](requestDataParser.parseRequest(rawData))

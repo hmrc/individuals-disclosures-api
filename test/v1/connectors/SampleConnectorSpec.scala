@@ -22,7 +22,6 @@ import v1.mocks.MockHttpClient
 import v1.models.domain.DesTaxYear
 import v1.models.response.EmptyJsonBody
 import v1.models.outcomes.ResponseWrapper
-import v1.models.request.SampleRequestData
 import v1.models.request.sample.{SampleRequestBody, SampleRequestData}
 import v1.models.response.des.DesSampleResponse
 
