@@ -1,0 +1,34 @@
+is:
+  - headers.acceptJson
+  - headers.contentTypeJson
+  - headers.testScenarioHeader
+  - errors.formatNino
+  - errors.formatTaxYear
+  - errors.ruleTaxYearRangeInvalid
+  - errors.srnInvalid
+  - errors.clientOrAgentNotAuthorised
+  - errors.notFound
+  - errors.incorrectOrEmptyBody
+
+displayName: Amend Disclosures [test only]
+description: "This endpoint allows a developer to create or amend data related to disclosures, for a given tax year. A National Insurance number and tax year must be provided."
+(annotations.sandboxData): !include ../../scenarios/common.md
+(annotations.scope): "write:self-assessment"
+securedBy: [ sec.oauth_2_0: { scopes: [ "write:self-assessment" ] } ]
+body:
+   application/json:
+      type: !include ../../schemas/amend_disclosures_request.json
+      examples:
+        full_amendment:
+          description: Full Disclosures Amendment
+          value: !include ../../examples/disclosures/amend_request.json
+responses:
+  200:
+    body:
+      application/json:
+        type: !include ../../schemas/amend_disclosures_response.json
+        example: !include ../../examples/disclosures/amend_response.json
+    headers:
+      X-CorrelationId:
+        example: c75f40a6-a3df-4429-a697-471eeec46435
+        description: Unique ID for operation tracking <br> String, 36 characters.

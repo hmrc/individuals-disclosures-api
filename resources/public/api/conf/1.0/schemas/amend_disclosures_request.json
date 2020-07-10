@@ -1,0 +1,15 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Amend Disclosures Request",
+  "description": "Amend Disclosures Request",
+  "type": "object",
+  "properties": {
+    "taxAvoidance": {
+      "type": "array",
+      "description": "Details of tax avoidance scheme",
+      "items": {
+        "$ref": "amend_disclosures_definitions.json#/definitions/taxAvoidance"
+      }
+    }
+  }
+}
