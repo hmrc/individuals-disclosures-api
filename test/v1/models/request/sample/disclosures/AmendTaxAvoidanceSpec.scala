@@ -16,7 +16,7 @@
 
 package v1.models.request.sample.disclosures
 
-import play.api.libs.json.{JsError, JsValue, Json}
+import play.api.libs.json.{JsError, Json}
 import support.UnitSpec
 import v1.models.request.disclosures.AmendTaxAvoidance
 

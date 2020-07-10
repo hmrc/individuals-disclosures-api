@@ -16,7 +16,6 @@
 
 package v1.models.request.disclosures
 
-import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, OWrites, Reads}
 import utils.JsonUtils
 
@@ -30,5 +29,5 @@ object AmendDisclosuresRequestBody extends JsonUtils {
       .mapEmptySeqToNone
       .map(AmendDisclosuresRequestBody(_))
 
-  implicit val writes: OWrites[AmendDisclosuresRequestBody] = (JsPath \ "taxAvoidance").write[Option[Seq[AmendTaxAvoidance]]].contramap(_.taxAvoidance)
+  implicit val writes: OWrites[AmendDisclosuresRequestBody] = (JsPath \ "taxAvoidance").writeNullable[Seq[AmendTaxAvoidance]].contramap(_.taxAvoidance)
 }
