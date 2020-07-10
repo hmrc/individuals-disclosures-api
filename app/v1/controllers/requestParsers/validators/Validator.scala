@@ -31,9 +31,21 @@ trait Validator[A <: RawData] {
       case Nil => List()
       case thisLevel :: remainingLevels =>
         thisLevel(data).flatten match {
-          case x if x.isEmpty  => run(remainingLevels, data)
+          case x if x.isEmpty => run(remainingLevels, data)
           case x if x.nonEmpty => x
         }
     }
+  }
+
+  def flattenErrors(errors: List[List[MtdError]]): List[MtdError] = {
+    errors.flatten.groupBy(_.message).map { case (_, errors) =>
+
+      val baseError = errors.head.copy(paths = Some(Seq.empty[String]))
+
+      errors.fold(baseError)(
+        (error1, error2) =>
+          error1.copy(paths = Some(error1.paths.getOrElse(Seq.empty[String]) ++ error2.paths.getOrElse(Seq.empty[String])))
+      )
+    }.toList
   }
 }

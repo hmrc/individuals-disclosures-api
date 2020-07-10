@@ -14,20 +14,17 @@
  * limitations under the License.
  */
 
-package v1.controllers.requestParsers.validators.validations
+package v1.controllers.requestParsers
 
-import play.api.libs.json._
-import v1.models.errors.MtdError
+import javax.inject.Inject
+import uk.gov.hmrc.domain.Nino
+import v1.controllers.requestParsers.validators.DeleteRetrieveValidator
+import v1.models.domain.DesTaxYear
+import v1.models.request.{DeleteRetrieveRawData, DeleteRetrieveRequest}
 
-object JsonFormatValidation {
+class DeleteRetrieveRequestParser @Inject()(val validator: DeleteRetrieveValidator)
+  extends RequestParser[DeleteRetrieveRawData, DeleteRetrieveRequest] {
 
-  def validate[A](data: JsValue, error: MtdError)(implicit reads: Reads[A], writes: Writes[A]): List[MtdError] = {
-    if (data == JsObject.empty) List(error) else
-      data.validate[A] match {
-        case JsSuccess(body, _) =>
-          if (Json.toJson(body) == JsObject.empty) List(error) else NoValidationErrors
-        case _ => List(error)
-      }
-  }
-
+  override protected def requestFor(data: DeleteRetrieveRawData): DeleteRetrieveRequest =
+    DeleteRetrieveRequest(Nino(data.nino), DesTaxYear.fromMtd(data.taxYear))
 }

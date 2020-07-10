@@ -80,3 +80,14 @@ traits:
                 description: 'Tax year range invalid. A tax year range of one year is required.'
                 value:
                   code: RULE_TAX_YEAR_RANGE_INVALID
+  srnInvalid:
+    responses:
+      400:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              srnInvalid:
+                description: 'The provided scheme reference number is invalid.'
+                value:
+                  code: FORMAT_SRN_INVALID

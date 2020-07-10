@@ -14,20 +14,25 @@
  * limitations under the License.
  */
 
-package v1.controllers.requestParsers.validators.validations
+package v1.mocks.validators
 
-import play.api.libs.json._
+import org.scalamock.handlers.CallHandler1
+import org.scalamock.scalatest.MockFactory
+import v1.controllers.requestParsers.validators.DeleteRetrieveValidator
 import v1.models.errors.MtdError
+import v1.models.request.DeleteRetrieveRawData
 
-object JsonFormatValidation {
+class MockDeleteRetrieveValidator extends MockFactory {
 
-  def validate[A](data: JsValue, error: MtdError)(implicit reads: Reads[A], writes: Writes[A]): List[MtdError] = {
-    if (data == JsObject.empty) List(error) else
-      data.validate[A] match {
-        case JsSuccess(body, _) =>
-          if (Json.toJson(body) == JsObject.empty) List(error) else NoValidationErrors
-        case _ => List(error)
-      }
+  val mockDeleteRetrieveValidator: DeleteRetrieveValidator = mock[DeleteRetrieveValidator]
+
+  object MockDeleteRetrieveValidator {
+
+    def validate(data: DeleteRetrieveRawData): CallHandler1[DeleteRetrieveRawData, List[MtdError]] = {
+      (mockDeleteRetrieveValidator
+        .validate(_: DeleteRetrieveRawData))
+        .expects(data)
+    }
   }
 
 }

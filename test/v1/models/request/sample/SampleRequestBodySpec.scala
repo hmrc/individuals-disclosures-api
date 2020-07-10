@@ -16,32 +16,40 @@
 
 package v1.models.request.sample
 
-import play.api.libs.json._
+import play.api.libs.json.{JsError, JsObject, Json}
 import support.UnitSpec
-import v1.models.utils.JsonErrorValidators
 
-class SampleRequestBodySpec extends UnitSpec with JsonErrorValidators {
-  "reads" when {
-    "passed valid JSON" should {
-      val inputJson = Json.parse(
-        """
-          |{
-          |   "data": "someData"
-          |}
+class SampleRequestBodySpec extends UnitSpec {
+
+  private val inputJson = Json.parse(
+    """
+      |{
+      |   "data": "someData"
+      |}
         """.stripMargin
-      )
+  )
 
-      "return a valid model" in {
-        SampleRequestBody("someData") shouldBe inputJson.as[SampleRequestBody]
+  private val model = SampleRequestBody(data = "someData")
+
+  "SampleRequestBody" when {
+    "read from valid JSON" should {
+      "produce the expected SampleRequestBody object" in {
+        inputJson.as[SampleRequestBody] shouldBe model
       }
+    }
 
-      testMandatoryProperty[SampleRequestBody](inputJson)("/data")
+    "read from empty JSON" should {
+      "produce a JsError" in {
+        val invalidJson = JsObject.empty
 
-      testPropertyType[SampleRequestBody](inputJson)(
-        path = "/data",
-        replacement = 12344.toJson,
-        expectedError = JsonError.STRING_FORMAT_EXCEPTION
-      )
+        invalidJson.validate[SampleRequestBody] shouldBe a[JsError]
+      }
+    }
+
+    "written to JSON" should {
+      "produce the expected JsObject" in {
+        Json.toJson(model) shouldBe inputJson
+      }
     }
   }
 }

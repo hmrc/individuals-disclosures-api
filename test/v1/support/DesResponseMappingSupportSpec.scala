@@ -16,6 +16,7 @@
 
 package v1.support
 
+import play.api.libs.json.{Format, Json}
 import support.UnitSpec
 import utils.Logging
 import v1.controllers.EndpointLogContext
@@ -41,6 +42,27 @@ class DesResponseMappingSupportSpec extends UnitSpec {
     case "ERR1" => Error1
     case "ERR2" => Error2
     case "DS" => DownstreamError
+  }
+
+  case class TestClass(field: Option[String])
+
+  object TestClass {
+    implicit val format: Format[TestClass] = Json.format[TestClass]
+  }
+
+  "validateRetrieveResponse" when {
+    "passed an empty response" should {
+      "return a NotFoundError error" in {
+        mapping.validateRetrieveResponse(ResponseWrapper(correlationId, TestClass(None))) shouldBe
+          Left(ErrorWrapper(Some(correlationId), NotFoundError))
+      }
+    }
+    "passed anything else" should {
+      "pass it through" in {
+        mapping.validateRetrieveResponse(ResponseWrapper(correlationId, NotFoundError)) shouldBe
+          Right(ResponseWrapper(correlationId, NotFoundError))
+      }
+    }
   }
 
   "mapping Des errors" when {

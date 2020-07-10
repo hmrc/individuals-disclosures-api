@@ -16,7 +16,7 @@
 
 package v1.models.request.sample
 
-import play.api.libs.json.JsValue
+import play.api.mvc.AnyContentAsJson
 import v1.models.request.RawData
 
-case class SampleRawData(nino: String, taxYear: String, body: JsValue) extends RawData
+case class SampleRawData(nino: String, taxYear: String, body: AnyContentAsJson) extends RawData

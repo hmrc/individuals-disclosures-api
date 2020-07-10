@@ -14,20 +14,6 @@
  * limitations under the License.
  */
 
-package v1.controllers.requestParsers.validators.validations
+package v1.models.request
 
-import play.api.libs.json._
-import v1.models.errors.MtdError
-
-object JsonFormatValidation {
-
-  def validate[A](data: JsValue, error: MtdError)(implicit reads: Reads[A], writes: Writes[A]): List[MtdError] = {
-    if (data == JsObject.empty) List(error) else
-      data.validate[A] match {
-        case JsSuccess(body, _) =>
-          if (Json.toJson(body) == JsObject.empty) List(error) else NoValidationErrors
-        case _ => List(error)
-      }
-  }
-
-}
+case class DeleteRetrieveRawData(nino: String, taxYear: String) extends RawData

@@ -17,24 +17,23 @@
 package v1.controllers.requestParsers.validators
 
 import v1.controllers.requestParsers.validators.validations._
-import v1.models.errors.{MtdError, RuleIncorrectOrEmptyBodyError, RuleTaxYearNotSupportedError}
+import v1.models.errors.{MtdError, RuleIncorrectOrEmptyBodyError}
 import v1.models.request.sample.{SampleRawData, SampleRequestBody}
 
 class SampleValidator extends Validator[SampleRawData] {
 
-  private val validationSet = List(parameterFormatValidation, parameterRuleValidation)
+  private val validationSet = List(parameterFormatValidation, bodyFormatValidator)
 
   private def parameterFormatValidation: SampleRawData => List[List[MtdError]] = (data: SampleRawData) => {
     List(
       NinoValidation.validate(data.nino),
-      TaxYearValidation.validate(data.taxYear),
-      JsonFormatValidation.validate[SampleRequestBody](data.body, RuleIncorrectOrEmptyBodyError)
+      TaxYearValidation.validate(data.taxYear)
     )
   }
 
-  private def parameterRuleValidation: SampleRawData => List[List[MtdError]] = { data =>
+  private def bodyFormatValidator: SampleRawData => List[List[MtdError]] = { data =>
     List(
-      MtdTaxYearValidation.validate(data.taxYear, RuleTaxYearNotSupportedError)
+      JsonFormatValidation.validate[SampleRequestBody](data.body.json, RuleIncorrectOrEmptyBodyError)
     )
   }
 

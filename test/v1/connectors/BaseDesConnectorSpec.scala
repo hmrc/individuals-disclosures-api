@@ -61,12 +61,31 @@ class BaseDesConnectorSpec extends ConnectorSpec {
   }
 
   "get" must {
-    "get with the requred des headers and return the result" in new Test {
+    "get with the required des headers and return the result" in new Test {
       MockedHttpClient
         .get(absoluteUrl, "Environment" -> "des-environment", "Authorization" -> s"Bearer des-token")
         .returns(Future.successful(outcome))
 
       await(connector.get(DesUri[Result](url))) shouldBe outcome
+    }
+  }
+
+  "delete" must {
+    "delete with the required des headers and return the result" in new Test {
+      MockedHttpClient
+        .delete(absoluteUrl, "Environment" -> "des-environment", "Authorization" -> s"Bearer des-token")
+        .returns(Future.successful(outcome))
+
+      await(connector.delete(DesUri[Result](url))) shouldBe outcome
+    }
+  }
+
+  "put" must {
+    "put with the required des headers and return result" in new Test {
+      MockedHttpClient.put(absoluteUrl, body, "Environment" -> "des-environment", "Authorization" -> s"Bearer des-token")
+        .returns(Future.successful(outcome))
+
+      await(connector.put(body, DesUri[Result](url))) shouldBe outcome
     }
   }
 }

@@ -16,10 +16,12 @@
 
 package v1.models.request.sample
 
-import play.api.libs.json.{Json, Reads}
+import play.api.libs.json.{Json, OWrites, Reads}
 
 case class SampleRequestBody(data: String)
 
 object SampleRequestBody {
   implicit val reads: Reads[SampleRequestBody] = Json.reads[SampleRequestBody]
+
+  implicit val writes: OWrites[SampleRequestBody] = Json.writes[SampleRequestBody]
 }

@@ -16,6 +16,7 @@
 
 package v1.support
 
+import play.api.libs.json.{JsObject, Json, Writes}
 import utils.Logging
 import v1.controllers.EndpointLogContext
 import v1.models.errors._
@@ -23,6 +24,13 @@ import v1.models.outcomes.ResponseWrapper
 
 trait DesResponseMappingSupport {
   self: Logging =>
+
+  final def validateRetrieveResponse[T: Writes](desResponseWrapper: ResponseWrapper[T]): Either[ErrorWrapper, ResponseWrapper[T]] = {
+    if (Json.toJson(desResponseWrapper.responseData) == JsObject.empty)
+      Left(ErrorWrapper(Some(desResponseWrapper.correlationId), NotFoundError, None))
+    else
+      Right(desResponseWrapper)
+  }
 
   final def mapDesErrors[D](errorCodeMap: PartialFunction[String, MtdError])(desResponseWrapper: ResponseWrapper[DesError])(
     implicit logContext: EndpointLogContext): ErrorWrapper = {
