@@ -30,6 +30,7 @@ object MtdErrorWithCustomMessage {
 
 object NinoFormatError extends MtdError("FORMAT_NINO", "The provided NINO is invalid")
 object TaxYearFormatError extends MtdError("FORMAT_TAX_YEAR", "The provided tax year is invalid")
+object SRNFormatError extends MtdError("FORMAT_SRN_INVALID", "The provided scheme reference number is invalid")
 
 // Rule Errors
 object RuleTaxYearNotSupportedError

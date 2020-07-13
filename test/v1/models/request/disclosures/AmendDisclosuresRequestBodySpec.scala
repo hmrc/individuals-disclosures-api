@@ -18,7 +18,6 @@ package v1.models.request.disclosures
 
 import play.api.libs.json.{JsError, JsObject, Json}
 import support.UnitSpec
-import v1.models.request.disclosures.{AmendDisclosuresRequestBody, AmendTaxAvoidance}
 
 class AmendDisclosuresRequestBodySpec extends UnitSpec {
 
