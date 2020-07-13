@@ -1,2 +1,3 @@
 POST       /:nino/:taxYear/sample-endpoint                  v1.controllers.SampleController.handleRequest(nino: String, taxYear: String)
 DELETE     /:nino/:taxYear                                  v1.controllers.DeleteDisclosuresController.deleteDisclosures(nino: String, taxYear: String)
+GET        /:nino/:taxYear                                  v1.controllers.RetrieveDisclosuresController.retrieveDisclosures(nino: String, taxYear: String)

@@ -16,12 +16,15 @@
 
 package v1.models.response.retrieveDisclosures
 
+import config.AppConfig
 import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 import utils.JsonUtils
+import v1.hateoas.{HateoasLinks, HateoasLinksFactory}
+import v1.models.hateoas.{HateoasData, Link}
 
 case class RetrieveDisclosuresResponse(taxAvoidance: Option[Seq[TaxAvoidanceItem]])
 
-object RetrieveDisclosuresResponse extends JsonUtils {
+object RetrieveDisclosuresResponse extends HateoasLinks with JsonUtils {
   val empty: RetrieveDisclosuresResponse = RetrieveDisclosuresResponse(None)
 
   implicit val reads: Reads[RetrieveDisclosuresResponse] =
@@ -30,4 +33,17 @@ object RetrieveDisclosuresResponse extends JsonUtils {
       .map(RetrieveDisclosuresResponse(_))
 
   implicit val writes: OWrites[RetrieveDisclosuresResponse] = Json.writes[RetrieveDisclosuresResponse]
+
+  implicit object RetrieveDisclosuresLinksFactory extends HateoasLinksFactory[RetrieveDisclosuresResponse, RetrieveDisclosuresHateoasData] {
+    override def links(appConfig: AppConfig, data: RetrieveDisclosuresHateoasData): Seq[Link] = {
+      import data._
+      Seq(
+        amendDisclosures(appConfig, nino, taxYear),
+        retrieveDisclosures(appConfig, nino, taxYear),
+        deleteDisclosures(appConfig, nino, taxYear)
+      )
+    }
+  }
 }
+
+case class RetrieveDisclosuresHateoasData(nino: String, taxYear: String) extends HateoasData
