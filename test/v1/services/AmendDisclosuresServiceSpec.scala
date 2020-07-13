@@ -32,7 +32,7 @@ class AmendDisclosuresServiceSpec extends ServiceSpec {
   private val taxYear = "2019"
   private val correlationId = "X-corr"
 
-  val amendTaxAvoidance: AmendTaxAvoidance = AmendTaxAvoidance("12345","2020-12")
+  val amendTaxAvoidance: AmendTaxAvoidance = AmendTaxAvoidance("14211123","2020-21")
 
   val amendDisclosuresRequest: AmendDisclosuresRequest = AmendDisclosuresRequest(
       nino = Nino(nino),

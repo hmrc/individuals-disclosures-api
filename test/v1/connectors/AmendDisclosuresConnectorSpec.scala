@@ -30,7 +30,7 @@ class AmendDisclosuresConnectorSpec extends ConnectorSpec {
   private val nino: String = "AA111111A"
   private val taxYear: String = "2019"
 
-  val amendTaxAvoidance: AmendTaxAvoidance = AmendTaxAvoidance("12345","2020-12")
+  val amendTaxAvoidance: AmendTaxAvoidance = AmendTaxAvoidance("14211123","2020-21")
 
   val amendDisclosuresRequest: AmendDisclosuresRequest = AmendDisclosuresRequest(
     nino = Nino(nino),
