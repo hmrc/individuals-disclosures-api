@@ -36,7 +36,7 @@ class AmendDisclosuresServiceSpec extends ServiceSpec {
 
   val amendDisclosuresRequest: AmendDisclosuresRequest = AmendDisclosuresRequest(
       nino = Nino(nino),
-      desTaxYear = DesTaxYear(taxYear),
+      taxYear = DesTaxYear(taxYear),
       body = AmendDisclosuresRequestBody(Some(Seq(amendTaxAvoidance)))
   )
 

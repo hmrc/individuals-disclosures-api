@@ -34,7 +34,7 @@ class AmendDisclosuresConnectorSpec extends ConnectorSpec {
 
   val amendDisclosuresRequest: AmendDisclosuresRequest = AmendDisclosuresRequest(
     nino = Nino(nino),
-    desTaxYear = DesTaxYear(taxYear),
+    taxYear = DesTaxYear(taxYear),
     body = AmendDisclosuresRequestBody(Some(Seq(amendTaxAvoidance)))
   )
 
@@ -57,7 +57,7 @@ class AmendDisclosuresConnectorSpec extends ConnectorSpec {
 
         MockedHttpClient
           .put(
-            url = s"$baseUrl/some-placeholder/disclosures/$nino/$taxYear",
+            url = s"$baseUrl/disc-placeholder/disclosures/$nino/$taxYear",
             body = amendDisclosuresRequest.body,
             requiredHeaders = "Environment" -> "des-environment", "Authorization" -> s"Bearer des-token"
           ).returns(Future.successful(outcome))
