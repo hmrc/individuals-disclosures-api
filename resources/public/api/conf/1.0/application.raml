@@ -28,7 +28,7 @@ uses:
   errors: errors.raml
   headers: headers.raml
 
-'/individuals/disclosures':
+'/individuals':
   uriParameters:
     nino:
       description: "National Insurance number, in the format AA999999A."
@@ -40,7 +40,7 @@ uses:
   /disclosures:
     (annotations.group):
        name: Disclosures
-       description: Resources relating to an individual's disclosures income
+       description: Resources relating to an individual's disclosures
     /{nino}:
       /{taxYear}:
         get: !include endpoints/disclosures/retrieve.raml
