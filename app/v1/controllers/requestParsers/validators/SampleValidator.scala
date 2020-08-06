@@ -17,7 +17,7 @@
 package v1.controllers.requestParsers.validators
 
 import v1.controllers.requestParsers.validators.validations._
-import v1.models.errors.{MtdError, RuleIncorrectOrEmptyBodyError}
+import v1.models.errors.MtdError
 import v1.models.request.sample.{SampleRawData, SampleRequestBody}
 
 class SampleValidator extends Validator[SampleRawData] {
@@ -33,7 +33,7 @@ class SampleValidator extends Validator[SampleRawData] {
 
   private def bodyFormatValidator: SampleRawData => List[List[MtdError]] = { data =>
     List(
-      JsonFormatValidation.validate[SampleRequestBody](data.body.json, RuleIncorrectOrEmptyBodyError)
+      JsonFormatValidation.validate[SampleRequestBody](data.body.json)
     )
   }
 

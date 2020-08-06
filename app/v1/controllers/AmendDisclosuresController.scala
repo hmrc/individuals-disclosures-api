@@ -80,7 +80,7 @@ class AmendDisclosuresController @Inject()(val authService: EnrolmentsAuthServic
   private def errorResult(errorWrapper: ErrorWrapper) = {
     (errorWrapper.error: @unchecked) match {
       case BadRequestError | NinoFormatError | TaxYearFormatError |
-           RuleTaxYearRangeInvalidError | RuleIncorrectOrEmptyBodyError |
+           RuleTaxYearRangeInvalidError | MtdErrorWithCustomMessage(RuleIncorrectOrEmptyBodyError.code) |
            MtdErrorWithCustomMessage(SRNFormatError.code)
       => BadRequest(Json.toJson(errorWrapper))
       case NotFoundError => NotFound(Json.toJson(errorWrapper))
