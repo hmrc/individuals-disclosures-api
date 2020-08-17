@@ -169,7 +169,7 @@ class SampleControllerISpec extends IntegrationBaseSpec {
           ("AA1123A", "2017-18", validRequestBodyJson,Status.BAD_REQUEST, NinoFormatError),
           ("AA123456A", "20177", validRequestBodyJson, Status.BAD_REQUEST, TaxYearFormatError),
           ("AA123456A", "2015-17", validRequestBodyJson, Status.BAD_REQUEST, RuleTaxYearRangeInvalidError),
-          ("AA123456A", "2017-18", nonsenseRequestBody, Status.BAD_REQUEST, RuleIncorrectOrEmptyBodyError))
+          ("AA123456A", "2017-18", nonsenseRequestBody, Status.BAD_REQUEST, RuleIncorrectOrEmptyBodyError.copy(paths = Some(Seq("/data")))))
 
 
         input.foreach(args => (validationErrorTest _).tupled(args))

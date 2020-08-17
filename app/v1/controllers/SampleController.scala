@@ -79,7 +79,7 @@ class SampleController @Inject()(val authService: EnrolmentsAuthService,
 
   private def errorResult(errorWrapper: ErrorWrapper) = {
     (errorWrapper.error: @unchecked) match {
-      case RuleIncorrectOrEmptyBodyError | BadRequestError | NinoFormatError | TaxYearFormatError |
+      case MtdErrorWithCustomMessage(RuleIncorrectOrEmptyBodyError.code) | BadRequestError | NinoFormatError | TaxYearFormatError |
            RuleTaxYearRangeInvalidError =>
         BadRequest(Json.toJson(errorWrapper))
       case NotFoundError => NotFound(Json.toJson(errorWrapper))

@@ -86,12 +86,12 @@ class SampleValidatorSpec extends UnitSpec {
 
       "a non-empty JSON body is submitted without any expected fields" in {
         validator.validate(sample.SampleRawData(validNino, validTaxYear, nonsenseRawRequestBody)) shouldBe
-          List(RuleIncorrectOrEmptyBodyError)
+          List(RuleIncorrectOrEmptyBodyError.copy(paths = Some(Seq("/data"))))
       }
 
       "the submitted request body is not in the correct format" in {
         validator.validate(sample.SampleRawData(validNino, validTaxYear, nonValidRawRequestBody)) shouldBe
-          List(RuleIncorrectOrEmptyBodyError)
+          List(RuleIncorrectOrEmptyBodyError.copy(paths = Some(Seq("/data"))))
       }
     }
 

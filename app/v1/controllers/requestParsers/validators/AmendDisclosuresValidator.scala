@@ -17,7 +17,7 @@
 package v1.controllers.requestParsers.validators
 
 import v1.controllers.requestParsers.validators.validations._
-import v1.models.errors.{MtdError, RuleIncorrectOrEmptyBodyError}
+import v1.models.errors.MtdError
 import v1.models.request.disclosures.{AmendDisclosuresRawData, AmendDisclosuresRequestBody, AmendTaxAvoidance}
 
 class AmendDisclosuresValidator extends Validator[AmendDisclosuresRawData] {
@@ -37,7 +37,7 @@ class AmendDisclosuresValidator extends Validator[AmendDisclosuresRawData] {
 
   private def bodyFormatValidator: AmendDisclosuresRawData => List[List[MtdError]] = { data =>
     List(
-      JsonFormatValidation.validate[AmendDisclosuresRequestBody](data.body.json, RuleIncorrectOrEmptyBodyError)
+      JsonFormatValidation.validate[AmendDisclosuresRequestBody](data.body.json)
     )
   }
 

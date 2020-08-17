@@ -163,7 +163,7 @@ class AmendDisclosuresValidatorSpec extends UnitSpec {
 
       "the submitted request body is not in the correct format" in {
         validator.validate(AmendDisclosuresRawData(validNino, validTaxYear, nonValidRawRequestBody)) shouldBe
-          List(RuleIncorrectOrEmptyBodyError)
+          List(RuleIncorrectOrEmptyBodyError.copy(paths = Some(Seq("/taxAvoidance/0/srn"))))
       }
     }
 

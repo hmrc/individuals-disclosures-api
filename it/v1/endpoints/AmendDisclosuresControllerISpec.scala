@@ -266,15 +266,52 @@ class AmendDisclosuresControllerISpec extends IntegrationBaseSpec {
         """.stripMargin
       )
 
+      val invalidSRNRequestMissingFieldBodyJson: JsValue = Json.parse(
+        """
+          |{
+          |  "taxAvoidance": [
+          |    {
+          |      "taxYear": "2020-21"
+          |    }
+          |  ]
+          |}
+    """.stripMargin
+      )
+
+      val invalidSRNFormatRequestBodyJson: JsValue = Json.parse(
+        """
+          |{
+          |  "taxAvoidance": [
+          |    {
+          |      "taxYear": "2020-21",
+          |      "srn": true
+          |    }
+          |  ]
+          |}
+    """.stripMargin
+      )
+
+      val emptyBodyJson: JsValue = Json.parse(
+        """
+          |{
+          |}
+    """.stripMargin
+      )
+
       val srnFormatError: MtdError = SRNFormatError.copy(
         paths = Some(Seq(
           "/taxAvoidance/0/srn"
         ))
       )
 
+      val incorrectBodyError: MtdError = RuleIncorrectOrEmptyBodyError.copy(paths = Some(Seq(
+        "/taxAvoidance/0/srn"
+      ))
+      )
+
       "validation error" when {
         def validationErrorTest(requestNino: String, requestTaxYear: String, requestBody: JsValue, expectedStatus: Int, expectedBody: MtdError): Unit = {
-          s"validation fails with ${expectedBody.code} error" in new Test {
+          s"validation ${requestNino} fails with ${expectedBody.code} error" in new Test {
 
             override val nino: String = requestNino
             override val taxYear: String = requestTaxYear
@@ -297,6 +334,9 @@ class AmendDisclosuresControllerISpec extends IntegrationBaseSpec {
           ("AA123456A", "20177", validRequestBodyJson,  BAD_REQUEST, TaxYearFormatError),
           ("AA123456A", "2015-17", validRequestBodyJson, BAD_REQUEST, RuleTaxYearRangeInvalidError),
           ("AA123456A", "2017-18", nonsenseRequestBodyJson, BAD_REQUEST, RuleIncorrectOrEmptyBodyError),
+          ("AA123457A", "2017-18", invalidSRNRequestMissingFieldBodyJson, BAD_REQUEST, incorrectBodyError),
+          ("AA123458A", "2017-18", emptyBodyJson, BAD_REQUEST, RuleIncorrectOrEmptyBodyError),
+          ("AA123459A", "2017-18", invalidSRNFormatRequestBodyJson, BAD_REQUEST, incorrectBodyError),
           ("AA123456A", "2017-18", invalidSRNRequestBodyJson, BAD_REQUEST, srnFormatError))
 
         input.foreach(args => (validationErrorTest _).tupled(args))
