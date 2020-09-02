@@ -23,6 +23,18 @@
           "taxYear"
         ]
     },
+    "class2Nics": {
+      "type": "object",
+      "description": "Object containing the Voluntary Class 2 National Insurance Contributions toggle",
+      "properties": {
+        "class2VoluntaryContributions": {
+          "type": "boolean",
+          "description": "A boolean that will indicate Voluntary Class 2 contributions are to be captured, when set to true. The value must be true or false.",
+          "example": "false"
+        }
+      },
+      "required": ["class2VoluntaryContributions"]
+    },
     "links": {
       "type": "array",
       "items": {
