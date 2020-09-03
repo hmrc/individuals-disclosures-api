@@ -4,7 +4,10 @@
   "description":"Retrieve Disclosures Response",
   "type": "object",
   "properties": {
+    "submittedOn": {"$ref": "retrieve_disclosures_definitions.json#/definitions/submittedOn"},
     "taxAvoidance": {"$ref": "retrieve_disclosures_definitions.json#/definitions/taxAvoidance"},
+    "class2Nics": {"$ref": "retrieve_disclosures_definitions.json#/definitions/class2Nics"},
     "links": {"$ref": "retrieve_disclosures_definitions.json#/definitions/links"}
-  }
+  },
+  "required": ["submittedOn"]
 }

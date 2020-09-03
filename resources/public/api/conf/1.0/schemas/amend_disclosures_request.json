@@ -10,6 +10,7 @@
       "items": {
         "$ref": "amend_disclosures_definitions.json#/definitions/taxAvoidance"
       }
-    }
+    },
+    "class2Nics": {"$ref": "retrieve_disclosures_definitions.json#/definitions/class2Nics"}
   }
 }

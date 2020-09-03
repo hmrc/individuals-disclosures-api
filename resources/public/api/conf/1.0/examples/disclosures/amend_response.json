@@ -1,17 +1,17 @@
 {
    "links":[
       {
-         "href":"/individuals/disclosures/{nino}/{taxYear}",
+         "href":"/individuals/disclosures/TC663795B/2021-22",
          "rel":"amend-disclosures",
          "method":"PUT"
       },
       {
-         "href":"/individuals/disclosures/{nino}/{taxYear}",
+         "href":"/individuals/disclosures/TC663795B/2021-22",
          "rel":"self",
          "method":"GET"
       },
       {
-         "href":"/individuals/disclosures/{nino}/{taxYear}",
+         "href":"/individuals/disclosures/TC663795B/2021-22",
          "rel":"delete-disclosures",
          "method":"DELETE"
       }
