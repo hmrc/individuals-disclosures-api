@@ -95,7 +95,7 @@ class RetrieveDisclosuresControllerSpec extends ControllerBaseSpec
   val class2Nics: Class2Nics = Class2Nics(true)
 
   private val retrieveDisclosuresResponseModel = RetrieveDisclosuresResponse(
-    taxAvoidance = Some(taxAvoidanceModel), class2Nics = Some(class2Nics), Some("2020-07-06T09:37:17Z")
+    taxAvoidance = Some(taxAvoidanceModel), class2Nics = Some(class2Nics), submittedOn = Some("2020-07-06T09:37:17Z")
   )
 
   private val mtdResponse = RetrieveDisclosuresControllerFixture.mtdResponseWithHateoas(nino, taxYear)
