@@ -31,6 +31,7 @@ import v1.models.hateoas.Method.{DELETE, GET, PUT}
 import v1.models.hateoas.RelType.{AMEND_DISCLOSURES, DELETE_DISCLOSURES, SELF}
 import v1.models.hateoas.{HateoasWrapper, Link}
 import v1.models.outcomes.ResponseWrapper
+import v1.models.request.disclosures.Class2Nics
 import v1.models.request.{DeleteRetrieveRawData, DeleteRetrieveRequest}
 import v1.models.response.retrieveDisclosures.{RetrieveDisclosuresHateoasData, RetrieveDisclosuresResponse, TaxAvoidanceItem}
 
@@ -91,8 +92,10 @@ class RetrieveDisclosuresControllerSpec extends ControllerBaseSpec
     )
   )
 
+  val class2Nics: Class2Nics = Class2Nics(true)
+
   private val retrieveDisclosuresResponseModel = RetrieveDisclosuresResponse(
-    taxAvoidance = Some(taxAvoidanceModel)
+    taxAvoidance = Some(taxAvoidanceModel), class2Nics = Some(class2Nics), Some("2020-07-06T09:37:17Z")
   )
 
   private val mtdResponse = RetrieveDisclosuresControllerFixture.mtdResponseWithHateoas(nino, taxYear)

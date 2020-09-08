@@ -21,7 +21,7 @@ import support.UnitSpec
 
 class AmendDisclosuresRequestBodySpec extends UnitSpec {
 
-  val model: AmendDisclosuresRequestBody = AmendDisclosuresRequestBody(Some(Seq(AmendTaxAvoidance("14211123","2020-21"))))
+  val model: AmendDisclosuresRequestBody = AmendDisclosuresRequestBody(Some(Seq(AmendTaxAvoidance("14211123","2020-21"))),Some(Class2Nics(true)))
   private val json = Json.parse(
     """
       |{
@@ -30,7 +30,10 @@ class AmendDisclosuresRequestBodySpec extends UnitSpec {
       |    "srn": "14211123",
       |    "taxYear": "2020-21"
       |   }
-      | ]
+      | ],
+      | "class2Nics": {
+      |   "class2VoluntaryContributions": true
+      | }
       |}
     """.stripMargin
   )
@@ -74,7 +77,10 @@ class AmendDisclosuresRequestBodySpec extends UnitSpec {
             | "srn": true,
             | "taxYear": "2020-21"
             | }
-            | ]
+            | ],
+            | "class2Nics": {
+            |   "class2VoluntaryContributions": true
+            | }
             |}
           """.stripMargin
         )

@@ -46,7 +46,10 @@ class AmendDisclosuresControllerISpec extends IntegrationBaseSpec {
         |      "srn": "34522678",
         |      "taxYear": "2021-22"
         |    }
-        |  ]
+        |  ],
+        |  "class2Nics": {
+        |     "class2VoluntaryContributions": true
+        | }
         |}
     """.stripMargin
     )
@@ -121,7 +124,10 @@ class AmendDisclosuresControllerISpec extends IntegrationBaseSpec {
             |      "srn": "CDE345226789F",
             |      "taxYear": "2020-22"
             |    }
-            |  ]
+            |  ],
+            |    "class2Nics": {
+            |     "class2VoluntaryContributions": true
+            | }
             |}
             |""".stripMargin
         )
@@ -133,6 +139,11 @@ class AmendDisclosuresControllerISpec extends IntegrationBaseSpec {
             ))
           ),
           TaxYearFormatError.copy(
+            paths = Some(List(
+              "/taxAvoidance/0/taxYear"
+            ))
+          ),
+          RuleTaxYearNotSupportedError.copy(
             paths = Some(List(
               "/taxAvoidance/0/taxYear"
             ))
@@ -176,7 +187,10 @@ class AmendDisclosuresControllerISpec extends IntegrationBaseSpec {
             |      "srn": "CDE345226789F",
             |      "taxYear": "2020-22"
             |    }
-            |  ]
+            |  ],
+            |    "class2Nics": {
+            |     "class2VoluntaryContributions": true
+            | }
             |}
             |""".stripMargin
         )
@@ -186,7 +200,7 @@ class AmendDisclosuresControllerISpec extends IntegrationBaseSpec {
             {
             |    "code": "INVALID_REQUEST",
             |    "errors": [
-            |        {
+            |     {
             |            "code": "RULE_TAX_YEAR_RANGE_INVALID",
             |            "message": "Tax year range invalid. A tax year range of one year is required",
             |            "paths": [
@@ -196,6 +210,13 @@ class AmendDisclosuresControllerISpec extends IntegrationBaseSpec {
             |        {
             |            "code": "FORMAT_TAX_YEAR",
             |            "message": "The provided tax year is invalid",
+            |            "paths": [
+            |                "/taxAvoidance/0/taxYear"
+            |            ]
+            |        },
+            |        {
+            |            "code": "RULE_TAX_YEAR_NOT_SUPPORTED",
+            |            "message": "Tax year not supported, because it precedes the earliest allowable tax year",
             |            "paths": [
             |                "/taxAvoidance/0/taxYear"
             |            ]
@@ -240,7 +261,10 @@ class AmendDisclosuresControllerISpec extends IntegrationBaseSpec {
           |      "srn": "34522678",
           |      "taxYear": "2021-22"
           |    }
-          |  ]
+          |  ],
+          |    "class2Nics": {
+          |     "class2VoluntaryContributions": true
+          | }
           |}
          """.stripMargin
       )
@@ -261,7 +285,10 @@ class AmendDisclosuresControllerISpec extends IntegrationBaseSpec {
           |      "srn": "ABC142111235",
           |      "taxYear": "2020-21"
           |    }
-          |  ]
+          |  ],
+          |    "class2Nics": {
+          |     "class2VoluntaryContributions": true
+          | }
           |}
         """.stripMargin
       )
@@ -273,7 +300,10 @@ class AmendDisclosuresControllerISpec extends IntegrationBaseSpec {
           |    {
           |      "taxYear": "2020-21"
           |    }
-          |  ]
+          |  ],
+          |    "class2Nics": {
+          |     "class2VoluntaryContributions": true
+          | }
           |}
     """.stripMargin
       )
@@ -286,7 +316,10 @@ class AmendDisclosuresControllerISpec extends IntegrationBaseSpec {
           |      "taxYear": "2020-21",
           |      "srn": true
           |    }
-          |  ]
+          |  ],
+          |    "class2Nics": {
+          |     "class2VoluntaryContributions": true
+          | }
           |}
     """.stripMargin
       )

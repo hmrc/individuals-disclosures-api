@@ -26,7 +26,7 @@ import v1.mocks.services.{MockAmendDisclosuresService, MockEnrolmentsAuthService
 import v1.models.domain.DesTaxYear
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
-import v1.models.request.disclosures.{AmendDisclosuresRawData, AmendDisclosuresRequest, AmendDisclosuresRequestBody, AmendTaxAvoidance}
+import v1.models.request.disclosures.{AmendDisclosuresRawData, AmendDisclosuresRequest, AmendDisclosuresRequestBody, AmendTaxAvoidance, Class2Nics}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -94,8 +94,11 @@ class AmendDisclosuresControllerSpec
     )
   )
 
+  val class2Nics: Class2Nics = Class2Nics(true)
+
   val amendDisclosuresRequestBody: AmendDisclosuresRequestBody = AmendDisclosuresRequestBody(
-    taxAvoidance = Some(taxAvoidance)
+    taxAvoidance = Some(taxAvoidance),
+    class2Nics = Some(class2Nics)
   )
 
   val requestData: AmendDisclosuresRequest = AmendDisclosuresRequest(

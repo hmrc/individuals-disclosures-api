@@ -16,11 +16,13 @@
 
 package v1.controllers.requestParsers.validators
 
+import config.AppConfig
+import javax.inject.Inject
 import v1.controllers.requestParsers.validators.validations._
 import v1.models.errors.MtdError
 import v1.models.request.disclosures.{AmendDisclosuresRawData, AmendDisclosuresRequestBody, AmendTaxAvoidance}
 
-class AmendDisclosuresValidator extends Validator[AmendDisclosuresRawData] {
+class AmendDisclosuresValidator @Inject()(implicit appConfig: AppConfig) extends Validator[AmendDisclosuresRawData] {
 
   private val validationSet = List(parameterFormatValidation, bodyFormatValidator, bodyValueValidator)
 
@@ -60,6 +62,9 @@ class AmendDisclosuresValidator extends Validator[AmendDisclosuresRawData] {
         _.copy(paths = Some(Seq(s"/taxAvoidance/$arrayIndex/srn")))
       ),
       TaxYearValidation.validate(taxAvoidance.taxYear).map(
+        _.copy(paths = Some(Seq(s"/taxAvoidance/$arrayIndex/taxYear")))
+      ),
+      TaxYearNotSupportedValidation.validate(taxAvoidance.taxYear).map(
         _.copy(paths = Some(Seq(s"/taxAvoidance/$arrayIndex/taxYear")))
       )
     ).flatten

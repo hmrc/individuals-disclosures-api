@@ -23,7 +23,7 @@ import uk.gov.hmrc.domain.Nino
 import v1.mocks.validators.MockAmendDisclosuresValidator
 import v1.models.domain.DesTaxYear
 import v1.models.errors._
-import v1.models.request.disclosures.{AmendDisclosuresRawData, AmendDisclosuresRequest, AmendDisclosuresRequestBody, AmendTaxAvoidance}
+import v1.models.request.disclosures.{AmendDisclosuresRawData, AmendDisclosuresRequest, AmendDisclosuresRequestBody, AmendTaxAvoidance, Class2Nics}
 
 class AmendDisclosuresRequestParserSpec extends UnitSpec{
 
@@ -42,7 +42,10 @@ class AmendDisclosuresRequestParserSpec extends UnitSpec{
       |      "srn": "34522678",
       |      "taxYear": "2021-22"
       |    }
-      |  ]
+      |  ],
+      |  "class2Nics": {
+      |     "class2VoluntaryContributions": true
+      |  }
       |}
     """.stripMargin
   )
@@ -60,8 +63,11 @@ class AmendDisclosuresRequestParserSpec extends UnitSpec{
     )
   )
 
+  val class2Nics: Class2Nics = Class2Nics(true)
+
   private val validRequestBodyModel = AmendDisclosuresRequestBody(
-    Some(taxAvoidanceModel)
+    Some(taxAvoidanceModel),
+    Some(class2Nics)
   )
 
   private val amendDisclosuresRawData = AmendDisclosuresRawData(

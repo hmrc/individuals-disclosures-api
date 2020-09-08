@@ -16,13 +16,15 @@
 
 package v1.controllers.requestParsers.validators
 
+import config.AppConfig
+import mocks.MockAppConfig
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.AnyContentAsJson
 import support.UnitSpec
 import v1.models.errors._
 import v1.models.request.disclosures.AmendDisclosuresRawData
 
-class AmendDisclosuresValidatorSpec extends UnitSpec {
+class AmendDisclosuresValidatorSpec extends UnitSpec with MockAppConfig {
 
   private val validNino = "AA123456A"
   private val validTaxYear = "2018-19"
@@ -39,7 +41,10 @@ class AmendDisclosuresValidatorSpec extends UnitSpec {
       |      "srn": "34522678",
       |      "taxYear": "2021-22"
       |    }
-      |  ]
+      |  ],
+      |  "class2Nics": {
+      |   "class2VoluntaryContributions": true
+      |  }
       |}
     """.stripMargin
   )
@@ -56,7 +61,9 @@ class AmendDisclosuresValidatorSpec extends UnitSpec {
       |      "srn": true,
       |      "taxYear": "2020-21"
       |    }
-      |  ]
+      |  ],
+      |  "class2Nics": {
+      |  }
       |}
     """.stripMargin
   )
@@ -69,7 +76,10 @@ class AmendDisclosuresValidatorSpec extends UnitSpec {
       |      "srn": "ABC142111235",
       |      "taxYear": "2020-21"
       |    }
-      |  ]
+      |  ],
+      |  "class2Nics": {
+      |     "class2VoluntaryContributions": true
+      |  }
       |}
     """.stripMargin
   )
@@ -82,7 +92,10 @@ class AmendDisclosuresValidatorSpec extends UnitSpec {
       |      "srn": "14211123",
       |      "taxYear": "2020"
       |    }
-      |  ]
+      |  ],
+      |  "class2Nics": {
+      |     "class2VoluntaryContributions": true
+      |  }
       |}
     """.stripMargin
   )
@@ -95,7 +108,26 @@ class AmendDisclosuresValidatorSpec extends UnitSpec {
       |      "srn": "14211123",
       |      "taxYear": "2020-22"
       |    }
-      |  ]
+      |  ],
+      |  "class2Nics": {
+      |     "class2VoluntaryContributions": true
+      |  }
+      |}
+    """.stripMargin
+  )
+
+  private val missingClass2RequestBodyJson: JsValue = Json.parse(
+    """
+      |{
+      |  "taxAvoidance": [
+      |    {
+      |      "srn": "14211123",
+      |      "taxYear": "2020-22"
+      |    }
+      |  ],
+      |  "class2Nics": {
+      |
+      |  }
       |}
     """.stripMargin
   )
@@ -112,7 +144,10 @@ class AmendDisclosuresValidatorSpec extends UnitSpec {
       |      "srn": "CDE345226789F",
       |      "taxYear": "2020-22"
       |    }
-      |  ]
+      |  ],
+      |  "class2Nics": {
+      |     "class2VoluntaryContributions": true
+      |  }
       |}
     """.stripMargin
   )
@@ -124,13 +159,20 @@ class AmendDisclosuresValidatorSpec extends UnitSpec {
   private val invalidSRNRawRequestBody = AnyContentAsJson(invalidSRNRequestBodyJson)
   private val invalidTaxYearRawRequestBody = AnyContentAsJson(invalidTaxYearRequestBodyJson)
   private val invalidTaxYearRangeRuleRawRequestBody = AnyContentAsJson(invalidTaxYearRangeRuleRequestBodyJson)
+  private val missingClass2RawRequestBody = AnyContentAsJson(missingClass2RequestBodyJson)
   private val allInvalidValueRawRequestBody = AnyContentAsJson(allInvalidValueRequestBodyJson)
+
+  implicit val appConfig: AppConfig = mockAppConfig
 
   val validator = new AmendDisclosuresValidator()
 
   "running a validation" should {
     "return no errors" when {
       "a valid request is supplied" in {
+
+        MockedAppConfig.minimumPermittedTaxYear.returns(2021)
+        MockedAppConfig.minimumPermittedTaxYear.returns(2021)
+
         validator.validate(AmendDisclosuresRawData(validNino, validTaxYear, validRawRequestBody)) shouldBe Nil
       }
     }
@@ -144,6 +186,7 @@ class AmendDisclosuresValidatorSpec extends UnitSpec {
 
     "return TaxYearFormatError error" when {
       "an invalid tax year is supplied" in {
+
         validator.validate(AmendDisclosuresRawData(validNino, "20178", validRawRequestBody)) shouldBe
           List(TaxYearFormatError)
       }
@@ -163,12 +206,14 @@ class AmendDisclosuresValidatorSpec extends UnitSpec {
 
       "the submitted request body is not in the correct format" in {
         validator.validate(AmendDisclosuresRawData(validNino, validTaxYear, nonValidRawRequestBody)) shouldBe
-          List(RuleIncorrectOrEmptyBodyError.copy(paths = Some(Seq("/taxAvoidance/0/srn"))))
+          List(RuleIncorrectOrEmptyBodyError.copy(paths = Some(Seq("/taxAvoidance/0/srn", "/class2Nics/class2VoluntaryContributions"))))
       }
     }
 
     "return SRNFormatError error" when {
       "an incorrectly formatted srn is submitted" in {
+        MockedAppConfig.minimumPermittedTaxYear.returns(2021)
+
         validator.validate(AmendDisclosuresRawData(validNino, validTaxYear, invalidSRNRawRequestBody)) shouldBe
           List(SRNFormatError.copy(paths = Some(List("/taxAvoidance/0/srn"))))
       }
@@ -176,20 +221,34 @@ class AmendDisclosuresValidatorSpec extends UnitSpec {
 
     "return TaxYearFormatError error" when {
       "an incorrectly formatted tax year is submitted in the request body" in {
+        MockedAppConfig.minimumPermittedTaxYear.returns(2021)
+
         validator.validate(AmendDisclosuresRawData(validNino, validTaxYear, invalidTaxYearRawRequestBody)) shouldBe
-          List(TaxYearFormatError.copy(paths = Some(List("/taxAvoidance/0/taxYear"))))
+          List(TaxYearFormatError.copy(paths = Some(List("/taxAvoidance/0/taxYear"))), RuleTaxYearNotSupportedError.copy(paths = Some(List("/taxAvoidance/0/taxYear"))))
       }
     }
 
     "return RuleTaxYearRangeInvalidError error" when {
       "an invalid tax year range is submitted in the request body" in {
+        MockedAppConfig.minimumPermittedTaxYear.returns(2021)
+
         validator.validate(AmendDisclosuresRawData(validNino, validTaxYear, invalidTaxYearRangeRuleRawRequestBody)) shouldBe
           List(RuleTaxYearRangeInvalidError.copy(paths = Some(List("/taxAvoidance/0/taxYear"))))
       }
     }
 
+    "return an IncorrectBody error" when {
+      "an empty body for class2Nics is submitted in the request body" in {
+        validator.validate(AmendDisclosuresRawData(validNino, validTaxYear, missingClass2RawRequestBody)) shouldBe
+          List(RuleIncorrectOrEmptyBodyError.copy(paths = Some(List("/class2Nics/class2VoluntaryContributions"))))
+      }
+    }
+
     "return multiple errors (multiple failures)" when {
       "multiple fields fail value validation" in {
+        MockedAppConfig.minimumPermittedTaxYear.returns(2021)
+        MockedAppConfig.minimumPermittedTaxYear.returns(2021)
+
         validator.validate(AmendDisclosuresRawData(validNino, validTaxYear, allInvalidValueRawRequestBody)) shouldBe
           List(
             RuleTaxYearRangeInvalidError.copy(
@@ -198,6 +257,11 @@ class AmendDisclosuresValidatorSpec extends UnitSpec {
               ))
             ),
             TaxYearFormatError.copy(
+              paths = Some(List(
+                "/taxAvoidance/0/taxYear"
+              ))
+            ),
+            RuleTaxYearNotSupportedError.copy(
               paths = Some(List(
                 "/taxAvoidance/0/taxYear"
               ))
