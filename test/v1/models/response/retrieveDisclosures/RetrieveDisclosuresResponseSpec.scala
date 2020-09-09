@@ -49,7 +49,7 @@ class RetrieveDisclosuresResponseSpec extends UnitSpec {
   private val class2Nics = Class2Nics(true)
 
   private val responseModel = RetrieveDisclosuresResponse(
-    Some(taxAvoidanceItemModel), Some(class2Nics), Some("2020-07-06T09:37:17Z")
+    Some(taxAvoidanceItemModel), Some(class2Nics), "2020-07-06T09:37:17Z"
   )
 
   "RetrieveDisclosuresResponse" when {

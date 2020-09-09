@@ -24,15 +24,15 @@ import v1.hateoas.{HateoasLinks, HateoasLinksFactory}
 import v1.models.hateoas.{HateoasData, Link}
 import v1.models.request.disclosures.Class2Nics
 
-case class RetrieveDisclosuresResponse(taxAvoidance: Option[Seq[TaxAvoidanceItem]], class2Nics: Option[Class2Nics], submittedOn: Option[String])
+case class RetrieveDisclosuresResponse(taxAvoidance: Option[Seq[TaxAvoidanceItem]], class2Nics: Option[Class2Nics], submittedOn: String)
 
 object RetrieveDisclosuresResponse extends HateoasLinks with JsonUtils {
-  val empty: RetrieveDisclosuresResponse = RetrieveDisclosuresResponse(None, None, None)
+  val empty: RetrieveDisclosuresResponse = RetrieveDisclosuresResponse(None, None, "")
 
   implicit val reads: Reads[RetrieveDisclosuresResponse] = (
     (JsPath \ "taxAvoidance").readNullable[Seq[TaxAvoidanceItem]].mapEmptySeqToNone and
       (JsPath \ "class2Nics").readNullable[Class2Nics] and
-      (JsPath \ "submittedOn").readNullable[String]
+      (JsPath \ "submittedOn").read[String]
     ) (RetrieveDisclosuresResponse.apply _)
 
   implicit val writes: OWrites[RetrieveDisclosuresResponse] = Json.writes[RetrieveDisclosuresResponse]
