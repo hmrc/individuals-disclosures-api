@@ -31,7 +31,7 @@ class AmendDisclosuresControllerISpec extends IntegrationBaseSpec {
   private trait Test {
 
     val nino: String = "AA123456A"
-    val taxYear: String = "2017-18"
+    val taxYear: String = "2021-22"
     val correlationId: String = "X-123"
 
     val requestBodyJson: JsValue = Json.parse(
@@ -143,11 +143,6 @@ class AmendDisclosuresControllerISpec extends IntegrationBaseSpec {
               "/taxAvoidance/0/taxYear"
             ))
           ),
-          RuleTaxYearNotSupportedError.copy(
-            paths = Some(List(
-              "/taxAvoidance/0/taxYear"
-            ))
-          ),
           SRNFormatError.copy(
             paths = Some(List(
               "/taxAvoidance/0/srn",
@@ -210,13 +205,6 @@ class AmendDisclosuresControllerISpec extends IntegrationBaseSpec {
             |        {
             |            "code": "FORMAT_TAX_YEAR",
             |            "message": "The provided tax year is invalid",
-            |            "paths": [
-            |                "/taxAvoidance/0/taxYear"
-            |            ]
-            |        },
-            |        {
-            |            "code": "RULE_TAX_YEAR_NOT_SUPPORTED",
-            |            "message": "Tax year not supported, because it precedes the earliest allowable tax year",
             |            "paths": [
             |                "/taxAvoidance/0/taxYear"
             |            ]
@@ -363,14 +351,15 @@ class AmendDisclosuresControllerISpec extends IntegrationBaseSpec {
         }
 
         val input = Seq(
-          ("AA1123A", "2017-18", validRequestBodyJson, BAD_REQUEST, NinoFormatError),
+          ("AA1123A", "2021-22", validRequestBodyJson, BAD_REQUEST, NinoFormatError),
           ("AA123456A", "20177", validRequestBodyJson,  BAD_REQUEST, TaxYearFormatError),
           ("AA123456A", "2015-17", validRequestBodyJson, BAD_REQUEST, RuleTaxYearRangeInvalidError),
-          ("AA123456A", "2017-18", nonsenseRequestBodyJson, BAD_REQUEST, RuleIncorrectOrEmptyBodyError),
-          ("AA123457A", "2017-18", invalidSRNRequestMissingFieldBodyJson, BAD_REQUEST, incorrectBodyError),
-          ("AA123458A", "2017-18", emptyBodyJson, BAD_REQUEST, RuleIncorrectOrEmptyBodyError),
-          ("AA123459A", "2017-18", invalidSRNFormatRequestBodyJson, BAD_REQUEST, incorrectBodyError),
-          ("AA123456A", "2017-18", invalidSRNRequestBodyJson, BAD_REQUEST, srnFormatError))
+          ("AA123456A", "2015-16", validRequestBodyJson, BAD_REQUEST, RuleTaxYearNotSupportedError),
+          ("AA123456A", "2021-22", nonsenseRequestBodyJson, BAD_REQUEST, RuleIncorrectOrEmptyBodyError),
+          ("AA123457A", "2021-22", invalidSRNRequestMissingFieldBodyJson, BAD_REQUEST, incorrectBodyError),
+          ("AA123458A", "2021-22", emptyBodyJson, BAD_REQUEST, RuleIncorrectOrEmptyBodyError),
+          ("AA123459A", "2021-22", invalidSRNFormatRequestBodyJson, BAD_REQUEST, incorrectBodyError),
+          ("AA123456A", "2021-22", invalidSRNRequestBodyJson, BAD_REQUEST, srnFormatError))
 
         input.foreach(args => (validationErrorTest _).tupled(args))
       }

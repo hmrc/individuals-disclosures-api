@@ -24,10 +24,16 @@ import v1.models.request.disclosures.{AmendDisclosuresRawData, AmendDisclosuresR
 
 class AmendDisclosuresValidator @Inject()(implicit appConfig: AppConfig) extends Validator[AmendDisclosuresRawData] {
 
-  private val validationSet = List(parameterFormatValidation, bodyFormatValidator, bodyValueValidator)
+  private val validationSet = List(parameterFormatValidation, parameterValueValidation, bodyFormatValidator, bodyValueValidator)
 
   override def validate(data: AmendDisclosuresRawData): List[MtdError] = {
     run(validationSet, data).distinct
+  }
+
+  private def parameterValueValidation: AmendDisclosuresRawData => List[List[MtdError]] = (data: AmendDisclosuresRawData) => {
+    List(
+      TaxYearNotSupportedValidation.validate(data.taxYear)
+    )
   }
 
   private def parameterFormatValidation: AmendDisclosuresRawData => List[List[MtdError]] = (data: AmendDisclosuresRawData) => {
@@ -62,9 +68,6 @@ class AmendDisclosuresValidator @Inject()(implicit appConfig: AppConfig) extends
         _.copy(paths = Some(Seq(s"/taxAvoidance/$arrayIndex/srn")))
       ),
       TaxYearValidation.validate(taxAvoidance.taxYear).map(
-        _.copy(paths = Some(Seq(s"/taxAvoidance/$arrayIndex/taxYear")))
-      ),
-      TaxYearNotSupportedValidation.validate(taxAvoidance.taxYear).map(
         _.copy(paths = Some(Seq(s"/taxAvoidance/$arrayIndex/taxYear")))
       )
     ).flatten

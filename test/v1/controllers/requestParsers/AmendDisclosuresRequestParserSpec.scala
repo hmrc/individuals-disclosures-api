@@ -109,6 +109,14 @@ class AmendDisclosuresRequestParserSpec extends UnitSpec{
           Left(ErrorWrapper(None, BadRequestError, Some(Seq(NinoFormatError, TaxYearFormatError))))
       }
 
+      "path parameter TaxYearNotSupported validation occurs" in new Test {
+        MockAmendDisclosuresValidator.validate(amendDisclosuresRawData.copy(taxYear = "2019-20"))
+          .returns(List(RuleTaxYearNotSupportedError))
+
+        parser.parseRequest(amendDisclosuresRawData.copy(taxYear = "2019-20")) shouldBe
+          Left(ErrorWrapper(None, RuleTaxYearNotSupportedError))
+      }
+
       "multiple field value validation errors occur" in new Test {
 
         private val allInvalidValueRequestBodyJson: JsValue = Json.parse(

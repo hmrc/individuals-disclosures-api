@@ -27,7 +27,7 @@ import v1.models.request.disclosures.AmendDisclosuresRawData
 class AmendDisclosuresValidatorSpec extends UnitSpec with MockAppConfig {
 
   private val validNino = "AA123456A"
-  private val validTaxYear = "2018-19"
+  private val validTaxYear = "2021-22"
 
   private val validRequestBodyJson: JsValue = Json.parse(
     """
@@ -169,8 +169,6 @@ class AmendDisclosuresValidatorSpec extends UnitSpec with MockAppConfig {
   "running a validation" should {
     "return no errors" when {
       "a valid request is supplied" in {
-
-        MockedAppConfig.minimumPermittedTaxYear.returns(2021)
         MockedAppConfig.minimumPermittedTaxYear.returns(2021)
 
         validator.validate(AmendDisclosuresRawData(validNino, validTaxYear, validRawRequestBody)) shouldBe Nil
@@ -179,6 +177,7 @@ class AmendDisclosuresValidatorSpec extends UnitSpec with MockAppConfig {
 
     "return NinoFormatError error" when {
       "an invalid nino is supplied" in {
+
         validator.validate(AmendDisclosuresRawData("A12344A", validTaxYear, validRawRequestBody)) shouldBe
           List(NinoFormatError)
       }
@@ -194,17 +193,23 @@ class AmendDisclosuresValidatorSpec extends UnitSpec with MockAppConfig {
 
     "return RuleIncorrectOrEmptyBodyError error" when {
       "an empty JSON body is submitted" in {
+        MockedAppConfig.minimumPermittedTaxYear.returns(2021)
+
         validator.validate(AmendDisclosuresRawData(validNino, validTaxYear, emptyRawRequestBody)) shouldBe
           List(RuleIncorrectOrEmptyBodyError)
       }
 
 
       "a non-empty JSON body is submitted without any expected fields" in {
+        MockedAppConfig.minimumPermittedTaxYear.returns(2021)
+
         validator.validate(AmendDisclosuresRawData(validNino, validTaxYear, nonsenseRawRequestBody)) shouldBe
           List(RuleIncorrectOrEmptyBodyError)
       }
 
       "the submitted request body is not in the correct format" in {
+        MockedAppConfig.minimumPermittedTaxYear.returns(2021)
+
         validator.validate(AmendDisclosuresRawData(validNino, validTaxYear, nonValidRawRequestBody)) shouldBe
           List(RuleIncorrectOrEmptyBodyError.copy(paths = Some(Seq("/taxAvoidance/0/srn", "/class2Nics/class2VoluntaryContributions"))))
       }
@@ -224,7 +229,7 @@ class AmendDisclosuresValidatorSpec extends UnitSpec with MockAppConfig {
         MockedAppConfig.minimumPermittedTaxYear.returns(2021)
 
         validator.validate(AmendDisclosuresRawData(validNino, validTaxYear, invalidTaxYearRawRequestBody)) shouldBe
-          List(TaxYearFormatError.copy(paths = Some(List("/taxAvoidance/0/taxYear"))), RuleTaxYearNotSupportedError.copy(paths = Some(List("/taxAvoidance/0/taxYear"))))
+          List(TaxYearFormatError.copy(paths = Some(List("/taxAvoidance/0/taxYear"))))
       }
     }
 
@@ -239,14 +244,24 @@ class AmendDisclosuresValidatorSpec extends UnitSpec with MockAppConfig {
 
     "return an IncorrectBody error" when {
       "an empty body for class2Nics is submitted in the request body" in {
+        MockedAppConfig.minimumPermittedTaxYear.returns(2021)
+
         validator.validate(AmendDisclosuresRawData(validNino, validTaxYear, missingClass2RawRequestBody)) shouldBe
           List(RuleIncorrectOrEmptyBodyError.copy(paths = Some(List("/class2Nics/class2VoluntaryContributions"))))
       }
     }
 
+    "return a TaxYearNotSupported error" when {
+      "an unsupported date is submitted in the request body" in {
+        MockedAppConfig.minimumPermittedTaxYear.returns(2021)
+
+        validator.validate(AmendDisclosuresRawData(validNino, "2019-20", missingClass2RawRequestBody)) shouldBe
+          List(RuleTaxYearNotSupportedError)
+      }
+    }
+
     "return multiple errors (multiple failures)" when {
       "multiple fields fail value validation" in {
-        MockedAppConfig.minimumPermittedTaxYear.returns(2021)
         MockedAppConfig.minimumPermittedTaxYear.returns(2021)
 
         validator.validate(AmendDisclosuresRawData(validNino, validTaxYear, allInvalidValueRawRequestBody)) shouldBe
@@ -257,11 +272,6 @@ class AmendDisclosuresValidatorSpec extends UnitSpec with MockAppConfig {
               ))
             ),
             TaxYearFormatError.copy(
-              paths = Some(List(
-                "/taxAvoidance/0/taxYear"
-              ))
-            ),
-            RuleTaxYearNotSupportedError.copy(
               paths = Some(List(
                 "/taxAvoidance/0/taxYear"
               ))
