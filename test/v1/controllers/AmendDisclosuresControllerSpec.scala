@@ -72,7 +72,10 @@ class AmendDisclosuresControllerSpec
       |      "srn": "34522678",
       |      "taxYear": "2021-22"
       |    }
-      |  ]
+      |  ],
+      |    "class2Nics": {
+      |     "class2VoluntaryContributions": true
+      |  }
       |}
     """.stripMargin
   )
