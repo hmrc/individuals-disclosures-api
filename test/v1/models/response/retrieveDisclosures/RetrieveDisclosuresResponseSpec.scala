@@ -16,7 +16,7 @@
 
 package v1.models.response.retrieveDisclosures
 
-import play.api.libs.json.{JsError, JsObject, Json}
+import play.api.libs.json.{JsError, Json}
 import support.UnitSpec
 import v1.models.request.disclosures.Class2Nics
 
@@ -64,20 +64,14 @@ class RetrieveDisclosuresResponseSpec extends UnitSpec {
         val json = Json.parse(
           """
             |{
-            |   "taxAvoidance": [ ]
+            |   "taxAvoidance": [ ],
+            |   "submittedOn": "2020-07-06T09:37:17Z"
             |}
           """.stripMargin
         )
 
-        json.as[RetrieveDisclosuresResponse] shouldBe RetrieveDisclosuresResponse.empty
-      }
-    }
-
-    "read from empty JSON" should {
-      "produce an empty RetrieveDisclosuresResponse object" in {
-        val emptyJson = JsObject.empty
-
-        emptyJson.as[RetrieveDisclosuresResponse] shouldBe RetrieveDisclosuresResponse.empty
+        json.as[RetrieveDisclosuresResponse] shouldBe
+          RetrieveDisclosuresResponse.empty.copy(submittedOn = "2020-07-06T09:37:17Z")
       }
     }
 
