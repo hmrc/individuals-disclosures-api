@@ -16,8 +16,9 @@
 
 package v1.models.response.retrieveDisclosures
 
-import play.api.libs.json.{JsError, JsObject, Json}
+import play.api.libs.json.{JsError, Json}
 import support.UnitSpec
+import v1.models.request.disclosures.Class2Nics
 
 class RetrieveDisclosuresResponseSpec extends UnitSpec {
 
@@ -29,7 +30,11 @@ class RetrieveDisclosuresResponseSpec extends UnitSpec {
       |      "srn": "14211123",
       |      "taxYear": "2020-21"
       |    }
-      |  ]
+      |  ],
+      |  "class2Nics": {
+      |     "class2VoluntaryContributions": true
+      |  },
+      |  "submittedOn": "2020-07-06T09:37:17Z"
       |}
     """.stripMargin
   )
@@ -41,8 +46,10 @@ class RetrieveDisclosuresResponseSpec extends UnitSpec {
     )
   )
 
+  private val class2Nics = Class2Nics(true)
+
   private val responseModel = RetrieveDisclosuresResponse(
-    Some(taxAvoidanceItemModel)
+    Some(taxAvoidanceItemModel), Some(class2Nics), "2020-07-06T09:37:17Z"
   )
 
   "RetrieveDisclosuresResponse" when {
@@ -57,20 +64,14 @@ class RetrieveDisclosuresResponseSpec extends UnitSpec {
         val json = Json.parse(
           """
             |{
-            |   "taxAvoidance": [ ]
+            |   "taxAvoidance": [ ],
+            |   "submittedOn": "2020-07-06T09:37:17Z"
             |}
           """.stripMargin
         )
 
-        json.as[RetrieveDisclosuresResponse] shouldBe RetrieveDisclosuresResponse.empty
-      }
-    }
-
-    "read from empty JSON" should {
-      "produce an empty RetrieveDisclosuresResponse object" in {
-        val emptyJson = JsObject.empty
-
-        emptyJson.as[RetrieveDisclosuresResponse] shouldBe RetrieveDisclosuresResponse.empty
+        json.as[RetrieveDisclosuresResponse] shouldBe
+          RetrieveDisclosuresResponse.empty.copy(submittedOn = "2020-07-06T09:37:17Z")
       }
     }
 
@@ -84,7 +85,11 @@ class RetrieveDisclosuresResponseSpec extends UnitSpec {
             |      "srn": true,
             |      "taxYear": "2020-21"
             |    }
-            |  ]
+            |  ],
+            |    "class2Nics": {
+            |     "class2VoluntaryContributions": true
+            |  },
+            |  "submittedOn": "2020-07-06T09:37:17Z"
             |}
           """.stripMargin
         )

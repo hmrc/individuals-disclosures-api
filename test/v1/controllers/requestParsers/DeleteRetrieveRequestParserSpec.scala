@@ -58,6 +58,14 @@ class DeleteRetrieveRequestParserSpec extends UnitSpec {
           Left(ErrorWrapper(None, NinoFormatError, None))
       }
 
+      "path parameter TaxYearNotSupported validation occurs" in new Test {
+        MockDeleteRetrieveValidator.validate(deleteRetrieveDisclosuresRawData)
+          .returns(List(RuleTaxYearNotSupportedError))
+
+        parser.parseRequest(deleteRetrieveDisclosuresRawData) shouldBe
+          Left(ErrorWrapper(None, RuleTaxYearNotSupportedError))
+      }
+
       "multiple validation errors occur" in new Test {
         MockDeleteRetrieveValidator.validate(deleteRetrieveDisclosuresRawData)
           .returns(List(NinoFormatError, TaxYearFormatError))

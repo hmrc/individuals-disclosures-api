@@ -16,16 +16,24 @@
 
 package v1.controllers.requestParsers.validators
 
+import config.AppConfig
+import javax.inject.Inject
 import v1.controllers.requestParsers.validators.validations._
 import v1.models.errors.MtdError
 import v1.models.request.disclosures.{AmendDisclosuresRawData, AmendDisclosuresRequestBody, AmendTaxAvoidance}
 
-class AmendDisclosuresValidator extends Validator[AmendDisclosuresRawData] {
+class AmendDisclosuresValidator @Inject()(implicit appConfig: AppConfig) extends Validator[AmendDisclosuresRawData] {
 
-  private val validationSet = List(parameterFormatValidation, bodyFormatValidator, bodyValueValidator)
+  private val validationSet = List(parameterFormatValidation, parameterValueValidation, bodyFormatValidator, bodyValueValidator)
 
   override def validate(data: AmendDisclosuresRawData): List[MtdError] = {
     run(validationSet, data).distinct
+  }
+
+  private def parameterValueValidation: AmendDisclosuresRawData => List[List[MtdError]] = (data: AmendDisclosuresRawData) => {
+    List(
+      TaxYearNotSupportedValidation.validate(data.taxYear)
+    )
   }
 
   private def parameterFormatValidation: AmendDisclosuresRawData => List[List[MtdError]] = (data: AmendDisclosuresRawData) => {

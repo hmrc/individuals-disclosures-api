@@ -22,7 +22,7 @@ import v1.mocks.connectors.MockAmendDisclosuresConnector
 import v1.models.domain.DesTaxYear
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
-import v1.models.request.disclosures.{AmendDisclosuresRequest, AmendDisclosuresRequestBody, AmendTaxAvoidance}
+import v1.models.request.disclosures.{AmendDisclosuresRequest, AmendDisclosuresRequestBody, AmendTaxAvoidance, Class2Nics}
 
 import scala.concurrent.Future
 
@@ -33,11 +33,12 @@ class AmendDisclosuresServiceSpec extends ServiceSpec {
   private val correlationId = "X-corr"
 
   val amendTaxAvoidance: AmendTaxAvoidance = AmendTaxAvoidance("14211123","2020-21")
+  val class2Nics: Class2Nics = Class2Nics(true)
 
   val amendDisclosuresRequest: AmendDisclosuresRequest = AmendDisclosuresRequest(
       nino = Nino(nino),
       taxYear = DesTaxYear(taxYear),
-      body = AmendDisclosuresRequestBody(Some(Seq(amendTaxAvoidance)))
+      body = AmendDisclosuresRequestBody(Some(Seq(amendTaxAvoidance)),Some(class2Nics))
   )
 
   trait Test extends MockAmendDisclosuresConnector{
