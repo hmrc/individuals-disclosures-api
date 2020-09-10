@@ -21,7 +21,6 @@ import mocks.MockAppConfig
 import support.UnitSpec
 import v1.models.errors._
 import v1.models.request.DeleteRetrieveRawData
-import v1.models.request.disclosures.AmendDisclosuresRawData
 
 class DeleteRetrieveValidatorSpec extends UnitSpec with MockAppConfig {
 
