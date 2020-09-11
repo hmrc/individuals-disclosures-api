@@ -14,9 +14,12 @@
  * limitations under the License.
  */
 
-package v1.models.request.sample
+package v1.models.audit
 
-import uk.gov.hmrc.domain.Nino
-import v1.models.domain.DesTaxYear
+import play.api.libs.json.{Json, OWrites}
 
-case class SampleRequestData(nino: Nino, desTaxYear: DesTaxYear, body: SampleRequestBody)
+case class AuditResponse(httpStatus: Int, errors: Option[Seq[AuditError]])
+
+object AuditResponse {
+  implicit val writes: OWrites[AuditResponse] = Json.writes[AuditResponse]
+}
