@@ -17,7 +17,6 @@
 package v1.models.hateoas
 
 object RelType {
-  val SAMPLE_ENDPOINT_REL = "sample-rel"
   val AMEND_DISCLOSURES = "amend-disclosures"
   val DELETE_DISCLOSURES = "delete-disclosures"
 

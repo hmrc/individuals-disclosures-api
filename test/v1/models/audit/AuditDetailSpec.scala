@@ -20,15 +20,15 @@ import play.api.http.Status
 import play.api.libs.json.Json
 import support.UnitSpec
 
-class SampleAuditDetailSpec extends UnitSpec {
+class AuditDetailSpec extends UnitSpec {
 
   private val userType = "Organisation"
   private val agentReferenceNumber = Some("012345678")
   private val nino = "AA123456A"
   private val taxYear = "2017-18"
   private val `X-CorrelationId` = "X-123"
-  private val responseSuccess = SampleAuditResponse(Status.SEE_OTHER, None)
-  private val responseFail = SampleAuditResponse(Status.BAD_REQUEST, Some(Seq(AuditError("FORMAT_NINO"))))
+  private val responseSuccess = AuditResponse(Status.SEE_OTHER, None)
+  private val responseFail = AuditResponse(Status.BAD_REQUEST, Some(Seq(AuditError("FORMAT_NINO"))))
 
   "writes" when {
     "passed an audit model with all fields provided" should {
@@ -47,7 +47,7 @@ class SampleAuditDetailSpec extends UnitSpec {
              |}
            """.stripMargin)
 
-        val model = SampleAuditDetail(userType, agentReferenceNumber, nino, taxYear, `X-CorrelationId`, responseSuccess)
+        val model = AuditDetail(userType, agentReferenceNumber, nino, taxYear, `X-CorrelationId`, responseSuccess)
 
         Json.toJson(model) shouldBe json
       }
@@ -73,7 +73,7 @@ class SampleAuditDetailSpec extends UnitSpec {
              |}
            """.stripMargin)
 
-        val model = SampleAuditDetail(userType, None, nino, taxYear, `X-CorrelationId`, responseFail)
+        val model = AuditDetail(userType, None, nino, taxYear, `X-CorrelationId`, responseFail)
 
         Json.toJson(model) shouldBe json
       }

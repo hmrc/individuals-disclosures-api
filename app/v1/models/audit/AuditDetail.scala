@@ -18,16 +18,16 @@ package v1.models.audit
 
 import play.api.libs.json.{Json, OWrites}
 
-case class SampleAuditDetail(
+case class AuditDetail(
                                           userType: String,
                                           agentReferenceNumber: Option[String],
                                           nino: String,
                                           taxYear: String,
                                           `X-CorrelationId`: String,
-                                          response: SampleAuditResponse
+                                          response: AuditResponse
                                         )
 
-object SampleAuditDetail {
-  implicit val writes: OWrites[SampleAuditDetail] = Json.writes[SampleAuditDetail]
+object AuditDetail {
+  implicit val writes: OWrites[AuditDetail] = Json.writes[AuditDetail]
 }
 
