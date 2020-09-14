@@ -1,1 +1,1 @@
-**Add overview documentation here**
+This suite of endpoints allows software packages to retrieve, create and amend data relating to disclosures.
