@@ -60,7 +60,7 @@ class AmendDisclosuresControllerISpec extends IntegrationBaseSpec {
          |   "links":[
          |      {
          |         "href":"/individuals/disclosures/$nino/$taxYear",
-         |         "rel":"amend-disclosures",
+         |         "rel":"create-and-amend-disclosures",
          |         "method":"PUT"
          |      },
          |      {

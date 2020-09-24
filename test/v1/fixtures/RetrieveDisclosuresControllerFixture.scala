@@ -48,7 +48,7 @@ object RetrieveDisclosuresControllerFixture {
        |      {
        |         "href":"/individuals/disclosures/$nino/$taxYear",
        |         "method":"PUT",
-       |         "rel":"amend-disclosures"
+       |         "rel":"create-and-amend-disclosures"
        |      },
        |      {
        |         "href":"/individuals/disclosures/$nino/$taxYear",

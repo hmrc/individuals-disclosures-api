@@ -17,7 +17,7 @@
 package v1.models.hateoas
 
 object RelType {
-  val AMEND_DISCLOSURES = "amend-disclosures"
+  val AMEND_DISCLOSURES = "create-and-amend-disclosures"
   val DELETE_DISCLOSURES = "delete-disclosures"
 
   val SELF = "self"
