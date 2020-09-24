@@ -116,7 +116,7 @@ class AmendDisclosuresControllerSpec
       |   "links":[
       |      {
       |         "href":"/baseUrl/$nino/$taxYear",
-      |         "rel":"amend-disclosures",
+      |         "rel":"create-and-amend-disclosures",
       |         "method":"PUT"
       |      },
       |      {
