@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "title": "Amend Disclosures Request",
-  "description": "Amend Disclosures Request",
+  "title": "Create and Amend Disclosures Request",
+  "description": "Create and Amend Disclosures Request",
   "type": "object",
   "properties": {
     "taxAvoidance": {

@@ -2,7 +2,7 @@
    "links":[
       {
          "href":"/individuals/disclosures/TC663795B/2021-22",
-         "rel":"amend-disclosures",
+         "rel":"create-and-amend-disclosures",
          "method":"PUT"
       },
       {
