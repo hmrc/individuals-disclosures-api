@@ -125,7 +125,8 @@ class DeleteRetrieveServiceSpec extends ServiceSpec {
           ("INVALID_TAX_YEAR", TaxYearFormatError),
           ("NOT_FOUND", NotFoundError),
           ("SERVER_ERROR", DownstreamError),
-          ("SERVICE_UNAVAILABLE", DownstreamError)
+          ("SERVICE_UNAVAILABLE", DownstreamError),
+          ("RULE_VOLUNTARY_CLASS2_CANNOT_BE_CHANGED", RuleVoluntaryClass2CannotBeChanged)
         )
 
         input.foreach(args => (serviceError _).tupled(args))

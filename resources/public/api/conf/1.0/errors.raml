@@ -91,3 +91,14 @@ traits:
                 description: 'The format of the supplied scheme reference number is not valid.'
                 value:
                   code: FORMAT_SRN_INVALID
+  voluntaryClass2CannotBeChanged:
+     responses:
+       403:
+         body:
+           application/json:
+             type: types.errorResponse
+             examples:
+               srnInvalid:
+                 description: 'Voluntary Class 2 NICs cannot be changed after 31st Jan following the year of submission.'
+                 value:
+                   code: RULE_VOLUNTARY_CLASS2_CANNOT_BE_CHANGED

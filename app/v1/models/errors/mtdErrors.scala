@@ -36,6 +36,9 @@ object SRNFormatError extends MtdError("FORMAT_SRN_INVALID", "The provided schem
 object RuleTaxYearNotSupportedError
   extends MtdError("RULE_TAX_YEAR_NOT_SUPPORTED", "Tax year not supported, because it precedes the earliest allowable tax year")
 
+object RuleVoluntaryClass2CannotBeChanged
+extends MtdError("RULE_VOLUNTARY_CLASS2_CANNOT_BE_CHANGED", "Voluntary Class 2 NICs cannot be changed after 31st Jan following the year of submission.")
+
 object RuleIncorrectOrEmptyBodyError extends MtdError("RULE_INCORRECT_OR_EMPTY_BODY_SUBMITTED", "An empty or non-matching body was submitted")
 
 object RuleTaxYearRangeInvalidError

@@ -102,6 +102,7 @@ class DeleteDisclosuresController @Inject()(val authService: EnrolmentsAuthServi
     (errorWrapper.error: @unchecked) match {
       case BadRequestError | NinoFormatError | TaxYearFormatError | RuleTaxYearNotSupportedError |
            RuleTaxYearRangeInvalidError => BadRequest(Json.toJson(errorWrapper))
+      case RuleVoluntaryClass2CannotBeChanged => Forbidden(Json.toJson(errorWrapper))
       case NotFoundError => NotFound(Json.toJson(errorWrapper))
       case DownstreamError => InternalServerError(Json.toJson(errorWrapper))
     }
