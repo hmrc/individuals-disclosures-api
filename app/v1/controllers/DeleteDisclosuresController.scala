@@ -64,8 +64,8 @@ class DeleteDisclosuresController @Inject()(val authService: EnrolmentsAuthServi
 
       val result =
         for {
-          parsedRequest <- EitherT.fromEither[Future](requestParser.parseRequest(rawData))
-          serviceResponse <- EitherT(service.delete(parsedRequest))
+          _ <- EitherT.fromEither[Future](requestParser.parseRequest(rawData))
+          serviceResponse <- EitherT(service.delete(desErrorMap))
         } yield {
           logger.info(
             s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
@@ -107,6 +107,16 @@ class DeleteDisclosuresController @Inject()(val authService: EnrolmentsAuthServi
       case DownstreamError => InternalServerError(Json.toJson(errorWrapper))
     }
   }
+
+  private def desErrorMap: Map[String, MtdError] =
+    Map(
+      "INVALID_NINO" -> NinoFormatError,
+      "INVALID_TAX_YEAR" -> TaxYearFormatError,
+      "NOT_FOUND" -> NotFoundError,
+      "VOLUNTARY_CLASS2_CANNOT_BE_CHANGED" -> RuleVoluntaryClass2CannotBeChanged,
+      "SERVER_ERROR" -> DownstreamError,
+      "SERVICE_UNAVAILABLE" -> DownstreamError
+    )
 
   private def auditSubmission(details: GenericAuditDetail)
                              (implicit hc: HeaderCarrier,

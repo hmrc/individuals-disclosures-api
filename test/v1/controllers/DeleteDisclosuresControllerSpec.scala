@@ -92,7 +92,7 @@ class DeleteDisclosuresControllerSpec
           .returns(Right(requestData))
 
         MockDeleteRetrieveService
-          .delete(requestData)
+          .delete()
           .returns(Future.successful(Right(ResponseWrapper(correlationId, ()))))
 
         val result: Future[Result] = controller.deleteDisclosures(nino, taxYear)(fakeDeleteRequest)
@@ -145,7 +145,7 @@ class DeleteDisclosuresControllerSpec
               .returns(Right(requestData))
 
             MockDeleteRetrieveService
-              .delete(requestData)
+              .delete()
               .returns(Future.successful(Left(ErrorWrapper(Some(correlationId), mtdError))))
 
             val result: Future[Result] = controller.deleteDisclosures(nino, taxYear)(fakeDeleteRequest)
@@ -163,8 +163,8 @@ class DeleteDisclosuresControllerSpec
           (NinoFormatError, BAD_REQUEST),
           (TaxYearFormatError, BAD_REQUEST),
           (NotFoundError, NOT_FOUND),
-          (DownstreamError, INTERNAL_SERVER_ERROR),
-          (RuleVoluntaryClass2CannotBeChanged, FORBIDDEN)
+          (RuleVoluntaryClass2CannotBeChanged, FORBIDDEN),
+          (DownstreamError, INTERNAL_SERVER_ERROR)
         )
 
         input.foreach(args => (serviceErrors _).tupled(args))
