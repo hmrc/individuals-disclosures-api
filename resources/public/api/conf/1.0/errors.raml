@@ -10,10 +10,11 @@ traits:
         body:
           application/json:
             type: types.errorResponse
-            example:
-              description: 'The supplied income source could not be found.'
-              value:
-                code: MATCHING_RESOURCE_NOT_FOUND
+            examples:
+              notFound:
+                description: 'The supplied income source could not be found.'
+                value:
+                  code: MATCHING_RESOURCE_NOT_FOUND
   clientOrAgentNotAuthorised:
     responses:
       403:
@@ -91,3 +92,14 @@ traits:
                 description: 'The format of the supplied scheme reference number is not valid.'
                 value:
                   code: FORMAT_SRN_INVALID
+  voluntaryClass2CannotBeChanged:
+    responses:
+      403:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              voluntaryClass2CannotBeChanged:
+                description: 'Voluntary Class 2 NICs cannot be changed after 31st Jan following the year of submission.'
+                value:
+                  code: RULE_VOLUNTARY_CLASS2_CANNOT_BE_CHANGED

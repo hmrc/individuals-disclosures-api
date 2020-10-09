@@ -22,9 +22,8 @@ import play.api.libs.json.{Format, Reads}
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.connectors.DesUri
 import v1.controllers.EndpointLogContext
-import v1.models.errors.ErrorWrapper
+import v1.models.errors.{ErrorWrapper, MtdError}
 import v1.models.outcomes.ResponseWrapper
-import v1.models.request.DeleteRetrieveRequest
 import v1.services.DeleteRetrieveService
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -35,16 +34,18 @@ trait MockDeleteRetrieveService extends MockFactory {
 
   object MockDeleteRetrieveService {
 
-    def delete(requestData: DeleteRetrieveRequest): CallHandler[Future[Either[ErrorWrapper, ResponseWrapper[Unit]]]] = {
+    val defaultDesMap: Map[String, MtdError] = Map.empty[String, MtdError]
+
+    def delete(desErrorMap: Map[String, MtdError] = defaultDesMap): CallHandler[Future[Either[ErrorWrapper, ResponseWrapper[Unit]]]] = {
       (mockDeleteRetrieveService
-        .delete(_: DeleteRetrieveRequest)(_: HeaderCarrier, _: ExecutionContext, _: EndpointLogContext, _: DesUri[Unit]))
-        .expects(requestData, *, *, *, *)
+        .delete(_: Map[String, MtdError])(_: HeaderCarrier, _: ExecutionContext, _: EndpointLogContext, _: DesUri[Unit]))
+        .expects(*, *, *, *, *)
     }
 
-    def retrieve[Resp: Reads](requestData: DeleteRetrieveRequest): CallHandler[Future[Either[ErrorWrapper, ResponseWrapper[Resp]]]] = {
+    def retrieve[Resp: Reads](desErrorMap: Map[String, MtdError] = defaultDesMap): CallHandler[Future[Either[ErrorWrapper, ResponseWrapper[Resp]]]] = {
       (mockDeleteRetrieveService
-        .retrieve[Resp](_: DeleteRetrieveRequest)(_: Format[Resp], _: HeaderCarrier, _: ExecutionContext, _: EndpointLogContext, _: DesUri[Resp]))
-        .expects(requestData, *, *, *, *, *)
+        .retrieve[Resp](_: Map[String, MtdError])(_: Format[Resp], _: HeaderCarrier, _: ExecutionContext, _: EndpointLogContext, _: DesUri[Resp]))
+        .expects(*, *, *, *, *, *)
     }
   }
 

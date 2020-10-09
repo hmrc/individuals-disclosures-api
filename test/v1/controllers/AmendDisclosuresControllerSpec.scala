@@ -233,6 +233,7 @@ class AmendDisclosuresControllerSpec
           (NinoFormatError, BAD_REQUEST),
           (TaxYearFormatError, BAD_REQUEST),
           (NotFoundError, NOT_FOUND),
+          (RuleVoluntaryClass2CannotBeChanged, FORBIDDEN),
           (DownstreamError, INTERNAL_SERVER_ERROR)
         )
 

@@ -7,9 +7,11 @@ is:
   - errors.ruleTaxYearRangeInvalid
   - errors.clientOrAgentNotAuthorised
   - errors.notFound
+  - errors.voluntaryClass2CannotBeChanged
+
 displayName: Delete Disclosures [test only]
 description: This endpoint allows a developer to delete data related to disclosures, for a given tax year.  A National Insurance number and tax year must be provided.
-(annotations.sandboxData): !include ../../scenarios/common.md
+(annotations.sandboxData): !include ../../scenarios/amendDelete.md
 (annotations.scope): "write:self-assessment"
 securedBy: [ sec.oauth_2_0: { scopes: [ "write:self-assessment" ] } ]
 responses:

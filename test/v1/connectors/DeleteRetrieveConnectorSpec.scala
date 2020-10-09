@@ -18,11 +18,8 @@ package v1.connectors
 
 import mocks.MockAppConfig
 import play.api.libs.json.{Json, Reads}
-import uk.gov.hmrc.domain.Nino
 import v1.mocks.MockHttpClient
-import v1.models.domain.DesTaxYear
 import v1.models.outcomes.ResponseWrapper
-import v1.models.request.DeleteRetrieveRequest
 
 import scala.concurrent.Future
 
@@ -30,11 +27,6 @@ class DeleteRetrieveConnectorSpec extends ConnectorSpec {
 
   val nino: String = "AA111111A"
   val taxYear: String = "2019"
-
-  val deleteRetrieveRequest: DeleteRetrieveRequest = DeleteRetrieveRequest(
-    nino = Nino(nino),
-    taxYear = DesTaxYear(taxYear)
-  )
 
   class Test extends MockHttpClient with MockAppConfig {
 
@@ -67,7 +59,7 @@ class DeleteRetrieveConnectorSpec extends ConnectorSpec {
           )
           .returns(Future.successful(outcome))
 
-        await(connector.delete(deleteRetrieveRequest)) shouldBe outcome
+        await(connector.delete()) shouldBe outcome
       }
     }
 
@@ -90,7 +82,7 @@ class DeleteRetrieveConnectorSpec extends ConnectorSpec {
           )
           .returns(Future.successful(outcome))
 
-        await(connector.retrieve[Data](deleteRetrieveRequest)) shouldBe outcome
+        await(connector.retrieve[Data]()) shouldBe outcome
       }
     }
   }

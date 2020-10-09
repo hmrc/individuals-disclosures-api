@@ -21,7 +21,6 @@ import javax.inject.{Inject, Singleton}
 import play.api.libs.json.Reads
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.HttpClient
-import v1.models.request.DeleteRetrieveRequest
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -29,20 +28,18 @@ import scala.concurrent.{ExecutionContext, Future}
 class DeleteRetrieveConnector @Inject()(val http: HttpClient,
                                         val appConfig: AppConfig) extends BaseDesConnector {
 
-  def delete(request: DeleteRetrieveRequest)(
-    implicit hc: HeaderCarrier,
-    ec: ExecutionContext,
-    desUri: DesUri[Unit]): Future[DesOutcome[Unit]] = {
+  def delete()(implicit hc: HeaderCarrier,
+               ec: ExecutionContext,
+               desUri: DesUri[Unit]): Future[DesOutcome[Unit]] = {
 
     import v1.connectors.httpparsers.StandardDesHttpParser._
 
     delete(uri = desUri)
   }
 
-  def retrieve[Resp: Reads](request: DeleteRetrieveRequest)(
-    implicit hc: HeaderCarrier,
-    ec: ExecutionContext,
-    desUri: DesUri[Resp]): Future[DesOutcome[Resp]] = {
+  def retrieve[Resp: Reads]()(implicit hc: HeaderCarrier,
+                              ec: ExecutionContext,
+                              desUri: DesUri[Resp]): Future[DesOutcome[Resp]] = {
 
     import v1.connectors.httpparsers.StandardDesHttpParser._
 

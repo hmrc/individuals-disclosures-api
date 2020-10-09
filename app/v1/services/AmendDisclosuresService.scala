@@ -23,7 +23,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import utils.Logging
 import v1.connectors.AmendDisclosuresConnector
 import v1.controllers.EndpointLogContext
-import v1.models.errors.{DownstreamError, ErrorWrapper, NinoFormatError, NotFoundError, TaxYearFormatError}
+import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.disclosures.AmendDisclosuresRequest
 import v1.support.DesResponseMappingSupport
@@ -49,6 +49,7 @@ class AmendDisclosuresService @Inject()(connector: AmendDisclosuresConnector) ex
       "INVALID_NINO" -> NinoFormatError,
       "INVALID_TAX_YEAR" -> TaxYearFormatError,
       "NOT_FOUND" -> NotFoundError,
+      "VOLUNTARY_CLASS2_CANNOT_BE_CHANGED" -> RuleVoluntaryClass2CannotBeChanged,
       "SERVER_ERROR" -> DownstreamError,
       "SERVICE_UNAVAILABLE" -> DownstreamError
     )
