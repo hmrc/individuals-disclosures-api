@@ -19,7 +19,6 @@ package v1.connectors
 import mocks.MockAppConfig
 import uk.gov.hmrc.domain.Nino
 import v1.mocks.MockHttpClient
-import v1.models.domain.DesTaxYear
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.disclosures.{AmendDisclosuresRequest, AmendDisclosuresRequestBody, AmendTaxAvoidance, Class2Nics}
 
@@ -28,14 +27,14 @@ import scala.concurrent.Future
 class AmendDisclosuresConnectorSpec extends ConnectorSpec {
 
   private val nino: String = "AA111111A"
-  private val taxYear: String = "2019"
+  private val taxYear: String = "2020-21"
 
   val amendTaxAvoidance: AmendTaxAvoidance = AmendTaxAvoidance("14211123","2020-21")
   val class2Nics: Class2Nics = Class2Nics(true)
 
   val amendDisclosuresRequest: AmendDisclosuresRequest = AmendDisclosuresRequest(
     nino = Nino(nino),
-    taxYear = DesTaxYear(taxYear),
+    taxYear = taxYear,
     body = AmendDisclosuresRequestBody(Some(Seq(amendTaxAvoidance)), Some(class2Nics))
   )
 
@@ -58,7 +57,7 @@ class AmendDisclosuresConnectorSpec extends ConnectorSpec {
 
         MockedHttpClient
           .put(
-            url = s"$baseUrl/disc-placeholder/disclosures/$nino/$taxYear",
+            url = s"$baseUrl/income-tax/disclosures/$nino/$taxYear",
             body = amendDisclosuresRequest.body,
             requiredHeaders = "Environment" -> "des-environment", "Authorization" -> s"Bearer des-token"
           ).returns(Future.successful(outcome))

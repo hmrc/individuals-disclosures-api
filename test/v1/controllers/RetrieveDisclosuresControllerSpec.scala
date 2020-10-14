@@ -25,7 +25,6 @@ import v1.hateoas.HateoasLinks
 import v1.mocks.hateoas.MockHateoasFactory
 import v1.mocks.requestParsers.MockDeleteRetrieveRequestParser
 import v1.mocks.services.{MockDeleteRetrieveService, MockEnrolmentsAuthService, MockMtdIdLookupService}
-import v1.models.domain.DesTaxYear
 import v1.models.errors._
 import v1.models.hateoas.Method.{DELETE, GET, PUT}
 import v1.models.hateoas.RelType.{AMEND_DISCLOSURES, DELETE_DISCLOSURES, SELF}
@@ -47,7 +46,7 @@ class RetrieveDisclosuresControllerSpec extends ControllerBaseSpec
   with HateoasLinks {
 
   val nino: String = "AA123456A"
-  val taxYear: String = "2017-18"
+  val taxYear: String = "2019-20"
   val correlationId: String = "X-123"
 
   val rawData: DeleteRetrieveRawData = DeleteRetrieveRawData(
@@ -57,7 +56,7 @@ class RetrieveDisclosuresControllerSpec extends ControllerBaseSpec
 
   val requestData: DeleteRetrieveRequest = DeleteRetrieveRequest(
     nino = Nino(nino),
-    taxYear = DesTaxYear.fromMtd(taxYear)
+    taxYear = taxYear
   )
 
   val amendDisclosuresLink: Link =

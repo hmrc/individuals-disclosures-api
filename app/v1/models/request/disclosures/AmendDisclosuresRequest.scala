@@ -17,6 +17,5 @@
 package v1.models.request.disclosures
 
 import uk.gov.hmrc.domain.Nino
-import v1.models.domain.DesTaxYear
 
-case class AmendDisclosuresRequest(nino: Nino, taxYear: DesTaxYear, body: AmendDisclosuresRequestBody)
+case class AmendDisclosuresRequest(nino: Nino, taxYear: String, body: AmendDisclosuresRequestBody)

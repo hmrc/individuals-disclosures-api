@@ -28,7 +28,6 @@ import utils.Logging
 import v1.connectors.DesUri
 import v1.controllers.requestParsers.DeleteRetrieveRequestParser
 import v1.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
-import v1.models.domain.DesTaxYear
 import v1.models.errors._
 import v1.models.request.DeleteRetrieveRawData
 import v1.services.{AuditService, DeleteRetrieveService, EnrolmentsAuthService, MtdIdLookupService}
@@ -59,7 +58,7 @@ class DeleteDisclosuresController @Inject()(val authService: EnrolmentsAuthServi
       )
 
       implicit val desUri: DesUri[Unit] = DesUri[Unit](
-        s"disc-placeholder/disclosures/$nino/${DesTaxYear.fromMtd(taxYear)}"
+        s"income-tax/disclosures/$nino/$taxYear"
       )
 
       val result =
@@ -110,9 +109,10 @@ class DeleteDisclosuresController @Inject()(val authService: EnrolmentsAuthServi
 
   private def desErrorMap: Map[String, MtdError] =
     Map(
-      "INVALID_NINO" -> NinoFormatError,
+      "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
       "INVALID_TAX_YEAR" -> TaxYearFormatError,
-      "NOT_FOUND" -> NotFoundError,
+      "INVALID_CORRELATIONID" -> DownstreamError,
+      "NO_DATA_FOUND" -> NotFoundError,
       "VOLUNTARY_CLASS2_CANNOT_BE_CHANGED" -> RuleVoluntaryClass2CannotBeChanged,
       "SERVER_ERROR" -> DownstreamError,
       "SERVICE_UNAVAILABLE" -> DownstreamError
