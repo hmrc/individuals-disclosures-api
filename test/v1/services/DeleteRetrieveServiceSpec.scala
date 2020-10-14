@@ -28,7 +28,7 @@ import scala.concurrent.Future
 class DeleteRetrieveServiceSpec extends ServiceSpec {
 
   private val nino = "AA112233A"
-  private val taxYear = "2019"
+  private val taxYear = "2020-21"
   private val correlationId = "X-corr"
 
   trait Test extends MockDeleteRetrieveConnector {
@@ -40,8 +40,8 @@ class DeleteRetrieveServiceSpec extends ServiceSpec {
     }
 
     implicit val logContext: EndpointLogContext = EndpointLogContext("c", "ep")
-    implicit val deleteDesUri: DesUri[Unit] = DesUri[Unit](s"disc-placeholder/disclosures/$nino/$taxYear")
-    implicit val retrieveDesUri: DesUri[Data] = DesUri[Data](s"disc-placeholder/disclosures/$nino/$taxYear")
+    implicit val deleteDesUri: DesUri[Unit] = DesUri[Unit](s"income-tax/disclosures/$nino/$taxYear")
+    implicit val retrieveDesUri: DesUri[Data] = DesUri[Data](s"income-tax/disclosures/$nino/$taxYear")
 
     val service: DeleteRetrieveService = new DeleteRetrieveService(
       connector = mockDeleteRetrieveConnector
@@ -71,9 +71,10 @@ class DeleteRetrieveServiceSpec extends ServiceSpec {
           }
 
         val input = Seq(
-          ("INVALID_NINO", NinoFormatError),
+          ("INVALID_TAXABLE_ENTITY_ID", NinoFormatError),
           ("INVALID_TAX_YEAR", TaxYearFormatError),
-          ("NOT_FOUND", NotFoundError),
+          ("INVALID_CORRELATIONID", DownstreamError),
+          ("NO_DATA_FOUND", NotFoundError),
           ("SERVER_ERROR", DownstreamError),
           ("SERVICE_UNAVAILABLE", DownstreamError)
         )
@@ -113,9 +114,10 @@ class DeleteRetrieveServiceSpec extends ServiceSpec {
           }
 
         val input = Seq(
-          ("INVALID_NINO", NinoFormatError),
+          ("INVALID_TAXABLE_ENTITY_ID", NinoFormatError),
           ("INVALID_TAX_YEAR", TaxYearFormatError),
-          ("NOT_FOUND", NotFoundError),
+          ("INVALID_CORRELATIONID", DownstreamError),
+          ("NO_DATA_FOUND", NotFoundError),
           ("SERVER_ERROR", DownstreamError),
           ("SERVICE_UNAVAILABLE", DownstreamError)
         )

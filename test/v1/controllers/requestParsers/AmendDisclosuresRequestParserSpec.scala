@@ -21,14 +21,13 @@ import play.api.mvc.AnyContentAsJson
 import support.UnitSpec
 import uk.gov.hmrc.domain.Nino
 import v1.mocks.validators.MockAmendDisclosuresValidator
-import v1.models.domain.DesTaxYear
 import v1.models.errors._
 import v1.models.request.disclosures.{AmendDisclosuresRawData, AmendDisclosuresRequest, AmendDisclosuresRequestBody, AmendTaxAvoidance, Class2Nics}
 
-class AmendDisclosuresRequestParserSpec extends UnitSpec{
+class AmendDisclosuresRequestParserSpec extends UnitSpec {
 
   val nino: String = "AA123456B"
-  val taxYear: String = "2017-18"
+  val taxYear: String = "2020-21"
 
   private val validRequestBodyJson: JsValue = Json.parse(
     """
@@ -88,7 +87,7 @@ class AmendDisclosuresRequestParserSpec extends UnitSpec{
         MockAmendDisclosuresValidator.validate(amendDisclosuresRawData).returns(Nil)
 
         parser.parseRequest(amendDisclosuresRawData) shouldBe
-          Right(AmendDisclosuresRequest(Nino(nino), DesTaxYear.fromMtd(taxYear), validRequestBodyModel))
+          Right(AmendDisclosuresRequest(Nino(nino), taxYear, validRequestBodyModel))
       }
     }
 

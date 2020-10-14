@@ -19,12 +19,11 @@ package v1.controllers.requestParsers
 import javax.inject.Inject
 import uk.gov.hmrc.domain.Nino
 import v1.controllers.requestParsers.validators.DeleteRetrieveValidator
-import v1.models.domain.DesTaxYear
 import v1.models.request.{DeleteRetrieveRawData, DeleteRetrieveRequest}
 
 class DeleteRetrieveRequestParser @Inject()(val validator: DeleteRetrieveValidator)
   extends RequestParser[DeleteRetrieveRawData, DeleteRetrieveRequest] {
 
   override protected def requestFor(data: DeleteRetrieveRawData): DeleteRetrieveRequest =
-    DeleteRetrieveRequest(Nino(data.nino), DesTaxYear.fromMtd(data.taxYear))
+    DeleteRetrieveRequest(Nino(data.nino), data.taxYear)
 }

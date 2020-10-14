@@ -33,8 +33,11 @@ class AmendDisclosuresConnector @Inject()(val http: HttpClient,
 
     import v1.connectors.httpparsers.StandardDesHttpParser._
 
+    val nino = request.nino.nino
+    val taxYear = request.taxYear
+
     put(
-      uri = DesUri[Unit](s"disc-placeholder/disclosures/${request.nino}/${request.taxYear.value}"), body = request.body
+      uri = DesUri[Unit](s"income-tax/disclosures/$nino/$taxYear"), body = request.body
     )
   }
 }

@@ -19,7 +19,6 @@ package v1.services
 import uk.gov.hmrc.domain.Nino
 import v1.controllers.EndpointLogContext
 import v1.mocks.connectors.MockAmendDisclosuresConnector
-import v1.models.domain.DesTaxYear
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.disclosures.{AmendDisclosuresRequest, AmendDisclosuresRequestBody, AmendTaxAvoidance, Class2Nics}
@@ -29,7 +28,7 @@ import scala.concurrent.Future
 class AmendDisclosuresServiceSpec extends ServiceSpec {
 
   private val nino = "AA112233A"
-  private val taxYear = "2019"
+  private val taxYear = "2020-21"
   private val correlationId = "X-corr"
 
   val amendTaxAvoidance: AmendTaxAvoidance = AmendTaxAvoidance("14211123","2020-21")
@@ -37,7 +36,7 @@ class AmendDisclosuresServiceSpec extends ServiceSpec {
 
   val amendDisclosuresRequest: AmendDisclosuresRequest = AmendDisclosuresRequest(
       nino = Nino(nino),
-      taxYear = DesTaxYear(taxYear),
+      taxYear = taxYear,
       body = AmendDisclosuresRequestBody(Some(Seq(amendTaxAvoidance)),Some(class2Nics))
   )
 
@@ -72,9 +71,11 @@ class AmendDisclosuresServiceSpec extends ServiceSpec {
           }
 
         val input = Seq(
-          ("INVALID_NINO", NinoFormatError),
+          ("INVALID_TAXABLE_ENTITY_ID", NinoFormatError),
           ("INVALID_TAX_YEAR", TaxYearFormatError),
-          ("NOT_FOUND", NotFoundError),
+          ("INVALID_CORRELATIONID", DownstreamError),
+          ("INVALID_PAYLOAD", DownstreamError),
+          ("INCOME_SOURCE_NOT_FOUND", NotFoundError),
           ("VOLUNTARY_CLASS2_CANNOT_BE_CHANGED", RuleVoluntaryClass2CannotBeChanged),
           ("SERVER_ERROR", DownstreamError),
           ("SERVICE_UNAVAILABLE", DownstreamError)

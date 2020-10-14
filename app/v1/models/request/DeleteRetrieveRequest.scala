@@ -17,6 +17,5 @@
 package v1.models.request
 
 import uk.gov.hmrc.domain.Nino
-import v1.models.domain.DesTaxYear
 
-case class DeleteRetrieveRequest(nino: Nino, taxYear: DesTaxYear)
+case class DeleteRetrieveRequest(nino: Nino, taxYear: String)

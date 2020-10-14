@@ -22,7 +22,6 @@ import play.api.http.Status
 import play.api.http.Status.NO_CONTENT
 import play.api.libs.ws.{WSRequest, WSResponse}
 import support.IntegrationBaseSpec
-import v1.models.domain.DesTaxYear
 import v1.stubs.{AuditStub, AuthStub, DesStub, MtdIdLookupStub}
 
 class AuthISpec extends IntegrationBaseSpec {
@@ -35,7 +34,7 @@ class AuthISpec extends IntegrationBaseSpec {
 
     def uri: String = s"/$nino/$taxYear"
 
-    def desUri: String = s"/disc-placeholder/disclosures/$nino/${DesTaxYear.fromMtd(taxYear)}"
+    def desUri: String = s"/income-tax/disclosures/$nino/$taxYear"
 
     def setupStubs(): StubMapping
 

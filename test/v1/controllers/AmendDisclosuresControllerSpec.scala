@@ -24,7 +24,6 @@ import uk.gov.hmrc.http.HeaderCarrier
 import v1.mocks.requestParsers.MockAmendDisclosuresRequestParser
 import v1.mocks.services.{MockAmendDisclosuresService, MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService}
 import v1.models.audit.{AuditError, AuditEvent, AuditResponse, GenericAuditDetail}
-import v1.models.domain.DesTaxYear
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.disclosures.{AmendDisclosuresRawData, AmendDisclosuresRequest, AmendDisclosuresRequestBody, AmendTaxAvoidance, Class2Nics}
@@ -60,7 +59,7 @@ class AmendDisclosuresControllerSpec
   }
 
   val nino: String = "AA123456A"
-  val taxYear: String = "2017-18"
+  val taxYear: String = "2019-20"
   val correlationId: String = "X-123"
 
   val requestBodyJson: JsValue = Json.parse(
@@ -109,7 +108,7 @@ class AmendDisclosuresControllerSpec
 
   val requestData: AmendDisclosuresRequest = AmendDisclosuresRequest(
     nino = Nino(nino),
-    taxYear = DesTaxYear.fromMtd(taxYear),
+    taxYear = taxYear,
     body = amendDisclosuresRequestBody
   )
 
