@@ -14,21 +14,14 @@
  * limitations under the License.
  */
 
-package v1.services
+package v1.models.request.disclosures
 
-import play.api.http.{HeaderNames, MimeTypes, Status}
-import support.UnitSpec
-import uk.gov.hmrc.http.HeaderCarrier
+import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 
-import scala.concurrent.ExecutionContext
+case class AmendClass2Nics(class2VoluntaryContributions: Boolean)
 
-trait ServiceSpec extends UnitSpec
-  with Status
-  with MimeTypes
-  with HeaderNames {
+object AmendClass2Nics {
+  implicit val reads: Reads[AmendClass2Nics] = Json.reads[AmendClass2Nics]
 
-  implicit val hc: HeaderCarrier = HeaderCarrier()
-  implicit val ec: ExecutionContext = scala.concurrent.ExecutionContext.global
-  implicit val correlationId: String = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
-
+  implicit val writes: OWrites[AmendClass2Nics] = (JsPath \ "class2VoluntaryContributions").write[Boolean].contramap(_.class2VoluntaryContributions)
 }

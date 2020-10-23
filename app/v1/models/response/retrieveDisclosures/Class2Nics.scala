@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 
-package v1.models.request.disclosures
+package v1.models.response.retrieveDisclosures
 
-import play.api.libs.json.{JsPath, Json, OWrites, Reads}
+import play.api.libs.json.{Json, OFormat}
 
 case class Class2Nics(class2VoluntaryContributions: Boolean)
 
 object Class2Nics {
-  implicit val reads: Reads[Class2Nics] = Json.reads[Class2Nics]
-
-  implicit val writes: OWrites[Class2Nics] = (JsPath \ "class2VoluntaryContributions").write[Boolean].contramap(_.class2VoluntaryContributions)
+  implicit val format: OFormat[Class2Nics] = Json.format[Class2Nics]
 }

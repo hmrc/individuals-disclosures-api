@@ -21,7 +21,7 @@ import v1.controllers.EndpointLogContext
 import v1.mocks.connectors.MockAmendDisclosuresConnector
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
-import v1.models.request.disclosures.{AmendDisclosuresRequest, AmendDisclosuresRequestBody, AmendTaxAvoidance, Class2Nics}
+import v1.models.request.disclosures._
 
 import scala.concurrent.Future
 
@@ -29,10 +29,9 @@ class AmendDisclosuresServiceSpec extends ServiceSpec {
 
   private val nino = "AA112233A"
   private val taxYear = "2020-21"
-  private val correlationId = "X-corr"
 
   val amendTaxAvoidance: AmendTaxAvoidance = AmendTaxAvoidance("14211123","2020-21")
-  val class2Nics: Class2Nics = Class2Nics(true)
+  val class2Nics: AmendClass2Nics = AmendClass2Nics(true)
 
   val amendDisclosuresRequest: AmendDisclosuresRequest = AmendDisclosuresRequest(
       nino = Nino(nino),
@@ -67,7 +66,7 @@ class AmendDisclosuresServiceSpec extends ServiceSpec {
             MockAmendDisclosuresConnector.amendDisclosures(amendDisclosuresRequest)
               .returns(Future.successful(Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode(desErrorCode))))))
 
-            await(service.amendDisclosures(amendDisclosuresRequest)) shouldBe Left(ErrorWrapper(Some(correlationId), error))
+            await(service.amendDisclosures(amendDisclosuresRequest)) shouldBe Left(ErrorWrapper(correlationId, error))
           }
 
         val input = Seq(

@@ -29,7 +29,6 @@ class DeleteRetrieveServiceSpec extends ServiceSpec {
 
   private val nino = "AA112233A"
   private val taxYear = "2020-21"
-  private val correlationId = "X-corr"
 
   trait Test extends MockDeleteRetrieveConnector {
 
@@ -67,7 +66,7 @@ class DeleteRetrieveServiceSpec extends ServiceSpec {
             MockDeleteRetrieveConnector.delete()
               .returns(Future.successful(Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode(desErrorCode))))))
 
-            await(service.delete()) shouldBe Left(ErrorWrapper(Some(correlationId), error))
+            await(service.delete()) shouldBe Left(ErrorWrapper(correlationId, error))
           }
 
         val input = Seq(
@@ -99,7 +98,7 @@ class DeleteRetrieveServiceSpec extends ServiceSpec {
         MockDeleteRetrieveConnector.retrieve[Data]()
           .returns(Future.successful(outcome))
 
-        await(service.retrieve[Data]()) shouldBe Left(ErrorWrapper(Some(correlationId), NotFoundError))
+        await(service.retrieve[Data]()) shouldBe Left(ErrorWrapper(correlationId, NotFoundError))
       }
 
       "map errors according to spec" when {
@@ -110,7 +109,7 @@ class DeleteRetrieveServiceSpec extends ServiceSpec {
             MockDeleteRetrieveConnector.retrieve[Data]()
               .returns(Future.successful(Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode(desErrorCode))))))
 
-            await(service.retrieve[Data]()) shouldBe Left(ErrorWrapper(Some(correlationId), error))
+            await(service.retrieve[Data]()) shouldBe Left(ErrorWrapper(correlationId, error))
           }
 
         val input = Seq(

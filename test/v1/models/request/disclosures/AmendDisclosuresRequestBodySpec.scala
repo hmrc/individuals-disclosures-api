@@ -21,7 +21,7 @@ import support.UnitSpec
 
 class AmendDisclosuresRequestBodySpec extends UnitSpec {
 
-  val model: AmendDisclosuresRequestBody = AmendDisclosuresRequestBody(Some(Seq(AmendTaxAvoidance("14211123","2020-21"))),Some(Class2Nics(true)))
+  val model: AmendDisclosuresRequestBody = AmendDisclosuresRequestBody(Some(Seq(AmendTaxAvoidance("14211123","2020-21"))),Some(AmendClass2Nics(true)))
   private val json = Json.parse(
     """
       |{
