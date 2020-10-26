@@ -14,22 +14,18 @@
  * limitations under the License.
  */
 
-package v1.mocks.requestParsers
+package v1.mocks
 
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
-import v1.controllers.requestParsers.AmendDisclosuresRequestParser
-import v1.models.errors.ErrorWrapper
-import v1.models.request.disclosures.{AmendDisclosuresRawData, AmendDisclosuresRequest}
+import utils.IdGenerator
 
-trait MockAmendDisclosuresRequestParser extends MockFactory {
 
-  val mockAmendDisclosuresRequestParser: AmendDisclosuresRequestParser = mock[AmendDisclosuresRequestParser]
+trait MockIdGenerator extends MockFactory {
 
-  object MockAmendDisclosuresRequestParser {
-    def parse(data: AmendDisclosuresRawData): CallHandler[Either[ErrorWrapper, AmendDisclosuresRequest]] = {
-      (mockAmendDisclosuresRequestParser.parseRequest(_: AmendDisclosuresRawData)(_: String)).expects(data, *)
-    }
+  val mockIdGenerator: IdGenerator = mock[IdGenerator]
+
+  object MockIdGenerator {
+    def generateCorrelationId: CallHandler[String] = (mockIdGenerator.generateCorrelationId _).expects()
   }
-
 }

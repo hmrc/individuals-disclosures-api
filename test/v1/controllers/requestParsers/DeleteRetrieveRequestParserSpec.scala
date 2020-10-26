@@ -26,6 +26,7 @@ class DeleteRetrieveRequestParserSpec extends UnitSpec {
 
   val nino: String = "AA123456B"
   val taxYear: String = "2020-21"
+  implicit val correlationId: String = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
 
   val deleteRetrieveDisclosuresRawData: DeleteRetrieveRawData = DeleteRetrieveRawData(
     nino = nino,
@@ -54,7 +55,7 @@ class DeleteRetrieveRequestParserSpec extends UnitSpec {
           .returns(List(NinoFormatError))
 
         parser.parseRequest(deleteRetrieveDisclosuresRawData) shouldBe
-          Left(ErrorWrapper(None, NinoFormatError, None))
+          Left(ErrorWrapper(correlationId, NinoFormatError, None))
       }
 
       "path parameter TaxYearNotSupported validation occurs" in new Test {
@@ -62,7 +63,7 @@ class DeleteRetrieveRequestParserSpec extends UnitSpec {
           .returns(List(RuleTaxYearNotSupportedError))
 
         parser.parseRequest(deleteRetrieveDisclosuresRawData) shouldBe
-          Left(ErrorWrapper(None, RuleTaxYearNotSupportedError))
+          Left(ErrorWrapper(correlationId, RuleTaxYearNotSupportedError))
       }
 
       "multiple validation errors occur" in new Test {
@@ -70,7 +71,7 @@ class DeleteRetrieveRequestParserSpec extends UnitSpec {
           .returns(List(NinoFormatError, TaxYearFormatError))
 
         parser.parseRequest(deleteRetrieveDisclosuresRawData) shouldBe
-          Left(ErrorWrapper(None, BadRequestError, Some(Seq(NinoFormatError, TaxYearFormatError))))
+          Left(ErrorWrapper(correlationId, BadRequestError, Some(Seq(NinoFormatError, TaxYearFormatError))))
       }
     }
   }

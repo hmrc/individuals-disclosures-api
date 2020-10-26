@@ -20,7 +20,7 @@ import mocks.MockAppConfig
 import uk.gov.hmrc.domain.Nino
 import v1.mocks.MockHttpClient
 import v1.models.outcomes.ResponseWrapper
-import v1.models.request.disclosures.{AmendDisclosuresRequest, AmendDisclosuresRequestBody, AmendTaxAvoidance, Class2Nics}
+import v1.models.request.disclosures._
 
 import scala.concurrent.Future
 
@@ -30,7 +30,7 @@ class AmendDisclosuresConnectorSpec extends ConnectorSpec {
   private val taxYear: String = "2020-21"
 
   val amendTaxAvoidance: AmendTaxAvoidance = AmendTaxAvoidance("14211123","2020-21")
-  val class2Nics: Class2Nics = Class2Nics(true)
+  val class2Nics: AmendClass2Nics = AmendClass2Nics(true)
 
   val amendDisclosuresRequest: AmendDisclosuresRequest = AmendDisclosuresRequest(
     nino = Nino(nino),

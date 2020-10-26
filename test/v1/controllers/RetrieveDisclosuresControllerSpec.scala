@@ -22,6 +22,7 @@ import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.fixtures.RetrieveDisclosuresControllerFixture
 import v1.hateoas.HateoasLinks
+import v1.mocks.MockIdGenerator
 import v1.mocks.hateoas.MockHateoasFactory
 import v1.mocks.requestParsers.MockDeleteRetrieveRequestParser
 import v1.mocks.services.{MockDeleteRetrieveService, MockEnrolmentsAuthService, MockMtdIdLookupService}
@@ -30,9 +31,8 @@ import v1.models.hateoas.Method.{DELETE, GET, PUT}
 import v1.models.hateoas.RelType.{AMEND_DISCLOSURES, DELETE_DISCLOSURES, SELF}
 import v1.models.hateoas.{HateoasWrapper, Link}
 import v1.models.outcomes.ResponseWrapper
-import v1.models.request.disclosures.Class2Nics
 import v1.models.request.{DeleteRetrieveRawData, DeleteRetrieveRequest}
-import v1.models.response.retrieveDisclosures.{RetrieveDisclosuresHateoasData, RetrieveDisclosuresResponse, TaxAvoidanceItem}
+import v1.models.response.retrieveDisclosures.{Class2Nics, RetrieveDisclosuresHateoasData, RetrieveDisclosuresResponse, TaxAvoidanceItem}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -43,7 +43,8 @@ class RetrieveDisclosuresControllerSpec extends ControllerBaseSpec
   with MockDeleteRetrieveService
   with MockHateoasFactory
   with MockDeleteRetrieveRequestParser
-  with HateoasLinks {
+  with HateoasLinks
+  with MockIdGenerator {
 
   val nino: String = "AA123456A"
   val taxYear: String = "2019-20"
@@ -100,7 +101,7 @@ class RetrieveDisclosuresControllerSpec extends ControllerBaseSpec
   private val mtdResponse = RetrieveDisclosuresControllerFixture.mtdResponseWithHateoas(nino, taxYear)
 
   trait Test {
-    val hc = HeaderCarrier()
+    val hc: HeaderCarrier = HeaderCarrier()
 
     val controller = new RetrieveDisclosuresController(
       authService = mockEnrolmentsAuthService,
@@ -108,11 +109,13 @@ class RetrieveDisclosuresControllerSpec extends ControllerBaseSpec
       requestParser = mockDeleteRetrieveRequestParser,
       service = mockDeleteRetrieveService,
       hateoasFactory = mockHateoasFactory,
-      cc = cc
+      cc = cc,
+      idGenerator = mockIdGenerator
     )
 
     MockedMtdIdLookupService.lookup(nino).returns(Future.successful(Right("test-mtd-id")))
     MockedEnrolmentsAuthService.authoriseUser()
+    MockIdGenerator.generateCorrelationId.returns(correlationId)
   }
 
   "RetrieveDisclosuresController" should {
@@ -152,7 +155,7 @@ class RetrieveDisclosuresControllerSpec extends ControllerBaseSpec
 
             MockDeleteRetrieveRequestParser
               .parse(rawData)
-              .returns(Left(ErrorWrapper(Some(correlationId), error, None)))
+              .returns(Left(ErrorWrapper(correlationId, error, None)))
 
             val result: Future[Result] = controller.retrieveDisclosures(nino, taxYear)(fakeGetRequest)
 
@@ -182,7 +185,7 @@ class RetrieveDisclosuresControllerSpec extends ControllerBaseSpec
 
             MockDeleteRetrieveService
               .retrieve[RetrieveDisclosuresResponse]()
-              .returns(Future.successful(Left(ErrorWrapper(Some(correlationId), mtdError))))
+              .returns(Future.successful(Left(ErrorWrapper(correlationId, mtdError))))
 
             val result: Future[Result] = controller.retrieveDisclosures(nino, taxYear)(fakeGetRequest)
 

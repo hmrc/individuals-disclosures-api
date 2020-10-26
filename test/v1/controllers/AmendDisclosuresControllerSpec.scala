@@ -21,12 +21,13 @@ import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{AnyContentAsJson, Result}
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
+import v1.mocks.MockIdGenerator
 import v1.mocks.requestParsers.MockAmendDisclosuresRequestParser
 import v1.mocks.services.{MockAmendDisclosuresService, MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService}
 import v1.models.audit.{AuditError, AuditEvent, AuditResponse, GenericAuditDetail}
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
-import v1.models.request.disclosures.{AmendDisclosuresRawData, AmendDisclosuresRequest, AmendDisclosuresRequestBody, AmendTaxAvoidance, Class2Nics}
+import v1.models.request.disclosures._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -38,10 +39,15 @@ class AmendDisclosuresControllerSpec
     with MockAppConfig
     with MockAmendDisclosuresService
     with MockAmendDisclosuresRequestParser
-    with MockAuditService {
+    with MockAuditService
+    with MockIdGenerator {
+
+  val nino: String = "AA123456A"
+  val taxYear: String = "2019-20"
+  val correlationId: String = "X-123"
 
   trait Test {
-    val hc = HeaderCarrier()
+    val hc: HeaderCarrier = HeaderCarrier()
 
     val controller = new AmendDisclosuresController(
       authService = mockEnrolmentsAuthService,
@@ -50,17 +56,15 @@ class AmendDisclosuresControllerSpec
       requestParser = mockAmendDisclosuresRequestParser,
       service = mockAmendDisclosuresService,
       auditService = mockAuditService,
-      cc = cc
+      cc = cc,
+      idGenerator = mockIdGenerator
     )
 
     MockedMtdIdLookupService.lookup(nino).returns(Future.successful(Right("test-mtd-id")))
     MockedEnrolmentsAuthService.authoriseUser()
     MockedAppConfig.apiGatewayContext.returns("baseUrl").anyNumberOfTimes()
+    MockIdGenerator.generateCorrelationId.returns(correlationId)
   }
-
-  val nino: String = "AA123456A"
-  val taxYear: String = "2019-20"
-  val correlationId: String = "X-123"
 
   val requestBodyJson: JsValue = Json.parse(
     """
@@ -99,7 +103,7 @@ class AmendDisclosuresControllerSpec
     )
   )
 
-  val class2Nics: Class2Nics = Class2Nics(true)
+  val class2Nics: AmendClass2Nics = AmendClass2Nics(true)
 
   val amendDisclosuresRequestBody: AmendDisclosuresRequestBody = AmendDisclosuresRequestBody(
     taxAvoidance = Some(taxAvoidance),
@@ -180,7 +184,7 @@ class AmendDisclosuresControllerSpec
 
             MockAmendDisclosuresRequestParser
               .parse(rawData)
-              .returns(Left(ErrorWrapper(Some(correlationId), error, None)))
+              .returns(Left(ErrorWrapper(correlationId, error, None)))
 
             val result: Future[Result] = controller.amendDisclosures(nino, taxYear)(fakePutRequest(requestBodyJson))
 
@@ -215,7 +219,7 @@ class AmendDisclosuresControllerSpec
 
             MockAmendDisclosuresService
               .amendDisclosures(requestData)
-              .returns(Future.successful(Left(ErrorWrapper(Some(correlationId), mtdError))))
+              .returns(Future.successful(Left(ErrorWrapper(correlationId, mtdError))))
 
             val result: Future[Result] = controller.amendDisclosures(nino, taxYear)(fakePutRequest(requestBodyJson))
 

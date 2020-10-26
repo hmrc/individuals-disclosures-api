@@ -32,8 +32,8 @@ trait MockAmendDisclosuresConnector extends MockFactory {
 
     def amendDisclosures(request: AmendDisclosuresRequest): CallHandler[Future[DesOutcome[Unit]]] = {
       (mockAmendDisclosuresConnector
-        .amendDisclosures(_: AmendDisclosuresRequest)(_: HeaderCarrier, _: ExecutionContext))
-        .expects(request, *, *)
+        .amendDisclosures(_: AmendDisclosuresRequest)(_: HeaderCarrier, _: ExecutionContext, _: String))
+        .expects(request, *, *, *)
     }
   }
 
