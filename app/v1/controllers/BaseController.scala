@@ -16,10 +16,13 @@
 
 package v1.controllers
 
-import play.api.mvc.Result
+import play.api.mvc.{RequestHeader, Result}
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.play.HeaderCarrierConverter
+import uk.gov.hmrc.play.bootstrap.backend.controller.BackendBaseController
 import utils.Logging
 
-trait BaseController {
+trait BaseController extends BackendBaseController {
   self: Logging =>
 
   implicit class Response(result: Result) {
@@ -36,4 +39,9 @@ trait BaseController {
     }
   }
 
+  implicit val correlationId: String
+
+  override implicit def hc(implicit request: RequestHeader): HeaderCarrier =
+    HeaderCarrierConverter.fromHeadersAndSessionAndRequest(request.headers, request = Some(request))
+      .withExtraHeaders("CorrelationId" -> correlationId)
 }

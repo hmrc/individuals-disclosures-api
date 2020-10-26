@@ -21,10 +21,9 @@ import cats.implicits._
 import config.AppConfig
 import javax.inject.Inject
 import play.api.libs.json.{JsValue, Json}
-import play.api.mvc.{Action, AnyContentAsJson, ControllerComponents, RequestHeader}
+import play.api.mvc.{Action, AnyContentAsJson, ControllerComponents}
 import play.mvc.Http.MimeTypes
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.HeaderCarrierConverter
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
 import utils.{IdGenerator, Logging}
 import v1.controllers.requestParsers.AmendDisclosuresRequestParser
@@ -53,10 +52,6 @@ class AmendDisclosuresController @Inject()(val authService: EnrolmentsAuthServic
     )
 
   implicit val correlationId: String = idGenerator.generateCorrelationId
-
-  override implicit def hc(implicit request: RequestHeader): HeaderCarrier =
-    HeaderCarrierConverter.fromHeadersAndSessionAndRequest(request.headers, request = Some(request))
-    .withExtraHeaders("CorrelationId" -> correlationId)
 
   def amendDisclosures(nino: String, taxYear: String): Action[JsValue] =
     authorisedAction(nino).async(parse.json) { implicit request =>

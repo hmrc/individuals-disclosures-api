@@ -49,10 +49,11 @@ class RetrieveDisclosuresController @Inject()(val authService: EnrolmentsAuthSer
       endpointName = "retrieveDisclosures"
     )
 
+  implicit val correlationId: String = idGenerator.generateCorrelationId
+
   def retrieveDisclosures(nino: String, taxYear: String): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>
 
-      implicit val correlationId: String = idGenerator.generateCorrelationId
       logger.info(
         s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] " +
           s"with CorrelationId: $correlationId")
