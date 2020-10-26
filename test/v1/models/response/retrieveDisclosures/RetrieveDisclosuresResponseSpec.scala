@@ -58,6 +58,21 @@ class RetrieveDisclosuresResponseSpec extends UnitSpec {
       }
     }
 
+    "read from valid JSON with empty taxAvoidance array" should {
+      "produce the expected RetrieveDisclosuresResponse object" in {
+        val json = Json.parse(
+          """
+            |{
+            |   "taxAvoidance": [ ],
+            |   "submittedOn": "2020-07-06T09:37:17Z"
+            |}
+          """.stripMargin
+        )
+
+        json.as[RetrieveDisclosuresResponse] shouldBe responseModel.copy(taxAvoidance = None, class2Nics = None,  submittedOn = "2020-07-06T09:37:17Z")
+      }
+    }
+
     "read from invalid JSON" should {
       "produce a JsError" in {
         val invalidJson = Json.parse(

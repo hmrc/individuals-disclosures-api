@@ -16,12 +16,10 @@
 
 package v1.models.request.disclosures
 
-import play.api.libs.json.{JsPath, Json, OWrites, Reads}
+import play.api.libs.json.{Json, OFormat}
 
 case class AmendClass2Nics(class2VoluntaryContributions: Boolean)
 
 object AmendClass2Nics {
-  implicit val reads: Reads[AmendClass2Nics] = Json.reads[AmendClass2Nics]
-
-  implicit val writes: OWrites[AmendClass2Nics] = (JsPath \ "class2VoluntaryContributions").write[Boolean].contramap(_.class2VoluntaryContributions)
+  implicit val format: OFormat[AmendClass2Nics] = Json.format[AmendClass2Nics]
 }
