@@ -20,7 +20,7 @@ import play.api.mvc.{RequestHeader, Result}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.HeaderCarrierConverter
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendBaseController
-import utils.Logging
+import utils.{IdGenerator, Logging}
 
 trait BaseController extends BackendBaseController {
   self: Logging =>
@@ -39,7 +39,8 @@ trait BaseController extends BackendBaseController {
     }
   }
 
-  implicit val correlationId: String
+  implicit val idGenerator: IdGenerator
+  lazy implicit val correlationId: String = idGenerator.generateCorrelationId
 
   override implicit def hc(implicit request: RequestHeader): HeaderCarrier =
     HeaderCarrierConverter.fromHeadersAndSessionAndRequest(request.headers, request = Some(request))

@@ -51,8 +51,6 @@ class AmendDisclosuresController @Inject()(val authService: EnrolmentsAuthServic
       endpointName = "amendDisclosures"
     )
 
-  lazy implicit val correlationId: String = idGenerator.generateCorrelationId
-
   def amendDisclosures(nino: String, taxYear: String): Action[JsValue] =
     authorisedAction(nino).async(parse.json) { implicit request =>
 

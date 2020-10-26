@@ -50,8 +50,6 @@ class DeleteDisclosuresController @Inject()(val authService: EnrolmentsAuthServi
       endpointName = "deleteDisclosures"
     )
 
-  lazy implicit val correlationId: String = idGenerator.generateCorrelationId
-
   def deleteDisclosures(nino: String, taxYear: String): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>
 

@@ -37,8 +37,6 @@ class AmendDisclosuresService @Inject()(connector: AmendDisclosuresConnector) ex
                        ec: ExecutionContext,
                        logContext: EndpointLogContext): Future[Either[ErrorWrapper, ResponseWrapper[Unit]]] = {
 
-    println(hc.headers)
-
     val result = for {
       desResponseWrapper <- EitherT(connector.amendDisclosures(request)).leftMap(mapDesErrors(desErrorMap))
     } yield desResponseWrapper
