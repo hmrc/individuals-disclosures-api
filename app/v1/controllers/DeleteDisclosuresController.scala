@@ -20,9 +20,10 @@ import cats.data.EitherT
 import cats.implicits._
 import javax.inject.{Inject, Singleton}
 import play.api.libs.json.Json
-import play.api.mvc.{Action, AnyContent, ControllerComponents}
+import play.api.mvc.{Action, AnyContent, ControllerComponents, RequestHeader}
 import play.mvc.Http.MimeTypes
 import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.play.HeaderCarrierConverter
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
 import utils.{IdGenerator, Logging}
 import v1.connectors.DesUri
@@ -53,18 +54,21 @@ class DeleteDisclosuresController @Inject()(val authService: EnrolmentsAuthServi
   def deleteDisclosures(nino: String, taxYear: String): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>
 
-      logger.info(
-        s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] " +
-          s"with CorrelationId: $correlationId")
+      val generatedCorrelationId: String = idGenerator.generateCorrelationId
+
+      implicit def hc(implicit request: RequestHeader): HeaderCarrier =
+        HeaderCarrierConverter.fromHeadersAndSessionAndRequest(request.headers, request = Some(request))
+          .withExtraHeaders("CorrelationId" -> generatedCorrelationId)
+
+      logger.info(s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] " +
+          s"with CorrelationId: $generatedCorrelationId")
 
       val rawData: DeleteRetrieveRawData = DeleteRetrieveRawData(
         nino = nino,
         taxYear = taxYear
       )
 
-      implicit val desUri: DesUri[Unit] = DesUri[Unit](
-        s"income-tax/disclosures/$nino/$taxYear"
-      )
+      implicit val desUri: DesUri[Unit] = DesUri[Unit](s"income-tax/disclosures/$nino/$taxYear")
 
       val result =
         for {
@@ -88,16 +92,16 @@ class DeleteDisclosuresController @Inject()(val authService: EnrolmentsAuthServi
         }
 
       result.leftMap { errorWrapper =>
-        val resCorrelationId = errorWrapper.correlationId
-        val result = errorResult(errorWrapper).withApiHeaders(resCorrelationId)
+        val errorCorrelationId = getErrorCorrelationId(errorWrapper, generatedCorrelationId)
+        val result = errorResult(errorWrapper).withApiHeaders(errorCorrelationId)
         logger.info(
           s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
-            s"Error response received with CorrelationId: $resCorrelationId")
+            s"Error response received with CorrelationId: $errorCorrelationId")
 
         auditSubmission(
           GenericAuditDetail(
             request.userDetails, Map("nino" -> nino, "taxYear" -> taxYear), None,
-            correlationId, AuditResponse(httpStatus = result.header.status, response = Left(errorWrapper.auditErrors))
+            errorCorrelationId, AuditResponse(httpStatus = result.header.status, response = Left(errorWrapper.auditErrors))
           )
         )
 

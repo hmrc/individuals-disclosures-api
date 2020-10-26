@@ -21,9 +21,10 @@ import cats.implicits._
 import config.AppConfig
 import javax.inject.Inject
 import play.api.libs.json.{JsValue, Json}
-import play.api.mvc.{Action, AnyContentAsJson, ControllerComponents}
+import play.api.mvc.{Action, AnyContentAsJson, ControllerComponents, RequestHeader}
 import play.mvc.Http.MimeTypes
 import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.play.HeaderCarrierConverter
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
 import utils.{IdGenerator, Logging}
 import v1.controllers.requestParsers.AmendDisclosuresRequestParser
@@ -54,9 +55,14 @@ class AmendDisclosuresController @Inject()(val authService: EnrolmentsAuthServic
   def amendDisclosures(nino: String, taxYear: String): Action[JsValue] =
     authorisedAction(nino).async(parse.json) { implicit request =>
 
-      logger.info(
-        s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] " +
-          s"with CorrelationId: $correlationId")
+      val generatedCorrelationId: String = idGenerator.generateCorrelationId
+
+      implicit def hc(implicit request: RequestHeader): HeaderCarrier =
+      HeaderCarrierConverter.fromHeadersAndSessionAndRequest(request.headers, request = Some(request))
+        .withExtraHeaders("CorrelationId" -> generatedCorrelationId)
+
+      logger.info(s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] " +
+          s"with CorrelationId: $generatedCorrelationId")
 
       val rawData: AmendDisclosuresRawData = AmendDisclosuresRawData(
         nino = nino,
@@ -75,11 +81,9 @@ class AmendDisclosuresController @Inject()(val authService: EnrolmentsAuthServic
 
           val hateoasResponse = amendDisclosuresHateoasBody(appConfig, nino, taxYear)
 
-          auditSubmission(
-            GenericAuditDetail(request.userDetails, Map("nino" -> nino, "taxYear" -> taxYear), Some(request.body),
+          auditSubmission(GenericAuditDetail(request.userDetails, Map("nino" -> nino, "taxYear" -> taxYear), Some(request.body),
               serviceResponse.correlationId, AuditResponse(httpStatus = OK, response = Right(Some(hateoasResponse)))
-            )
-          )
+            ))
 
           Ok(hateoasResponse)
             .withApiHeaders(serviceResponse.correlationId)
@@ -87,15 +91,15 @@ class AmendDisclosuresController @Inject()(val authService: EnrolmentsAuthServic
         }
 
       result.leftMap { errorWrapper =>
-        val resCorrelationId = errorWrapper.correlationId
-        val result = errorResult(errorWrapper).withApiHeaders(resCorrelationId)
+        val errorCorrelationId = getErrorCorrelationId(errorWrapper, generatedCorrelationId)
+        val result = errorResult(errorWrapper).withApiHeaders(errorCorrelationId)
         logger.info(
           s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
-            s"Error response received with CorrelationId: $resCorrelationId")
+            s"Error response received with CorrelationId: $errorCorrelationId")
 
         auditSubmission(
           GenericAuditDetail(request.userDetails, Map("nino" -> nino, "taxYear" -> taxYear), Some(request.body),
-            correlationId, AuditResponse(httpStatus = result.header.status, response = Left(errorWrapper.auditErrors))
+            errorCorrelationId, AuditResponse(httpStatus = result.header.status, response = Left(errorWrapper.auditErrors))
           )
         )
 

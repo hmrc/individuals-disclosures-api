@@ -26,11 +26,11 @@ trait RequestParser[Raw <: RawData, Request] {
 
   protected def requestFor(data: Raw): Request
 
-  def parseRequest(data: Raw)(implicit correlationId: String): Either[ErrorWrapper, Request] = {
+  def parseRequest(data: Raw): Either[ErrorWrapper, Request] = {
     validator.validate(data) match {
       case Nil => Right(requestFor(data))
-      case err :: Nil => Left(ErrorWrapper(correlationId, err, None))
-      case errs => Left(ErrorWrapper(correlationId, BadRequestError, Some(errs)))
+      case err :: Nil => Left(ErrorWrapper("", err, None))
+      case errs => Left(ErrorWrapper("", BadRequestError, Some(errs)))
     }
   }
 }

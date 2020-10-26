@@ -16,13 +16,11 @@
 
 package v1.controllers
 
-import play.api.mvc.{RequestHeader, Result}
-import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.HeaderCarrierConverter
-import uk.gov.hmrc.play.bootstrap.backend.controller.BackendBaseController
-import utils.{IdGenerator, Logging}
+import play.api.mvc.Result
+import utils.Logging
+import v1.models.errors.ErrorWrapper
 
-trait BaseController extends BackendBaseController {
+trait BaseController {
   self: Logging =>
 
   implicit class Response(result: Result) {
@@ -39,10 +37,10 @@ trait BaseController extends BackendBaseController {
     }
   }
 
-  implicit val idGenerator: IdGenerator
-  lazy implicit val correlationId: String = idGenerator.generateCorrelationId
-
-  override implicit def hc(implicit request: RequestHeader): HeaderCarrier =
-    HeaderCarrierConverter.fromHeadersAndSessionAndRequest(request.headers, request = Some(request))
-      .withExtraHeaders("CorrelationId" -> correlationId)
+  protected def getErrorCorrelationId(errorWrapper: ErrorWrapper, generatedCorrelationId: String): String = {
+    errorWrapper.correlationId match {
+      case "" => generatedCorrelationId
+      case id => id
+    }
+  }
 }

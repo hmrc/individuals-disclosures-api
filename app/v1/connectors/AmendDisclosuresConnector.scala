@@ -36,6 +36,8 @@ class AmendDisclosuresConnector @Inject()(val http: HttpClient,
     val nino = request.nino.nino
     val taxYear = request.taxYear
 
+    println(hc.headers)
+
     put(
       uri = DesUri[Unit](s"income-tax/disclosures/$nino/$taxYear"), body = request.body
     )

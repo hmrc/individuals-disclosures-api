@@ -30,8 +30,7 @@ class DeleteRetrieveConnector @Inject()(val http: HttpClient,
 
   def delete()(implicit hc: HeaderCarrier,
                ec: ExecutionContext,
-               desUri: DesUri[Unit],
-               correlationId: String): Future[DesOutcome[Unit]] = {
+               desUri: DesUri[Unit]): Future[DesOutcome[Unit]] = {
 
     import v1.connectors.httpparsers.StandardDesHttpParser._
 
@@ -40,8 +39,7 @@ class DeleteRetrieveConnector @Inject()(val http: HttpClient,
 
   def retrieve[Resp: Reads]()(implicit hc: HeaderCarrier,
                               ec: ExecutionContext,
-                              desUri: DesUri[Resp],
-                              correlationId: String): Future[DesOutcome[Resp]] = {
+                              desUri: DesUri[Resp]): Future[DesOutcome[Resp]] = {
 
     import v1.connectors.httpparsers.StandardDesHttpParser._
 
