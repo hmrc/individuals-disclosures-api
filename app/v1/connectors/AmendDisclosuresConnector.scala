@@ -29,8 +29,7 @@ class AmendDisclosuresConnector @Inject()(val http: HttpClient,
 
   def amendDisclosures(request: AmendDisclosuresRequest)(
     implicit hc: HeaderCarrier,
-    ec: ExecutionContext,
-    correlationId: String): Future[DesOutcome[Unit]] = {
+    ec: ExecutionContext): Future[DesOutcome[Unit]] = {
 
     import v1.connectors.httpparsers.StandardDesHttpParser._
 

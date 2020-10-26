@@ -59,7 +59,7 @@ class AmendDisclosuresConnectorSpec extends ConnectorSpec {
           .put(
             url = s"$baseUrl/income-tax/disclosures/$nino/$taxYear",
             body = amendDisclosuresRequest.body,
-            requiredHeaders = "Environment" -> "des-environment", "Authorization" -> s"Bearer des-token"
+            requiredHeaders = requiredHeaders:_*
           ).returns(Future.successful(outcome))
 
         await(connector.amendDisclosures(amendDisclosuresRequest)) shouldBe outcome

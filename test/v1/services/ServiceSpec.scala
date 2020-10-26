@@ -27,8 +27,7 @@ trait ServiceSpec extends UnitSpec
   with MimeTypes
   with HeaderNames {
 
-  implicit val hc: HeaderCarrier = HeaderCarrier()
-  implicit val ec: ExecutionContext = scala.concurrent.ExecutionContext.global
   implicit val correlationId: String = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
-
+  implicit val hc: HeaderCarrier = HeaderCarrier().withExtraHeaders("CorrelationId" -> correlationId)
+  implicit val ec: ExecutionContext = scala.concurrent.ExecutionContext.global
 }

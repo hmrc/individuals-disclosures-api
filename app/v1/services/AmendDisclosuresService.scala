@@ -33,10 +33,11 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class AmendDisclosuresService @Inject()(connector: AmendDisclosuresConnector) extends DesResponseMappingSupport with Logging {
 
-  def amendDisclosures(request: AmendDisclosuresRequest)
-                      (implicit hc: HeaderCarrier,ec: ExecutionContext,
-                       logContext: EndpointLogContext,
-                       correlationId: String): Future[Either[ErrorWrapper, ResponseWrapper[Unit]]] = {
+  def amendDisclosures(request: AmendDisclosuresRequest)(implicit hc: HeaderCarrier,
+                       ec: ExecutionContext,
+                       logContext: EndpointLogContext): Future[Either[ErrorWrapper, ResponseWrapper[Unit]]] = {
+
+    println(hc.headers)
 
     val result = for {
       desResponseWrapper <- EitherT(connector.amendDisclosures(request)).leftMap(mapDesErrors(desErrorMap))
@@ -45,7 +46,7 @@ class AmendDisclosuresService @Inject()(connector: AmendDisclosuresConnector) ex
     result.value
   }
 
-  private def desErrorMap =
+  private def desErrorMap: Map[String, MtdError] =
     Map(
       "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
       "INVALID_TAX_YEAR" -> TaxYearFormatError,
