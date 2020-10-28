@@ -96,7 +96,7 @@ class AmendDisclosuresController @Inject()(val authService: EnrolmentsAuthServic
 
         auditSubmission(
           GenericAuditDetail(request.userDetails, Map("nino" -> nino, "taxYear" -> taxYear), Some(request.body),
-            correlationId, AuditResponse(httpStatus = result.header.status, response = Left(errorWrapper.auditErrors))
+            resCorrelationId, AuditResponse(httpStatus = result.header.status, response = Left(errorWrapper.auditErrors))
           )
         )
 

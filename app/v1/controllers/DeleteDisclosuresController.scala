@@ -98,7 +98,7 @@ class DeleteDisclosuresController @Inject()(val authService: EnrolmentsAuthServi
         auditSubmission(
           GenericAuditDetail(
             request.userDetails, Map("nino" -> nino, "taxYear" -> taxYear), None,
-            correlationId, AuditResponse(httpStatus = result.header.status, response = Left(errorWrapper.auditErrors))
+            resCorrelationId, AuditResponse(httpStatus = result.header.status, response = Left(errorWrapper.auditErrors))
           )
         )
 
