@@ -51,6 +51,7 @@ class AmendDisclosuresController @Inject()(val authService: EnrolmentsAuthServic
       endpointName = "amendDisclosures"
     )
 
+  //noinspection ScalaStyle
   def amendDisclosures(nino: String, taxYear: String): Action[JsValue] =
     authorisedAction(nino).async(parse.json) { implicit request =>
 
@@ -88,6 +89,7 @@ class AmendDisclosuresController @Inject()(val authService: EnrolmentsAuthServic
         }
 
       result.leftMap { errorWrapper =>
+        println("errorWrapper ::: "+Json.toJson(errorWrapper))
         val resCorrelationId = errorWrapper.correlationId
         val result = errorResult(errorWrapper).withApiHeaders(resCorrelationId)
         logger.info(
@@ -108,7 +110,8 @@ class AmendDisclosuresController @Inject()(val authService: EnrolmentsAuthServic
     (errorWrapper.error: @unchecked) match {
       case BadRequestError | NinoFormatError | TaxYearFormatError | RuleTaxYearNotSupportedError |
            RuleTaxYearRangeInvalidError | MtdErrorWithCustomMessage(RuleIncorrectOrEmptyBodyError.code) |
-           MtdErrorWithCustomMessage(SRNFormatError.code)
+           MtdErrorWithCustomMessage(SRNFormatError.code) |
+           MtdErrorWithCustomMessage(TaxYearFormatError.code)
       => BadRequest(Json.toJson(errorWrapper))
       case RuleVoluntaryClass2CannotBeChanged => Forbidden(Json.toJson(errorWrapper))
       case NotFoundError => NotFound(Json.toJson(errorWrapper))

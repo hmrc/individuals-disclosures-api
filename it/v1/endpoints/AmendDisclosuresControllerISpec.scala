@@ -108,6 +108,45 @@ class AmendDisclosuresControllerISpec extends IntegrationBaseSpec {
       }
     }
 
+    "return a TAX-YEAR_FORMAT_ERROR with 400 (BAD_REQUEST) status code" when {
+      "any invalid tax year body request is made" in new Test {
+
+        val invalidTaxYearRequestBodyJson: JsValue = Json.parse(
+          """
+            |{
+            |  "taxAvoidance": [
+            |    {
+            |      "srn": "14211123",
+            |      "taxYear": "2020-222"
+            |    }
+            |  ],
+            |  "class2Nics": {
+            |     "class2VoluntaryContributions": true
+            | }
+            |}
+    """.stripMargin
+        )
+
+        override def setupStubs(): StubMapping = {
+          AuditStub.audit()
+          AuthStub.authorised()
+          MtdIdLookupStub.ninoFound(nino)
+          DesStub.onSuccess(DesStub.PUT, desUri, NO_CONTENT)
+        }
+
+        val response: WSResponse = await(request().put(invalidTaxYearRequestBodyJson))
+        response.status shouldBe BAD_REQUEST
+        response.json shouldBe Json.toJson(ErrorWrapper(
+          correlationId = correlationId,
+          error = TaxYearFormatError.copy(
+            paths = Some(List("/taxAvoidance/0/taxYear"))
+          ),
+          errors = None
+        ))
+        response.header("Content-Type") shouldBe Some("application/json")
+      }
+    }
+
     "return a 400 with multiple errors" when {
       "all field value validations fail on the request body" in new Test {
 
