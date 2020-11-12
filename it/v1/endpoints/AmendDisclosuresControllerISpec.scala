@@ -108,6 +108,84 @@ class AmendDisclosuresControllerISpec extends IntegrationBaseSpec {
       }
     }
 
+    "return a TAX-YEAR_FORMAT_ERROR with 400 (BAD_REQUEST) status code" when {
+      "any invalid tax year format body request is made" in new Test {
+
+        val invalidTaxYearRequestBodyJson: JsValue = Json.parse(
+          """
+            |{
+            |  "taxAvoidance": [
+            |    {
+            |      "srn": "14211123",
+            |      "taxYear": "2020-222"
+            |    }
+            |  ],
+            |  "class2Nics": {
+            |     "class2VoluntaryContributions": true
+            | }
+            |}
+    """.stripMargin
+        )
+
+        override def setupStubs(): StubMapping = {
+          AuditStub.audit()
+          AuthStub.authorised()
+          MtdIdLookupStub.ninoFound(nino)
+          DesStub.onSuccess(DesStub.PUT, desUri, NO_CONTENT)
+        }
+
+        val response: WSResponse = await(request().put(invalidTaxYearRequestBodyJson))
+        response.status shouldBe BAD_REQUEST
+        response.json shouldBe Json.toJson(ErrorWrapper(
+          correlationId = correlationId,
+          error = TaxYearFormatError.copy(
+            paths = Some(List("/taxAvoidance/0/taxYear"))
+          ),
+          errors = None
+        ))
+        response.header("Content-Type") shouldBe Some("application/json")
+      }
+    }
+
+    "return a TAX-RuleTaxYearRangeInvalidError with 400 (BAD_REQUEST) status code" when {
+      "any invalid tax year range body request is made" in new Test {
+
+        val invalidTaxYearRequestBodyJson: JsValue = Json.parse(
+          """
+            |{
+            |  "taxAvoidance": [
+            |    {
+            |      "srn": "14211123",
+            |      "taxYear": "2020-22"
+            |    }
+            |  ],
+            |  "class2Nics": {
+            |     "class2VoluntaryContributions": true
+            | }
+            |}
+    """.stripMargin
+        )
+
+        override def setupStubs(): StubMapping = {
+          AuditStub.audit()
+          AuthStub.authorised()
+          MtdIdLookupStub.ninoFound(nino)
+          DesStub.onSuccess(DesStub.PUT, desUri, NO_CONTENT)
+        }
+
+        val response: WSResponse = await(request().put(invalidTaxYearRequestBodyJson))
+        response.status shouldBe BAD_REQUEST
+        response.json shouldBe Json.toJson(ErrorWrapper(
+          correlationId = correlationId,
+          error = RuleTaxYearRangeInvalidError.copy(
+            paths = Some(List("/taxAvoidance/0/taxYear"))
+          ),
+          errors = None
+        ))
+        response.header("Content-Type") shouldBe Some("application/json")
+      }
+    }
+
     "return a 400 with multiple errors" when {
       "all field value validations fail on the request body" in new Test {
 
@@ -331,7 +409,7 @@ class AmendDisclosuresControllerISpec extends IntegrationBaseSpec {
 
       "validation error" when {
         def validationErrorTest(requestNino: String, requestTaxYear: String, requestBody: JsValue, expectedStatus: Int, expectedBody: MtdError): Unit = {
-          s"validation ${requestNino} fails with ${expectedBody.code} error" in new Test {
+          s"validation $requestNino fails with ${expectedBody.code} error" in new Test {
 
             override val nino: String = requestNino
             override val taxYear: String = requestTaxYear
