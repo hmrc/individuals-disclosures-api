@@ -89,7 +89,6 @@ class AmendDisclosuresController @Inject()(val authService: EnrolmentsAuthServic
         }
 
       result.leftMap { errorWrapper =>
-        println("errorWrapper ::: "+Json.toJson(errorWrapper))
         val resCorrelationId = errorWrapper.correlationId
         val result = errorResult(errorWrapper).withApiHeaders(resCorrelationId)
         logger.info(
