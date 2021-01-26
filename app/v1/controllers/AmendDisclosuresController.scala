@@ -60,6 +60,10 @@ class AmendDisclosuresController @Inject()(val authService: EnrolmentsAuthServic
         s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] " +
           s"with CorrelationId: $correlationId")
 
+      logger.info(
+        s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] " +
+          s"with CorrelationId: $correlationId and body: ${request.body}")
+
       val rawData: AmendDisclosuresRawData = AmendDisclosuresRawData(
         nino = nino,
         taxYear = taxYear,

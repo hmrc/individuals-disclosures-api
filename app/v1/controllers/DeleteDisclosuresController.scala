@@ -63,9 +63,7 @@ class DeleteDisclosuresController @Inject()(val authService: EnrolmentsAuthServi
         taxYear = taxYear
       )
 
-      implicit val desUri: DesUri[Unit] = DesUri[Unit](
-        s"income-tax/disclosures/$nino/$taxYear"
-      )
+      implicit val desUri: DesUri[Unit] = DesUri[Unit](s"income-tax/disclosures/$nino/$taxYear")
 
       val result =
         for {
@@ -82,12 +80,10 @@ class DeleteDisclosuresController @Inject()(val authService: EnrolmentsAuthServi
               serviceResponse.correlationId, AuditResponse(httpStatus = NO_CONTENT, response = Right(None))
             )
           )
-
           NoContent
             .withApiHeaders(serviceResponse.correlationId)
             .as(MimeTypes.JSON)
         }
-
       result.leftMap { errorWrapper =>
         val resCorrelationId = errorWrapper.correlationId
         val result = errorResult(errorWrapper).withApiHeaders(resCorrelationId)
@@ -101,7 +97,6 @@ class DeleteDisclosuresController @Inject()(val authService: EnrolmentsAuthServi
             resCorrelationId, AuditResponse(httpStatus = result.header.status, response = Left(errorWrapper.auditErrors))
           )
         )
-
         result
       }.merge
     }
