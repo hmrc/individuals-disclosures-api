@@ -30,7 +30,7 @@ trait RequestParser[Raw <: RawData, Request] extends Logging {
   def parseRequest(data: Raw)(implicit correlationId: String): Either[ErrorWrapper, Request] = {
     validator.validate(data) match {
       case Nil =>
-        logger.warn(
+        logger.info(
           "[RequestParser][parseRequest] " +
             s"Validation successful for the request with CorrelationId: $correlationId")
         Right(requestFor(data))

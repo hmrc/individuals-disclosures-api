@@ -54,7 +54,7 @@ class DeleteDisclosuresController @Inject()(val authService: EnrolmentsAuthServi
     authorisedAction(nino).async { implicit request =>
 
       implicit val correlationId: String = idGenerator.generateCorrelationId
-      logger.warn(
+      logger.info(
         s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] " +
           s"with CorrelationId: $correlationId")
 
@@ -70,7 +70,7 @@ class DeleteDisclosuresController @Inject()(val authService: EnrolmentsAuthServi
           _ <- EitherT.fromEither[Future](requestParser.parseRequest(rawData))
           serviceResponse <- EitherT(service.delete(desErrorMap))
         } yield {
-          logger.warn(
+          logger.info(
             s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
               s"Success response received with CorrelationId: ${serviceResponse.correlationId}")
 

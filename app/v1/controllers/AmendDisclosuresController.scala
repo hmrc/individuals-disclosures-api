@@ -56,7 +56,7 @@ class AmendDisclosuresController @Inject()(val authService: EnrolmentsAuthServic
     authorisedAction(nino).async(parse.json) { implicit request =>
 
       implicit val correlationId: String = idGenerator.generateCorrelationId
-      logger.warn(
+      logger.info(
         s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] " +
           s"with CorrelationId: $correlationId")
 
@@ -71,7 +71,7 @@ class AmendDisclosuresController @Inject()(val authService: EnrolmentsAuthServic
           parsedRequest <- EitherT.fromEither[Future](requestParser.parseRequest(rawData))
           serviceResponse <- EitherT(service.amendDisclosures(parsedRequest))
         } yield {
-          logger.warn(
+          logger.info(
             s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
               s"Success response received with CorrelationId: ${serviceResponse.correlationId}")
 

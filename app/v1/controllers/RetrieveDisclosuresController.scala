@@ -53,7 +53,7 @@ class RetrieveDisclosuresController @Inject()(val authService: EnrolmentsAuthSer
     authorisedAction(nino).async { implicit request =>
 
       implicit val correlationId: String = idGenerator.generateCorrelationId
-      logger.warn(
+      logger.info(
         s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] " +
           s"with CorrelationId: $correlationId")
 
@@ -75,7 +75,7 @@ class RetrieveDisclosuresController @Inject()(val authService: EnrolmentsAuthSer
               .wrap(serviceResponse.responseData, RetrieveDisclosuresHateoasData(nino, taxYear))
               .asRight[ErrorWrapper])
         } yield {
-          logger.warn(
+          logger.info(
             s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
               s"Success response received with CorrelationId: ${serviceResponse.correlationId}")
 
