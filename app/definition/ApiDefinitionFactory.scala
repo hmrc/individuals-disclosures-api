@@ -34,12 +34,14 @@ class ApiDefinitionFactory @Inject()(appConfig: AppConfig) {
         Scope(
           key = readScope,
           name = "View your Self Assessment information",
-          description = "Allow read access to self assessment data"
+          description = "Allow read access to self assessment data",
+          confidenceLevel = 200
         ),
         Scope(
           key = writeScope,
           name = "Change your Self Assessment information",
-          description = "Allow write access to self assessment data"
+          description = "Allow write access to self assessment data",
+          confidenceLevel = 200
         )
       ),
       api = APIDefinition(
