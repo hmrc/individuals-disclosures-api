@@ -36,8 +36,8 @@
       "properties": {
         "class2VoluntaryContributions": {
           "type": "boolean",
-          "description": "A boolean that will indicate Voluntary Class 2 contributions are to be captured, when set to true. The value must be true or false.",
-          "example": "false"
+          "description": "Indicates whether Voluntary Class 2 contributions are to be captured. The value can only be set to true.",
+          "example": "true"
         }
       },
       "required": ["class2VoluntaryContributions"]
