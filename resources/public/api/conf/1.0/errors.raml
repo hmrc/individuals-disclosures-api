@@ -103,3 +103,14 @@ traits:
                 description: 'Voluntary Class 2 NICs cannot be changed after 31st Jan following the year of submission.'
                 value:
                   code: RULE_VOLUNTARY_CLASS2_CANNOT_BE_CHANGED
+  voluntaryClass2Contributions:
+      responses:
+        400:
+          body:
+            application/json:
+              type: types.errorResponse
+              examples:
+                voluntaryClass2Contributions:
+                  description: 'Voluntary Class 2 Contributions can only be set to true.'
+                  value:
+                    code: RULE_VOLUNTARY_CLASS2_VALUE_INVALID
