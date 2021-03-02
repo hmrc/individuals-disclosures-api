@@ -36,4 +36,26 @@ class JsonUtilsSpec extends UnitSpec with JsonUtils {
       JsNull.as(reads) shouldBe None
     }
   }
+
+  case class Person(name: Option[String] = None)
+
+  object Person {
+    implicit val format: OFormat[Person] = Json.format[Person]
+  }
+
+  "mapEmptyModelToNone" must {
+    val reads = __.readNullable[Person].mapEmptyModelToNone(Person())
+
+    "map non-empty model to Some(non-empty model)" in {
+      JsObject(Seq("name" -> JsString("Joe"))).as(reads) shouldBe Some(Person(Some("Joe")))
+    }
+
+    "map empty model to None" in {
+      JsObject.empty.as(reads) shouldBe None
+    }
+
+    "map None to None" in {
+      JsNull.as(reads) shouldBe None
+    }
+  }
 }

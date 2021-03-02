@@ -111,9 +111,10 @@ class AmendDisclosuresController @Inject()(val authService: EnrolmentsAuthServic
            RuleTaxYearRangeInvalidError | MtdErrorWithCustomMessage(RuleIncorrectOrEmptyBodyError.code) |
            MtdErrorWithCustomMessage(SRNFormatError.code) |
            MtdErrorWithCustomMessage(TaxYearFormatError.code) |
-           MtdErrorWithCustomMessage(RuleTaxYearRangeInvalidError.code)
+           MtdErrorWithCustomMessage(RuleTaxYearRangeInvalidError.code) |
+           MtdErrorWithCustomMessage(RuleVoluntaryClass2ValueInvalidError.code)
       => BadRequest(Json.toJson(errorWrapper))
-      case RuleVoluntaryClass2CannotBeChanged => Forbidden(Json.toJson(errorWrapper))
+      case RuleVoluntaryClass2CannotBeChangedError => Forbidden(Json.toJson(errorWrapper))
       case NotFoundError => NotFound(Json.toJson(errorWrapper))
       case DownstreamError => InternalServerError(Json.toJson(errorWrapper))
     }

@@ -36,45 +36,45 @@ class AmendDisclosuresControllerISpec extends IntegrationBaseSpec {
     val requestBodyJson: JsValue = Json.parse(
       """
         |{
-        |  "taxAvoidance": [
-        |    {
-        |      "srn": "14211123",
-        |      "taxYear": "2020-21"
-        |    },
-        |    {
-        |      "srn": "34522678",
-        |      "taxYear": "2021-22"
-        |    }
-        |  ],
-        |  "class2Nics": {
-        |     "class2VoluntaryContributions": true
-        | }
+        |   "taxAvoidance": [
+        |      {
+        |         "srn": "14211123",
+        |         "taxYear": "2020-21"
+        |      },
+        |      {
+        |         "srn": "34522678",
+        |         "taxYear": "2021-22"
+        |      }
+        |   ],
+        |   "class2Nics": {
+        |      "class2VoluntaryContributions": true
+        |   }
         |}
-    """.stripMargin
+      """.stripMargin
     )
 
     val hateoasResponse: JsValue = Json.parse(
       s"""
          |{
-         |   "links":[
+         |   "links": [
          |      {
-         |         "href":"/individuals/disclosures/$nino/$taxYear",
-         |         "rel":"create-and-amend-disclosures",
-         |         "method":"PUT"
+         |         "href": "/individuals/disclosures/$nino/$taxYear",
+         |         "rel": "create-and-amend-disclosures",
+         |         "method": "PUT"
          |      },
          |      {
-         |         "href":"/individuals/disclosures/$nino/$taxYear",
-         |         "rel":"self",
-         |         "method":"GET"
+         |         "href": "/individuals/disclosures/$nino/$taxYear",
+         |         "rel": "self",
+         |         "method": "GET"
          |      },
          |      {
-         |         "href":"/individuals/disclosures/$nino/$taxYear",
-         |         "rel":"delete-disclosures",
-         |         "method":"DELETE"
+         |         "href": "/individuals/disclosures/$nino/$taxYear",
+         |         "rel": "delete-disclosures",
+         |         "method": "DELETE"
          |      }
          |   ]
          |}
-    """.stripMargin
+       """.stripMargin
     )
 
     def uri: String = s"/$nino/$taxYear"
@@ -108,23 +108,23 @@ class AmendDisclosuresControllerISpec extends IntegrationBaseSpec {
       }
     }
 
-    "return a TAX-YEAR_FORMAT_ERROR with 400 (BAD_REQUEST) status code" when {
+    "return a TaxYearFormatError with 400 (BAD_REQUEST) status code" when {
       "any invalid tax year format body request is made" in new Test {
 
         val invalidTaxYearRequestBodyJson: JsValue = Json.parse(
           """
             |{
-            |  "taxAvoidance": [
-            |    {
-            |      "srn": "14211123",
-            |      "taxYear": "2020-222"
-            |    }
-            |  ],
-            |  "class2Nics": {
-            |     "class2VoluntaryContributions": true
-            | }
+            |   "taxAvoidance": [
+            |      {
+            |         "srn": "14211123",
+            |         "taxYear": "2020-222"
+            |      }
+            |   ],
+            |   "class2Nics": {
+            |      "class2VoluntaryContributions": true
+            |   }
             |}
-    """.stripMargin
+          """.stripMargin
         )
 
         override def setupStubs(): StubMapping = {
@@ -147,23 +147,23 @@ class AmendDisclosuresControllerISpec extends IntegrationBaseSpec {
       }
     }
 
-    "return a TAX-RuleTaxYearRangeInvalidError with 400 (BAD_REQUEST) status code" when {
+    "return a RuleTaxYearRangeInvalidError with 400 (BAD_REQUEST) status code" when {
       "any invalid tax year range body request is made" in new Test {
 
         val invalidTaxYearRequestBodyJson: JsValue = Json.parse(
           """
             |{
-            |  "taxAvoidance": [
-            |    {
-            |      "srn": "14211123",
-            |      "taxYear": "2020-22"
-            |    }
-            |  ],
-            |  "class2Nics": {
-            |     "class2VoluntaryContributions": true
-            | }
+            |   "taxAvoidance": [
+            |      {
+            |         "srn": "14211123",
+            |         "taxYear": "2020-22"
+            |      }
+            |   ],
+            |   "class2Nics": {
+            |      "class2VoluntaryContributions": true
+            |   }
             |}
-    """.stripMargin
+          """.stripMargin
         )
 
         override def setupStubs(): StubMapping = {
@@ -192,21 +192,21 @@ class AmendDisclosuresControllerISpec extends IntegrationBaseSpec {
         val allInvalidValueRequestBodyJson: JsValue = Json.parse(
           """
             |{
-            |  "taxAvoidance": [
-            |    {
-            |      "srn": "ABC142111235D",
-            |      "taxYear": "2020"
-            |    },
-            |    {
-            |      "srn": "CDE345226789F",
-            |      "taxYear": "2020-22"
-            |    }
-            |  ],
-            |    "class2Nics": {
-            |     "class2VoluntaryContributions": true
-            | }
+            |   "taxAvoidance": [
+            |      {
+            |         "srn": "ABC142111235D",
+            |         "taxYear": "2020"
+            |      },
+            |      {
+            |         "srn": "CDE345226789F",
+            |         "taxYear": "2020-22"
+            |      }
+            |   ],
+            |   "class2Nics": {
+            |      "class2VoluntaryContributions": false
+            |   }
             |}
-            |""".stripMargin
+          """.stripMargin
         )
 
         val allInvalidValueRequestError: List[MtdError] = List(
@@ -218,6 +218,11 @@ class AmendDisclosuresControllerISpec extends IntegrationBaseSpec {
           TaxYearFormatError.copy(
             paths = Some(List(
               "/taxAvoidance/0/taxYear"
+            ))
+          ),
+          RuleVoluntaryClass2ValueInvalidError.copy(
+            paths = Some(List(
+              "/class2Nics/class2VoluntaryContributions"
             ))
           ),
           SRNFormatError.copy(
@@ -250,54 +255,61 @@ class AmendDisclosuresControllerISpec extends IntegrationBaseSpec {
         val disclosuresAmendErrorsRequest: JsValue = Json.parse(
           """
             |{
-            |  "taxAvoidance": [
-            |    {
-            |      "srn": "ABC142111235D",
-            |      "taxYear": "2020"
-            |    },
-            |    {
-            |      "srn": "CDE345226789F",
-            |      "taxYear": "2020-22"
-            |    }
-            |  ],
-            |    "class2Nics": {
-            |     "class2VoluntaryContributions": true
-            | }
+            |   "taxAvoidance": [
+            |      {
+            |         "srn": "ABC142111235D",
+            |         "taxYear": "2020"
+            |      },
+            |      {
+            |         "srn": "CDE345226789F",
+            |         "taxYear": "2020-22"
+            |      }
+            |   ],
+            |   "class2Nics": {
+            |      "class2VoluntaryContributions": false
+            |   }
             |}
-            |""".stripMargin
+          """.stripMargin
         )
 
         val disclosuresAmendErrorsResponse: JsValue = Json.parse(
           """
-            {
-            |    "code": "INVALID_REQUEST",
-            |    "errors": [
-            |     {
-            |            "code": "RULE_TAX_YEAR_RANGE_INVALID",
-            |            "message": "Tax year range invalid. A tax year range of one year is required",
-            |            "paths": [
-            |                "/taxAvoidance/1/taxYear"
-            |            ]
-            |        },
-            |        {
-            |            "code": "FORMAT_TAX_YEAR",
-            |            "message": "The provided tax year is invalid",
-            |            "paths": [
-            |                "/taxAvoidance/0/taxYear"
-            |            ]
-            |        },
-            |        {
-            |            "code": "FORMAT_SRN_INVALID",
-            |            "message": "The provided scheme reference number is invalid",
-            |            "paths": [
-            |                "/taxAvoidance/0/srn",
-            |                "/taxAvoidance/1/srn"
-            |            ]
-            |        }
-            |    ],
-            |    "message": "Invalid request"
+            |{
+            |   "code": "INVALID_REQUEST",
+            |   "errors": [
+            |      {
+            |         "code": "RULE_TAX_YEAR_RANGE_INVALID",
+            |         "message": "Tax year range invalid. A tax year range of one year is required",
+            |         "paths": [
+            |            "/taxAvoidance/1/taxYear"
+            |         ]
+            |      },
+            |      {
+            |         "code": "FORMAT_TAX_YEAR",
+            |         "message": "The provided tax year is invalid",
+            |         "paths": [
+            |            "/taxAvoidance/0/taxYear"
+            |         ]
+            |      },
+            |      {
+            |         "code": "RULE_VOLUNTARY_CLASS2_VALUE_INVALID",
+            |         "message": "Voluntary Class 2 Contributions can only be set to true",
+            |         "paths": [
+            |            "/class2Nics/class2VoluntaryContributions"
+            |         ]
+            |      },
+            |      {
+            |         "code": "FORMAT_SRN_INVALID",
+            |         "message": "The provided scheme reference number is invalid",
+            |         "paths": [
+            |            "/taxAvoidance/0/srn",
+            |            "/taxAvoidance/1/srn"
+            |         ]
+            |      }
+            |   ],
+            |   "message": "Invalid request"
             |}
-            |""".stripMargin
+          """.stripMargin
         )
 
         override def setupStubs(): StubMapping = {
@@ -317,43 +329,34 @@ class AmendDisclosuresControllerISpec extends IntegrationBaseSpec {
       val validRequestBodyJson: JsValue = Json.parse(
         """
           |{
-          |  "taxAvoidance": [
-          |    {
-          |      "srn": "14211123",
-          |      "taxYear": "2020-21"
-          |    },
-          |    {
-          |      "srn": "34522678",
-          |      "taxYear": "2021-22"
-          |    }
-          |  ],
-          |    "class2Nics": {
-          |     "class2VoluntaryContributions": true
-          | }
+          |   "taxAvoidance": [
+          |      {
+          |         "srn": "14211123",
+          |         "taxYear": "2020-21"
+          |      },
+          |      {
+          |         "srn": "34522678",
+          |         "taxYear": "2021-22"
+          |      }
+          |   ],
+          |   "class2Nics": {
+          |      "class2VoluntaryContributions": true
+          |   }
           |}
-         """.stripMargin
+        """.stripMargin
       )
 
       val nonsenseRequestBodyJson: JsValue = Json.parse(
         """
           |{
-          |  "field": "value"
+          |   "field": "value"
           |}
         """.stripMargin
       )
 
-      val invalidSRNRequestBodyJson: JsValue = Json.parse(
+      val emptyBodyJson: JsValue = Json.parse(
         """
           |{
-          |  "taxAvoidance": [
-          |    {
-          |      "srn": "ABC142111235",
-          |      "taxYear": "2020-21"
-          |    }
-          |  ],
-          |    "class2Nics": {
-          |     "class2VoluntaryContributions": true
-          | }
           |}
         """.stripMargin
       )
@@ -361,50 +364,76 @@ class AmendDisclosuresControllerISpec extends IntegrationBaseSpec {
       val invalidSRNRequestMissingFieldBodyJson: JsValue = Json.parse(
         """
           |{
-          |  "taxAvoidance": [
-          |    {
-          |      "taxYear": "2020-21"
-          |    }
-          |  ],
-          |    "class2Nics": {
-          |     "class2VoluntaryContributions": true
-          | }
+          |   "taxAvoidance": [
+          |      {
+          |         "taxYear": "2020-21"
+          |      }
+          |   ],
+          |   "class2Nics": {
+          |      "class2VoluntaryContributions": true
+          |   }
           |}
-    """.stripMargin
+        """.stripMargin
       )
 
       val invalidSRNFormatRequestBodyJson: JsValue = Json.parse(
         """
           |{
-          |  "taxAvoidance": [
-          |    {
-          |      "taxYear": "2020-21",
-          |      "srn": true
-          |    }
-          |  ],
-          |    "class2Nics": {
-          |     "class2VoluntaryContributions": true
-          | }
+          |   "taxAvoidance": [
+          |      {
+          |         "srn": true,
+          |         "taxYear": "2020-21"
+          |      }
+          |   ],
+          |   "class2Nics": {
+          |      "class2VoluntaryContributions": true
+          |   }
           |}
-    """.stripMargin
+        """.stripMargin
       )
 
-      val emptyBodyJson: JsValue = Json.parse(
+      val incorrectBodyError: MtdError = RuleIncorrectOrEmptyBodyError.copy(
+        paths = Some(Seq("/taxAvoidance/0/srn"))
+      )
+
+      val invalidSRNRequestBodyJson: JsValue = Json.parse(
         """
           |{
+          |   "taxAvoidance": [
+          |      {
+          |         "srn": "ABC142111235",
+          |         "taxYear": "2020-21"
+          |      }
+          |   ],
+          |   "class2Nics": {
+          |      "class2VoluntaryContributions": true
+          |   }
           |}
-    """.stripMargin
+        """.stripMargin
       )
 
       val srnFormatError: MtdError = SRNFormatError.copy(
-        paths = Some(Seq(
-          "/taxAvoidance/0/srn"
-        ))
+        paths = Some(Seq("/taxAvoidance/0/srn"))
       )
 
-      val incorrectBodyError: MtdError = RuleIncorrectOrEmptyBodyError.copy(paths = Some(Seq(
-        "/taxAvoidance/0/srn"
-      ))
+      val invalidClass2ValueRequestBodyJson: JsValue = Json.parse(
+        """
+          |{
+          |   "taxAvoidance": [
+          |      {
+          |         "srn": "14211123",
+          |         "taxYear": "2020-21"
+          |      }
+          |   ],
+          |   "class2Nics": {
+          |      "class2VoluntaryContributions": false
+          |   }
+          |}
+        """.stripMargin
+      )
+
+      val ruleVoluntaryClass2ValueInvalidError: MtdError = RuleVoluntaryClass2ValueInvalidError.copy(
+        paths = Some(Seq("/class2Nics/class2VoluntaryContributions"))
       )
 
       "validation error" when {
@@ -433,10 +462,11 @@ class AmendDisclosuresControllerISpec extends IntegrationBaseSpec {
           ("AA123456A", "2015-17", validRequestBodyJson, BAD_REQUEST, RuleTaxYearRangeInvalidError),
           ("AA123456A", "2015-16", validRequestBodyJson, BAD_REQUEST, RuleTaxYearNotSupportedError),
           ("AA123456A", "2021-22", nonsenseRequestBodyJson, BAD_REQUEST, RuleIncorrectOrEmptyBodyError),
-          ("AA123457A", "2021-22", invalidSRNRequestMissingFieldBodyJson, BAD_REQUEST, incorrectBodyError),
           ("AA123458A", "2021-22", emptyBodyJson, BAD_REQUEST, RuleIncorrectOrEmptyBodyError),
+          ("AA123457A", "2021-22", invalidSRNRequestMissingFieldBodyJson, BAD_REQUEST, incorrectBodyError),
           ("AA123459A", "2021-22", invalidSRNFormatRequestBodyJson, BAD_REQUEST, incorrectBodyError),
-          ("AA123456A", "2021-22", invalidSRNRequestBodyJson, BAD_REQUEST, srnFormatError))
+          ("AA123456A", "2021-22", invalidSRNRequestBodyJson, BAD_REQUEST, srnFormatError),
+          ("AA123456A", "2021-22", invalidClass2ValueRequestBodyJson, BAD_REQUEST, ruleVoluntaryClass2ValueInvalidError))
 
         input.foreach(args => (validationErrorTest _).tupled(args))
       }
@@ -472,7 +502,7 @@ class AmendDisclosuresControllerISpec extends IntegrationBaseSpec {
           (BAD_REQUEST, "INVALID_CORRELATIONID", INTERNAL_SERVER_ERROR, DownstreamError),
           (BAD_REQUEST, "INVALID_PAYLOAD", INTERNAL_SERVER_ERROR, DownstreamError),
           (NOT_FOUND, "INCOME_SOURCE_NOT_FOUND", NOT_FOUND, NotFoundError),
-          (UNPROCESSABLE_ENTITY, "VOLUNTARY_CLASS2_CANNOT_BE_CHANGED", FORBIDDEN, RuleVoluntaryClass2CannotBeChanged),
+          (UNPROCESSABLE_ENTITY, "VOLUNTARY_CLASS2_CANNOT_BE_CHANGED", FORBIDDEN, RuleVoluntaryClass2CannotBeChangedError),
           (SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, DownstreamError),
           (INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, DownstreamError))
 

@@ -14,18 +14,14 @@
  * limitations under the License.
  */
 
-package v1.models.request.disclosures
+package v1.controllers.requestParsers.validators.validations
 
-import play.api.libs.functional.syntax._
-import play.api.libs.json.{JsPath, Json, OWrites, Reads}
+import v1.models.errors.{MtdError, RuleVoluntaryClass2ValueInvalidError}
 
-case class AmendTaxAvoidance(srn: String, taxYear: String)
+object VoluntaryClass2ValueValidation {
 
-object AmendTaxAvoidance {
-  implicit val reads: Reads[AmendTaxAvoidance] = Json.reads[AmendTaxAvoidance]
-
-  implicit val writes: OWrites[AmendTaxAvoidance] = (
-    (JsPath \ "srn").write[String] and
-      (JsPath \ "taxYear").write[String]
-    ) (unlift(AmendTaxAvoidance.unapply))
+  def validateOptional(class2VoluntaryContributions: Option[Boolean]): List[MtdError] =
+    class2VoluntaryContributions.fold(NoValidationErrors: List[MtdError]) { value =>
+      if(value) NoValidationErrors else List(RuleVoluntaryClass2ValueInvalidError)
+  }
 }

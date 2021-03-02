@@ -47,7 +47,7 @@ class RetrieveDisclosuresControllerSpec extends ControllerBaseSpec
   with MockIdGenerator {
 
   val nino: String = "AA123456A"
-  val taxYear: String = "2019-20"
+  val taxYear: String = "2021-22"
   val correlationId: String = "X-123"
 
   val rawData: DeleteRetrieveRawData = DeleteRetrieveRawData(
@@ -81,7 +81,7 @@ class RetrieveDisclosuresControllerSpec extends ControllerBaseSpec
       rel = DELETE_DISCLOSURES
     )
 
-  private val taxAvoidanceModel = Seq(
+  val taxAvoidanceModel: Seq[TaxAvoidanceItem] = Seq(
     TaxAvoidanceItem(
       srn = "14211123",
       taxYear = "2020-21"
@@ -92,10 +92,12 @@ class RetrieveDisclosuresControllerSpec extends ControllerBaseSpec
     )
   )
 
-  val class2Nics: Class2Nics = Class2Nics(true)
+  val class2NicsModel: Class2Nics = Class2Nics(class2VoluntaryContributions = Some(true))
 
-  private val retrieveDisclosuresResponseModel = RetrieveDisclosuresResponse(
-    taxAvoidance = Some(taxAvoidanceModel), class2Nics = Some(class2Nics), submittedOn = "2020-07-06T09:37:17Z"
+  val retrieveDisclosuresResponseModel: RetrieveDisclosuresResponse = RetrieveDisclosuresResponse(
+    taxAvoidance = Some(taxAvoidanceModel),
+    class2Nics = Some(class2NicsModel),
+    submittedOn = "2020-07-06T09:37:17Z"
   )
 
   private val mtdResponse = RetrieveDisclosuresControllerFixture.mtdResponseWithHateoas(nino, taxYear)

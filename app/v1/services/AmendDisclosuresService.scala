@@ -52,7 +52,7 @@ class AmendDisclosuresService @Inject()(connector: AmendDisclosuresConnector) ex
       "INVALID_CORRELATIONID" -> DownstreamError,
       "INVALID_PAYLOAD" -> DownstreamError,
       "INCOME_SOURCE_NOT_FOUND" -> NotFoundError,
-      "VOLUNTARY_CLASS2_CANNOT_BE_CHANGED" -> RuleVoluntaryClass2CannotBeChanged,
+      "VOLUNTARY_CLASS2_CANNOT_BE_CHANGED" -> RuleVoluntaryClass2CannotBeChangedError,
       "SERVER_ERROR" -> DownstreamError,
       "SERVICE_UNAVAILABLE" -> DownstreamError
     )

@@ -26,7 +26,7 @@ import scala.concurrent.Future
 class DeleteRetrieveConnectorSpec extends ConnectorSpec {
 
   val nino: String = "AA111111A"
-  val taxYear: String = "2020-21"
+  val taxYear: String = "2021-22"
 
   class Test extends MockHttpClient with MockAppConfig {
 

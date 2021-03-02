@@ -27,15 +27,24 @@ import scala.concurrent.Future
 class AmendDisclosuresConnectorSpec extends ConnectorSpec {
 
   private val nino: String = "AA111111A"
-  private val taxYear: String = "2020-21"
+  private val taxYear: String = "2021-22"
 
-  val amendTaxAvoidance: AmendTaxAvoidance = AmendTaxAvoidance("14211123","2020-21")
-  val class2Nics: AmendClass2Nics = AmendClass2Nics(true)
+  val taxAvoidanceModel: Seq[AmendTaxAvoidanceItem] = Seq(
+    AmendTaxAvoidanceItem(
+      srn = "14211123",
+      taxYear = "2020-21"
+    )
+  )
+
+  val class2NicsModel: AmendClass2Nics = AmendClass2Nics(class2VoluntaryContributions = Some(true))
 
   val amendDisclosuresRequest: AmendDisclosuresRequest = AmendDisclosuresRequest(
     nino = Nino(nino),
     taxYear = taxYear,
-    body = AmendDisclosuresRequestBody(Some(Seq(amendTaxAvoidance)), Some(class2Nics))
+    body = AmendDisclosuresRequestBody(
+      taxAvoidance = Some(taxAvoidanceModel),
+      class2Nics = Some(class2NicsModel)
+    )
   )
 
   class Test extends MockHttpClient with MockAppConfig {

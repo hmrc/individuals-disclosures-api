@@ -27,25 +27,25 @@ import v1.models.request.disclosures._
 class AmendDisclosuresRequestParserSpec extends UnitSpec {
 
   val nino: String = "AA123456B"
-  val taxYear: String = "2020-21"
+  val taxYear: String = "2021-22"
   implicit val correlationId: String = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
 
   private val validRequestBodyJson: JsValue = Json.parse(
     """
       |{
-      |  "taxAvoidance": [
-      |    {
-      |      "srn": "14211123",
-      |      "taxYear": "2020-21"
-      |    },
-      |    {
-      |      "srn": "34522678",
-      |      "taxYear": "2021-22"
-      |    }
-      |  ],
-      |  "class2Nics": {
-      |     "class2VoluntaryContributions": true
-      |  }
+      |   "taxAvoidance": [
+      |      {
+      |         "srn": "14211123",
+      |         "taxYear": "2020-21"
+      |      },
+      |      {
+      |         "srn": "34522678",
+      |         "taxYear": "2021-22"
+      |      }
+      |   ],
+      |   "class2Nics": {
+      |      "class2VoluntaryContributions": true
+      |   }
       |}
     """.stripMargin
   )
@@ -53,21 +53,21 @@ class AmendDisclosuresRequestParserSpec extends UnitSpec {
   private val validRawRequestBody = AnyContentAsJson(validRequestBodyJson)
 
   private val taxAvoidanceModel = Seq(
-    AmendTaxAvoidance(
+    AmendTaxAvoidanceItem(
       srn = "14211123",
       taxYear = "2020-21"
     ),
-    AmendTaxAvoidance(
+    AmendTaxAvoidanceItem(
       srn = "34522678",
       taxYear = "2021-22"
     )
   )
 
-  val class2Nics: AmendClass2Nics = AmendClass2Nics(true)
+  private val class2NicsModel = AmendClass2Nics(Some(true))
 
   private val validRequestBodyModel = AmendDisclosuresRequestBody(
     Some(taxAvoidanceModel),
-    Some(class2Nics)
+    Some(class2NicsModel)
   )
 
   private val amendDisclosuresRawData = AmendDisclosuresRawData(
@@ -122,16 +122,19 @@ class AmendDisclosuresRequestParserSpec extends UnitSpec {
         private val allInvalidValueRequestBodyJson: JsValue = Json.parse(
           """
             |{
-            |  "taxAvoidance": [
-            |    {
-            |      "srn": "ABC142111235D",
-            |      "taxYear": "2020"
-            |    },
-            |    {
-            |      "srn": "CDE345226789F",
-            |      "taxYear": "2020-22"
-            |    }
-            |  ]
+            |   "taxAvoidance": [
+            |      {
+            |         "srn": "ABC142111235D",
+            |         "taxYear": "2020"
+            |      },
+            |      {
+            |         "srn": "CDE345226789F",
+            |         "taxYear": "2020-22"
+            |      }
+            |   ],
+            |   "class2Nics": {
+            |      "class2VoluntaryContributions": false
+            |   }
             |}
           """.stripMargin
         )
@@ -147,6 +150,11 @@ class AmendDisclosuresRequestParserSpec extends UnitSpec {
           TaxYearFormatError.copy(
             paths = Some(List(
               "/taxAvoidance/0/taxYear"
+            ))
+          ),
+          RuleVoluntaryClass2ValueInvalidError.copy(
+            paths = Some(List(
+              "/class2Nics/class2VoluntaryContributions"
             ))
           ),
           SRNFormatError.copy(

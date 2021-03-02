@@ -34,4 +34,18 @@ trait JsonUtils {
       }
   }
 
+  /**
+   * Extension methods for reads of an optional model
+   */
+  implicit class OptReadsOps[A](reads: Reads[Option[A]]) {
+    /**
+     * Returns a Reads that returns a model unless all nested fields are empty
+     */
+    def mapEmptyModelToNone(empty: A): Reads[Option[A]] =
+      reads.map {
+        case Some(model) if model == empty => None
+        case other => other
+      }
+  }
+
 }

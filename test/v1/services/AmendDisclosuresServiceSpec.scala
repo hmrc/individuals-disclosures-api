@@ -28,15 +28,24 @@ import scala.concurrent.Future
 class AmendDisclosuresServiceSpec extends ServiceSpec {
 
   private val nino = "AA112233A"
-  private val taxYear = "2020-21"
+  private val taxYear = "2021-22"
 
-  val amendTaxAvoidance: AmendTaxAvoidance = AmendTaxAvoidance("14211123","2020-21")
-  val class2Nics: AmendClass2Nics = AmendClass2Nics(true)
+  val taxAvoidanceModel: Seq[AmendTaxAvoidanceItem] = Seq(
+    AmendTaxAvoidanceItem(
+      srn = "14211123",
+      taxYear = "2020-21"
+    )
+  )
+
+  val class2NicsModel: AmendClass2Nics = AmendClass2Nics(class2VoluntaryContributions = Some(true))
 
   val amendDisclosuresRequest: AmendDisclosuresRequest = AmendDisclosuresRequest(
-      nino = Nino(nino),
-      taxYear = taxYear,
-      body = AmendDisclosuresRequestBody(Some(Seq(amendTaxAvoidance)),Some(class2Nics))
+    nino = Nino(nino),
+    taxYear = taxYear,
+    body = AmendDisclosuresRequestBody(
+      taxAvoidance = Some(taxAvoidanceModel),
+      class2Nics = Some(class2NicsModel)
+    )
   )
 
   trait Test extends MockAmendDisclosuresConnector{
@@ -75,7 +84,7 @@ class AmendDisclosuresServiceSpec extends ServiceSpec {
           ("INVALID_CORRELATIONID", DownstreamError),
           ("INVALID_PAYLOAD", DownstreamError),
           ("INCOME_SOURCE_NOT_FOUND", NotFoundError),
-          ("VOLUNTARY_CLASS2_CANNOT_BE_CHANGED", RuleVoluntaryClass2CannotBeChanged),
+          ("VOLUNTARY_CLASS2_CANNOT_BE_CHANGED", RuleVoluntaryClass2CannotBeChangedError),
           ("SERVER_ERROR", DownstreamError),
           ("SERVICE_UNAVAILABLE", DownstreamError)
         )

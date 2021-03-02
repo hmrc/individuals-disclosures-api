@@ -16,16 +16,10 @@
 
 package v1.models.response.retrieveDisclosures
 
-import play.api.libs.functional.syntax._
-import play.api.libs.json.{JsPath, Json, OWrites, Reads}
+import play.api.libs.json.{Json, OFormat}
 
 case class TaxAvoidanceItem(srn: String, taxYear: String)
 
 object TaxAvoidanceItem {
-  implicit val reads: Reads[TaxAvoidanceItem] = (
-    (JsPath \ "srn").read[String] and
-      (JsPath \ "taxYear").read[String]
-    ) (TaxAvoidanceItem.apply _)
-
-  implicit val writes: OWrites[TaxAvoidanceItem] = Json.writes[TaxAvoidanceItem]
+  implicit val format: OFormat[TaxAvoidanceItem] = Json.format[TaxAvoidanceItem]
 }
