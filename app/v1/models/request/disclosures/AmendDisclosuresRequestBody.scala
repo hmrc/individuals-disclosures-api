@@ -17,22 +17,19 @@
 package v1.models.request.disclosures
 
 import play.api.libs.functional.syntax._
-import play.api.libs.json.{JsPath, OWrites, Reads}
+import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 import utils.JsonUtils
 
-case class AmendDisclosuresRequestBody(taxAvoidance: Option[Seq[AmendTaxAvoidance]], class2Nics: Option[AmendClass2Nics])
+case class AmendDisclosuresRequestBody(taxAvoidance: Option[Seq[AmendTaxAvoidanceItem]],
+                                       class2Nics: Option[AmendClass2Nics])
 
 object AmendDisclosuresRequestBody extends JsonUtils {
   val empty: AmendDisclosuresRequestBody = AmendDisclosuresRequestBody(None, None)
 
   implicit val reads: Reads[AmendDisclosuresRequestBody] = (
-    (JsPath \ "taxAvoidance").readNullable[Seq[AmendTaxAvoidance]].mapEmptySeqToNone and
-      (JsPath \ "class2Nics").readNullable[AmendClass2Nics]
+    (JsPath \ "taxAvoidance").readNullable[Seq[AmendTaxAvoidanceItem]].mapEmptySeqToNone and
+      (JsPath \ "class2Nics").readNullable[AmendClass2Nics].mapEmptyModelToNone(AmendClass2Nics.empty)
     )(AmendDisclosuresRequestBody.apply _)
 
-  implicit val writes: OWrites[AmendDisclosuresRequestBody] = (
-    (JsPath \ "taxAvoidance").writeNullable[Seq[AmendTaxAvoidance]] and
-      (JsPath \ "class2Nics").writeNullable[AmendClass2Nics]
-    ) (unlift(AmendDisclosuresRequestBody.unapply))
-
+  implicit val writes: OWrites[AmendDisclosuresRequestBody] = Json.writes[AmendDisclosuresRequestBody]
 }

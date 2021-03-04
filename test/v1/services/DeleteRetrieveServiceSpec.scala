@@ -28,7 +28,7 @@ import scala.concurrent.Future
 class DeleteRetrieveServiceSpec extends ServiceSpec {
 
   private val nino = "AA112233A"
-  private val taxYear = "2020-21"
+  private val taxYear = "2021-22"
 
   trait Test extends MockDeleteRetrieveConnector {
 

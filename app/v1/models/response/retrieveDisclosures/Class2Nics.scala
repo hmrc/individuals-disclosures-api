@@ -18,8 +18,10 @@ package v1.models.response.retrieveDisclosures
 
 import play.api.libs.json.{Json, OFormat}
 
-case class Class2Nics(class2VoluntaryContributions: Boolean)
+case class Class2Nics(class2VoluntaryContributions: Option[Boolean])
 
 object Class2Nics {
+  val empty: Class2Nics = Class2Nics(None)
+
   implicit val format: OFormat[Class2Nics] = Json.format[Class2Nics]
 }

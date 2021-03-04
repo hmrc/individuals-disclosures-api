@@ -23,13 +23,15 @@ import utils.JsonUtils
 import v1.hateoas.{HateoasLinks, HateoasLinksFactory}
 import v1.models.hateoas.{HateoasData, Link}
 
-case class RetrieveDisclosuresResponse(taxAvoidance: Option[Seq[TaxAvoidanceItem]], class2Nics: Option[Class2Nics], submittedOn: String)
+case class RetrieveDisclosuresResponse(taxAvoidance: Option[Seq[TaxAvoidanceItem]],
+                                       class2Nics: Option[Class2Nics],
+                                       submittedOn: String)
 
 object RetrieveDisclosuresResponse extends HateoasLinks with JsonUtils {
 
   implicit val reads: Reads[RetrieveDisclosuresResponse] = (
     (JsPath \ "taxAvoidance").readNullable[Seq[TaxAvoidanceItem]].mapEmptySeqToNone and
-      (JsPath \ "class2Nics").readNullable[Class2Nics] and
+      (JsPath \ "class2Nics").readNullable[Class2Nics].mapEmptyModelToNone(Class2Nics.empty) and
       (JsPath \ "submittedOn").read[String]
     ) (RetrieveDisclosuresResponse.apply _)
 

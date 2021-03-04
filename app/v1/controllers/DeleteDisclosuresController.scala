@@ -105,7 +105,7 @@ class DeleteDisclosuresController @Inject()(val authService: EnrolmentsAuthServi
     (errorWrapper.error: @unchecked) match {
       case BadRequestError | NinoFormatError | TaxYearFormatError | RuleTaxYearNotSupportedError |
            RuleTaxYearRangeInvalidError => BadRequest(Json.toJson(errorWrapper))
-      case RuleVoluntaryClass2CannotBeChanged => Forbidden(Json.toJson(errorWrapper))
+      case RuleVoluntaryClass2CannotBeChangedError => Forbidden(Json.toJson(errorWrapper))
       case NotFoundError => NotFound(Json.toJson(errorWrapper))
       case DownstreamError => InternalServerError(Json.toJson(errorWrapper))
     }
@@ -117,7 +117,7 @@ class DeleteDisclosuresController @Inject()(val authService: EnrolmentsAuthServi
       "INVALID_TAX_YEAR" -> TaxYearFormatError,
       "INVALID_CORRELATIONID" -> DownstreamError,
       "NO_DATA_FOUND" -> NotFoundError,
-      "VOLUNTARY_CLASS2_CANNOT_BE_CHANGED" -> RuleVoluntaryClass2CannotBeChanged,
+      "VOLUNTARY_CLASS2_CANNOT_BE_CHANGED" -> RuleVoluntaryClass2CannotBeChangedError,
       "SERVER_ERROR" -> DownstreamError,
       "SERVICE_UNAVAILABLE" -> DownstreamError
     )

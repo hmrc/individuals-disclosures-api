@@ -24,31 +24,33 @@ class RetrieveDisclosuresResponseSpec extends UnitSpec {
   private val json = Json.parse(
     """
       |{
-      |  "taxAvoidance": [
-      |    {
-      |      "srn": "14211123",
-      |      "taxYear": "2020-21"
-      |    }
-      |  ],
-      |  "class2Nics": {
-      |     "class2VoluntaryContributions": true
-      |  },
-      |  "submittedOn": "2020-07-06T09:37:17Z"
+      |   "taxAvoidance": [
+      |      {
+      |         "srn": "14211123",
+      |         "taxYear": "2020-21"
+      |      }
+      |   ],
+      |   "class2Nics": {
+      |      "class2VoluntaryContributions": true
+      |   },
+      |   "submittedOn": "2020-07-06T09:37:17Z"
       |}
     """.stripMargin
   )
 
-  private val taxAvoidanceItemModel = Seq(
+  private val taxAvoidanceModel = Seq(
     TaxAvoidanceItem(
       srn = "14211123",
       taxYear = "2020-21"
     )
   )
 
-  private val class2Nics = Class2Nics(true)
+  private val class2NicsModel = Class2Nics(class2VoluntaryContributions = Some(true))
 
   private val responseModel = RetrieveDisclosuresResponse(
-    Some(taxAvoidanceItemModel), Some(class2Nics), "2020-07-06T09:37:17Z"
+    taxAvoidance = Some(taxAvoidanceModel),
+    class2Nics = Some(class2NicsModel),
+    submittedOn = "2020-07-06T09:37:17Z"
   )
 
   "RetrieveDisclosuresResponse" when {
@@ -58,12 +60,13 @@ class RetrieveDisclosuresResponseSpec extends UnitSpec {
       }
     }
 
-    "read from valid JSON with empty taxAvoidance array" should {
+    "read from valid JSON with empty taxAvoidance array and class2Nics object" should {
       "produce the expected RetrieveDisclosuresResponse object" in {
         val json = Json.parse(
           """
             |{
             |   "taxAvoidance": [ ],
+            |   "class2Nics": { },
             |   "submittedOn": "2020-07-06T09:37:17Z"
             |}
           """.stripMargin
@@ -78,16 +81,16 @@ class RetrieveDisclosuresResponseSpec extends UnitSpec {
         val invalidJson = Json.parse(
           """
             |{
-            |  "taxAvoidance": [
-            |    {
-            |      "srn": true,
-            |      "taxYear": "2020-21"
-            |    }
-            |  ],
-            |    "class2Nics": {
-            |     "class2VoluntaryContributions": true
-            |  },
-            |  "submittedOn": "2020-07-06T09:37:17Z"
+            |   "taxAvoidance": [
+            |      {
+            |         "srn": true,
+            |         "taxYear": "2020-21"
+            |      }
+            |   ],
+            |   "class2Nics": {
+            |      "class2VoluntaryContributions": true
+            |   },
+            |   "submittedOn": "2020-07-06T09:37:17Z"
             |}
           """.stripMargin
         )

@@ -14,25 +14,17 @@
  * limitations under the License.
  */
 
-package v1.controllers.requestParsers.validators.validations
+package v1.models.outcomes
 
 import support.UnitSpec
-import v1.models.errors.SRNFormatError
 
-class SRNValidationSpec extends UnitSpec {
+class ResponseWrapperSpec extends UnitSpec {
 
-  "SRNValidation" when {
-    "validate" must {
-      "return an empty list for a valid srn" in {
-        SRNValidation.validate(
-          srn = "14211123"
-        ) shouldBe NoValidationErrors
-      }
-
-      "return a SRNFormatError for an invalid srn" in {
-        SRNValidation.validate(
-          srn = "ABC142111235"
-        ) shouldBe List(SRNFormatError)
+  "ResponseWrapper" when {
+    "mapped" should {
+      "correctly map the wrapped response" in {
+        val wrappedResponse = ResponseWrapper[String](correlationId = "X-123", responseData = "cope")
+        wrappedResponse.map(_.replace('c','h')) shouldBe ResponseWrapper[String](correlationId = "X-123", responseData = "hope")
       }
     }
   }

@@ -14,26 +14,12 @@
  * limitations under the License.
  */
 
-package v1.controllers.requestParsers.validators.validations
+package v1.models.request.disclosures
 
-import support.UnitSpec
-import v1.models.errors.SRNFormatError
+import play.api.libs.json.{Json, OFormat}
 
-class SRNValidationSpec extends UnitSpec {
+case class AmendTaxAvoidanceItem(srn: String, taxYear: String)
 
-  "SRNValidation" when {
-    "validate" must {
-      "return an empty list for a valid srn" in {
-        SRNValidation.validate(
-          srn = "14211123"
-        ) shouldBe NoValidationErrors
-      }
-
-      "return a SRNFormatError for an invalid srn" in {
-        SRNValidation.validate(
-          srn = "ABC142111235"
-        ) shouldBe List(SRNFormatError)
-      }
-    }
-  }
+object AmendTaxAvoidanceItem {
+  implicit val format: OFormat[AmendTaxAvoidanceItem] = Json.format[AmendTaxAvoidanceItem]
 }

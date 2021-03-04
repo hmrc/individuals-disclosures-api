@@ -14,39 +14,49 @@
  * limitations under the License.
  */
 
-package v1.models.response.retrieveDisclosures
+package v1.models.request.disclosures
 
 import play.api.libs.json.{JsError, JsObject, Json}
 import support.UnitSpec
 
-class TaxAvoidanceItemSpec extends UnitSpec {
+class AmendClass2NicsSpec extends UnitSpec {
 
   private val json = Json.parse(
     """
       |{
-      |   "srn": "14211123",
-      |   "taxYear": "2020-21"
+      |   "class2VoluntaryContributions": true
       |}
     """.stripMargin
   )
 
-  private val model = TaxAvoidanceItem(
-    srn = "14211123",
-    taxYear = "2020-21"
-  )
+  private val model = AmendClass2Nics(class2VoluntaryContributions = Some(true))
 
-  "TaxAvoidanceItem" when {
+  "AmendClass2Nics" when {
     "read from valid JSON" should {
-      "produce the expected TaxAvoidanceItem object" in {
-        json.as[TaxAvoidanceItem] shouldBe model
+      "produce the expected AmendClass2Nics object" in {
+        json.as[AmendClass2Nics] shouldBe model
       }
     }
 
     "read from empty JSON" should {
-      "produce a JsError" in {
-        val invalidJson = JsObject.empty
+      "produce an empty AmendClass2Nics object" in {
+        val emptyJson = JsObject.empty
 
-        invalidJson.validate[TaxAvoidanceItem] shouldBe a[JsError]
+        emptyJson.as[AmendClass2Nics] shouldBe AmendClass2Nics.empty
+      }
+    }
+
+    "read from invalid JSON" should {
+      "produce a JsError" in {
+        val invalidJson = Json.parse(
+          """
+            |{
+            |   "class2VoluntaryContributions": "no"
+            |}
+          """.stripMargin
+        )
+
+        invalidJson.validate[AmendClass2Nics] shouldBe a[JsError]
       }
     }
 

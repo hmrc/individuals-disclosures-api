@@ -33,19 +33,30 @@ object TaxYearFormatError extends MtdError("FORMAT_TAX_YEAR", "The provided tax 
 object SRNFormatError extends MtdError("FORMAT_SRN_INVALID", "The provided scheme reference number is invalid")
 
 // Rule Errors
-object RuleTaxYearNotSupportedError
-  extends MtdError("RULE_TAX_YEAR_NOT_SUPPORTED", "Tax year not supported, because it precedes the earliest allowable tax year")
+object RuleTaxYearNotSupportedError extends MtdError(
+  code = "RULE_TAX_YEAR_NOT_SUPPORTED",
+  message = "The specified tax year is not supported. That is, the tax year specified is before the minimum tax year value"
+)
 
-object RuleVoluntaryClass2CannotBeChanged
-extends MtdError("RULE_VOLUNTARY_CLASS2_CANNOT_BE_CHANGED", "Voluntary Class 2 NICs cannot be changed after 31st Jan following the year of submission")
+object RuleVoluntaryClass2CannotBeChangedError extends MtdError(
+  code = "RULE_VOLUNTARY_CLASS2_CANNOT_BE_CHANGED",
+  message = "Voluntary Class 2 NICs cannot be changed after 31st Jan following the year of submission"
+)
 
-object RuleIncorrectOrEmptyBodyError extends MtdError("RULE_INCORRECT_OR_EMPTY_BODY_SUBMITTED", "An empty or non-matching body was submitted")
+object RuleIncorrectOrEmptyBodyError extends MtdError(
+  code = "RULE_INCORRECT_OR_EMPTY_BODY_SUBMITTED",
+  message = "An empty or non-matching body was submitted"
+)
 
-object RuleTaxYearRangeInvalidError
-  extends MtdError(
-    code = "RULE_TAX_YEAR_RANGE_INVALID",
-    message = "Tax year range invalid. A tax year range of one year is required"
-  )
+object RuleTaxYearRangeInvalidError extends MtdError(
+  code = "RULE_TAX_YEAR_RANGE_INVALID",
+  message = "Tax year range invalid. A tax year range of one year is required"
+)
+
+object RuleVoluntaryClass2ValueInvalidError extends MtdError(
+  code = "RULE_VOLUNTARY_CLASS2_VALUE_INVALID",
+  message = "Voluntary Class 2 Contributions can only be set to true"
+)
 
 //Standard Errors
 object NotFoundError extends MtdError("MATCHING_RESOURCE_NOT_FOUND", "Matching resource not found")

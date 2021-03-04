@@ -41,7 +41,7 @@ class DeleteDisclosuresControllerSpec
     with MockIdGenerator {
 
   val nino: String = "AA123456A"
-  val taxYear: String = "2019-20"
+  val taxYear: String = "2021-22"
   val correlationId: String = "X-123"
 
   val rawData: DeleteRetrieveRawData = DeleteRetrieveRawData(
@@ -166,7 +166,7 @@ class DeleteDisclosuresControllerSpec
           (NinoFormatError, BAD_REQUEST),
           (TaxYearFormatError, BAD_REQUEST),
           (NotFoundError, NOT_FOUND),
-          (RuleVoluntaryClass2CannotBeChanged, FORBIDDEN),
+          (RuleVoluntaryClass2CannotBeChangedError, FORBIDDEN),
           (DownstreamError, INTERNAL_SERVER_ERROR)
         )
 

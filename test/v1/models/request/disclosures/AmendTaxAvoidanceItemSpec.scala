@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package v1.models.response.retrieveDisclosures
+package v1.models.request.disclosures
 
 import play.api.libs.json.{JsError, JsObject, Json}
 import support.UnitSpec
 
-class TaxAvoidanceItemSpec extends UnitSpec {
+class AmendTaxAvoidanceItemSpec extends UnitSpec {
 
   private val json = Json.parse(
     """
@@ -30,23 +30,23 @@ class TaxAvoidanceItemSpec extends UnitSpec {
     """.stripMargin
   )
 
-  private val model = TaxAvoidanceItem(
+  private val model: AmendTaxAvoidanceItem = AmendTaxAvoidanceItem(
     srn = "14211123",
     taxYear = "2020-21"
   )
 
-  "TaxAvoidanceItem" when {
+  "AmendTaxAvoidanceItem" when {
     "read from valid JSON" should {
-      "produce the expected TaxAvoidanceItem object" in {
-        json.as[TaxAvoidanceItem] shouldBe model
+      "produce the expected AmendTaxAvoidanceItem object" in {
+        json.as[AmendTaxAvoidanceItem] shouldBe model
       }
     }
 
-    "read from empty JSON" should {
+    "read from invalid JSON" should {
       "produce a JsError" in {
         val invalidJson = JsObject.empty
 
-        invalidJson.validate[TaxAvoidanceItem] shouldBe a[JsError]
+        invalidJson.validate[AmendTaxAvoidanceItem] shouldBe a[JsError]
       }
     }
 

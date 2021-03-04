@@ -21,46 +21,60 @@ import support.UnitSpec
 
 class AmendDisclosuresRequestBodySpec extends UnitSpec {
 
-  val model: AmendDisclosuresRequestBody = AmendDisclosuresRequestBody(Some(Seq(AmendTaxAvoidance("14211123","2020-21"))),Some(AmendClass2Nics(true)))
   private val json = Json.parse(
     """
       |{
-      | "taxAvoidance":[
-      |   {
-      |    "srn": "14211123",
-      |    "taxYear": "2020-21"
+      |   "taxAvoidance": [
+      |      {
+      |         "srn": "14211123",
+      |         "taxYear": "2020-21"
+      |      }
+      |   ],
+      |   "class2Nics": {
+      |      "class2VoluntaryContributions": true
       |   }
-      | ],
-      | "class2Nics": {
-      |   "class2VoluntaryContributions": true
-      | }
       |}
     """.stripMargin
   )
 
-  "AmendDisclosuresRequest" when {
+  private val taxAvoidanceModel = Seq(
+    AmendTaxAvoidanceItem(
+      srn = "14211123",
+      taxYear = "2020-21"
+    )
+  )
+
+  private val class2NicsModel = AmendClass2Nics(class2VoluntaryContributions = Some(true))
+
+  private val requestBodyModel = AmendDisclosuresRequestBody(
+    taxAvoidance = Some(taxAvoidanceModel),
+    class2Nics = Some(class2NicsModel)
+  )
+
+  "AmendDisclosuresRequestBody" when {
     "read from valid JSON" should {
-      "produce the expected AmendDisclosuresRequest object" in {
-        json.as[AmendDisclosuresRequestBody] shouldBe model
+      "produce the expected AmendDisclosuresRequestBody object" in {
+        json.as[AmendDisclosuresRequestBody] shouldBe requestBodyModel
       }
     }
 
     "read from empty JSON" should {
-      "produce an empty AmendDisclosuresRequest object" in {
+      "produce an empty AmendDisclosuresRequestBody object" in {
         val emptyJson = JsObject.empty
 
         emptyJson.as[AmendDisclosuresRequestBody] shouldBe AmendDisclosuresRequestBody.empty
       }
     }
 
-    "read from valid JSON with empty taxAvoidance arrays" should {
-      "produce an empty AmendDisclosuresRequest object" in {
+    "read from valid JSON with empty taxAvoidance array and class2Nics object" should {
+      "produce an empty AmendDisclosuresRequestBody object" in {
         val json = Json.parse(
           """
             |{
-            |   "taxAvoidance": [ ]
+            |   "taxAvoidance": [ ],
+            |   "class2Nics": { }
             |}
-        """.stripMargin
+          """.stripMargin
         )
 
         json.as[AmendDisclosuresRequestBody] shouldBe AmendDisclosuresRequestBody.empty
@@ -72,15 +86,15 @@ class AmendDisclosuresRequestBodySpec extends UnitSpec {
         val invalidJson = Json.parse(
           """
             |{
-            | "taxAvoidance": [
-            | {
-            | "srn": true,
-            | "taxYear": "2020-21"
-            | }
-            | ],
-            | "class2Nics": {
-            |   "class2VoluntaryContributions": true
-            | }
+            |   "taxAvoidance": [
+            |      {
+            |         "srn": true,
+            |         "taxYear": "2020-21"
+            |      }
+            |   ],
+            |   "class2Nics": {
+            |      "class2VoluntaryContributions": true
+            |   }
             |}
           """.stripMargin
         )
@@ -91,7 +105,7 @@ class AmendDisclosuresRequestBodySpec extends UnitSpec {
 
     "written to JSON" should {
       "produce the expected JsObject" in {
-        Json.toJson(model) shouldBe json
+        Json.toJson(requestBodyModel) shouldBe json
       }
     }
   }

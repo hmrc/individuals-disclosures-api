@@ -43,7 +43,7 @@ class AmendDisclosuresControllerSpec
     with MockIdGenerator {
 
   val nino: String = "AA123456A"
-  val taxYear: String = "2019-20"
+  val taxYear: String = "2021-22"
   val correlationId: String = "X-123"
 
   trait Test {
@@ -69,19 +69,19 @@ class AmendDisclosuresControllerSpec
   val requestBodyJson: JsValue = Json.parse(
     """
       |{
-      |  "taxAvoidance": [
-      |    {
-      |      "srn": "14211123",
-      |      "taxYear": "2020-21"
-      |    },
-      |    {
-      |      "srn": "34522678",
-      |      "taxYear": "2021-22"
-      |    }
-      |  ],
-      |    "class2Nics": {
-      |     "class2VoluntaryContributions": true
-      |  }
+      |   "taxAvoidance": [
+      |      {
+      |         "srn": "14211123",
+      |         "taxYear": "2020-21"
+      |      },
+      |      {
+      |         "srn": "34522678",
+      |         "taxYear": "2021-22"
+      |      }
+      |   ],
+      |   "class2Nics": {
+      |      "class2VoluntaryContributions": true
+      |   }
       |}
     """.stripMargin
   )
@@ -92,22 +92,22 @@ class AmendDisclosuresControllerSpec
     body = AnyContentAsJson(requestBodyJson)
   )
 
-  val taxAvoidance: Seq[AmendTaxAvoidance] = Seq(
-    AmendTaxAvoidance(
+  val taxAvoidanceModel: Seq[AmendTaxAvoidanceItem] = Seq(
+    AmendTaxAvoidanceItem(
       srn = "14211123",
       taxYear = "2020-21"
     ),
-    AmendTaxAvoidance(
+    AmendTaxAvoidanceItem(
       srn = "34522678",
       taxYear = "2021-22"
     )
   )
 
-  val class2Nics: AmendClass2Nics = AmendClass2Nics(true)
+  val class2NicsModel: AmendClass2Nics = AmendClass2Nics(class2VoluntaryContributions = Some(true))
 
   val amendDisclosuresRequestBody: AmendDisclosuresRequestBody = AmendDisclosuresRequestBody(
-    taxAvoidance = Some(taxAvoidance),
-    class2Nics = Some(class2Nics)
+    taxAvoidance = Some(taxAvoidanceModel),
+    class2Nics = Some(class2NicsModel)
   )
 
   val requestData: AmendDisclosuresRequest = AmendDisclosuresRequest(
@@ -119,21 +119,21 @@ class AmendDisclosuresControllerSpec
   val hateoasResponse: JsValue = Json.parse(
     s"""
       |{
-      |   "links":[
+      |   "links": [
       |      {
-      |         "href":"/baseUrl/$nino/$taxYear",
-      |         "rel":"create-and-amend-disclosures",
-      |         "method":"PUT"
+      |         "href": "/baseUrl/$nino/$taxYear",
+      |         "rel": "create-and-amend-disclosures",
+      |         "method": "PUT"
       |      },
       |      {
-      |         "href":"/baseUrl/$nino/$taxYear",
-      |         "rel":"self",
-      |         "method":"GET"
+      |         "href": "/baseUrl/$nino/$taxYear",
+      |         "rel": "self",
+      |         "method": "GET"
       |      },
       |      {
-      |         "href":"/baseUrl/$nino/$taxYear",
-      |         "rel":"delete-disclosures",
-      |         "method":"DELETE"
+      |         "href": "/baseUrl/$nino/$taxYear",
+      |         "rel": "delete-disclosures",
+      |         "method": "DELETE"
       |      }
       |   ]
       |}
@@ -203,7 +203,8 @@ class AmendDisclosuresControllerSpec
           (TaxYearFormatError, BAD_REQUEST),
           (RuleTaxYearRangeInvalidError, BAD_REQUEST),
           (RuleIncorrectOrEmptyBodyError, BAD_REQUEST),
-          (SRNFormatError, BAD_REQUEST)
+          (SRNFormatError, BAD_REQUEST),
+          (RuleVoluntaryClass2ValueInvalidError, BAD_REQUEST)
         )
 
         input.foreach(args => (errorsFromParserTester _).tupled(args))
@@ -236,7 +237,7 @@ class AmendDisclosuresControllerSpec
           (NinoFormatError, BAD_REQUEST),
           (TaxYearFormatError, BAD_REQUEST),
           (NotFoundError, NOT_FOUND),
-          (RuleVoluntaryClass2CannotBeChanged, FORBIDDEN),
+          (RuleVoluntaryClass2CannotBeChangedError, FORBIDDEN),
           (DownstreamError, INTERNAL_SERVER_ERROR)
         )
 

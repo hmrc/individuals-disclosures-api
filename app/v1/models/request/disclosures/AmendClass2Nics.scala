@@ -18,8 +18,10 @@ package v1.models.request.disclosures
 
 import play.api.libs.json.{Json, OFormat}
 
-case class AmendClass2Nics(class2VoluntaryContributions: Boolean)
+case class AmendClass2Nics(class2VoluntaryContributions: Option[Boolean])
 
 object AmendClass2Nics {
+  val empty: AmendClass2Nics = AmendClass2Nics(None)
+
   implicit val format: OFormat[AmendClass2Nics] = Json.format[AmendClass2Nics]
 }
