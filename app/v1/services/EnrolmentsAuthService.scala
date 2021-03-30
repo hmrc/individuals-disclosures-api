@@ -86,7 +86,5 @@ class EnrolmentsAuthService @Inject()(val connector: AuthConnector, val appConfi
         case _ ~ enrolments =>
           Future.successful(getAgentReferenceFromEnrolments(enrolments))
         case _ => Future.successful(None)
-        case _ ~ enrolments => Future.successful(getAgentReferenceFromEnrolments(enrolments))
-        case _              => Future.successful(None)
       }
 }
