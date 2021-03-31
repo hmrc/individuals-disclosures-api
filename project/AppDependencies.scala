@@ -22,18 +22,16 @@ object AppDependencies {
 
   val compile: Seq[ModuleID] = Seq(
     ws,
-    "uk.gov.hmrc" %% "bootstrap-backend-play-27" % "3.2.0",
-    "uk.gov.hmrc"   %% "domain"            % "5.10.0-play-27",
-    "org.typelevel" %% "cats-core"         % "2.3.0",
-    compilerPlugin("com.github.ghik" % "silencer-plugin" % "1.7.1" cross CrossVersion.full),
-    "com.github.ghik" % "silencer-lib" % "1.7.1" % Provided cross CrossVersion.full,
-    "com.chuusai"   %% "shapeless"         % "2.4.0-M1"
+    "uk.gov.hmrc"   %% "bootstrap-backend-play-27" % "3.4.0",
+    "uk.gov.hmrc"   %% "domain"                    % "5.11.0-play-27",
+    "org.typelevel" %% "cats-core"                 % "2.3.0",
+    "com.chuusai"   %% "shapeless"                 % "2.4.0-M1"
   )
 
   def test(scope: String = "test, it"): Seq[sbt.ModuleID] = Seq(
     "org.scalatest"          %% "scalatest"          % "3.2.3"             % scope,
-    "com.vladsch.flexmark"   % "flexmark-all"        % "0.36.8"           % scope,
-    "org.scalacheck"         %% "scalacheck"         % "1.15.1"            % scope,
+    "com.vladsch.flexmark"   % "flexmark-all"        % "0.36.8"            % scope,
+    "org.scalacheck"         %% "scalacheck"         % "1.15.3"            % scope,
     "org.scalamock"          %% "scalamock"          % "5.1.0"             % scope,
     "com.typesafe.play"      %% "play-test"          % PlayVersion.current % scope,
     "org.scalatestplus.play" %% "scalatestplus-play" % "4.0.3"             % scope,
