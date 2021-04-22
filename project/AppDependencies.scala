@@ -22,18 +22,18 @@ object AppDependencies {
 
   val compile: Seq[ModuleID] = Seq(
     ws,
-    "uk.gov.hmrc"   %% "bootstrap-backend-play-28" % "4.2.0", //updated
-    "org.typelevel" %% "cats-core"                 % "2.6.0", //updated
-    "com.chuusai"   %% "shapeless"                 % "2.4.0-M1" //not changed
+    "uk.gov.hmrc"   %% "bootstrap-backend-play-28" % "4.2.0",
+    "org.typelevel" %% "cats-core"                 % "2.6.0",
+    "com.chuusai"   %% "shapeless"                 % "2.4.0-M1"
   )
 
   def test(scope: String = "test, it"): Seq[sbt.ModuleID] = Seq(
-    "org.scalatest"          %% "scalatest"          % "3.2.7"             % scope, //updated
+    "org.scalatest"          %% "scalatest"          % "3.2.7"             % scope,
     "com.vladsch.flexmark"   % "flexmark-all"        % "0.36.8"            % scope, // TODO
-    "org.scalacheck"         %% "scalacheck"         % "1.15.3"            % scope, //not changed
-    "org.scalamock"          %% "scalamock"          % "5.1.0"             % scope, //not changed
-    "com.typesafe.play"      %% "play-test"          % PlayVersion.current % scope, //not changed
-    "org.scalatestplus.play" %% "scalatestplus-play" % "5.1.0"             % scope, //updated
-    "com.github.tomakehurst" % "wiremock-jre8"       % "2.27.2"            % scope  //not changed
+    "org.scalacheck"         %% "scalacheck"         % "1.15.3"            % scope,
+    "org.scalamock"          %% "scalamock"          % "5.1.0"             % scope,
+    "com.typesafe.play"      %% "play-test"          % PlayVersion.current % scope,
+    "org.scalatestplus.play" %% "scalatestplus-play" % "5.1.0"             % scope,
+    "com.github.tomakehurst" % "wiremock-jre8"       % "2.27.2"            % scope
   )
 }
