@@ -27,9 +27,23 @@ trait ConnectorSpec extends UnitSpec
   with MimeTypes
   with HeaderNames {
 
-  lazy val baseUrl = "test-BaseUrl"
+  lazy val baseUrl = "http://test-BaseUrl"
   implicit val correlationId: String = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
   implicit val ec: ExecutionContext = scala.concurrent.ExecutionContext.global
+
+  val dummyHeaderCarrierConfig: HeaderCarrier.Config =
+    HeaderCarrier.Config(
+      Seq(("^" + "test-BaseUrl" + "$").r),
+      Seq("Accept", "Gov-Test-Scenario", "Content-Type", "Location", "X-Request-Timestamp", "X-Session-Id"),
+      Some("individual-disclosures-api")
+    )
+
+  val requiredDesHeaders: Seq[(String, String)] = Seq(
+    "Environment" -> "des-environment",
+    "Authorization" -> s"Bearer des-token",
+    "User-Agent" -> "individual-disclosures-api",
+    "CorrelationId" -> correlationId
+  )
 }

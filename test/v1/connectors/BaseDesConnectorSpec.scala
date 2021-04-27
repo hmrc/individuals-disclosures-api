@@ -18,8 +18,7 @@ package v1.connectors
 
 import config.AppConfig
 import mocks.MockAppConfig
-import uk.gov.hmrc.http.HttpReads
-import uk.gov.hmrc.http.HttpClient
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpReads}
 import v1.mocks.MockHttpClient
 import v1.models.outcomes.ResponseWrapper
 
@@ -41,51 +40,98 @@ class BaseDesConnectorSpec extends ConnectorSpec {
   implicit val httpReads: HttpReads[DesOutcome[Result]] = mock[HttpReads[DesOutcome[Result]]]
 
   class Test extends MockHttpClient with MockAppConfig {
+
     val connector: BaseDesConnector = new BaseDesConnector {
       val http: HttpClient = mockHttpClient
       val appConfig: AppConfig = mockAppConfig
     }
+
     MockedAppConfig.desBaseUrl returns baseUrl
     MockedAppConfig.desToken returns "des-token"
     MockedAppConfig.desEnvironment returns "des-environment"
   }
 
-  "post" must {
-    "posts with the required des headers and returns the result" in new Test {
-      MockedHttpClient
-        .post(absoluteUrl, body, "Environment" -> "des-environment", "Authorization" -> s"Bearer des-token")
-        .returns(Future.successful(outcome))
+  "post" when {
+    "sending a request to an internal service" must {
+      "posts with the required des headers and returns the result" in new Test {
+        MockedHttpClient
+          .post(absoluteUrl, dummyHeaderCarrierConfig, body, requiredDesHeaders :_*)
+          .returns(Future.successful(outcome))
 
-      await(connector.post(body, DesUri[Result](url))) shouldBe outcome
+        await(connector.post(body, DesUri[Result](url))) shouldBe outcome
+      }
+    }
+    "sending a request to an external service" must {
+      "posts with the required des headers and returns the result" in new Test {
+        MockedHttpClient
+          .post(absoluteUrl, dummyHeaderCarrierConfig, body, requiredDesHeaders :_*)
+          .returns(Future.successful(outcome))
+
+        await(connector.post(body, DesUri[Result](url))) shouldBe outcome
+      }
     }
   }
 
-  "get" must {
-    "get with the required des headers and return the result" in new Test {
-      MockedHttpClient
-        .get(absoluteUrl, "Environment" -> "des-environment", "Authorization" -> s"Bearer des-token")
-        .returns(Future.successful(outcome))
+  "get" when {
+    "sending a request to an internal service" must {
+      "get with the required des headers and return the result" in new Test {
+        MockedHttpClient
+          .get(absoluteUrl, dummyHeaderCarrierConfig, requiredDesHeaders :_*)
+          .returns(Future.successful(outcome))
 
-      await(connector.get(DesUri[Result](url))) shouldBe outcome
+        await(connector.get(DesUri[Result](url))) shouldBe outcome
+      }
+    }
+    "sending a request to an external service" must {
+      "get with the required des headers and return the result" in new Test {
+        MockedHttpClient
+          .get(absoluteUrl, dummyHeaderCarrierConfig, requiredDesHeaders :_*)
+          .returns(Future.successful(outcome))
+
+        await(connector.get(DesUri[Result](url))) shouldBe outcome
+      }
     }
   }
 
-  "delete" must {
-    "delete with the required des headers and return the result" in new Test {
-      MockedHttpClient
-        .delete(absoluteUrl, "Environment" -> "des-environment", "Authorization" -> s"Bearer des-token")
-        .returns(Future.successful(outcome))
+  "delete" when {
+    "sending a request to an internal service" must {
+      "delete with the required des headers and return the result" in new Test {
+        MockedHttpClient
+          .delete(absoluteUrl, dummyHeaderCarrierConfig, requiredDesHeaders :_*)
+          .returns(Future.successful(outcome))
 
-      await(connector.delete(DesUri[Result](url))) shouldBe outcome
+        await(connector.delete(DesUri[Result](url))) shouldBe outcome
+      }
+    }
+    "sending a request to an external service" must {
+      "delete with the required des headers and return the result" in new Test {
+        MockedHttpClient
+          .delete(absoluteUrl, dummyHeaderCarrierConfig, requiredDesHeaders :_*)
+          .returns(Future.successful(outcome))
+
+        await(connector.delete(DesUri[Result](url))) shouldBe outcome
+      }
     }
   }
 
-  "put" must {
-    "put with the required des headers and return result" in new Test {
-      MockedHttpClient.put(absoluteUrl, body, "Environment" -> "des-environment", "Authorization" -> s"Bearer des-token")
-        .returns(Future.successful(outcome))
+  "put" when {
+    "sending a request to an internal service" must {
+      "put with the required des headers and return result" in new Test {
+        MockedHttpClient.put(absoluteUrl, dummyHeaderCarrierConfig, body, requiredDesHeaders :_*)
+          .returns(Future.successful(outcome))
 
-      await(connector.put(body, DesUri[Result](url))) shouldBe outcome
+        await(connector.put(body, DesUri[Result](url))) shouldBe outcome
+      }
+    }
+    "sending a request to an external service" must {
+      "put with the required des headers and return result" in new Test {
+        val dummyHeaderCarrierConfig: HeaderCarrier.Config = HeaderCarrier.Config()
+
+        MockedHttpClient.put(absoluteUrl, dummyHeaderCarrierConfig, body, requiredDesHeaders :_*)
+          .returns(Future.successful(outcome))
+
+        await(connector.put(body, DesUri[Result](url))) shouldBe outcome
+      }
     }
   }
 }

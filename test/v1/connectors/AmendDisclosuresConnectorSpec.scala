@@ -67,6 +67,7 @@ class AmendDisclosuresConnectorSpec extends ConnectorSpec {
         MockedHttpClient
           .put(
             url = s"$baseUrl/income-tax/disclosures/$nino/$taxYear",
+            config = dummyHeaderCarrierConfig,
             body = amendDisclosuresRequest.body,
             requiredHeaders = "Environment" -> "des-environment", "Authorization" -> s"Bearer des-token"
           ).returns(Future.successful(outcome))

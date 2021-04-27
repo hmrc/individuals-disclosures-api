@@ -55,6 +55,7 @@ class DeleteRetrieveConnectorSpec extends ConnectorSpec {
         MockedHttpClient
           .delete(
             url = s"$baseUrl/income-tax/disclosures/$nino/$taxYear",
+            config = dummyHeaderCarrierConfig,
             requiredHeaders = desRequestHeaders: _*
           )
           .returns(Future.successful(outcome))
@@ -65,7 +66,6 @@ class DeleteRetrieveConnectorSpec extends ConnectorSpec {
 
     "retrieve" must {
       "return a 200 status for a success scenario" in new Test {
-
         case class Data(field: String)
 
         object Data {
@@ -78,6 +78,7 @@ class DeleteRetrieveConnectorSpec extends ConnectorSpec {
         MockedHttpClient
           .get(
             url = s"$baseUrl/income-tax/disclosures/$nino/$taxYear",
+            config = dummyHeaderCarrierConfig,
             requiredHeaders = desRequestHeaders: _*
           )
           .returns(Future.successful(outcome))

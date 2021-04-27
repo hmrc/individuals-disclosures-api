@@ -33,7 +33,16 @@ trait BaseDesConnector {
 
   private[connectors] def desHeaderCarrier(implicit hc: HeaderCarrier): HeaderCarrier =
     hc.copy(authorization = Some(Authorization(s"Bearer ${appConfig.desToken}")))
-      .withExtraHeaders("Environment" -> appConfig.desEnv)
+      .withExtraHeaders(headers = "Environment" -> appConfig.desEnv)
+
+
+  /* TODO: Each of the HTTP methods accept an extra parameter called "headers" which will add the headers provided
+  to the `extraHeaders` field of the headerCarrier. For any headers that aren't in the `extraHeaders` field of the
+  headerCarrier to be sent to external source (i.e DES) they must MANUALLY be added to the HTTP call
+
+
+  i.e  http.POST(url = s"${appConfig.desBaseUrl}/${uri.value}", body, Seq("authorisation" -> "Bearer t0k3n"))
+  * */
 
   def post[Body: Writes, Resp](body: Body, uri: DesUri[Resp])(implicit ec: ExecutionContext,
                                                               hc: HeaderCarrier,
@@ -41,10 +50,10 @@ trait BaseDesConnector {
                                                               correlationId: String): Future[DesOutcome[Resp]] = {
 
     def doPost(implicit hc: HeaderCarrier): Future[DesOutcome[Resp]] = {
-      http.POST(s"${appConfig.desBaseUrl}/${uri.value}", body)
+      http.POST(url = s"${appConfig.desBaseUrl}/${uri.value}", body)
     }
 
-    doPost(desHeaderCarrier(hc.withExtraHeaders("CorrelationId" -> correlationId)))
+    doPost(desHeaderCarrier(hc.withExtraHeaders(headers = "CorrelationId" -> correlationId)))
   }
 
   def get[Resp](uri: DesUri[Resp])(implicit ec: ExecutionContext,
@@ -53,9 +62,9 @@ trait BaseDesConnector {
                                    correlationId: String): Future[DesOutcome[Resp]] = {
 
     def doGet(implicit hc: HeaderCarrier): Future[DesOutcome[Resp]] =
-      http.GET(s"${appConfig.desBaseUrl}/${uri.value}")
+      http.GET(url = s"${appConfig.desBaseUrl}/${uri.value}", queryParams = Seq.empty, headers = Seq.empty)
 
-    doGet(desHeaderCarrier(hc.withExtraHeaders("CorrelationId" -> correlationId)))
+    doGet(desHeaderCarrier(hc.withExtraHeaders(headers = "CorrelationId" -> correlationId)))
   }
 
   def delete[Resp](uri: DesUri[Resp])(implicit ec: ExecutionContext,
@@ -64,10 +73,10 @@ trait BaseDesConnector {
                                       correlationId: String): Future[DesOutcome[Resp]] = {
 
     def doDelete(implicit hc: HeaderCarrier): Future[DesOutcome[Resp]] = {
-      http.DELETE(s"${appConfig.desBaseUrl}/${uri.value}")
+      http.DELETE(url = s"${appConfig.desBaseUrl}/${uri.value}")
     }
 
-    doDelete(desHeaderCarrier(hc.withExtraHeaders("CorrelationId" -> correlationId)))
+    doDelete(desHeaderCarrier(hc.withExtraHeaders(headers = "CorrelationId" -> correlationId)))
   }
 
   def put[Body: Writes, Resp](body: Body, uri: DesUri[Resp])(implicit ec: ExecutionContext,
@@ -76,9 +85,9 @@ trait BaseDesConnector {
                                                              correlationId: String): Future[DesOutcome[Resp]] = {
 
     def doPut(implicit hc: HeaderCarrier): Future[DesOutcome[Resp]] = {
-      http.PUT(s"${appConfig.desBaseUrl}/${uri.value}", body)
+      http.PUT(url = s"${appConfig.desBaseUrl}/${uri.value}", body)
     }
 
-    doPut(desHeaderCarrier(hc.withExtraHeaders("CorrelationId" -> correlationId)))
+    doPut(desHeaderCarrier(hc.withExtraHeaders(headers = "CorrelationId" -> correlationId)))
   }
 }
