@@ -61,28 +61,10 @@ class BaseDesConnectorSpec extends ConnectorSpec {
         await(connector.post(body, DesUri[Result](url))) shouldBe outcome
       }
     }
-    "sending a request to an external service" must {
-      "posts with the required des headers and returns the result" in new Test {
-        MockedHttpClient
-          .post(absoluteUrl, dummyHeaderCarrierConfig, body, requiredDesHeaders :_*)
-          .returns(Future.successful(outcome))
-
-        await(connector.post(body, DesUri[Result](url))) shouldBe outcome
-      }
-    }
   }
 
   "get" when {
     "sending a request to an internal service" must {
-      "get with the required des headers and return the result" in new Test {
-        MockedHttpClient
-          .get(absoluteUrl, dummyHeaderCarrierConfig, requiredDesHeaders :_*)
-          .returns(Future.successful(outcome))
-
-        await(connector.get(DesUri[Result](url))) shouldBe outcome
-      }
-    }
-    "sending a request to an external service" must {
       "get with the required des headers and return the result" in new Test {
         MockedHttpClient
           .get(absoluteUrl, dummyHeaderCarrierConfig, requiredDesHeaders :_*)
@@ -103,30 +85,11 @@ class BaseDesConnectorSpec extends ConnectorSpec {
         await(connector.delete(DesUri[Result](url))) shouldBe outcome
       }
     }
-    "sending a request to an external service" must {
-      "delete with the required des headers and return the result" in new Test {
-        MockedHttpClient
-          .delete(absoluteUrl, dummyHeaderCarrierConfig, requiredDesHeaders :_*)
-          .returns(Future.successful(outcome))
-
-        await(connector.delete(DesUri[Result](url))) shouldBe outcome
-      }
-    }
   }
 
   "put" when {
     "sending a request to an internal service" must {
       "put with the required des headers and return result" in new Test {
-        MockedHttpClient.put(absoluteUrl, dummyHeaderCarrierConfig, body, requiredDesHeaders :_*)
-          .returns(Future.successful(outcome))
-
-        await(connector.put(body, DesUri[Result](url))) shouldBe outcome
-      }
-    }
-    "sending a request to an external service" must {
-      "put with the required des headers and return result" in new Test {
-        val dummyHeaderCarrierConfig: HeaderCarrier.Config = HeaderCarrier.Config()
-
         MockedHttpClient.put(absoluteUrl, dummyHeaderCarrierConfig, body, requiredDesHeaders :_*)
           .returns(Future.successful(outcome))
 
