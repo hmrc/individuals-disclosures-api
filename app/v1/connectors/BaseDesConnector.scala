@@ -38,7 +38,7 @@ trait BaseDesConnector {
 
   /* TODO: Each of the HTTP methods accept an extra parameter called "headers" which will add the headers provided
   to the `extraHeaders` field of the headerCarrier. For any headers that aren't in the `extraHeaders` field of the
-  headerCarrier to be sent to external source (i.e DES) they must MANUALLY be added to the HTTP call
+  headerCarrier to be sent to external source (i.e DES) they must MANUALLY be added to the HTTP call in this way.
 
 
   i.e  http.POST(url = s"${appConfig.desBaseUrl}/${uri.value}", body, Seq("authorisation" -> "Bearer t0k3n"))
