@@ -25,7 +25,6 @@ import uk.gov.hmrc.http.HttpClient
 import scala.concurrent.{ExecutionContext, Future}
 
 trait MockHttpClient extends MockFactory {
-
   val mockHttpClient: HttpClient = mock[HttpClient]
 
   object MockedHttpClient {
@@ -34,14 +33,6 @@ trait MockHttpClient extends MockFactory {
         .GET(_: String, _: Seq[(String, String)], _: Seq[(String, String)])(_: HttpReads[T], _: HeaderCarrier, _: ExecutionContext))
         .expects(where { (actualUrl: String, _: Seq[(String, String)], _: Seq[(String, String)], _ : HttpReads[T], hc: HeaderCarrier, _: ExecutionContext) =>
           url == actualUrl && requiredHeaders.forall(h => hc.headersForUrl(config)(actualUrl).contains(h))
-        })
-    }
-
-    def post[I, T](url: String, config: HeaderCarrier.Config, body: I, requiredHeaders: (String, String)*): CallHandler[Future[T]] = {
-      (mockHttpClient
-        .POST[I, T](_: String, _: I, _: Seq[(String, String)])(_: Writes[I], _: HttpReads[T], _: HeaderCarrier, _: ExecutionContext))
-        .expects(where { (actualUrl: String, actualBody, _, _, _, hc: HeaderCarrier, _) =>
-          url == actualUrl && body == actualBody && requiredHeaders.forall(h => hc.headersForUrl(config)(actualUrl).contains(h))
         })
     }
 

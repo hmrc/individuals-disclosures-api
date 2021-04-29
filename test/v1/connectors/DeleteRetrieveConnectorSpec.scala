@@ -24,20 +24,13 @@ import v1.models.outcomes.ResponseWrapper
 import scala.concurrent.Future
 
 class DeleteRetrieveConnectorSpec extends ConnectorSpec {
-
   val nino: String = "AA111111A"
   val taxYear: String = "2021-22"
 
   class Test extends MockHttpClient with MockAppConfig {
-
     val connector: DeleteRetrieveConnector = new DeleteRetrieveConnector(
       http = mockHttpClient,
       appConfig = mockAppConfig
-    )
-
-    val desRequestHeaders: Seq[(String, String)] = Seq(
-      "Environment" -> "des-environment",
-      "Authorization" -> s"Bearer des-token"
     )
 
     MockedAppConfig.desBaseUrl returns baseUrl
@@ -48,15 +41,14 @@ class DeleteRetrieveConnectorSpec extends ConnectorSpec {
   "DeleteRetrieveConnector" when {
     "delete" must {
       "return a 204 status for a success scenario" in new Test {
-
         val outcome = Right(ResponseWrapper(correlationId, ()))
         implicit val desUri: DesUri[Unit] = DesUri[Unit](s"income-tax/disclosures/$nino/$taxYear")
 
         MockedHttpClient
           .delete(
             url = s"$baseUrl/income-tax/disclosures/$nino/$taxYear",
-            config = dummyHeaderCarrierConfig,
-            requiredHeaders = desRequestHeaders: _*
+            config = dummyDesHeaderCarrierConfig,
+            requiredHeaders = requiredDesHeaders: _*
           )
           .returns(Future.successful(outcome))
 
@@ -78,8 +70,8 @@ class DeleteRetrieveConnectorSpec extends ConnectorSpec {
         MockedHttpClient
           .get(
             url = s"$baseUrl/income-tax/disclosures/$nino/$taxYear",
-            config = dummyHeaderCarrierConfig,
-            requiredHeaders = desRequestHeaders: _*
+            config = dummyDesHeaderCarrierConfig,
+            requiredHeaders = requiredDesHeaders: _*
           )
           .returns(Future.successful(outcome))
 

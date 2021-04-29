@@ -25,7 +25,6 @@ import v1.models.request.disclosures._
 import scala.concurrent.Future
 
 class AmendDisclosuresConnectorSpec extends ConnectorSpec {
-
   private val nino: String = "AA111111A"
   private val taxYear: String = "2021-22"
 
@@ -48,7 +47,6 @@ class AmendDisclosuresConnectorSpec extends ConnectorSpec {
   )
 
   class Test extends MockHttpClient with MockAppConfig {
-
     val connector: AmendDisclosuresConnector = new AmendDisclosuresConnector(
       http = mockHttpClient,
       appConfig = mockAppConfig
@@ -67,9 +65,9 @@ class AmendDisclosuresConnectorSpec extends ConnectorSpec {
         MockedHttpClient
           .put(
             url = s"$baseUrl/income-tax/disclosures/$nino/$taxYear",
-            config = dummyHeaderCarrierConfig,
+            config = dummyDesHeaderCarrierConfig,
             body = amendDisclosuresRequest.body,
-            requiredHeaders = "Environment" -> "des-environment", "Authorization" -> s"Bearer des-token"
+            requiredHeaders = requiredDesHeaders: _*
           ).returns(Future.successful(outcome))
 
         await(connector.amendDisclosures(amendDisclosuresRequest)) shouldBe outcome

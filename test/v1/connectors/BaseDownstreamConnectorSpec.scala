@@ -24,14 +24,12 @@ import v1.models.outcomes.ResponseWrapper
 
 import scala.concurrent.Future
 
-class BaseDesConnectorSpec extends ConnectorSpec {
-
+class BaseDownstreamConnectorSpec extends ConnectorSpec {
   // WLOG
   case class Result(value: Int)
 
   // WLOG
   val body = "body"
-
   val outcome = Right(ResponseWrapper(correlationId, Result(2)))
 
   val url = "some/url?param=value"
@@ -40,8 +38,7 @@ class BaseDesConnectorSpec extends ConnectorSpec {
   implicit val httpReads: HttpReads[DesOutcome[Result]] = mock[HttpReads[DesOutcome[Result]]]
 
   class Test extends MockHttpClient with MockAppConfig {
-
-    val connector: BaseDesConnector = new BaseDesConnector {
+    val connector: BaseDownstreamConnector = new BaseDownstreamConnector {
       val http: HttpClient = mockHttpClient
       val appConfig: AppConfig = mockAppConfig
     }
@@ -51,46 +48,50 @@ class BaseDesConnectorSpec extends ConnectorSpec {
     MockedAppConfig.desEnvironment returns "des-environment"
   }
 
-  "post" when {
-    "sending a request to an internal service" must {
-      "posts with the required des headers and returns the result" in new Test {
-        MockedHttpClient
-          .post(absoluteUrl, dummyHeaderCarrierConfig, body, requiredDesHeaders :_*)
-          .returns(Future.successful(outcome))
+  "BaseDownstreamConnector" when {
+    "making a HTTP request to an internal service" must {
+      val dummyInternalHeaderCarrierConfig: HeaderCarrier.Config =
+        HeaderCarrier.Config(
+          Seq(("^" + "test-BaseUrl" + "$").r),
+          Seq("Accept", "Gov-Test-Scenario", "Content-Type", "Location", "X-Request-Timestamp", "X-Session-Id"),
+          Some("individual-disclosures-api")
+        )
 
-        await(connector.post(body, DesUri[Result](url))) shouldBe outcome
-      }
+      val requiredInternalHeaders: Seq[(String, String)] = Seq(
+        "Environment" -> "des-environment",
+        "Authorization" -> s"Bearer des-token",
+        "User-Agent" -> "individual-disclosures-api",
+        "CorrelationId" -> correlationId
+      )
+
+      testHttpMethods(dummyInternalHeaderCarrierConfig, requiredInternalHeaders)
+    }
+
+    "making a HTTP request to an external service (i.e DES)" must {
+      testHttpMethods(dummyDesHeaderCarrierConfig, requiredDesHeaders)
     }
   }
 
-  "get" when {
-    "sending a request to an internal service" must {
-      "get with the required des headers and return the result" in new Test {
+  def testHttpMethods(config: HeaderCarrier.Config, requiredHeaders: Seq[(String, String)]): Unit = {
+    "complete the request successfully with the required headers" when {
+      "GET" in new Test {
         MockedHttpClient
-          .get(absoluteUrl, dummyHeaderCarrierConfig, requiredDesHeaders :_*)
+          .get(absoluteUrl, config, requiredHeaders :_*)
           .returns(Future.successful(outcome))
 
         await(connector.get(DesUri[Result](url))) shouldBe outcome
       }
-    }
-  }
 
-  "delete" when {
-    "sending a request to an internal service" must {
-      "delete with the required des headers and return the result" in new Test {
+      "DELETE" in new Test {
         MockedHttpClient
-          .delete(absoluteUrl, dummyHeaderCarrierConfig, requiredDesHeaders :_*)
+          .delete(absoluteUrl, config, requiredHeaders :_*)
           .returns(Future.successful(outcome))
 
         await(connector.delete(DesUri[Result](url))) shouldBe outcome
       }
-    }
-  }
 
-  "put" when {
-    "sending a request to an internal service" must {
-      "put with the required des headers and return result" in new Test {
-        MockedHttpClient.put(absoluteUrl, dummyHeaderCarrierConfig, body, requiredDesHeaders :_*)
+      "PUT" in new Test {
+        MockedHttpClient.put(absoluteUrl, config, body, requiredHeaders :_*)
           .returns(Future.successful(outcome))
 
         await(connector.put(body, DesUri[Result](url))) shouldBe outcome
