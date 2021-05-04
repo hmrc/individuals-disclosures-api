@@ -17,6 +17,7 @@
 package v1.connectors
 
 import mocks.MockAppConfig
+import uk.gov.hmrc.http.HeaderCarrier
 import v1.models.domain.Nino
 import v1.mocks.MockHttpClient
 import v1.models.outcomes.ResponseWrapper
@@ -55,6 +56,7 @@ class AmendDisclosuresConnectorSpec extends ConnectorSpec {
     MockedAppConfig.desBaseUrl returns baseUrl
     MockedAppConfig.desToken returns "des-token"
     MockedAppConfig.desEnvironment returns "des-environment"
+    MockedAppConfig.desEnvironmentHeaders returns Some(allowedDesHeaders)
   }
 
   "AmendDisclosuresConnector" when {
@@ -62,12 +64,15 @@ class AmendDisclosuresConnectorSpec extends ConnectorSpec {
       "return a 204 status for a success scenario" in new Test {
         val outcome = Right(ResponseWrapper(correlationId, ()))
 
+        implicit val hc: HeaderCarrier = HeaderCarrier(otherHeaders = Seq("Content-Type" -> "application/json"))
+        val requiredDesHeadersPut: Seq[(String, String)] = requiredDesHeaders ++ Seq("Content-Type" -> "application/json")
+
         MockedHttpClient
           .put(
             url = s"$baseUrl/income-tax/disclosures/$nino/$taxYear",
             config = dummyDesHeaderCarrierConfig,
             body = amendDisclosuresRequest.body,
-            requiredHeaders = requiredDesHeaders: _*
+            requiredHeaders = requiredDesHeadersPut: _*
           ).returns(Future.successful(outcome))
 
         await(connector.amendDisclosures(amendDisclosuresRequest)) shouldBe outcome

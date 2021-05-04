@@ -46,15 +46,14 @@ class BaseDownstreamConnectorSpec extends ConnectorSpec {
     MockedAppConfig.desBaseUrl returns baseUrl
     MockedAppConfig.desToken returns "des-token"
     MockedAppConfig.desEnvironment returns "des-environment"
+    MockedAppConfig.desEnvironmentHeaders returns Some(allowedDesHeaders)
   }
 
   "BaseDownstreamConnector" when {
     "making a HTTP request to an internal service" must {
       val dummyInternalHeaderCarrierConfig: HeaderCarrier.Config =
-        HeaderCarrier.Config(
-          Seq(("^" + "test-BaseUrl" + "$").r),
-          Seq("Accept", "Gov-Test-Scenario", "Content-Type", "Location", "X-Request-Timestamp", "X-Session-Id"),
-          Some("individual-disclosures-api")
+        dummyDesHeaderCarrierConfig.copy(
+          internalHostPatterns = Seq(("^" + "test-BaseUrl" + "$").r)
         )
 
       val requiredInternalHeaders: Seq[(String, String)] = Seq(
@@ -91,7 +90,10 @@ class BaseDownstreamConnectorSpec extends ConnectorSpec {
       }
 
       "PUT" in new Test {
-        MockedHttpClient.put(absoluteUrl, config, body, requiredHeaders :_*)
+        implicit val hc: HeaderCarrier = HeaderCarrier(otherHeaders = Seq("Content-Type" -> "application/json"))
+        val requiredHeadersPut: Seq[(String, String)] = requiredHeaders ++ Seq("Content-Type" -> "application/json")
+
+        MockedHttpClient.put(absoluteUrl, config, body, requiredHeadersPut:_*)
           .returns(Future.successful(outcome))
 
         await(connector.put(body, DesUri[Result](url))) shouldBe outcome

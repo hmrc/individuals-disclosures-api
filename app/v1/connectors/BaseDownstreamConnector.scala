@@ -19,7 +19,7 @@ package v1.connectors
 import config.AppConfig
 import play.api.Logger
 import play.api.libs.json.Writes
-import uk.gov.hmrc.http.{ Authorization, HeaderCarrier, HttpClient, HttpReads }
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpReads }
 
 import scala.concurrent.{ ExecutionContext, Future }
 
@@ -29,9 +29,18 @@ trait BaseDownstreamConnector {
 
   val logger: Logger = Logger(this.getClass)
 
-  private[connectors] def desHeaderCarrier(implicit hc: HeaderCarrier): HeaderCarrier =
-    hc.copy(authorization = Some(Authorization(s"Bearer ${appConfig.desToken}")))
-      .withExtraHeaders(headers = "Environment" -> appConfig.desEnv)
+  private[connectors] def desHeaderCarrier(implicit hc: HeaderCarrier, correlationId: String): HeaderCarrier =
+    HeaderCarrier(
+     extraHeaders = hc.extraHeaders ++
+       Seq(
+         "Authorization" -> s"Bearer ${appConfig.desToken}",
+         "Environment" -> appConfig.desEnv,
+         "CorrelationId" -> correlationId
+       ) ++
+       appConfig.desEnvironmentHeaders.fold(Seq.empty[(String, String)])(
+         headers => hc.headers(headers)
+       )
+    )
 
   def get[Resp](uri: DesUri[Resp])(implicit ec: ExecutionContext,
                                    hc: HeaderCarrier,
@@ -39,9 +48,9 @@ trait BaseDownstreamConnector {
                                    correlationId: String): Future[DesOutcome[Resp]] = {
 
     def doGet(implicit hc: HeaderCarrier): Future[DesOutcome[Resp]] =
-      http.GET(url = s"${appConfig.desBaseUrl}/${uri.value}", queryParams = Seq.empty, headers = Seq.empty)
+      http.GET(url = s"${appConfig.desBaseUrl}/${uri.value}")
 
-    doGet(desHeaderCarrier(hc.withExtraHeaders(headers = "CorrelationId" -> correlationId)))
+    doGet(desHeaderCarrier(hc, correlationId))
   }
 
   def delete[Resp](uri: DesUri[Resp])(implicit ec: ExecutionContext,
@@ -53,7 +62,7 @@ trait BaseDownstreamConnector {
       http.DELETE(url = s"${appConfig.desBaseUrl}/${uri.value}")
     }
 
-    doDelete(desHeaderCarrier(hc.withExtraHeaders(headers = "CorrelationId" -> correlationId)))
+    doDelete(desHeaderCarrier(hc, correlationId))
   }
 
   def put[Body: Writes, Resp](body: Body, uri: DesUri[Resp])(implicit ec: ExecutionContext,
@@ -65,6 +74,6 @@ trait BaseDownstreamConnector {
       http.PUT(url = s"${appConfig.desBaseUrl}/${uri.value}", body)
     }
 
-    doPut(desHeaderCarrier(hc.withExtraHeaders(headers = "CorrelationId" -> correlationId)))
+    doPut(desHeaderCarrier(hc, correlationId))
   }
 }
