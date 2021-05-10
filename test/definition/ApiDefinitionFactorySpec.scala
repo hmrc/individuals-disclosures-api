@@ -17,14 +17,12 @@
 package definition
 
 import config.ConfidenceLevelConfig
-import com.typesafe.config.ConfigFactory
 import definition.APIStatus.{ALPHA, BETA}
 import definition.Versions.VERSION_1
 import mocks.MockAppConfig
-import play.api.Configuration
 import support.UnitSpec
-import v1.mocks.MockHttpClient
 import uk.gov.hmrc.auth.core.ConfidenceLevel
+import v1.mocks.MockHttpClient
 
 class ApiDefinitionFactorySpec extends UnitSpec {
 
@@ -38,7 +36,6 @@ class ApiDefinitionFactorySpec extends UnitSpec {
   "definition" when {
     "called" should {
       "return a valid Definition case class" in new Test {
-        MockAppConfig.featureSwitch returns None
         MockAppConfig.apiStatus returns "1.0"
         MockAppConfig.endpointsEnabled returns true
         MockAppConfig.confidenceLevelCheckEnabled returns ConfidenceLevelConfig(definitionEnabled = true, authValidationEnabled = true) anyNumberOfTimes()
@@ -70,7 +67,6 @@ class ApiDefinitionFactorySpec extends UnitSpec {
               versions = Seq(
                 APIVersion(
                   version = VERSION_1,
-                  access = None,
                   status = ALPHA,
                   endpointsEnabled = true
                 )
@@ -97,37 +93,4 @@ class ApiDefinitionFactorySpec extends UnitSpec {
       }
     }
   }
-
-  "buildWhiteListingAccess" when {
-    "the 'featureSwitch' parameter is not present" should {
-      "return None" in new Test {
-        MockAppConfig.featureSwitch returns None
-        apiDefinitionFactory.buildWhiteListingAccess() shouldBe None
-      }
-    }
-
-    "the 'featureSwitch' parameter is present and white listing is enabled" should {
-      "return the correct Access object" in new Test {
-
-        private val someString =
-          """
-            |{
-            |   white-list.enabled = true
-            |   white-list.applicationIds = ["anId"]
-            |}
-          """.stripMargin
-
-        MockAppConfig.featureSwitch returns Some(Configuration(ConfigFactory.parseString(someString)))
-        apiDefinitionFactory.buildWhiteListingAccess() shouldBe Some(Access("PRIVATE", Seq("anId")))
-      }
-    }
-
-    "the 'featureSwitch' parameter is present and white listing is not enabled" should {
-      "return None" in new Test {
-        MockAppConfig.featureSwitch returns Some(Configuration(ConfigFactory.parseString("""white-list.enabled = false""")))
-        apiDefinitionFactory.buildWhiteListingAccess() shouldBe None
-      }
-    }
-  }
-
 }
