@@ -30,7 +30,7 @@ class ApiDefinitionFactorySpec extends UnitSpec {
 
   class Test extends MockHttpClient with MockAppConfig {
     val apiDefinitionFactory = new ApiDefinitionFactory(mockAppConfig)
-    MockedAppConfig.apiGatewayContext returns "individuals/disclosures"
+    MockAppConfig.apiGatewayContext returns "individuals/disclosures"
   }
 
   private val confidenceLevel: ConfidenceLevel = ConfidenceLevel.L200
@@ -38,10 +38,10 @@ class ApiDefinitionFactorySpec extends UnitSpec {
   "definition" when {
     "called" should {
       "return a valid Definition case class" in new Test {
-        MockedAppConfig.featureSwitch returns None
-        MockedAppConfig.apiStatus returns "1.0"
-        MockedAppConfig.endpointsEnabled returns true
-        MockedAppConfig.confidenceLevelCheckEnabled returns ConfidenceLevelConfig(definitionEnabled = true, authValidationEnabled = true) anyNumberOfTimes()
+        MockAppConfig.featureSwitch returns None
+        MockAppConfig.apiStatus returns "1.0"
+        MockAppConfig.endpointsEnabled returns true
+        MockAppConfig.confidenceLevelCheckEnabled returns ConfidenceLevelConfig(definitionEnabled = true, authValidationEnabled = true) anyNumberOfTimes()
 
         private val readScope = "read:self-assessment"
         private val writeScope = "write:self-assessment"
@@ -85,14 +85,14 @@ class ApiDefinitionFactorySpec extends UnitSpec {
   "buildAPIStatus" when {
     "the 'apiStatus' parameter is present and valid" should {
       "return the correct status" in new Test {
-        MockedAppConfig.apiStatus returns "BETA"
+        MockAppConfig.apiStatus returns "BETA"
         apiDefinitionFactory.buildAPIStatus("1.0") shouldBe BETA
       }
     }
 
     "the 'apiStatus' parameter is present and invalid" should {
       "default to alpha" in new Test {
-        MockedAppConfig.apiStatus returns "ALPHA"
+        MockAppConfig.apiStatus returns "ALPHA"
         apiDefinitionFactory.buildAPIStatus("1.0") shouldBe ALPHA
       }
     }
@@ -101,7 +101,7 @@ class ApiDefinitionFactorySpec extends UnitSpec {
   "buildWhiteListingAccess" when {
     "the 'featureSwitch' parameter is not present" should {
       "return None" in new Test {
-        MockedAppConfig.featureSwitch returns None
+        MockAppConfig.featureSwitch returns None
         apiDefinitionFactory.buildWhiteListingAccess() shouldBe None
       }
     }
@@ -117,14 +117,14 @@ class ApiDefinitionFactorySpec extends UnitSpec {
             |}
           """.stripMargin
 
-        MockedAppConfig.featureSwitch returns Some(Configuration(ConfigFactory.parseString(someString)))
+        MockAppConfig.featureSwitch returns Some(Configuration(ConfigFactory.parseString(someString)))
         apiDefinitionFactory.buildWhiteListingAccess() shouldBe Some(Access("PRIVATE", Seq("anId")))
       }
     }
 
     "the 'featureSwitch' parameter is present and white listing is not enabled" should {
       "return None" in new Test {
-        MockedAppConfig.featureSwitch returns Some(Configuration(ConfigFactory.parseString("""white-list.enabled = false""")))
+        MockAppConfig.featureSwitch returns Some(Configuration(ConfigFactory.parseString("""white-list.enabled = false""")))
         apiDefinitionFactory.buildWhiteListingAccess() shouldBe None
       }
     }

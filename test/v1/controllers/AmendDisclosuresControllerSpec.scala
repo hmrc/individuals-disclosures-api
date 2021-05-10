@@ -62,7 +62,7 @@ class AmendDisclosuresControllerSpec
 
     MockedMtdIdLookupService.lookup(nino).returns(Future.successful(Right("test-mtd-id")))
     MockedEnrolmentsAuthService.authoriseUser()
-    MockedAppConfig.apiGatewayContext.returns("baseUrl").anyNumberOfTimes()
+    MockAppConfig.apiGatewayContext.returns("baseUrl").anyNumberOfTimes()
     MockIdGenerator.generateCorrelationId.returns(correlationId)
   }
 

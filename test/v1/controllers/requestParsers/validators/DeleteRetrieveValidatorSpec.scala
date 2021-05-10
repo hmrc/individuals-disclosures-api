@@ -33,7 +33,7 @@ class DeleteRetrieveValidatorSpec extends UnitSpec with MockAppConfig {
 
     val validator = new DeleteRetrieveValidator()
 
-    MockedAppConfig.minimumPermittedTaxYear
+    MockAppConfig.minimumPermittedTaxYear
       .returns(2022)
       .anyNumberOfTimes()
   }
