@@ -64,7 +64,7 @@ class AmendDisclosuresConnectorSpec extends ConnectorSpec {
       "return a 204 status for a success scenario" in new Test {
         val outcome = Right(ResponseWrapper(correlationId, ()))
 
-        implicit val hc: HeaderCarrier = HeaderCarrier(otherHeaders = Seq("Content-Type" -> "application/json"))
+        implicit val hc: HeaderCarrier = HeaderCarrier(otherHeaders = otherHeaders ++ Seq("Content-Type" -> "application/json"))
         val requiredDesHeadersPut: Seq[(String, String)] = requiredDesHeaders ++ Seq("Content-Type" -> "application/json")
 
         MockedHttpClient
@@ -72,7 +72,8 @@ class AmendDisclosuresConnectorSpec extends ConnectorSpec {
             url = s"$baseUrl/income-tax/disclosures/$nino/$taxYear",
             config = dummyDesHeaderCarrierConfig,
             body = amendDisclosuresRequest.body,
-            requiredHeaders = requiredDesHeadersPut: _*
+            requiredHeaders = requiredDesHeadersPut,
+            excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
           ).returns(Future.successful(outcome))
 
         await(connector.amendDisclosures(amendDisclosuresRequest)) shouldBe outcome

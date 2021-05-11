@@ -16,7 +16,7 @@
 
 package definition
 
-import config.{AppConfig, FeatureSwitch}
+import config.AppConfig
 import definition.Versions._
 import play.api.Logger
 import uk.gov.hmrc.auth.core.ConfidenceLevel

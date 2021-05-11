@@ -16,32 +16,21 @@
 
 package v1.models.domain
 
-import play.api.libs.json.{Reads, Writes}
-
-case class Nino(nino: String) extends TaxIdentifier with SimpleName {
+case class Nino(nino: String) {
   require(Nino.isValid(nino), s"$nino is not a valid nino.")
-  override def toString: String = nino
 
   private val LengthWithoutSuffix: Int = 8
-
   def value: String = nino
-
   val name = "nino"
-
   def formatted: String = value.grouped(2).mkString(" ")
-
   def withoutSuffix: String = value.take(LengthWithoutSuffix)
 }
 
 object Nino extends (String => Nino) {
-  implicit val ninoWrite: Writes[Nino] = new SimpleObjectWrites[Nino](_.value)
-  implicit val ninoRead: Reads[Nino] = new SimpleObjectReads[Nino]("nino", Nino.apply)
-
   private val validNinoFormat = "[[A-Z]&&[^DFIQUV]][[A-Z]&&[^DFIQUVO]] ?\\d{2} ?\\d{2} ?\\d{2} ?[A-D]{1}"
   private val invalidPrefixes = List("BG", "GB", "NK", "KN", "TN", "NT", "ZZ")
 
   private def hasValidPrefix(nino: String) = !invalidPrefixes.exists(nino.startsWith)
-
   def isValid(nino: String): Boolean = nino != null && hasValidPrefix(nino) && nino.matches(validNinoFormat)
 
   private[domain] val validFirstCharacters = ('A' to 'Z').filterNot(List('D', 'F', 'I', 'Q', 'U', 'V').contains).map(_.toString)

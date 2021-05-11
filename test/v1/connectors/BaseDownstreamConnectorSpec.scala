@@ -37,7 +37,7 @@ class BaseDownstreamConnectorSpec extends ConnectorSpec {
 
   implicit val httpReads: HttpReads[DesOutcome[Result]] = mock[HttpReads[DesOutcome[Result]]]
 
-  class Test extends MockHttpClient with MockAppConfig {
+  class Test(desEnvironmentHeaders: Option[Seq[String]]) extends MockHttpClient with MockAppConfig {
     val connector: BaseDownstreamConnector = new BaseDownstreamConnector {
       val http: HttpClient = mockHttpClient
       val appConfig: AppConfig = mockAppConfig
@@ -46,54 +46,65 @@ class BaseDownstreamConnectorSpec extends ConnectorSpec {
     MockAppConfig.desBaseUrl returns baseUrl
     MockAppConfig.desToken returns "des-token"
     MockAppConfig.desEnvironment returns "des-environment"
-    MockAppConfig.desEnvironmentHeaders returns Some(allowedDesHeaders)
+    MockAppConfig.desEnvironmentHeaders returns desEnvironmentHeaders
   }
 
   "BaseDownstreamConnector" when {
-    "making a HTTP request to an internal service" must {
-      val dummyInternalHeaderCarrierConfig: HeaderCarrier.Config =
-        dummyDesHeaderCarrierConfig.copy(
-          internalHostPatterns = Seq(("^" + "test-BaseUrl" + "$").r)
+    val requiredHeaders: Seq[(String, String)] = Seq(
+      "Environment" -> "des-environment",
+      "Authorization" -> s"Bearer des-token",
+      "User-Agent" -> "individual-disclosures-api",
+      "CorrelationId" -> correlationId,
+      "Gov-Test-Scenario" -> "DEFAULT"
+    )
+
+    val excludedHeaders: Seq[(String, String)] = Seq(
+      "AnotherHeader" -> "HeaderValue"
+    )
+
+    "making a HTTP request to a downstream service (i.e DES)" must {
+      testHttpMethods(dummyDesHeaderCarrierConfig, requiredHeaders, excludedHeaders, Some(allowedDesHeaders))
+
+      "exclude all `otherHeaders` when no external service header allow-list is found" should {
+        val requiredHeaders: Seq[(String, String)] = Seq(
+          "Environment" -> "des-environment",
+          "Authorization" -> s"Bearer des-token",
+          "User-Agent" -> "individual-disclosures-api",
+          "CorrelationId" -> correlationId,
         )
 
-      val requiredInternalHeaders: Seq[(String, String)] = Seq(
-        "Environment" -> "des-environment",
-        "Authorization" -> s"Bearer des-token",
-        "User-Agent" -> "individual-disclosures-api",
-        "CorrelationId" -> correlationId
-      )
-
-      testHttpMethods(dummyInternalHeaderCarrierConfig, requiredInternalHeaders)
+        testHttpMethods(dummyDesHeaderCarrierConfig, requiredHeaders, otherHeaders, None)
+      }
     }
+}
 
-    "making a HTTP request to an external service (i.e DES)" must {
-      testHttpMethods(dummyDesHeaderCarrierConfig, requiredDesHeaders)
-    }
-  }
+  def testHttpMethods(config: HeaderCarrier.Config,
+                      requiredHeaders: Seq[(String, String)],
+                      excludedHeaders: Seq[(String, String)],
+                      desEnvironmentHeaders: Option[Seq[String]]): Unit = {
 
-  def testHttpMethods(config: HeaderCarrier.Config, requiredHeaders: Seq[(String, String)]): Unit = {
     "complete the request successfully with the required headers" when {
-      "GET" in new Test {
+      "GET" in new Test(desEnvironmentHeaders) {
         MockedHttpClient
-          .get(absoluteUrl, config, requiredHeaders :_*)
+          .get(absoluteUrl, config, requiredHeaders, excludedHeaders)
           .returns(Future.successful(outcome))
 
         await(connector.get(DesUri[Result](url))) shouldBe outcome
       }
 
-      "DELETE" in new Test {
+      "DELETE" in new Test(desEnvironmentHeaders) {
         MockedHttpClient
-          .delete(absoluteUrl, config, requiredHeaders :_*)
+          .delete(absoluteUrl, config, requiredHeaders, excludedHeaders)
           .returns(Future.successful(outcome))
 
         await(connector.delete(DesUri[Result](url))) shouldBe outcome
       }
 
-      "PUT" in new Test {
-        implicit val hc: HeaderCarrier = HeaderCarrier(otherHeaders = Seq("Content-Type" -> "application/json"))
+      "PUT" in new Test(desEnvironmentHeaders) {
+        implicit val hc: HeaderCarrier = HeaderCarrier(otherHeaders = otherHeaders ++ Seq("Content-Type" -> "application/json"))
         val requiredHeadersPut: Seq[(String, String)] = requiredHeaders ++ Seq("Content-Type" -> "application/json")
 
-        MockedHttpClient.put(absoluteUrl, config, body, requiredHeadersPut:_*)
+        MockedHttpClient.put(absoluteUrl, config, body, requiredHeadersPut, excludedHeaders)
           .returns(Future.successful(outcome))
 
         await(connector.put(body, DesUri[Result](url))) shouldBe outcome

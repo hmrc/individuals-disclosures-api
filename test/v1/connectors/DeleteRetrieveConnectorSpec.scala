@@ -49,7 +49,8 @@ class DeleteRetrieveConnectorSpec extends ConnectorSpec {
           .delete(
             url = s"$baseUrl/income-tax/disclosures/$nino/$taxYear",
             config = dummyDesHeaderCarrierConfig,
-            requiredHeaders = requiredDesHeaders: _*
+            requiredHeaders = requiredDesHeaders,
+            excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
           )
           .returns(Future.successful(outcome))
 
@@ -72,7 +73,8 @@ class DeleteRetrieveConnectorSpec extends ConnectorSpec {
           .get(
             url = s"$baseUrl/income-tax/disclosures/$nino/$taxYear",
             config = dummyDesHeaderCarrierConfig,
-            requiredHeaders = requiredDesHeaders: _*
+            requiredHeaders = requiredDesHeaders,
+            excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
           )
           .returns(Future.successful(outcome))
 
