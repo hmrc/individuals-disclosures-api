@@ -52,10 +52,7 @@ class AppConfigImpl @Inject()(config: ServicesConfig, configuration: Configurati
   val desBaseUrl: String = config.baseUrl("des")
   val desEnv: String = config.getString("microservice.services.des.env")
   val desToken: String = config.getString("microservice.services.des.token")
-
-  val desEnvironmentHeaders: Option[Seq[String]] = configuration.getOptional(
-    "microservice.services.des.environmentHeaders"
-  )(ConfigLoader.seqStringLoader)
+  val desEnvironmentHeaders: Option[Seq[String]] = configuration.getOptional[Seq[String]]("microservice.services.des.environmentHeaders")
 
   // Business rule Config
   val minimumPermittedTaxYear: Int = config.getInt("minimumPermittedTaxYear")
