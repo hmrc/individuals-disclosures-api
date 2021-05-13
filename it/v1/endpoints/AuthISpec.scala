@@ -30,7 +30,6 @@ class AuthISpec extends IntegrationBaseSpec {
 
     val nino: String = "AA123456A"
     val taxYear: String = "2021-22"
-    val correlationId: String = "X-123"
 
     def uri: String = s"/$nino/$taxYear"
 

@@ -19,7 +19,7 @@ import sbt.Keys._
 
 object SilencerSettings {
 
-  private val silencerVersion = "1.6.0"
+  private val silencerVersion = "1.7.1"
 
   // stop "unused import" warnings from routes files
   def apply(): Seq[Def.Setting[_ >: Seq[ModuleID] with Task[Seq[String]] <: Equals]] = Seq(

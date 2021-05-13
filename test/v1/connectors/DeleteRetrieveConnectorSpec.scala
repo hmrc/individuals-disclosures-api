@@ -24,38 +24,33 @@ import v1.models.outcomes.ResponseWrapper
 import scala.concurrent.Future
 
 class DeleteRetrieveConnectorSpec extends ConnectorSpec {
-
   val nino: String = "AA111111A"
   val taxYear: String = "2021-22"
 
   class Test extends MockHttpClient with MockAppConfig {
-
     val connector: DeleteRetrieveConnector = new DeleteRetrieveConnector(
       http = mockHttpClient,
       appConfig = mockAppConfig
     )
 
-    val desRequestHeaders: Seq[(String, String)] = Seq(
-      "Environment" -> "des-environment",
-      "Authorization" -> s"Bearer des-token"
-    )
-
-    MockedAppConfig.desBaseUrl returns baseUrl
-    MockedAppConfig.desToken returns "des-token"
-    MockedAppConfig.desEnvironment returns "des-environment"
+    MockAppConfig.desBaseUrl returns baseUrl
+    MockAppConfig.desToken returns "des-token"
+    MockAppConfig.desEnvironment returns "des-environment"
+    MockAppConfig.desEnvironmentHeaders returns Some(allowedDesHeaders)
   }
 
   "DeleteRetrieveConnector" when {
     "delete" must {
       "return a 204 status for a success scenario" in new Test {
-
         val outcome = Right(ResponseWrapper(correlationId, ()))
         implicit val desUri: DesUri[Unit] = DesUri[Unit](s"income-tax/disclosures/$nino/$taxYear")
 
         MockedHttpClient
           .delete(
             url = s"$baseUrl/income-tax/disclosures/$nino/$taxYear",
-            requiredHeaders = desRequestHeaders: _*
+            config = dummyDesHeaderCarrierConfig,
+            requiredHeaders = requiredDesHeaders,
+            excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
           )
           .returns(Future.successful(outcome))
 
@@ -65,7 +60,6 @@ class DeleteRetrieveConnectorSpec extends ConnectorSpec {
 
     "retrieve" must {
       "return a 200 status for a success scenario" in new Test {
-
         case class Data(field: String)
 
         object Data {
@@ -78,7 +72,9 @@ class DeleteRetrieveConnectorSpec extends ConnectorSpec {
         MockedHttpClient
           .get(
             url = s"$baseUrl/income-tax/disclosures/$nino/$taxYear",
-            requiredHeaders = desRequestHeaders: _*
+            config = dummyDesHeaderCarrierConfig,
+            requiredHeaders = requiredDesHeaders,
+            excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
           )
           .returns(Future.successful(outcome))
 

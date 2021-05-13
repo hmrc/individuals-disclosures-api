@@ -160,7 +160,7 @@ class AmendDisclosuresValidatorSpec extends UnitSpec with MockAppConfig {
 
     val validator = new AmendDisclosuresValidator()
 
-    MockedAppConfig.minimumPermittedTaxYear
+    MockAppConfig.minimumPermittedTaxYear
       .returns(2022)
       .anyNumberOfTimes()
   }
