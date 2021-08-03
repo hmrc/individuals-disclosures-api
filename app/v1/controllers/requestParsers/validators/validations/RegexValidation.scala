@@ -16,17 +16,20 @@
 
 package v1.controllers.requestParsers.validators.validations
 
-import v1.models.domain.Nino
-import v1.models.errors.{MtdError, NinoFormatError}
+import v1.models.errors.MtdError
 
-object NinoValidation {
+import scala.util.matching.Regex
 
-  private val ninoRegex =
-    "^([ACEHJLMOPRSWXY][A-CEGHJ-NPR-TW-Z]|B[A-CEHJ-NPR-TW-Z]|G[ACEGHJ-NPR-TW-Z]|" +
-      "[KT][A-CEGHJ-MPR-TW-Z]|N[A-CEGHJL-NPR-SW-Z]|Z[A-CEGHJ-NPR-TW-Y])[0-9]{6}[A-D ]?$"
+trait RegexValidation {
 
-  def validate(nino: String): List[MtdError] = validate(nino, NinoFormatError)
+  val regex: Regex
 
-  def validate(nino: String, error: => MtdError): List[MtdError] =
-    if (Nino.isValid(nino) && nino.matches(ninoRegex)) NoValidationErrors else List(error)
+  def isValid(value: String): Boolean = {
+    val matcher = regex.pattern.matcher(value)
+
+    matcher.matches
+  }
+
+  def validate(value: String, error: => MtdError): List[MtdError] =
+    if (isValid(value)) NoValidationErrors else List(error)
 }

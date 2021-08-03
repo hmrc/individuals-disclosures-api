@@ -16,17 +16,8 @@
 
 package v1.controllers.requestParsers.validators.validations
 
-import v1.models.domain.Nino
-import v1.models.errors.{MtdError, NinoFormatError}
+import scala.util.matching.Regex
 
-object NinoValidation {
-
-  private val ninoRegex =
-    "^([ACEHJLMOPRSWXY][A-CEGHJ-NPR-TW-Z]|B[A-CEHJ-NPR-TW-Z]|G[ACEGHJ-NPR-TW-Z]|" +
-      "[KT][A-CEGHJ-MPR-TW-Z]|N[A-CEGHJL-NPR-SW-Z]|Z[A-CEGHJ-NPR-TW-Y])[0-9]{6}[A-D ]?$"
-
-  def validate(nino: String): List[MtdError] = validate(nino, NinoFormatError)
-
-  def validate(nino: String, error: => MtdError): List[MtdError] =
-    if (Nino.isValid(nino) && nino.matches(ninoRegex)) NoValidationErrors else List(error)
+object GivenNameValidation extends RegexValidation {
+  override val regex: Regex = "^[A-Za-z0-9 ,.()/&'-]{1,35}$".r
 }
