@@ -29,20 +29,24 @@ uses:
   headers: headers.raml
 
 '/individuals':
-  uriParameters:
-    nino:
-      description: "National Insurance number, in the format AA999999A."
-      type: string
-      example: "TC663795B"
-    taxYear:
-      description: "The tax year the data applies to, for example, 2021-22. The start year and end year must not span two tax years. The minimum tax year is 2021-22. No gaps are allowed, for example, 2020-22 is not valid. (The minimum tax year in Sandbox is 2019-20.)"
-      example: "2021-22"
   /disclosures:
-    (annotations.group):
-       name: Disclosures
-       description: Resources relating to an individual's disclosures
+    /marriage-allowance:
+        (annotations.group):
+          name: Marriage Allowance
+          description: Resources relating to an individual's marriage allowance.
+        /{nino}:
+          uriParameters:
+            nino: !include pathParameters/nino.raml
+          post: !include endpoints/marriageAllowance/create.raml
     /{nino}:
+      uriParameters:
+        nino: !include pathParameters/nino.raml
       /{taxYear}:
+        uriParameters:
+          taxYear: !include pathParameters/taxYear.raml
+        (annotations.group):
+          name: Disclosures
+          description: Resources relating to an individual's disclosures
         get: !include endpoints/disclosures/retrieve.raml
         delete: !include endpoints/disclosures/delete.raml
         put: !include endpoints/disclosures/amend.raml
