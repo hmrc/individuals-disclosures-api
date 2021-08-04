@@ -46,6 +46,27 @@ object SRNFormatError extends MtdError(
   message = "The provided scheme reference number is invalid"
 )
 
+object PartnerFirstNameFormatError extends MtdError(
+  code = "FORMAT_SPOUSE_OR_CIVIL_PARTNERS_FIRST_NAME",
+  message = "The provided spouse or civil partner's first name is invalid"
+)
+
+object PartnerSurnameFormatError extends MtdError(
+  code = "FORMAT_SPOUSE_OR_CIVIL_PARTNERS_SURNAME",
+  message = "The provided spouse or civil partner's surname is invalid"
+)
+
+object PartnerNinoFormatError extends MtdError(
+  code = "FORMAT_SPOUSE_OR_CIVIL_PARTNERS_NINO",
+  message = "The provided spouse or civil partner's National Insurance Number is invalid"
+)
+
+object PartnerDoBFormatError extends MtdError(
+  code = "FORMAT_SPOUSE_OR_CIVIL_PARTNERS_DATE_OF_BIRTH",
+  message = "The provided spouse or civil partner's date of birth date is invalid"
+)
+
+
 // Rule Errors
 object RuleTaxYearNotSupportedError extends MtdError(
   code = "RULE_TAX_YEAR_NOT_SUPPORTED",
@@ -70,6 +91,16 @@ object RuleTaxYearRangeInvalidError extends MtdError(
 object RuleVoluntaryClass2ValueInvalidError extends MtdError(
   code = "RULE_VOLUNTARY_CLASS2_VALUE_INVALID",
   message = "Voluntary Class 2 Contributions can only be set to true"
+)
+
+object RuleDeceasedRecipientError extends MtdError(
+  code = "RULE_DECEASED_RECIPIENT",
+  message = "The provided spouse or civil partner is deceased"
+)
+
+object RuleActiveMarriageAllowanceClaimError extends MtdError(
+  code = "RULE_ACTIVE_MARRIAGE_ALLOWANCE_CLAIM",
+  message = "Marriage Allowance has already been transferred to a spouse or civil partner"
 )
 
 //Standard Errors
