@@ -18,4 +18,4 @@ package v1.models.request.marriageAllowance
 
 import v1.models.domain.Nino
 
-case class CreateMarriageAllowanceRequest(idType: String, idValue: Nino, body: CreateMarriageAllowanceBody)
+case class CreateMarriageAllowanceRequest(nino: Nino, body: CreateMarriageAllowanceBody)
