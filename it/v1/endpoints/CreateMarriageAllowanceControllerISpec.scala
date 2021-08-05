@@ -90,7 +90,7 @@ class CreateMarriageAllowanceControllerISpec extends IntegrationBaseSpec {
         )
 
         val allInvalidValueRequestError: List[MtdError] = List(
-
+          ???
         )
 
         val wrappedErrors: ErrorWrapper = ErrorWrapper(
@@ -152,6 +152,28 @@ class CreateMarriageAllowanceControllerISpec extends IntegrationBaseSpec {
         """.stripMargin
       )
 
+      val invalidFirstNameBodyJson: JsValue = Json.parse(
+        s"""
+          |{
+          |  "spouseOrCivilPartnerNino": $nino2,
+          |  "spouseOrCivilPartnerFirstName": "Jo37uwfuwjgqof87?"\/!@£%£&^*%hn",
+          |  "spouseOrCivilPartnerSurname": "Smith",
+          |  "spouseOrCivilPartnerDateOfBirth": "1986-04-06"
+          |}
+        """.stripMargin
+      )
+
+      val invalidSurnameBodyJson: JsValue = Json.parse(
+        s"""
+          |{
+          |  "spouseOrCivilPartnerNino": $nino2,
+          |  "spouseOrCivilPartnerFirstName": "John",
+          |  "spouseOrCivilPartnerSurname": "Smith",
+          |  "spouseOrCivilPartnerDateOfBirth": "1986-04-06"
+          |}
+        """.stripMargin
+      )
+
       val invalidDobBodyJson: JsValue = Json.parse(
         s"""
           |{
@@ -186,8 +208,10 @@ class CreateMarriageAllowanceControllerISpec extends IntegrationBaseSpec {
           ("AA1123A", validRequestBodyJson, BAD_REQUEST, NinoFormatError),
           ("AA123456A", nonsenseRequestBodyJson, BAD_REQUEST, RuleIncorrectOrEmptyBodyError),
           ("AA123458A", emptyBodyJson, BAD_REQUEST, RuleIncorrectOrEmptyBodyError),
-          ("AA123457A", invalidNinoBodyJson, BAD_REQUEST, ???),
-          ("AA123459A", invalidDobBodyJson, BAD_REQUEST, ???),
+          ("AA123457A", invalidNinoBodyJson, BAD_REQUEST, PartnerNinoFormatError),
+          ("AA123457A", invalidFirstNameBodyJson, BAD_REQUEST, PartnerFirstNameFormatError),
+          ("AA123457A", invalidSurnameBodyJson, BAD_REQUEST, PartnerSurnameFormatError),
+          ("AA123459A", invalidDobBodyJson, BAD_REQUEST, PartnerDoBFormatError),
         )
 
         input.foreach(args => (validationErrorTest _).tupled(args))

@@ -45,7 +45,7 @@ class CreateMarriageAllowanceBodySpec extends UnitSpec {
     """.stripMargin
   )
 
-  private val requestBodyModel = CreateMarriageAllowanceBody(Some("TC663795B"), Some("John"), "Smith", Some("1987-10-18"))
+  private val requestBodyModel = CreateMarriageAllowanceBody("TC663795B", Some("John"), "Smith", Some("1987-10-18"))
 
   "CreateMarriageAllowanceBody" when {
     "read from valid JSON" should {
