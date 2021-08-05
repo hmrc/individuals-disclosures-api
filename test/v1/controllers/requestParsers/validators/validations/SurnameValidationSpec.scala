@@ -56,13 +56,13 @@ class SurnameValidationSpec extends UnitSpec with Inspectors {
     }
 
     "allow values at both ends of length limit" in {
-      forAll(Seq("A", "a".repeat(35))) { name =>
+      forAll(Seq("A", "a" * 35)) { name =>
         validator.isValid(name) shouldBe true
       }
     }
 
     "disallow values that are too short or too long" in {
-      forAll(Seq("", "a".repeat(36))) { name =>
+      forAll(Seq("", "a" * 36)) { name =>
         validator.isValid(name) shouldBe false
       }
     }

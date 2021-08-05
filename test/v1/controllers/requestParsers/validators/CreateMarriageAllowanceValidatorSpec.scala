@@ -28,8 +28,7 @@ class CreateMarriageAllowanceValidatorSpec extends UnitSpec {
 
   val nino = "AA123456A"
 
-  val body: AnyContentAsJson = AnyContentAsJson(Json.parse(
-    """{
+  val body: AnyContentAsJson = AnyContentAsJson(Json.parse("""{
       |  "spouseOrCivilPartnerNino": "AA123456B",
       |  "spouseOrCivilPartnerFirstName": "Marge",
       |  "spouseOrCivilPartnerSurname": "Simpson",
@@ -53,8 +52,7 @@ class CreateMarriageAllowanceValidatorSpec extends UnitSpec {
     "good nino" when {
       "bad body format" must {
         "return RULE_INCORRECT_OR_EMPTY_BODY_SUBMITTED" in {
-          val badBody = AnyContentAsJson(Json.parse(
-            """{
+          val badBody = AnyContentAsJson(Json.parse("""{
               |  "XXX": 123,
               |  "spouseOrCivilPartnerNino": "AA123456B",
               |  "spouseOrCivilPartnerFirstName": "Marge",
@@ -70,15 +68,13 @@ class CreateMarriageAllowanceValidatorSpec extends UnitSpec {
       "good body json format" when {
         "bad spouse first name" must {
           "return FORMAT_SPOUSE_OR_CIVIL_PARTNERS_FIRST_NAME" in {
-            val bodyWithLongFirstName = AnyContentAsJson(Json.parse(
-              s"""{
+            val bodyWithLongFirstName = AnyContentAsJson(Json.parse(s"""{
                  |  "spouseOrCivilPartnerNino": "AA123456B",
-                 |  "spouseOrCivilPartnerFirstName": "${"1".repeat(36)}",
+                 |  "spouseOrCivilPartnerFirstName": "${"1" * 36}",
                  |  "spouseOrCivilPartnerSurname": "Simpson",
                  |  "spouseOrCivilPartnerDateOfBirth": "1970-01-01"
                  |}
                  |""".stripMargin))
-
 
             validator.validate(CreateMarriageAllowanceRawData(nino, bodyWithLongFirstName)) shouldBe
               List(PartnerFirstNameFormatError)
@@ -87,15 +83,13 @@ class CreateMarriageAllowanceValidatorSpec extends UnitSpec {
 
         "bad partner surname" must {
           "return FORMAT_SPOUSE_OR_CIVIL_PARTNERS_SURNAME" in {
-            val bodyWithLongFirstName = AnyContentAsJson(Json.parse(
-              s"""{
+            val bodyWithLongFirstName = AnyContentAsJson(Json.parse(s"""{
                  |  "spouseOrCivilPartnerNino": "AA123456B",
                  |  "spouseOrCivilPartnerFirstName": "Marge",
-                 |  "spouseOrCivilPartnerSurname": "${"1".repeat(36)}",
+                 |  "spouseOrCivilPartnerSurname": "${"1" * 36}",
                  |  "spouseOrCivilPartnerDateOfBirth": "1970-01-01"
                  |}
                  |""".stripMargin))
-
 
             validator.validate(CreateMarriageAllowanceRawData(nino, bodyWithLongFirstName)) shouldBe
               List(PartnerSurnameFormatError)
@@ -104,14 +98,12 @@ class CreateMarriageAllowanceValidatorSpec extends UnitSpec {
 
         "partner surname not present" must {
           "return RULE_INCORRECT_OR_EMPTY_BODY_SUBMITTED with affected path" in {
-            val bodyWithNoSurname = AnyContentAsJson(Json.parse(
-              s"""{
+            val bodyWithNoSurname = AnyContentAsJson(Json.parse(s"""{
                  |  "spouseOrCivilPartnerNino": "AA123456B",
                  |  "spouseOrCivilPartnerFirstName": "Marge",
                  |  "spouseOrCivilPartnerDateOfBirth": "1970-01-01"
                  |}
                  |""".stripMargin))
-
 
             validator.validate(CreateMarriageAllowanceRawData(nino, bodyWithNoSurname)) shouldBe List(
               RuleIncorrectOrEmptyBodyError.copy(paths = Some(Seq("/spouseOrCivilPartnerSurname"))))
@@ -120,8 +112,7 @@ class CreateMarriageAllowanceValidatorSpec extends UnitSpec {
 
         "bad partner nino" must {
           "return FORMAT_SPOUSE_OR_CIVIL_PARTNERS_NINO" in {
-            val bodyWithBadNino = AnyContentAsJson(Json.parse(
-              """{
+            val bodyWithBadNino = AnyContentAsJson(Json.parse("""{
                 |  "spouseOrCivilPartnerNino": "XXX",
                 |  "spouseOrCivilPartnerFirstName": "Marge",
                 |  "spouseOrCivilPartnerSurname": "Simpson",
@@ -136,8 +127,7 @@ class CreateMarriageAllowanceValidatorSpec extends UnitSpec {
 
         "bad partner dob" must {
           "return FORMAT_SPOUSE_OR_CIVIL_PARTNERS_DATE_OF_BIRTH" in {
-            val bodyWithBadDob = AnyContentAsJson(Json.parse(
-              """{
+            val bodyWithBadDob = AnyContentAsJson(Json.parse("""{
                 |  "spouseOrCivilPartnerNino": "AA123456B",
                 |  "spouseOrCivilPartnerFirstName": "Marge",
                 |  "spouseOrCivilPartnerSurname": "Simpson",
@@ -152,17 +142,15 @@ class CreateMarriageAllowanceValidatorSpec extends UnitSpec {
 
         "multiple body errors" must {
           "return all of them" in {
-            val badBody = AnyContentAsJson(Json.parse(
-              s"""{
+            val badBody = AnyContentAsJson(Json.parse(s"""{
                  |  "spouseOrCivilPartnerNino": "XXX",
-                 |  "spouseOrCivilPartnerFirstName": "${"1".repeat(36)}",
-                 |  "spouseOrCivilPartnerSurname": "${"1".repeat(36)}",
+                 |  "spouseOrCivilPartnerFirstName": "${"1" * 36}",
+                 |  "spouseOrCivilPartnerSurname": "${"1" * 36}",
                  |  "spouseOrCivilPartnerDateOfBirth": "XXXX"
                  |}
                  |""".stripMargin))
 
-
-            validator.validate(CreateMarriageAllowanceRawData(nino, badBody)) should contain allOf(
+            validator.validate(CreateMarriageAllowanceRawData(nino, badBody)) should contain allOf (
               PartnerNinoFormatError,
               PartnerFirstNameFormatError,
               PartnerSurnameFormatError,
