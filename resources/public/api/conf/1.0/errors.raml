@@ -4,28 +4,6 @@ uses:
   types: https://developer.service.hmrc.gov.uk/api-documentation/assets/common/modules/types.raml
 
 traits:
-  notFound:
-    responses:
-      404:
-        body:
-          application/json:
-            type: types.errorResponse
-            examples:
-              notFound:
-                description: 'The supplied income source could not be found.'
-                value:
-                  code: MATCHING_RESOURCE_NOT_FOUND
-  clientOrAgentNotAuthorised:
-    responses:
-      403:
-        body:
-          application/json:
-            type: types.errorResponse
-            examples:
-              clientOrAgentNotAuthorised:
-                description: 'The client or agent is not authorised. This is because: the client is not subscribed to MTD, the agent is not subscribed to Agent Services, or the client has not authorised the agent to act on their behalf.'
-                value:
-                  code: CLIENT_OR_AGENT_NOT_AUTHORISED
   formatNino:
     responses:
       400:
@@ -92,6 +70,61 @@ traits:
                 description: 'The format of the supplied scheme reference number is not valid.'
                 value:
                   code: FORMAT_SRN_INVALID
+  voluntaryClass2Contributions:
+    responses:
+      400:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              voluntaryClass2Contributions:
+                description: 'Voluntary Class 2 Contributions can only be set to true.'
+                value:
+                  code: RULE_VOLUNTARY_CLASS2_VALUE_INVALID
+  formatSpouseOrCivilPartnersFirstName:
+    responses:
+      400:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              formatSpouseOrCivilPartnersFirstName:
+                description: "The format of your spouse or civil partner's first name is not valid."
+                value:
+                  code: FORMAT_SPOUSE_OR_CIVIL_PARTNERS_FIRST_NAME
+  formatSpouseOrCivilPartnersSurname:
+    responses:
+      400:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              formatSpouseOrCivilPartnersSurname:
+                description: "The format of your spouse or civil partner's surname name is not valid."
+                value:
+                  code: FORMAT_SPOUSE_OR_CIVIL_PARTNERS_SURNAME
+  formatSpouseOrCivilPartnersNino:
+    responses:
+      400:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              formatSpouseOrCivilPartnersNino:
+                description: "The format of your spouse or civil partner's National Insurance Number is not valid."
+                value:
+                  code: FORMAT_SPOUSE_OR_CIVIL_PARTNERS_NINO
+  formatSpouseOrCivilPartnersDateOfBirth:
+    responses:
+      400:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              formatSpouseOrCivilPartnersDateOfBirth:
+                description: "The format of the supplied spouse or civil partner's date of birth is not valid."
+                value:
+                  code: FORMAT_SPOUSE_OR_CIVIL_PARTNERS_DATE_OF_BIRTH
   voluntaryClass2CannotBeChanged:
     responses:
       403:
@@ -103,14 +136,47 @@ traits:
                 description: 'Voluntary Class 2 NICs cannot be changed after 31st Jan following the year of submission.'
                 value:
                   code: RULE_VOLUNTARY_CLASS2_CANNOT_BE_CHANGED
-  voluntaryClass2Contributions:
-      responses:
-        400:
-          body:
-            application/json:
-              type: types.errorResponse
-              examples:
-                voluntaryClass2Contributions:
-                  description: 'Voluntary Class 2 Contributions can only be set to true.'
-                  value:
-                    code: RULE_VOLUNTARY_CLASS2_VALUE_INVALID
+  ruleDeceasedRecipient:
+    responses:
+      403:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              ruleDeceasedRecipient:
+                description: "The supplied spouse or civil partner is invalid because they are deceased."
+                value:
+                  code: RULE_DECEASED_RECIPIENT
+  ruleActiveMarriageAllowanceClaim:
+    responses:
+      403:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              ruleActiveMarriageAllowanceClaim:
+                description: "The request cannot be made as there is an existing Marriage Allowance claim. "
+                value:
+                  code: RULE_ACTIVE_MARRIAGE_ALLOWANCE_CLAIM
+  clientOrAgentNotAuthorised:
+    responses:
+      403:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              clientOrAgentNotAuthorised:
+                description: 'The client or agent is not authorised. This is because: the client is not subscribed to MTD, the agent is not subscribed to Agent Services, or the client has not authorised the agent to act on their behalf.'
+                value:
+                  code: CLIENT_OR_AGENT_NOT_AUTHORISED
+  notFound:
+    responses:
+      404:
+        body:
+          application/json:
+            type: types.errorResponse
+            examples:
+              notFound:
+                description: 'The supplied income source could not be found.'
+                value:
+                  code: MATCHING_RESOURCE_NOT_FOUND
