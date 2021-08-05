@@ -17,33 +17,41 @@
 package v1.controllers.requestParsers.validators.validations
 
 import support.UnitSpec
-import v1.models.errors.NinoFormatError
+import v1.models.errors.{NinoFormatError, PartnerNinoFormatError}
 import v1.models.utils.JsonErrorValidators
 
 class NinoValidationSpec extends UnitSpec with JsonErrorValidators {
 
-  "validate" should {
-    "return no errors" when {
-      "when a valid NINO is supplied" in {
+  val validNino = "AA123456A"
+  val invalidNino = "AA123456ABCBBCBCBC"
 
-        val validNino = "AA123456A"
-        val validationResult = NinoValidation.validate(validNino)
-        validationResult.isEmpty shouldBe true
+  "validate" when {
+    "default error is used" must {
+      "return no errors" when {
+        "when a valid NINO is supplied" in {
+          NinoValidation.validate(validNino) shouldBe empty
+        }
+      }
 
+      "return an error" when {
+        "when an invalid NINO is supplied" in {
+          NinoValidation.validate(invalidNino) shouldBe List(NinoFormatError)
+        }
       }
     }
 
-    "return an error" when {
-      "when an invalid NINO is supplied" in {
+    "specific error is used" must {
+      "return no errors" when {
+        "when a valid NINO is supplied" in {
+          NinoValidation.validate(validNino, PartnerNinoFormatError) shouldBe empty
+        }
+      }
 
-        val invalidNino = "AA123456ABCBBCBCBC"
-        val validationResult = NinoValidation.validate(invalidNino)
-        validationResult.isEmpty shouldBe false
-        validationResult.length shouldBe 1
-        validationResult.head shouldBe NinoFormatError
-
+      "return an error" when {
+        "when an invalid NINO is supplied" in {
+          NinoValidation.validate(invalidNino, PartnerNinoFormatError) shouldBe List(PartnerNinoFormatError)
+        }
       }
     }
-
   }
 }

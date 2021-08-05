@@ -55,4 +55,14 @@ object Validator {
       )
     }.toList
   }
+
+  /**
+   * Utility to validate a optional request body field or parameter value.
+   *
+   * @param optionalValue the optional value
+   * @param validation    the validation to be performed if the value is set
+   * @return the errors if the value with validation errors is set; an empty list otherwise
+   */
+  def validateOptional[A](optionalValue: Option[A])(validation: A => List[MtdError]): List[MtdError] =
+    optionalValue.map(a => validation(a)).getOrElse(Nil)
 }

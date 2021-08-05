@@ -16,17 +16,22 @@
 
 package v1.controllers.requestParsers.validators.validations
 
-import v1.models.domain.Nino
-import v1.models.errors.{MtdError, NinoFormatError}
+import support.UnitSpec
+import v1.models.errors.{MtdError, SRNFormatError}
 
-object NinoValidation {
+class DateFormatValidationSpec extends UnitSpec {
 
-  private val ninoRegex =
-    "^([ACEHJLMOPRSWXY][A-CEGHJ-NPR-TW-Z]|B[A-CEHJ-NPR-TW-Z]|G[ACEGHJ-NPR-TW-Z]|" +
-      "[KT][A-CEGHJ-MPR-TW-Z]|N[A-CEGHJL-NPR-SW-Z]|Z[A-CEGHJ-NPR-TW-Y])[0-9]{6}[A-D ]?$"
+  "DateFormatValidation" when {
+    object DummyError extends MtdError("ERROR_CODE", "Error message", Some(Seq("/path")))
 
-  def validate(nino: String): List[MtdError] = validate(nino, NinoFormatError)
+    "validate" must {
+      "return an empty list for a valid date" in {
+        DateFormatValidation.validate(date = "2019-04-20", DummyError) shouldBe NoValidationErrors
+      }
 
-  def validate(nino: String, error: => MtdError): List[MtdError] =
-    if (Nino.isValid(nino) && nino.matches(ninoRegex)) NoValidationErrors else List(error)
+      "return an error for an invalid date" in {
+        DateFormatValidation.validate(date = "20-04-2017", DummyError) shouldBe List(DummyError)
+      }
+    }
+  }
 }
