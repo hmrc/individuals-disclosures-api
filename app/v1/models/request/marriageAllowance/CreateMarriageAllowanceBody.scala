@@ -16,7 +16,7 @@
 
 package v1.models.request.marriageAllowance
 
-import play.api.libs.json.{JsPath, Json, Reads, Writes}
+import play.api.libs.json.{JsPath, Json, OWrites, Reads, Writes}
 import utils.JsonUtils
 import play.api.libs.functional.syntax._
 
@@ -30,7 +30,7 @@ object CreateMarriageAllowanceBody extends JsonUtils {
 
   implicit val reads: Reads[CreateMarriageAllowanceBody] = Json.reads[CreateMarriageAllowanceBody]
 
-  implicit val writes: Writes[CreateMarriageAllowanceBody] = (
+  implicit val writes: OWrites[CreateMarriageAllowanceBody] = (
     (JsPath \ "participant1Details" \ "nino").writeNullable[String] and
       (JsPath \ "participant1Details" \ "firstForeName").writeNullable[String] and
       (JsPath \ "participant1Details" \ "surname").write[String] and
