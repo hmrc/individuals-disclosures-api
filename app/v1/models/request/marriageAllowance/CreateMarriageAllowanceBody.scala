@@ -16,9 +16,9 @@
 
 package v1.models.request.marriageAllowance
 
-import play.api.libs.json.{JsPath, Json, OWrites, Reads, Writes}
-import utils.JsonUtils
 import play.api.libs.functional.syntax._
+import play.api.libs.json.{JsPath, Json, OWrites, Reads}
+import utils.JsonUtils
 
 
 case class CreateMarriageAllowanceBody(spouseOrCivilPartnerNino: Option[String],
