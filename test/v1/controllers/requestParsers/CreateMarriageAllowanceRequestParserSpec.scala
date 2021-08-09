@@ -51,7 +51,7 @@ class CreateMarriageAllowanceRequestParserSpec extends UnitSpec {
         MockCreateMarriageAllowanceValidator.validate(rawData) returns Nil
 
         parser.parseRequest(rawData) shouldBe Right(CreateMarriageAllowanceRequest(Nino(nino), CreateMarriageAllowanceBody(
-          spouseOrCivilPartnerNino = Some("AA123456B"),
+          spouseOrCivilPartnerNino = "AA123456B",
           spouseOrCivilPartnerFirstName = Some("Marge"),
           spouseOrCivilPartnerSurname = "Simpson",
           spouseOrCivilPartnerDateOfBirth = Some("1970-01-01")

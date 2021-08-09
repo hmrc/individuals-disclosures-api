@@ -35,7 +35,7 @@ trait MockCreateMarriageAllowanceService extends MockFactory {
 
     def createMarriageAllowance(requestData: CreateMarriageAllowanceRequest): CallHandler[Future[Either[ErrorWrapper, ResponseWrapper[Unit]]]] = {
       (mockCreateMarriageAllowanceService
-        .createMarriageAllowance(_: CreateMarriageAllowanceRequest)(_: HeaderCarrier, _: ExecutionContext, _: EndpointLogContext, _: String))
+        .create(_: CreateMarriageAllowanceRequest)(_: HeaderCarrier, _: ExecutionContext, _: EndpointLogContext, _: String))
         .expects(requestData, *, *, *, *)
     }
   }

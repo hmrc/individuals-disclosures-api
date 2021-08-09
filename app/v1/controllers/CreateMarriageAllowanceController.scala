@@ -23,7 +23,6 @@ import javax.inject.Inject
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{Action, AnyContentAsJson, ControllerComponents}
 import play.mvc.Http.MimeTypes
-import uk.gov.hmrc.http.HeaderCarrier
 import utils.{IdGenerator, Logging}
 import v1.controllers.requestParsers.CreateMarriageAllowanceRequestParser
 import v1.models.errors._
@@ -48,7 +47,7 @@ class CreateMarriageAllowanceController @Inject()(val authService: EnrolmentsAut
     )
 
   //noinspection ScalaStyle
-  def createMarriageAllowance(nino: String, taxYear: String): Action[JsValue] =
+  def createMarriageAllowance(nino: String): Action[JsValue] =
     authorisedAction(nino).async(parse.json) { implicit request =>
 
       implicit val correlationId: String = idGenerator.generateCorrelationId
@@ -64,13 +63,13 @@ class CreateMarriageAllowanceController @Inject()(val authService: EnrolmentsAut
       val result =
         for {
           parsedRequest <- EitherT.fromEither[Future](requestParser.parseRequest(rawData))
-          serviceResponse <- EitherT(service.createMarriageAllowance(parsedRequest))
+          serviceResponse <- EitherT(service.create(parsedRequest))
         } yield {
           logger.info(
             s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
               s"Success response received with CorrelationId: ${serviceResponse.correlationId}")
 
-          Created()
+          Created
             .withApiHeaders(serviceResponse.correlationId)
             .as(MimeTypes.JSON)
         }

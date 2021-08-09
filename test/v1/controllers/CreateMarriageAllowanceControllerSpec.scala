@@ -80,10 +80,10 @@ class CreateMarriageAllowanceControllerSpec
   )
 
   val createMarriageAllowanceRequestBody: CreateMarriageAllowanceBody = CreateMarriageAllowanceBody(
-    s"$nino2",
+    nino2,
     Some("John"),
-    Some("Smith"),
-    "1986-04-06"
+    "Smith",
+    Some("1986-04-06")
   )
 
   val requestData: CreateMarriageAllowanceRequest = CreateMarriageAllowanceRequest(
@@ -120,7 +120,7 @@ class CreateMarriageAllowanceControllerSpec
               .parse(rawData)
               .returns(Left(ErrorWrapper(correlationId, error, None)))
 
-            val result: Future[Result] = controller.createMarriageAllowance(nino, taxYear)(fakePutRequest(requestBodyJson))
+            val result: Future[Result] = controller.createMarriageAllowance(nino1)(fakePutRequest(requestBodyJson))
 
             status(result) shouldBe expectedStatus
             contentAsJson(result) shouldBe Json.toJson(error)
@@ -153,7 +153,7 @@ class CreateMarriageAllowanceControllerSpec
               .createMarriageAllowance(requestData)
               .returns(Future.successful(Left(ErrorWrapper(correlationId, mtdError))))
 
-            val result: Future[Result] = controller.createMarriageAllowance(nino, taxYear)(fakePutRequest(requestBodyJson))
+            val result: Future[Result] = controller.createMarriageAllowance(nino1)(fakePutRequest(requestBodyJson))
 
             status(result) shouldBe expectedStatus
             contentAsJson(result) shouldBe Json.toJson(mtdError)

@@ -29,7 +29,7 @@ class CreateMarriageAllowanceConnectorSpec extends ConnectorSpec {
 
   private val nino: String = "AA111111A"
 
-  private val requestBodyModel = CreateMarriageAllowanceBody(Some("TC663795B"), Some("John"), "Smith", Some("1987-10-18"))
+  private val requestBodyModel = CreateMarriageAllowanceBody("TC663795B", Some("John"), "Smith", Some("1987-10-18"))
 
   val createMarriageAllowanceRequest: CreateMarriageAllowanceRequest = CreateMarriageAllowanceRequest(
       nino = Nino(nino),
@@ -58,7 +58,7 @@ class CreateMarriageAllowanceConnectorSpec extends ConnectorSpec {
 
         MockedHttpClient
           .put(
-            url = s"$baseUrl/marriage-allowance/claim/nino/$nino",
+            url = s"$baseUrl/marriage-allowance/claim/NINO/$nino",
             config = dummyDesHeaderCarrierConfig,
             body = createMarriageAllowanceRequest.body,
             requiredHeaders = requiredDesHeadersPut,
