@@ -69,5 +69,20 @@ trait MockHttpClient extends MockFactory {
             excludedHeaders.forall(h => !headersForUrl.contains(h))
         }})
     }
+
+    def post[I, T](url: String,
+                   config: HeaderCarrier.Config,
+                   body: I,
+                   requiredHeaders: Seq[(String, String)] = Seq.empty,
+                   excludedHeaders: Seq[(String, String)] = Seq.empty): CallHandler[Future[T]] = {
+      (mockHttpClient
+        .POST[I, T](_: String, _: I, _: Seq[(String, String)])(_: Writes[I], _: HttpReads[T], _: HeaderCarrier, _: ExecutionContext))
+        .expects(where { (actualUrl: String, actualBody: I, _, _, _, hc: HeaderCarrier, _) => {
+          val headersForUrl = hc.headersForUrl(config)(actualUrl)
+          url == actualUrl && body == actualBody &&
+            requiredHeaders.forall(h => headersForUrl.contains(h)) &&
+            excludedHeaders.forall(h => !headersForUrl.contains(h))
+        }})
+    }
   }
 }

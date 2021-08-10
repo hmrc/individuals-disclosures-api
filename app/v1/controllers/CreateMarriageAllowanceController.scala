@@ -89,6 +89,7 @@ class CreateMarriageAllowanceController @Inject()(val authService: EnrolmentsAut
     (errorWrapper.error: @unchecked) match {
       case BadRequestError |
            NinoFormatError |
+
            PartnerFirstNameFormatError |
            PartnerSurnameFormatError |
            PartnerNinoFormatError |

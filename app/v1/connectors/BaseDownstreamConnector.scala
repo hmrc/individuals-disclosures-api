@@ -20,6 +20,7 @@ import config.AppConfig
 import play.api.Logger
 import play.api.libs.json.Writes
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpReads}
+import v1.models.errors.DownstreamError
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -76,5 +77,17 @@ trait BaseDownstreamConnector {
     }
 
     doPut(downstreamHeaderCarrier(Seq("Content-Type")))
+  }
+
+  def post[Body: Writes, Resp](body: Body, uri: DesUri[Resp])(implicit ec: ExecutionContext,
+                                                                     hc: HeaderCarrier,
+                                                                     httpReads: HttpReads[DesOutcome[Resp]],
+                                                                     correlationId: String): Future[DesOutcome[Resp]] = {
+
+    def doPost(implicit hc: HeaderCarrier): Future[DesOutcome[Resp]] = {
+      http.POST(url = s"${appConfig.desBaseUrl}/${uri.value}", body)
+    }
+
+    doPost(downstreamHeaderCarrier(Seq("Content-Type")))
   }
 }

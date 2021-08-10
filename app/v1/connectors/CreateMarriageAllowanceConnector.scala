@@ -36,8 +36,8 @@ class CreateMarriageAllowanceConnector @Inject()(val http: HttpClient,
 
     val nino = request.nino.nino
 
-    put(
-      uri = DesUri[Unit](s"marriage-allowance/claim/NINO/$nino"), body = request.body
+    post(
+      uri = DesUri[Unit](s"income-tax/marriage-allowance/claim/NINO/$nino"), body = request.body
     )
   }
 }

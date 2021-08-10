@@ -66,12 +66,12 @@ class CreateMarriageAllowanceControllerISpec extends IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino1)
-          DesStub.onSuccess(DesStub.PUT, desUri, NO_CONTENT)
+          DesStub.onSuccess(DesStub.POST, desUri, NO_CONTENT)
         }
 
         val response: WSResponse = await(request().post(requestBodyJson))
-        response.status shouldBe OK
-        response.body[JsValue] shouldBe ""
+        response.status shouldBe CREATED
+        response.body[String] shouldBe ""
         response.header("Content-Type") shouldBe Some("application/json")
       }
     }
@@ -83,15 +83,18 @@ class CreateMarriageAllowanceControllerISpec extends IntegrationBaseSpec {
           s"""
              |{
              |  "spouseOrCivilPartnerNino": "$invalidNino",
-             |  "spouseOrCivilPartnerFirstName": "Johny1n4y8nx34tij8",
-             |  "spouseOrCivilPartnerSurname": "Smith47cywiteqytya",
+             |  "spouseOrCivilPartnerFirstName": "Johny1n4|y8nx34tij8",
+             |  "spouseOrCivilPartnerSurname": "Smith47cyw-i|teqytya",
              |  "spouseOrCivilPartnerDateOfBirth": "1943286-04-06"
              |}
           """.stripMargin
         )
 
         val allInvalidValueRequestError: List[MtdError] = List(
-          ???
+          BadRequestError.copy(code = PartnerFirstNameFormatError.code, message = PartnerFirstNameFormatError.message),
+          BadRequestError.copy(code = PartnerNinoFormatError.code, message = PartnerNinoFormatError.message),
+          BadRequestError.copy(code = PartnerDoBFormatError.code, message = PartnerDoBFormatError.message),
+          BadRequestError.copy(code = PartnerSurnameFormatError.code, message = PartnerSurnameFormatError.message)
         )
 
         val wrappedErrors: ErrorWrapper = ErrorWrapper(
@@ -106,7 +109,7 @@ class CreateMarriageAllowanceControllerISpec extends IntegrationBaseSpec {
           MtdIdLookupStub.ninoFound(nino1)
         }
 
-        val response: WSResponse = await(request().put(allInvalidValueRequestBodyJson))
+        val response: WSResponse = await(request().post(allInvalidValueRequestBodyJson))
         response.status shouldBe BAD_REQUEST
         response.json shouldBe Json.toJson(wrappedErrors)
       }
@@ -170,7 +173,7 @@ class CreateMarriageAllowanceControllerISpec extends IntegrationBaseSpec {
           |{
           |  "spouseOrCivilPartnerNino": "$nino2",
           |  "spouseOrCivilPartnerFirstName": "John",
-          |  "spouseOrCivilPartnerSurname": "Smith",
+          |  "spouseOrCivilPartnerSurname": "Smi37uwfuwjgqof87?@£%£&^*%th",
           |  "spouseOrCivilPartnerDateOfBirth": "1986-04-06"
           |}
         """.stripMargin
@@ -200,7 +203,7 @@ class CreateMarriageAllowanceControllerISpec extends IntegrationBaseSpec {
               MtdIdLookupStub.ninoFound(nino1)
             }
 
-            val response: WSResponse = await(request().put(requestBodyJson))
+            val response: WSResponse = await(request().post(requestBodyJson))
             response.status shouldBe expectedStatus
             response.json shouldBe Json.toJson(expectedBody)
           }
@@ -227,10 +230,10 @@ class CreateMarriageAllowanceControllerISpec extends IntegrationBaseSpec {
               AuditStub.audit()
               AuthStub.authorised()
               MtdIdLookupStub.ninoFound(nino1)
-              DesStub.onError(DesStub.PUT, desUri, desStatus, errorBody(desCode))
+              DesStub.onError(DesStub.POST, desUri, desStatus, errorBody(desCode))
             }
 
-            val response: WSResponse = await(request().put(requestBodyJson))
+            val response: WSResponse = await(request().post(requestBodyJson))
             response.status shouldBe expectedStatus
             response.json shouldBe Json.toJson(expectedBody)
           }
@@ -245,25 +248,25 @@ class CreateMarriageAllowanceControllerISpec extends IntegrationBaseSpec {
             """.stripMargin
 
         val input = Seq(
-          (BAD_REQUEST, "INVALID_IDTYPE", BAD_REQUEST, DownstreamError),
+          (BAD_REQUEST, "INVALID_IDTYPE", INTERNAL_SERVER_ERROR, DownstreamError),
           (BAD_REQUEST, "INVALID_IDVALUE", BAD_REQUEST, NinoFormatError),
           (BAD_REQUEST, "INVALID_PAYLOAD", INTERNAL_SERVER_ERROR, DownstreamError),
           (BAD_REQUEST, "INVALID_CORRELATIONID", INTERNAL_SERVER_ERROR, DownstreamError),
-          (BAD_REQUEST, "END_DATE_CODE_NOT_FOUND", INTERNAL_SERVER_ERROR, DownstreamError),
-          (BAD_REQUEST, "NINO_OR_TRN_NOT_FOUND", INTERNAL_SERVER_ERROR, DownstreamError),
-          (BAD_REQUEST, "INVALID_ACTUAL_END_DATE", INTERNAL_SERVER_ERROR, DownstreamError),
-          (BAD_REQUEST, "INVALID_PARTICIPANT_END_DATE", INTERNAL_SERVER_ERROR, DownstreamError),
-          (BAD_REQUEST, "INVALID_PARTICIPANT_START_DATE", INTERNAL_SERVER_ERROR, DownstreamError),
-          (BAD_REQUEST, "DECEASED_PARTICIPANT", INTERNAL_SERVER_ERROR, RuleDeceasedRecipientError),
-          (BAD_REQUEST, "INVALID_RELATIONSHIP_CODE", INTERNAL_SERVER_ERROR, DownstreamError),
-          (BAD_REQUEST, "PARTICIPANT1_CANNOT_BE_UPDATED", INTERNAL_SERVER_ERROR, DownstreamError),
-          (BAD_REQUEST, "PARTICIPANT2_CANNOT_BE_UPDATED", INTERNAL_SERVER_ERROR, DownstreamError),
-          (BAD_REQUEST, "RELATIONSHIP_ALREADY_EXISTS", INTERNAL_SERVER_ERROR, RuleActiveMarriageAllowanceClaimError),
-          (BAD_REQUEST, "CONFIDENCE_CHECK_FAILED", INTERNAL_SERVER_ERROR, DownstreamError),
-          (BAD_REQUEST, "CONFIDENCE_CHECK_SURNAME_MISSED", INTERNAL_SERVER_ERROR, DownstreamError),
-          (BAD_REQUEST, "SERVER_ERROR", INTERNAL_SERVER_ERROR, DownstreamError),
-          (BAD_REQUEST, "BAD_GATEWAY", INTERNAL_SERVER_ERROR, DownstreamError),
-          (BAD_REQUEST, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, DownstreamError)
+          (NOT_FOUND, "END_DATE_CODE_NOT_FOUND", INTERNAL_SERVER_ERROR, DownstreamError),
+          (NOT_FOUND, "NINO_OR_TRN_NOT_FOUND", INTERNAL_SERVER_ERROR, DownstreamError),
+          (UNPROCESSABLE_ENTITY, "INVALID_ACTUAL_END_DATE", INTERNAL_SERVER_ERROR, DownstreamError),
+          (UNPROCESSABLE_ENTITY, "INVALID_PARTICIPANT_END_DATE", INTERNAL_SERVER_ERROR, DownstreamError),
+          (UNPROCESSABLE_ENTITY, "INVALID_PARTICIPANT_START_DATE", INTERNAL_SERVER_ERROR, DownstreamError),
+          (UNPROCESSABLE_ENTITY, "DECEASED_PARTICIPANT", FORBIDDEN, RuleDeceasedRecipientError),
+          (UNPROCESSABLE_ENTITY, "INVALID_RELATIONSHIP_CODE", INTERNAL_SERVER_ERROR, DownstreamError),
+          (UNPROCESSABLE_ENTITY, "PARTICIPANT1_CANNOT_BE_UPDATED", INTERNAL_SERVER_ERROR, DownstreamError),
+          (UNPROCESSABLE_ENTITY, "PARTICIPANT2_CANNOT_BE_UPDATED", INTERNAL_SERVER_ERROR, DownstreamError),
+          (UNPROCESSABLE_ENTITY, "RELATIONSHIP_ALREADY_EXISTS", FORBIDDEN, RuleActiveMarriageAllowanceClaimError),
+          (UNPROCESSABLE_ENTITY, "CONFIDENCE_CHECK_FAILED", INTERNAL_SERVER_ERROR, DownstreamError),
+          (UNPROCESSABLE_ENTITY, "CONFIDENCE_CHECK_SURNAME_MISSED", INTERNAL_SERVER_ERROR, DownstreamError),
+          (INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, DownstreamError),
+          (BAD_GATEWAY, "BAD_GATEWAY", INTERNAL_SERVER_ERROR, DownstreamError),
+          (SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, DownstreamError)
         )
 
         input.foreach(args => (serviceErrorTest _).tupled(args))
