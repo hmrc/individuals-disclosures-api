@@ -66,7 +66,7 @@ class CreateMarriageAllowanceControllerSpec
   val requestBodyJson: JsValue = Json.parse(
     s"""
       |{
-      |  "spouseOrCivilPartnerNino": $nino2,
+      |  "spouseOrCivilPartnerNino": "$nino2",
       |  "spouseOrCivilPartnerFirstName": "John",
       |  "spouseOrCivilPartnerSurname": "Smith",
       |  "spouseOrCivilPartnerDateOfBirth": "1986-04-06"
@@ -106,7 +106,7 @@ class CreateMarriageAllowanceControllerSpec
         val result: Future[Result] = controller.createMarriageAllowance(nino1)(fakePutRequest(requestBodyJson))
 
         status(result) shouldBe CREATED
-        contentAsJson(result) shouldBe ""
+        contentAsString(result) shouldBe ""
         header("X-CorrelationId", result) shouldBe Some(correlationId)
       }
     }

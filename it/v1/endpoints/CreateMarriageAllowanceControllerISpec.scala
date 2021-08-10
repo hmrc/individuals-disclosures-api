@@ -31,12 +31,13 @@ class CreateMarriageAllowanceControllerISpec extends IntegrationBaseSpec {
 
     val nino1: String = "AA123456A"
     val nino2: String = "BB123456B"
+    val invalidNino: String = "BB123456Br"
     val correlationId: String = "X-123"
 
     val requestBodyJson: JsValue = Json.parse(
       s"""
         |{
-        |  "spouseOrCivilPartnerNino": $nino2,
+        |  "spouseOrCivilPartnerNino": "$nino2",
         |  "spouseOrCivilPartnerFirstName": "John",
         |  "spouseOrCivilPartnerSurname": "Smith",
         |  "spouseOrCivilPartnerDateOfBirth": "1986-04-06"
@@ -57,8 +58,8 @@ class CreateMarriageAllowanceControllerISpec extends IntegrationBaseSpec {
     }
   }
 
-  "Calling the 'amend disclosures' endpoint" should {
-    "return a 200 status code" when {
+  "Calling the 'create marriage allowence' endpoint" should {
+    "return a 201 status code" when {
       "any valid request is made" in new Test {
 
         override def setupStubs(): StubMapping = {
@@ -81,9 +82,9 @@ class CreateMarriageAllowanceControllerISpec extends IntegrationBaseSpec {
         val allInvalidValueRequestBodyJson: JsValue = Json.parse(
           s"""
              |{
-             |  "spouseOrCivilPartnerNino": ${nino2 + "r"},
-             |  "spouseOrCivilPartnerFirstName": "John",
-             |  "spouseOrCivilPartnerSurname": "Smith",
+             |  "spouseOrCivilPartnerNino": "$invalidNino",
+             |  "spouseOrCivilPartnerFirstName": "Johny1n4y8nx34tij8",
+             |  "spouseOrCivilPartnerSurname": "Smith47cywiteqytya",
              |  "spouseOrCivilPartnerDateOfBirth": "1943286-04-06"
              |}
           """.stripMargin
@@ -114,11 +115,12 @@ class CreateMarriageAllowanceControllerISpec extends IntegrationBaseSpec {
     "return error according to spec" when {
 
       val nino2: String = "BB123456B"
+      val invalidNino: String = "BB123456Br"
 
       val validRequestBodyJson: JsValue = Json.parse(
         s"""
           |{
-          |  "spouseOrCivilPartnerNino": $nino2,
+          |  "spouseOrCivilPartnerNino": "$nino2",
           |  "spouseOrCivilPartnerFirstName": "John",
           |  "spouseOrCivilPartnerSurname": "Smith",
           |  "spouseOrCivilPartnerDateOfBirth": "1986-04-06"
@@ -144,7 +146,7 @@ class CreateMarriageAllowanceControllerISpec extends IntegrationBaseSpec {
       val invalidNinoBodyJson: JsValue = Json.parse(
         s"""
           |{
-          |  "spouseOrCivilPartnerNino": ${nino2 + "r"},
+          |  "spouseOrCivilPartnerNino": "$invalidNino",
           |  "spouseOrCivilPartnerFirstName": "John",
           |  "spouseOrCivilPartnerSurname": "Smith",
           |  "spouseOrCivilPartnerDateOfBirth": "1986-04-06"
@@ -155,8 +157,8 @@ class CreateMarriageAllowanceControllerISpec extends IntegrationBaseSpec {
       val invalidFirstNameBodyJson: JsValue = Json.parse(
         s"""
           |{
-          |  "spouseOrCivilPartnerNino": $nino2,
-          |  "spouseOrCivilPartnerFirstName": "Jo37uwfuwjgqof87?"\/!@£%£&^*%hn",
+          |  "spouseOrCivilPartnerNino": "$nino2",
+          |  "spouseOrCivilPartnerFirstName": "Jo37uwfuwjgqof87?@£%£&^*%hn",
           |  "spouseOrCivilPartnerSurname": "Smith",
           |  "spouseOrCivilPartnerDateOfBirth": "1986-04-06"
           |}
@@ -166,7 +168,7 @@ class CreateMarriageAllowanceControllerISpec extends IntegrationBaseSpec {
       val invalidSurnameBodyJson: JsValue = Json.parse(
         s"""
           |{
-          |  "spouseOrCivilPartnerNino": $nino2,
+          |  "spouseOrCivilPartnerNino": "$nino2",
           |  "spouseOrCivilPartnerFirstName": "John",
           |  "spouseOrCivilPartnerSurname": "Smith",
           |  "spouseOrCivilPartnerDateOfBirth": "1986-04-06"
@@ -177,7 +179,7 @@ class CreateMarriageAllowanceControllerISpec extends IntegrationBaseSpec {
       val invalidDobBodyJson: JsValue = Json.parse(
         s"""
           |{
-          |  "spouseOrCivilPartnerNino": $nino2,
+          |  "spouseOrCivilPartnerNino": "$nino2",
           |  "spouseOrCivilPartnerFirstName": "John",
           |  "spouseOrCivilPartnerSurname": "Smith",
           |  "spouseOrCivilPartnerDateOfBirth": "1983256-04-06"
