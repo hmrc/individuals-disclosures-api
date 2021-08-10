@@ -211,8 +211,7 @@ class CreateMarriageAllowanceControllerISpec extends IntegrationBaseSpec {
 
         val input = Seq(
           ("AA1123A", validRequestBodyJson, BAD_REQUEST, NinoFormatError),
-          ("AA123456A", nonsenseRequestBodyJson, BAD_REQUEST, RuleIncorrectOrEmptyBodyError),
-          ("AA123458A", emptyBodyJson, BAD_REQUEST, RuleIncorrectOrEmptyBodyError),
+          ("AA123456A", nonsenseRequestBodyJson, BAD_REQUEST, RuleIncorrectOrEmptyBodyError.copy(paths = Some(Seq("/spouseOrCivilPartnerNino", "/spouseOrCivilPartnerSurname")))),          ("AA123458A", emptyBodyJson, BAD_REQUEST, RuleIncorrectOrEmptyBodyError),
           ("AA123457A", invalidNinoBodyJson, BAD_REQUEST, PartnerNinoFormatError),
           ("AA123457A", invalidFirstNameBodyJson, BAD_REQUEST, PartnerFirstNameFormatError),
           ("AA123457A", invalidSurnameBodyJson, BAD_REQUEST, PartnerSurnameFormatError),
