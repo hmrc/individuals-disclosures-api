@@ -19,19 +19,19 @@ package v1.endpoints
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status._
-import play.api.libs.json.{JsValue, Json}
-import play.api.libs.ws.{WSRequest, WSResponse}
+import play.api.libs.json.{ JsValue, Json }
+import play.api.libs.ws.{ WSRequest, WSResponse }
 import support.IntegrationBaseSpec
 import v1.models.errors._
-import v1.stubs.{AuditStub, AuthStub, DesStub, MtdIdLookupStub}
+import v1.stubs.{ AuditStub, AuthStub, DesStub, MtdIdLookupStub }
 
 class CreateMarriageAllowanceControllerISpec extends IntegrationBaseSpec {
 
   private trait Test {
 
-    val nino1: String = "AA123456A"
-    val nino2: String = "BB123456B"
-    val invalidNino: String = "BB123456Br"
+    val nino1: String         = "AA123456A"
+    val nino2: String         = "BB123456B"
+    val invalidNino: String   = "BB123456Br"
     val correlationId: String = "X-123"
 
     val requestBodyJson: JsValue = Json.parse(
@@ -69,7 +69,7 @@ class CreateMarriageAllowanceControllerISpec extends IntegrationBaseSpec {
           DesStub.onSuccess(DesStub.PUT, desUri, NO_CONTENT)
         }
 
-        val response: WSResponse = await(request().put(requestBodyJson))
+        val response: WSResponse = await(request().post(requestBodyJson))
         response.status shouldBe OK
         response.body[JsValue] shouldBe ""
         response.header("Content-Type") shouldBe Some("application/json")
@@ -114,7 +114,7 @@ class CreateMarriageAllowanceControllerISpec extends IntegrationBaseSpec {
 
     "return error according to spec" when {
 
-      val nino2: String = "BB123456B"
+      val nino2: String       = "BB123456B"
       val invalidNino: String = "BB123456Br"
 
       val validRequestBodyJson: JsValue = Json.parse(
@@ -191,7 +191,7 @@ class CreateMarriageAllowanceControllerISpec extends IntegrationBaseSpec {
         def validationErrorTest(requestNino: String, requestBody: JsValue, expectedStatus: Int, expectedBody: MtdError): Unit = {
           s"validation $requestNino fails with ${expectedBody.code} error" in new Test {
 
-            override val nino1: String = requestNino
+            override val nino1: String            = requestNino
             override val requestBodyJson: JsValue = requestBody
 
             override def setupStubs(): StubMapping = {
