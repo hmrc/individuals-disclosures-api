@@ -33,7 +33,6 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class CreateMarriageAllowanceController @Inject()(val authService: EnrolmentsAuthService,
                                                   val lookupService: MtdIdLookupService,
-                                                  appConfig: AppConfig,
                                                   requestParser: CreateMarriageAllowanceRequestParser,
                                                   service: CreateMarriageAllowanceService,
                                                   cc: ControllerComponents,
@@ -93,7 +92,8 @@ class CreateMarriageAllowanceController @Inject()(val authService: EnrolmentsAut
            PartnerSurnameFormatError |
            PartnerNinoFormatError |
            PartnerDoBFormatError |
-           MtdErrorWithCustomMessage(RuleIncorrectOrEmptyBodyError.code) => BadRequest(Json.toJson(errorWrapper))
+           MtdErrorWithCustomMessage(RuleIncorrectOrEmptyBodyError.code)
+      => BadRequest(Json.toJson(errorWrapper))
       case RuleDeceasedRecipientError |
            RuleActiveMarriageAllowanceClaimError => Forbidden(Json.toJson(errorWrapper))
       case DownstreamError => InternalServerError(Json.toJson(errorWrapper))

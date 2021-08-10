@@ -50,7 +50,6 @@ class CreateMarriageAllowanceControllerSpec
     val controller = new CreateMarriageAllowanceController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
-      appConfig = mockAppConfig,
       requestParser = mockCreateMarriageAllowanceRequestParser,
       service = mockCreateMarriageAllowanceService,
       cc = cc,

@@ -58,7 +58,7 @@ class CreateMarriageAllowanceControllerISpec extends IntegrationBaseSpec {
     }
   }
 
-  "Calling the 'create marriage allowence' endpoint" should {
+  "Calling the 'create marriage allowance' endpoint" should {
     "return a 201 status code" when {
       "any valid request is made" in new Test {
 
@@ -91,10 +91,10 @@ class CreateMarriageAllowanceControllerISpec extends IntegrationBaseSpec {
         )
 
         val allInvalidValueRequestError: List[MtdError] = List(
-          BadRequestError.copy(code = PartnerFirstNameFormatError.code, message = PartnerFirstNameFormatError.message),
-          BadRequestError.copy(code = PartnerNinoFormatError.code, message = PartnerNinoFormatError.message),
-          BadRequestError.copy(code = PartnerDoBFormatError.code, message = PartnerDoBFormatError.message),
-          BadRequestError.copy(code = PartnerSurnameFormatError.code, message = PartnerSurnameFormatError.message)
+          PartnerFirstNameFormatError,
+          PartnerNinoFormatError,
+          PartnerDoBFormatError,
+          PartnerSurnameFormatError
         )
 
         val wrappedErrors: ErrorWrapper = ErrorWrapper(
@@ -104,7 +104,6 @@ class CreateMarriageAllowanceControllerISpec extends IntegrationBaseSpec {
         )
 
         override def setupStubs(): StubMapping = {
-          AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino1)
         }
@@ -190,6 +189,9 @@ class CreateMarriageAllowanceControllerISpec extends IntegrationBaseSpec {
         """.stripMargin
       )
 
+      val nonsenseBodyPaths: MtdError =
+        RuleIncorrectOrEmptyBodyError.copy(paths = Some(Seq("/spouseOrCivilPartnerNino", "/spouseOrCivilPartnerSurname")))
+
       "validation error" when {
         def validationErrorTest(requestNino: String, requestBody: JsValue, expectedStatus: Int, expectedBody: MtdError): Unit = {
           s"validation $requestNino fails with ${expectedBody.code} error" in new Test {
@@ -198,7 +200,6 @@ class CreateMarriageAllowanceControllerISpec extends IntegrationBaseSpec {
             override val requestBodyJson: JsValue = requestBody
 
             override def setupStubs(): StubMapping = {
-              AuditStub.audit()
               AuthStub.authorised()
               MtdIdLookupStub.ninoFound(nino1)
             }
@@ -211,7 +212,8 @@ class CreateMarriageAllowanceControllerISpec extends IntegrationBaseSpec {
 
         val input = Seq(
           ("AA1123A", validRequestBodyJson, BAD_REQUEST, NinoFormatError),
-          ("AA123456A", nonsenseRequestBodyJson, BAD_REQUEST, RuleIncorrectOrEmptyBodyError.copy(paths = Some(Seq("/spouseOrCivilPartnerNino", "/spouseOrCivilPartnerSurname")))),          ("AA123458A", emptyBodyJson, BAD_REQUEST, RuleIncorrectOrEmptyBodyError),
+          ("AA123456A", nonsenseRequestBodyJson, BAD_REQUEST, nonsenseBodyPaths),
+          ("AA123458A", emptyBodyJson, BAD_REQUEST, RuleIncorrectOrEmptyBodyError),
           ("AA123457A", invalidNinoBodyJson, BAD_REQUEST, PartnerNinoFormatError),
           ("AA123457A", invalidFirstNameBodyJson, BAD_REQUEST, PartnerFirstNameFormatError),
           ("AA123457A", invalidSurnameBodyJson, BAD_REQUEST, PartnerSurnameFormatError),
@@ -226,7 +228,6 @@ class CreateMarriageAllowanceControllerISpec extends IntegrationBaseSpec {
           s"des returns an $desCode error and status $desStatus" in new Test {
 
             override def setupStubs(): StubMapping = {
-              AuditStub.audit()
               AuthStub.authorised()
               MtdIdLookupStub.ninoFound(nino1)
               DesStub.onError(DesStub.POST, desUri, desStatus, errorBody(desCode))
