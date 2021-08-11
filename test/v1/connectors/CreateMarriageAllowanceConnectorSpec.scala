@@ -29,7 +29,7 @@ class CreateMarriageAllowanceConnectorSpec extends ConnectorSpec {
 
   private val nino: String = "AA111111A"
 
-  private val requestBodyModel = CreateMarriageAllowanceBody(Some("TC663795B"), Some("John"), "Smith", Some("1987-10-18"))
+  private val requestBodyModel = CreateMarriageAllowanceBody("TC663795B", Some("John"), "Smith", Some("1987-10-18"))
 
   val createMarriageAllowanceRequest: CreateMarriageAllowanceRequest = CreateMarriageAllowanceRequest(
       nino = Nino(nino),
@@ -54,14 +54,14 @@ class CreateMarriageAllowanceConnectorSpec extends ConnectorSpec {
         val outcome = Right(ResponseWrapper(correlationId, ()))
 
         implicit val hc: HeaderCarrier = HeaderCarrier(otherHeaders = otherHeaders ++ Seq("Content-Type" -> "application/json"))
-        val requiredDesHeadersPut: Seq[(String, String)] = requiredDesHeaders ++ Seq("Content-Type" -> "application/json")
+        val requiredDesHeadersPost: Seq[(String, String)] = requiredDesHeaders ++ Seq("Content-Type" -> "application/json")
 
         MockedHttpClient
-          .put(
-            url = s"$baseUrl/marriage-allowance/claim/nino/$nino",
+          .post(
+            url = s"$baseUrl/income-tax/marriage-allowance/claim/NINO/$nino",
             config = dummyDesHeaderCarrierConfig,
             body = createMarriageAllowanceRequest.body,
-            requiredHeaders = requiredDesHeadersPut,
+            requiredHeaders = requiredDesHeadersPost,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
           ).returns(Future.successful(outcome))
 

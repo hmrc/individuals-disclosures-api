@@ -21,7 +21,7 @@ import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 import utils.JsonUtils
 
 
-case class CreateMarriageAllowanceBody(spouseOrCivilPartnerNino: Option[String],
+case class CreateMarriageAllowanceBody(spouseOrCivilPartnerNino: String,
                                        spouseOrCivilPartnerFirstName: Option[String],
                                        spouseOrCivilPartnerSurname: String,
                                        spouseOrCivilPartnerDateOfBirth: Option[String])
@@ -31,7 +31,7 @@ object CreateMarriageAllowanceBody extends JsonUtils {
   implicit val reads: Reads[CreateMarriageAllowanceBody] = Json.reads[CreateMarriageAllowanceBody]
 
   implicit val writes: OWrites[CreateMarriageAllowanceBody] = (
-    (JsPath \ "participant1Details" \ "nino").writeNullable[String] and
+    (JsPath \ "participant1Details" \ "nino").write[String] and
       (JsPath \ "participant1Details" \ "firstForeName").writeNullable[String] and
       (JsPath \ "participant1Details" \ "surname").write[String] and
       (JsPath \ "participant1Details" \ "dateOfBirth").writeNullable[String]

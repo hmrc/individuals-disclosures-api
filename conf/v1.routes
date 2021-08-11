@@ -1,3 +1,6 @@
+POST       /marriage-allowance/:nino                        v1.controllers.CreateMarriageAllowanceController.createMarriageAllowance(nino: String)
+
 PUT        /:nino/:taxYear                                  v1.controllers.AmendDisclosuresController.amendDisclosures(nino: String, taxYear: String)
+
 DELETE     /:nino/:taxYear                                  v1.controllers.DeleteDisclosuresController.deleteDisclosures(nino: String, taxYear: String)
 GET        /:nino/:taxYear                                  v1.controllers.RetrieveDisclosuresController.retrieveDisclosures(nino: String, taxYear: String)

@@ -37,7 +37,7 @@ class CreateMarriageAllowanceValidator extends Validator[CreateMarriageAllowance
     val body = data.body.json.as[CreateMarriageAllowanceBody]
 
     List(Validator.flattenErrors(List(
-      Validator.validateOptional(body.spouseOrCivilPartnerNino)(NinoValidation.validate(_, PartnerNinoFormatError)),
+      NinoValidation.validate(body.spouseOrCivilPartnerNino, PartnerNinoFormatError),
       SurnameValidation.validate(body.spouseOrCivilPartnerSurname, PartnerSurnameFormatError),
       Validator.validateOptional(body.spouseOrCivilPartnerFirstName)(GivenNameValidation.validate(_, PartnerFirstNameFormatError)),
       Validator.validateOptional(body.spouseOrCivilPartnerDateOfBirth)(DateFormatValidation.validate(_, PartnerDoBFormatError)),
