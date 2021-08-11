@@ -37,4 +37,9 @@ case class FeatureSwitch(value: Option[Configuration]) {
 
     enabled.getOrElse(false)
   }
+
+  def isMarriageAllowanceRoutingEnabled: Boolean = value match {
+    case Some(config) => config.getOptional[Boolean] ("marriage-allowance.enabled").getOrElse(true)
+    case None => true
+  }
 }
