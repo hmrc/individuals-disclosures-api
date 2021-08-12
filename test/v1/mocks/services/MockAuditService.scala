@@ -24,17 +24,22 @@ import uk.gov.hmrc.play.audit.http.connector.AuditResult
 import v1.models.audit.AuditEvent
 import v1.services.AuditService
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{ ExecutionContext, Future }
 
 trait MockAuditService extends MockFactory {
 
   val mockAuditService: AuditService = stub[AuditService]
 
   object MockedAuditService {
-    def verifyAuditEvent[T](event: AuditEvent[T]): CallHandler[Future[AuditResult]] = {
-      (mockAuditService.auditEvent(_: AuditEvent[T])(_: HeaderCarrier, _: ExecutionContext, _: Writes[T]))
+
+    def verifyAuditEvent[T](event: AuditEvent[T]): CallHandler[Future[AuditResult]] =
+      verifyAuditEvent(event, Future.successful(AuditResult.Success))
+
+    def verifyAuditEvent[T](event: AuditEvent[T], result: Future[AuditResult]): CallHandler[Future[AuditResult]] = {
+      (mockAuditService
+        .auditEvent(_: AuditEvent[T])(_: HeaderCarrier, _: ExecutionContext, _: Writes[T]))
         .verify(event, *, *, *)
-        .returning(Future.successful(AuditResult.Success))
+        .returning(result)
     }
   }
 

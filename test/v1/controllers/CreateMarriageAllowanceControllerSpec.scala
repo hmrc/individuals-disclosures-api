@@ -17,31 +17,34 @@
 package v1.controllers
 
 import mocks.MockAppConfig
-import play.api.libs.json.{JsValue, Json}
-import play.api.mvc.{AnyContentAsJson, Result}
+import play.api.libs.json.{ JsValue, Json }
+import play.api.mvc.{ AnyContentAsJson, Result }
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.mocks.MockIdGenerator
 import v1.mocks.requestParsers.MockCreateMarriageAllowanceRequestParser
-import v1.mocks.services.{MockCreateMarriageAllowanceService, MockEnrolmentsAuthService, MockMtdIdLookupService}
+import v1.mocks.services.{ MockAuditService, MockCreateMarriageAllowanceService, MockEnrolmentsAuthService, MockMtdIdLookupService }
+import v1.models.audit.{ AuditError, AuditEvent, AuditResponse, GenericAuditDetail }
 import v1.models.domain.Nino
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
-import v1.models.request.marriageAllowance.{CreateMarriageAllowanceBody, CreateMarriageAllowanceRawData, CreateMarriageAllowanceRequest}
+import v1.models.request.marriageAllowance.{ CreateMarriageAllowanceBody, CreateMarriageAllowanceRawData, CreateMarriageAllowanceRequest }
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+import scala.util.control.NoStackTrace
 
 class CreateMarriageAllowanceControllerSpec
-  extends ControllerBaseSpec
+    extends ControllerBaseSpec
     with MockEnrolmentsAuthService
     with MockMtdIdLookupService
     with MockAppConfig
     with MockCreateMarriageAllowanceService
     with MockCreateMarriageAllowanceRequestParser
+    with MockAuditService
     with MockIdGenerator {
 
-  val nino1: String = "AA123456A"
-  val nino2: String = "BB123456B"
+  val nino1: String         = "AA123456A"
+  val nino2: String         = "BB123456B"
   val correlationId: String = "X-123"
 
   trait Test {
@@ -52,6 +55,7 @@ class CreateMarriageAllowanceControllerSpec
       lookupService = mockMtdIdLookupService,
       requestParser = mockCreateMarriageAllowanceRequestParser,
       service = mockCreateMarriageAllowanceService,
+      auditService = mockAuditService,
       cc = cc,
       idGenerator = mockIdGenerator
     )
@@ -90,6 +94,20 @@ class CreateMarriageAllowanceControllerSpec
     body = createMarriageAllowanceRequestBody
   )
 
+  def event(auditResponse: AuditResponse): AuditEvent[GenericAuditDetail] =
+    AuditEvent(
+      auditType = "CreateMarriageAllowance",
+      transactionName = "create-marriage-allowance",
+      detail = GenericAuditDetail(
+        userType = "Individual",
+        agentReferenceNumber = None,
+        params = Map("nino" -> nino1),
+        request = Some(requestBodyJson),
+        `X-CorrelationId` = correlationId,
+        response = auditResponse
+      )
+    )
+
   "CreateMarriageAllowanceController" should {
     "return OK" when {
       "happy path" in new Test {
@@ -107,6 +125,28 @@ class CreateMarriageAllowanceControllerSpec
         status(result) shouldBe CREATED
         contentAsString(result) shouldBe ""
         header("X-CorrelationId", result) shouldBe Some(correlationId)
+
+        val auditResponse: AuditResponse = AuditResponse(CREATED, None, None)
+        MockedAuditService.verifyAuditEvent(event(auditResponse)).once
+      }
+
+      "audit fails" in new Test {
+        MockCreateMarriageAllowanceRequestParser
+          .parse(rawData)
+          .returns(Right(requestData))
+
+        MockCreateMarriageAllowanceService
+          .createMarriageAllowance(requestData)
+          .returns(Future.successful(Right(ResponseWrapper(correlationId, ()))))
+
+        val result: Future[Result] = controller.createMarriageAllowance(nino1)(fakePutRequest(requestBodyJson))
+
+        status(result) shouldBe CREATED
+        contentAsString(result) shouldBe ""
+        header("X-CorrelationId", result) shouldBe Some(correlationId)
+
+        val auditResponse: AuditResponse = AuditResponse(CREATED, None, None)
+        MockedAuditService.verifyAuditEvent(event(auditResponse), Future.failed(new RuntimeException with NoStackTrace)).once
       }
     }
 
@@ -124,6 +164,9 @@ class CreateMarriageAllowanceControllerSpec
             status(result) shouldBe expectedStatus
             contentAsJson(result) shouldBe Json.toJson(error)
             header("X-CorrelationId", result) shouldBe Some(correlationId)
+
+            val auditResponse: AuditResponse = AuditResponse(expectedStatus, Some(Seq(AuditError(error.code))), None)
+            MockedAuditService.verifyAuditEvent(event(auditResponse)).once
           }
         }
 
@@ -157,6 +200,9 @@ class CreateMarriageAllowanceControllerSpec
             status(result) shouldBe expectedStatus
             contentAsJson(result) shouldBe Json.toJson(mtdError)
             header("X-CorrelationId", result) shouldBe Some(correlationId)
+
+            val auditResponse: AuditResponse = AuditResponse(expectedStatus, Some(Seq(AuditError(mtdError.code))), None)
+            MockedAuditService.verifyAuditEvent(event(auditResponse)).once
           }
         }
 

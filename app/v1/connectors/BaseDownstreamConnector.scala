@@ -19,10 +19,9 @@ package v1.connectors
 import config.AppConfig
 import play.api.Logger
 import play.api.libs.json.Writes
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpReads}
-import v1.models.errors.DownstreamError
+import uk.gov.hmrc.http.{ HeaderCarrier, HttpClient, HttpReads }
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{ ExecutionContext, Future }
 
 trait BaseDownstreamConnector {
   val http: HttpClient
@@ -30,14 +29,13 @@ trait BaseDownstreamConnector {
 
   val logger: Logger = Logger(this.getClass)
 
-  private def downstreamHeaderCarrier(additionalHeaders: Seq[String] = Seq.empty)(implicit hc: HeaderCarrier,
-                                                                                  correlationId: String): HeaderCarrier =
+  private def downstreamHeaderCarrier(additionalHeaders: Seq[String] = Seq.empty)(implicit hc: HeaderCarrier, correlationId: String): HeaderCarrier =
     HeaderCarrier(
       extraHeaders = hc.extraHeaders ++
         // Contract headers
         Seq(
           "Authorization" -> s"Bearer ${appConfig.desToken}",
-          "Environment" -> appConfig.desEnv,
+          "Environment"   -> appConfig.desEnv,
           "CorrelationId" -> correlationId
         ) ++
         // Other headers (i.e Gov-Test-Scenario, Content-Type)
@@ -80,9 +78,9 @@ trait BaseDownstreamConnector {
   }
 
   def post[Body: Writes, Resp](body: Body, uri: DesUri[Resp])(implicit ec: ExecutionContext,
-                                                                     hc: HeaderCarrier,
-                                                                     httpReads: HttpReads[DesOutcome[Resp]],
-                                                                     correlationId: String): Future[DesOutcome[Resp]] = {
+                                                              hc: HeaderCarrier,
+                                                              httpReads: HttpReads[DesOutcome[Resp]],
+                                                              correlationId: String): Future[DesOutcome[Resp]] = {
 
     def doPost(implicit hc: HeaderCarrier): Future[DesOutcome[Resp]] = {
       http.POST(url = s"${appConfig.desBaseUrl}/${uri.value}", body)
