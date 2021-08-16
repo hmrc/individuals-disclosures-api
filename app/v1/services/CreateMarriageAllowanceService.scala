@@ -52,6 +52,7 @@ class CreateMarriageAllowanceService @Inject()(connector: CreateMarriageAllowanc
       "RELATIONSHIP_ALREADY_EXISTS" -> RuleActiveMarriageAllowanceClaimError,
       "INVALID_IDTYPE" -> DownstreamError,
       "END_DATE_CODE_NOT_FOUND" -> DownstreamError,
+      "NINO_OR_TRN_NOT_FOUND" -> RuleInvalidRequest,
       "INVALID_CORRELATIONID" -> DownstreamError,
       "INVALID_PAYLOAD" -> DownstreamError,
       "NINO_OR_TRN_NOT_FOUND" -> DownstreamError,
