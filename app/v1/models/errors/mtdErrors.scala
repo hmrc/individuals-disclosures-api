@@ -103,7 +103,7 @@ object RuleActiveMarriageAllowanceClaimError extends MtdError(
   message = "Marriage Allowance has already been transferred to a spouse or civil partner"
 )
 
-object RuleInvalidRequest extends MtdError(
+object RuleInvalidRequestError extends MtdError(
   code = "RULE_INVALID_REQUEST",
   message = "The NINO supplied is invalid"
 )

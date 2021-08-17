@@ -210,7 +210,7 @@ class CreateMarriageAllowanceControllerSpec
           (NinoFormatError, BAD_REQUEST),
           (RuleDeceasedRecipientError, FORBIDDEN),
           (RuleActiveMarriageAllowanceClaimError, FORBIDDEN),
-          (RuleInvalidRequest, FORBIDDEN),
+          (RuleInvalidRequestError, FORBIDDEN),
           (DownstreamError, INTERNAL_SERVER_ERROR)
         )
 

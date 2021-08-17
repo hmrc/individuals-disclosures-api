@@ -73,7 +73,7 @@ class CreateMarriageAllowanceServiceSpec extends ServiceSpec {
           ("END_DATE_CODE_NOT_FOUND", DownstreamError),
           ("INVALID_CORRELATIONID", DownstreamError),
           ("INVALID_PAYLOAD", DownstreamError),
-          ("NINO_OR_TRN_NOT_FOUND", RuleInvalidRequest),
+          ("NINO_OR_TRN_NOT_FOUND", RuleInvalidRequestError),
           ("INVALID_ACTUAL_END_DATE", DownstreamError),
           ("INVALID_PARTICIPANT_END_DATE", DownstreamError),
           ("INVALID_PARTICIPANT_START_DATE", DownstreamError),
