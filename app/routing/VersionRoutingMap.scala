@@ -17,13 +17,12 @@
 package routing
 
 import com.google.inject.ImplementedBy
-import config.{AppConfig, FeatureSwitch}
+import config.{ AppConfig, FeatureSwitch }
 import definition.Versions.VERSION_1
-import play.api.Logger
-
-import javax.inject.Inject
 import play.api.routing.Router
 import utils.Logging
+
+import javax.inject.Inject
 
 // So that we can have API-independent implementations of
 // VersionRoutingRequestHandler and VersionRoutingRequestHandlerSpec
@@ -41,7 +40,9 @@ trait VersionRoutingMap {
 case class VersionRoutingMapImpl @Inject()(appConfig: AppConfig,
                                            defaultRouter: Router,
                                            v1Router: v1.Routes,
-                                           v1RouterWithMarriageAllowance: v1WithMarriageAllowance.Routes) extends VersionRoutingMap with Logging{
+                                           v1RouterWithMarriageAllowance: v1WithMarriageAllowance.Routes)
+    extends VersionRoutingMap
+    with Logging {
 
   val featureSwitch: FeatureSwitch = FeatureSwitch(appConfig.featureSwitch)
 
