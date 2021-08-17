@@ -19,5 +19,9 @@
             <td><p>CLAIM_ALREADY_EXISTS</p></td>
             <td><p>Simulates the scenario in which a Marriage Allowance claim already exists for the supplied NINO. </p></td>
         </tr>
+        <tr>
+            <td><p>INVALID_REQUEST</p></td>
+            <td><p>Simulates the scenario in which a request cannot be made as the current NINO supplied is invalid.</p></td>
+        </tr>
     </tbody>
 </table>

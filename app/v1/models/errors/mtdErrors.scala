@@ -103,6 +103,11 @@ object RuleActiveMarriageAllowanceClaimError extends MtdError(
   message = "Marriage Allowance has already been transferred to a spouse or civil partner"
 )
 
+object RuleInvalidRequestError extends MtdError(
+  code = "RULE_INVALID_REQUEST",
+  message = "The NINO supplied is invalid"
+)
+
 //Standard Errors
 object NotFoundError extends MtdError(
   code = "MATCHING_RESOURCE_NOT_FOUND",
