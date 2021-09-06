@@ -124,7 +124,7 @@ class CreateMarriageAllowanceController @Inject()(val authService: EnrolmentsAut
   }
 
   private def auditSubmission(details: GenericAuditDetail)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[AuditResult] = {
-    val event = AuditEvent("CreateMarriageAllowance", "create-marriage-allowance", details)
+    val event = AuditEvent("CreateMarriageAllowanceClaim", "create-marriage-allowance-claim", details)
     auditService.auditEvent(event)
   }
 }
