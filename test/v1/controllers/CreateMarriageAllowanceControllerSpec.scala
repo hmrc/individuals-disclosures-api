@@ -96,8 +96,8 @@ class CreateMarriageAllowanceControllerSpec
 
   def event(auditResponse: AuditResponse): AuditEvent[GenericAuditDetail] =
     AuditEvent(
-      auditType = "CreateMarriageAllowance",
-      transactionName = "create-marriage-allowance",
+      auditType = "CreateMarriageAllowanceClaim",
+      transactionName = "create-marriage-allowance-claim",
       detail = GenericAuditDetail(
         userType = "Individual",
         agentReferenceNumber = None,
