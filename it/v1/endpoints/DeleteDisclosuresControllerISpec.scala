@@ -34,7 +34,7 @@ class DeleteDisclosuresControllerISpec extends IntegrationBaseSpec {
 
     def uri: String = s"/$nino/$taxYear"
 
-    def desUri: String = s"/income-tax/disclosures/$nino/$taxYear"
+    def ifs1Uri: String = s"/income-tax/disclosures/$nino/$taxYear"
 
     def setupStubs(): StubMapping
 
@@ -53,7 +53,7 @@ class DeleteDisclosuresControllerISpec extends IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DesStub.onSuccess(DesStub.DELETE, desUri, NO_CONTENT)
+          DesStub.onSuccess(DesStub.DELETE, ifs1Uri, NO_CONTENT)
         }
 
         val response: WSResponse = await(request().delete)
@@ -94,15 +94,15 @@ class DeleteDisclosuresControllerISpec extends IntegrationBaseSpec {
         input.foreach(args => (validationErrorTest _).tupled(args))
       }
 
-      "des service error" when {
-        def serviceErrorTest(desStatus: Int, desCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
-          s"des returns an $desCode error and status $desStatus" in new Test {
+      "ifs service error" when {
+        def serviceErrorTest(ifsStatus: Int, ifsCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
+          s"ifs returns an $ifsCode error and status $ifsStatus" in new Test {
 
             override def setupStubs(): StubMapping = {
               AuditStub.audit()
               AuthStub.authorised()
               MtdIdLookupStub.ninoFound(nino)
-              DesStub.onError(DesStub.DELETE, desUri, desStatus, errorBody(desCode))
+              DesStub.onError(DesStub.DELETE, ifs1Uri, ifsStatus, errorBody(ifsCode))
             }
 
             val response: WSResponse = await(request().delete)
@@ -116,7 +116,7 @@ class DeleteDisclosuresControllerISpec extends IntegrationBaseSpec {
           s"""
              |{
              |   "code": "$code",
-             |   "reason": "des message"
+             |   "reason": "ifs1 message"
              |}
             """.stripMargin
 

@@ -47,7 +47,7 @@ class CreateMarriageAllowanceControllerISpec extends IntegrationBaseSpec {
 
     def uri: String = s"/marriage-allowance/$nino1"
 
-    def desUri: String = s"/income-tax/marriage-allowance/claim/NINO/$nino1"
+    def Ifs2Uri: String = s"/income-tax/marriage-allowance/claim/NINO/$nino1"
 
     def setupStubs(): StubMapping
 
@@ -66,7 +66,7 @@ class CreateMarriageAllowanceControllerISpec extends IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino1)
-          DesStub.onSuccess(DesStub.POST, desUri, NO_CONTENT)
+          DesStub.onSuccess(DesStub.POST, Ifs2Uri, NO_CONTENT)
         }
 
         val response: WSResponse = await(request().post(requestBodyJson))
@@ -223,14 +223,14 @@ class CreateMarriageAllowanceControllerISpec extends IntegrationBaseSpec {
         input.foreach(args => (validationErrorTest _).tupled(args))
       }
 
-      "des service error" when {
-        def serviceErrorTest(desStatus: Int, desCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
-          s"des returns an $desCode error and status $desStatus" in new Test {
+      "ifs service error" when {
+        def serviceErrorTest(ifsStatus: Int, ifsCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
+          s"ifs returns an $ifsCode error and status $ifsStatus" in new Test {
 
             override def setupStubs(): StubMapping = {
               AuthStub.authorised()
               MtdIdLookupStub.ninoFound(nino1)
-              DesStub.onError(DesStub.POST, desUri, desStatus, errorBody(desCode))
+              DesStub.onError(DesStub.POST, Ifs2Uri, ifsStatus, errorBody(ifsCode))
             }
 
             val response: WSResponse = await(request().post(requestBodyJson))
@@ -243,7 +243,7 @@ class CreateMarriageAllowanceControllerISpec extends IntegrationBaseSpec {
           s"""
              |{
              |   "code": "$code",
-             |   "reason": "des message"
+             |   "reason": "ifs2 message"
              |}
             """.stripMargin
 

@@ -19,7 +19,7 @@ package v1.mocks.connectors
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
-import v1.connectors.{CreateMarriageAllowanceConnector, DesOutcome}
+import v1.connectors.{CreateMarriageAllowanceConnector, DownstreamOutcome}
 import v1.models.request.marriageAllowance.CreateMarriageAllowanceRequest
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -30,7 +30,7 @@ trait MockCreateMarriageAllowanceConnector extends MockFactory {
 
   object MockCreateMarriageAllowanceConnector {
 
-    def create(request: CreateMarriageAllowanceRequest): CallHandler[Future[DesOutcome[Unit]]] = {
+    def create(request: CreateMarriageAllowanceRequest): CallHandler[Future[DownstreamOutcome[Unit]]] = {
       (mockCreateMarriageAllowanceConnector
         .create(_: CreateMarriageAllowanceRequest)(_: HeaderCarrier, _: ExecutionContext, _: String))
         .expects(request, *, *, *)

@@ -26,11 +26,17 @@ trait AppConfig {
   // MTD ID Lookup Config
   def mtdIdBaseUrl: String
 
-  // DES Config
-  def desBaseUrl: String
-  def desEnv: String
-  def desToken: String
-  def desEnvironmentHeaders: Option[Seq[String]]
+  // IFS-1 Config
+  def ifs1BaseUrl: String
+  def ifs1Env: String
+  def ifs1Token: String
+  def ifs1EnvironmentHeaders: Option[Seq[String]]
+
+  // IFS-2 Config
+  def ifs2BaseUrl: String
+  def ifs2Env: String
+  def ifs2Token: String
+  def ifs2EnvironmentHeaders: Option[Seq[String]]
 
   // Business Rule Config
   def minimumPermittedTaxYear: Int
@@ -48,11 +54,17 @@ class AppConfigImpl @Inject()(config: ServicesConfig, configuration: Configurati
   // MTD ID Lookup Config
   val mtdIdBaseUrl: String = config.baseUrl(serviceName ="mtd-id-lookup")
 
-  // DES Config
-  val desBaseUrl: String = config.baseUrl("des")
-  val desEnv: String = config.getString("microservice.services.des.env")
-  val desToken: String = config.getString("microservice.services.des.token")
-  val desEnvironmentHeaders: Option[Seq[String]] = configuration.getOptional[Seq[String]]("microservice.services.des.environmentHeaders")
+  // IFS-1 Config
+  val ifs1BaseUrl: String = config.baseUrl("ifs1")
+  val ifs1Env: String = config.getString("microservice.services.ifs1.env")
+  val ifs1Token: String = config.getString("microservice.services.ifs1.token")
+  val ifs1EnvironmentHeaders: Option[Seq[String]] = configuration.getOptional[Seq[String]]("microservice.services.ifs1.environmentHeaders")
+
+  // IFS-2 Config
+  val ifs2BaseUrl: String = config.baseUrl("ifs2")
+  val ifs2Env: String = config.getString("microservice.services.ifs2.env")
+  val ifs2Token: String = config.getString("microservice.services.ifs2.token")
+  val ifs2EnvironmentHeaders: Option[Seq[String]] = configuration.getOptional[Seq[String]]("microservice.services.ifs2.environmentHeaders")
 
   // Business rule Config
   val minimumPermittedTaxYear: Int = config.getInt("minimumPermittedTaxYear")

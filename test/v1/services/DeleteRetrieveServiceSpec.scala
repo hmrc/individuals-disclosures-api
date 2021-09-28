@@ -17,7 +17,7 @@
 package v1.services
 
 import play.api.libs.json.{Format, Json}
-import v1.connectors.DesUri
+import v1.connectors.DownstreamUri.Ifs1Uri
 import v1.controllers.EndpointLogContext
 import v1.mocks.connectors.MockDeleteRetrieveConnector
 import v1.models.errors._
@@ -39,8 +39,8 @@ class DeleteRetrieveServiceSpec extends ServiceSpec {
     }
 
     implicit val logContext: EndpointLogContext = EndpointLogContext("c", "ep")
-    implicit val deleteDesUri: DesUri[Unit] = DesUri[Unit](s"income-tax/disclosures/$nino/$taxYear")
-    implicit val retrieveDesUri: DesUri[Data] = DesUri[Data](s"income-tax/disclosures/$nino/$taxYear")
+    implicit val deleteIfs1Uri: Ifs1Uri[Unit] = Ifs1Uri[Unit](s"income-tax/disclosures/$nino/$taxYear")
+    implicit val retrieveIfs1Uri: Ifs1Uri[Data] = Ifs1Uri[Data](s"income-tax/disclosures/$nino/$taxYear")
 
     val service: DeleteRetrieveService = new DeleteRetrieveService(
       connector = mockDeleteRetrieveConnector
@@ -60,11 +60,11 @@ class DeleteRetrieveServiceSpec extends ServiceSpec {
 
       "map errors according to spec" when {
 
-        def serviceError(desErrorCode: String, error: MtdError): Unit =
-          s"a $desErrorCode error is returned from the service" in new Test {
+        def serviceError(ifsErrorCode: String, error: MtdError): Unit =
+          s"a $ifsErrorCode error is returned from the service" in new Test {
 
             MockDeleteRetrieveConnector.delete()
-              .returns(Future.successful(Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode(desErrorCode))))))
+              .returns(Future.successful(Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode(ifsErrorCode))))))
 
             await(service.delete()) shouldBe Left(ErrorWrapper(correlationId, error))
           }
@@ -103,11 +103,11 @@ class DeleteRetrieveServiceSpec extends ServiceSpec {
 
       "map errors according to spec" when {
 
-        def serviceError(desErrorCode: String, error: MtdError): Unit =
-          s"a $desErrorCode error is returned from the service" in new Test {
+        def serviceError(ifsErrorCode: String, error: MtdError): Unit =
+          s"a $ifsErrorCode error is returned from the service" in new Test {
 
             MockDeleteRetrieveConnector.retrieve[Data]()
-              .returns(Future.successful(Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode(desErrorCode))))))
+              .returns(Future.successful(Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode(ifsErrorCode))))))
 
             await(service.retrieve[Data]()) shouldBe Left(ErrorWrapper(correlationId, error))
           }

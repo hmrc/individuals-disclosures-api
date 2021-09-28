@@ -34,12 +34,12 @@ class RetrieveDisclosuresControllerISpec extends IntegrationBaseSpec {
     val taxYear: String = "2021-22"
     val correlationId: String = "X-123"
 
-    val desResponse: JsValue = RetrieveDisclosuresControllerFixture.fullRetrieveDisclosuresResponse
+    val ifsResponse: JsValue = RetrieveDisclosuresControllerFixture.fullRetrieveDisclosuresResponse
     val mtdResponse: JsValue = RetrieveDisclosuresControllerFixture.mtdResponseWithHateoas(nino, taxYear)
 
     def uri: String = s"/$nino/$taxYear"
 
-    def desUri: String = s"/income-tax/disclosures/$nino/$taxYear"
+    def ifs1Uri: String = s"/income-tax/disclosures/$nino/$taxYear"
 
     def setupStubs(): StubMapping
 
@@ -58,7 +58,7 @@ class RetrieveDisclosuresControllerISpec extends IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DesStub.onSuccess(DesStub.GET, desUri, OK, desResponse)
+          DesStub.onSuccess(DesStub.GET, ifs1Uri, OK, ifsResponse)
         }
 
         val response: WSResponse = await(request.get)
@@ -99,15 +99,15 @@ class RetrieveDisclosuresControllerISpec extends IntegrationBaseSpec {
         input.foreach(args => (validationErrorTest _).tupled(args))
       }
 
-      "des service error" when {
-        def serviceErrorTest(desStatus: Int, desCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
-          s"des returns an $desCode error and status $desStatus" in new Test {
+      "ifs service error" when {
+        def serviceErrorTest(ifsStatus: Int, ifsCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
+          s"ifs returns an $ifsCode error and status $ifsStatus" in new Test {
 
             override def setupStubs(): StubMapping = {
               AuditStub.audit()
               AuthStub.authorised()
               MtdIdLookupStub.ninoFound(nino)
-              DesStub.onError(DesStub.GET, desUri, desStatus, errorBody(desCode))
+              DesStub.onError(DesStub.GET, ifs1Uri, ifsStatus, errorBody(ifsCode))
             }
 
             val response: WSResponse = await(request.get)
@@ -121,7 +121,7 @@ class RetrieveDisclosuresControllerISpec extends IntegrationBaseSpec {
           s"""
              |{
              |   "code": "$code",
-             |   "reason": "des message"
+             |   "reason": "ifs1 message"
              |}
             """.stripMargin
 
