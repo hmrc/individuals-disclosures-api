@@ -58,7 +58,7 @@ class CreateMarriageAllowanceConnectorSpec extends ConnectorSpec {
 
         MockedHttpClient
           .post(
-            url = s"$baseUrl/income-tax/marriage-allowance/claim/NINO/$nino",
+            url = s"$baseUrl/income-tax/marriage-allowance/claim/nino/$nino",
             config = dummyIfs2HeaderCarrierConfig,
             body = createMarriageAllowanceRequest.body,
             requiredHeaders = requiredIfsHeadersPost,

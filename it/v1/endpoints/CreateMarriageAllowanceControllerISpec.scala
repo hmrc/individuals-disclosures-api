@@ -47,7 +47,7 @@ class CreateMarriageAllowanceControllerISpec extends IntegrationBaseSpec {
 
     def uri: String = s"/marriage-allowance/$nino1"
 
-    def Ifs2Uri: String = s"/income-tax/marriage-allowance/claim/NINO/$nino1"
+    def Ifs2Uri: String = s"/income-tax/marriage-allowance/claim/nino/$nino1"
 
     def setupStubs(): StubMapping
 
