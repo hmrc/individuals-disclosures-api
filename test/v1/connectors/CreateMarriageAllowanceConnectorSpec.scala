@@ -42,10 +42,10 @@ class CreateMarriageAllowanceConnectorSpec extends ConnectorSpec {
       appConfig = mockAppConfig
     )
 
-    MockAppConfig.desBaseUrl returns baseUrl
-    MockAppConfig.desToken returns "des-token"
-    MockAppConfig.desEnvironment returns "des-environment"
-    MockAppConfig.desEnvironmentHeaders returns Some(allowedDesHeaders)
+    MockAppConfig.ifs2BaseUrl returns baseUrl
+    MockAppConfig.ifs2Token returns "ifs2-token"
+    MockAppConfig.ifs2Environment returns "ifs2-environment"
+    MockAppConfig.ifs2EnvironmentHeaders returns Some(allowedIfs2Headers)
   }
 
   "CreateMarriageAllowanceConnector.create" should {
@@ -54,14 +54,14 @@ class CreateMarriageAllowanceConnectorSpec extends ConnectorSpec {
         val outcome = Right(ResponseWrapper(correlationId, ()))
 
         implicit val hc: HeaderCarrier = HeaderCarrier(otherHeaders = otherHeaders ++ Seq("Content-Type" -> "application/json"))
-        val requiredDesHeadersPost: Seq[(String, String)] = requiredDesHeaders ++ Seq("Content-Type" -> "application/json")
+        val requiredIfsHeadersPost: Seq[(String, String)] = requiredIfs2Headers ++ Seq("Content-Type" -> "application/json")
 
         MockedHttpClient
           .post(
             url = s"$baseUrl/income-tax/marriage-allowance/claim/NINO/$nino",
-            config = dummyDesHeaderCarrierConfig,
+            config = dummyIfs2HeaderCarrierConfig,
             body = createMarriageAllowanceRequest.body,
-            requiredHeaders = requiredDesHeadersPost,
+            requiredHeaders = requiredIfsHeadersPost,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
           ).returns(Future.successful(outcome))
 

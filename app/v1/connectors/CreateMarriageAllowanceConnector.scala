@@ -20,6 +20,7 @@ import config.AppConfig
 import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import v1.models.request.marriageAllowance.CreateMarriageAllowanceRequest
+import v1.connectors.DownstreamUri.Ifs2Uri
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -30,14 +31,14 @@ class CreateMarriageAllowanceConnector @Inject()(val http: HttpClient,
   def create(request: CreateMarriageAllowanceRequest)(
     implicit hc: HeaderCarrier,
     ec: ExecutionContext,
-    correlationId: String): Future[DesOutcome[Unit]] = {
+    correlationId: String): Future[DownstreamOutcome[Unit]] = {
 
     import v1.connectors.httpparsers.StandardDesHttpParser._
 
     val nino = request.nino.nino
 
-    post(
-      uri = DesUri[Unit](s"income-tax/marriage-allowance/claim/NINO/$nino"), body = request.body
+    post(request.body,
+      Ifs2Uri[Unit](s"income-tax/marriage-allowance/claim/NINO/$nino")
     )
   }
 }

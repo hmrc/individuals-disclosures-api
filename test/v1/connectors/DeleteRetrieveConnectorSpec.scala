@@ -18,6 +18,7 @@ package v1.connectors
 
 import mocks.MockAppConfig
 import play.api.libs.json.{Json, Reads}
+import v1.connectors.DownstreamUri.Ifs1Uri
 import v1.mocks.MockHttpClient
 import v1.models.outcomes.ResponseWrapper
 
@@ -33,23 +34,23 @@ class DeleteRetrieveConnectorSpec extends ConnectorSpec {
       appConfig = mockAppConfig
     )
 
-    MockAppConfig.desBaseUrl returns baseUrl
-    MockAppConfig.desToken returns "des-token"
-    MockAppConfig.desEnvironment returns "des-environment"
-    MockAppConfig.desEnvironmentHeaders returns Some(allowedDesHeaders)
+    MockAppConfig.ifs1BaseUrl returns baseUrl
+    MockAppConfig.ifs1Token returns "ifs1-token"
+    MockAppConfig.ifs1Environment returns "ifs1-environment"
+    MockAppConfig.ifs1EnvironmentHeaders returns Some(allowedIfs1Headers)
   }
 
   "DeleteRetrieveConnector" when {
     "delete" must {
       "return a 204 status for a success scenario" in new Test {
         val outcome = Right(ResponseWrapper(correlationId, ()))
-        implicit val desUri: DesUri[Unit] = DesUri[Unit](s"income-tax/disclosures/$nino/$taxYear")
+        implicit val ifs1Uri: Ifs1Uri[Unit] = Ifs1Uri[Unit](s"income-tax/disclosures/$nino/$taxYear")
 
         MockedHttpClient
           .delete(
             url = s"$baseUrl/income-tax/disclosures/$nino/$taxYear",
-            config = dummyDesHeaderCarrierConfig,
-            requiredHeaders = requiredDesHeaders,
+            config = dummyIfs1HeaderCarrierConfig,
+            requiredHeaders = requiredIfs1Headers,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
           )
           .returns(Future.successful(outcome))
@@ -67,13 +68,13 @@ class DeleteRetrieveConnectorSpec extends ConnectorSpec {
         }
 
         val outcome = Right(ResponseWrapper(correlationId, Data("value")))
-        implicit val desUri: DesUri[Data] = DesUri[Data](s"income-tax/disclosures/$nino/$taxYear")
+        implicit val ifs1Uri: Ifs1Uri[Data] = Ifs1Uri[Data](s"income-tax/disclosures/$nino/$taxYear")
 
         MockedHttpClient
           .get(
             url = s"$baseUrl/income-tax/disclosures/$nino/$taxYear",
-            config = dummyDesHeaderCarrierConfig,
-            requiredHeaders = requiredDesHeaders,
+            config = dummyIfs1HeaderCarrierConfig,
+            requiredHeaders = requiredIfs1Headers,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
           )
           .returns(Future.successful(outcome))

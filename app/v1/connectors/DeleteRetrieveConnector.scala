@@ -19,8 +19,8 @@ package v1.connectors
 import config.AppConfig
 import javax.inject.{Inject, Singleton}
 import play.api.libs.json.Reads
-import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.http.HttpClient
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import v1.connectors.DownstreamUri.Ifs1Uri
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -30,21 +30,21 @@ class DeleteRetrieveConnector @Inject()(val http: HttpClient,
 
   def delete()(implicit hc: HeaderCarrier,
                ec: ExecutionContext,
-               desUri: DesUri[Unit],
-               correlationId: String): Future[DesOutcome[Unit]] = {
+               ifs1Uri: Ifs1Uri[Unit],
+               correlationId: String): Future[DownstreamOutcome[Unit]] = {
 
     import v1.connectors.httpparsers.StandardDesHttpParser._
 
-    delete(uri = desUri)
+    delete(uri = ifs1Uri)
   }
 
   def retrieve[Resp: Reads]()(implicit hc: HeaderCarrier,
                               ec: ExecutionContext,
-                              desUri: DesUri[Resp],
-                              correlationId: String): Future[DesOutcome[Resp]] = {
+                              ifs1Uri: Ifs1Uri[Resp],
+                              correlationId: String): Future[DownstreamOutcome[Resp]] = {
 
     import v1.connectors.httpparsers.StandardDesHttpParser._
 
-    get(uri = desUri)
+    get(uri = ifs1Uri)
   }
 }

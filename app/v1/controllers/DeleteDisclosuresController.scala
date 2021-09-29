@@ -25,7 +25,7 @@ import play.mvc.Http.MimeTypes
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
 import utils.{IdGenerator, Logging}
-import v1.connectors.DesUri
+import v1.connectors.DownstreamUri.Ifs1Uri
 import v1.controllers.requestParsers.DeleteRetrieveRequestParser
 import v1.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import v1.models.errors._
@@ -63,12 +63,12 @@ class DeleteDisclosuresController @Inject()(val authService: EnrolmentsAuthServi
         taxYear = taxYear
       )
 
-      implicit val desUri: DesUri[Unit] = DesUri[Unit](s"income-tax/disclosures/$nino/$taxYear")
+      implicit val ifs1Uri: Ifs1Uri[Unit] = Ifs1Uri[Unit](s"income-tax/disclosures/$nino/$taxYear")
 
       val result =
         for {
           _ <- EitherT.fromEither[Future](requestParser.parseRequest(rawData))
-          serviceResponse <- EitherT(service.delete(desErrorMap))
+          serviceResponse <- EitherT(service.delete(ifsErrorMap))
         } yield {
           logger.info(
             s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
@@ -111,7 +111,7 @@ class DeleteDisclosuresController @Inject()(val authService: EnrolmentsAuthServi
     }
   }
 
-  private def desErrorMap: Map[String, MtdError] =
+  private def ifsErrorMap: Map[String, MtdError] =
     Map(
       "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
       "INVALID_TAX_YEAR" -> TaxYearFormatError,

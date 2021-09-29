@@ -38,22 +38,46 @@ trait ConnectorSpec extends UnitSpec
   implicit val hc: HeaderCarrier = HeaderCarrier(otherHeaders = otherHeaders)
   implicit val ec: ExecutionContext = scala.concurrent.ExecutionContext.global
 
-  val dummyDesHeaderCarrierConfig: HeaderCarrier.Config =
+  val dummyIfs1HeaderCarrierConfig: HeaderCarrier.Config =
     HeaderCarrier.Config(
       Seq("^not-test-BaseUrl?$".r),
       Seq.empty[String],
       Some("individual-disclosures-api")
     )
 
-  val requiredDesHeaders: Seq[(String, String)] = Seq(
-    "Authorization" -> "Bearer des-token",
-    "Environment" -> "des-environment",
+  val requiredIfs1Headers: Seq[(String, String)] = Seq(
+    "Authorization" -> "Bearer ifs1-token",
+    "Environment" -> "ifs1-environment",
     "User-Agent" -> "individual-disclosures-api",
     "CorrelationId" -> correlationId,
     "Gov-Test-Scenario" -> "DEFAULT"
   )
 
-  val allowedDesHeaders: Seq[String] = Seq(
+  val allowedIfs1Headers: Seq[String] = Seq(
+    "Accept",
+    "Gov-Test-Scenario",
+    "Content-Type",
+    "Location",
+    "X-Request-Timestamp",
+    "X-Session-Id"
+  )
+
+  val dummyIfs2HeaderCarrierConfig: HeaderCarrier.Config =
+    HeaderCarrier.Config(
+      Seq("^not-test-BaseUrl?$".r),
+      Seq.empty[String],
+      Some("individual-disclosures-api")
+    )
+
+  val requiredIfs2Headers: Seq[(String, String)] = Seq(
+    "Authorization" -> "Bearer ifs2-token",
+    "Environment" -> "ifs2-environment",
+    "User-Agent" -> "individual-disclosures-api",
+    "CorrelationId" -> correlationId,
+    "Gov-Test-Scenario" -> "DEFAULT"
+  )
+
+  val allowedIfs2Headers: Seq[String] = Seq(
     "Accept",
     "Gov-Test-Scenario",
     "Content-Type",

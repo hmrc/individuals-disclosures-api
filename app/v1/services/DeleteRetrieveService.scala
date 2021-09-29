@@ -22,7 +22,8 @@ import javax.inject.{Inject, Singleton}
 import play.api.libs.json.Format
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.Logging
-import v1.connectors.{DeleteRetrieveConnector, DesUri}
+import v1.connectors.DeleteRetrieveConnector
+import v1.connectors.DownstreamUri.Ifs1Uri
 import v1.controllers.EndpointLogContext
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
@@ -36,7 +37,7 @@ class DeleteRetrieveService @Inject()(connector: DeleteRetrieveConnector) extend
   def delete(desErrorMap: Map[String, MtdError] = defaultDesErrorMap)(implicit hc: HeaderCarrier,
                ec: ExecutionContext,
                logContext: EndpointLogContext,
-               desUri: DesUri[Unit],
+                                                                      ifs1Uri: Ifs1Uri[Unit],
                correlationId: String): Future[Either[ErrorWrapper, ResponseWrapper[Unit]]] = {
 
     val result = for {
@@ -49,7 +50,7 @@ class DeleteRetrieveService @Inject()(connector: DeleteRetrieveConnector) extend
   def retrieve[Resp: Format](desErrorMap: Map[String, MtdError] = defaultDesErrorMap)(implicit hc: HeaderCarrier,
                                ec: ExecutionContext,
                                logContext: EndpointLogContext,
-                               desUri: DesUri[Resp],
+                                                                                      ifs1Uri: Ifs1Uri[Resp],
                                correlationId: String): Future[Either[ErrorWrapper, ResponseWrapper[Resp]]] = {
 
     val result = for {

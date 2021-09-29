@@ -39,13 +39,13 @@ class CreateMarriageAllowanceService @Inject()(connector: CreateMarriageAllowanc
                        correlationId: String): Future[Either[ErrorWrapper, ResponseWrapper[Unit]]] = {
 
     val result = for {
-      desResponseWrapper <- EitherT(connector.create(request)).leftMap(mapDesErrors(desErrorMap))
+      desResponseWrapper <- EitherT(connector.create(request)).leftMap(mapDesErrors(ifsErrorMap))
     } yield desResponseWrapper
 
     result.value
   }
 
-  private def desErrorMap =
+  private def ifsErrorMap =
     Map(
       "INVALID_IDVALUE" -> NinoFormatError,
       "DECEASED_PARTICIPANT" -> RuleDeceasedRecipientError,

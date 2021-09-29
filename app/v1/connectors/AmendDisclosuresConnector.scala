@@ -19,6 +19,7 @@ package v1.connectors
 import config.AppConfig
 import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import v1.connectors.DownstreamUri.Ifs1Uri
 import v1.models.request.disclosures.AmendDisclosuresRequest
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -30,15 +31,15 @@ class AmendDisclosuresConnector @Inject()(val http: HttpClient,
   def amendDisclosures(request: AmendDisclosuresRequest)(
     implicit hc: HeaderCarrier,
     ec: ExecutionContext,
-    correlationId: String): Future[DesOutcome[Unit]] = {
+    correlationId: String): Future[DownstreamOutcome[Unit]] = {
 
     import v1.connectors.httpparsers.StandardDesHttpParser._
 
     val nino = request.nino.nino
     val taxYear = request.taxYear
 
-    put(
-      uri = DesUri[Unit](s"income-tax/disclosures/$nino/$taxYear"), body = request.body
+    put(body = request.body,
+      Ifs1Uri[Unit](s"income-tax/disclosures/$nino/$taxYear")
     )
   }
 }
