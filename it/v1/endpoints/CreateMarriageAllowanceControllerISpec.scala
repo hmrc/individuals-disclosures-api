@@ -19,29 +19,29 @@ package v1.endpoints
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status._
-import play.api.libs.json.{ JsValue, Json }
-import play.api.libs.ws.{ WSRequest, WSResponse }
+import play.api.libs.json.{JsValue, Json}
+import play.api.libs.ws.{WSRequest, WSResponse}
 import support.IntegrationBaseSpec
 import v1.models.errors._
-import v1.stubs.{ AuditStub, AuthStub, DesStub, MtdIdLookupStub }
+import v1.stubs.{AuditStub, AuthStub, DesStub, MtdIdLookupStub}
 
 class CreateMarriageAllowanceControllerISpec extends IntegrationBaseSpec {
 
   private trait Test {
 
-    val nino1: String         = "AA123456A"
-    val nino2: String         = "BB123456B"
-    val invalidNino: String   = "BB123456Br"
+    val nino1: String = "AA123456A"
+    val nino2: String = "BB123456B"
+    val invalidNino: String = "BB123456Br"
     val correlationId: String = "X-123"
 
     val requestBodyJson: JsValue = Json.parse(
       s"""
-        |{
-        |  "spouseOrCivilPartnerNino": "$nino2",
-        |  "spouseOrCivilPartnerFirstName": "John",
-        |  "spouseOrCivilPartnerSurname": "Smith",
-        |  "spouseOrCivilPartnerDateOfBirth": "1986-04-06"
-        |}
+         |{
+         |  "spouseOrCivilPartnerNino": "$nino2",
+         |  "spouseOrCivilPartnerFirstName": "John",
+         |  "spouseOrCivilPartnerSurname": "Smith",
+         |  "spouseOrCivilPartnerDateOfBirth": "1986-04-06"
+         |}
       """.stripMargin
     )
 
@@ -91,10 +91,10 @@ class CreateMarriageAllowanceControllerISpec extends IntegrationBaseSpec {
         )
 
         val allInvalidValueRequestError: List[MtdError] = List(
-          PartnerFirstNameFormatError,
           PartnerNinoFormatError,
-          PartnerDoBFormatError,
-          PartnerSurnameFormatError
+          PartnerSurnameFormatError,
+          PartnerFirstNameFormatError,
+          PartnerDoBFormatError
         )
 
         val wrappedErrors: ErrorWrapper = ErrorWrapper(
@@ -116,17 +116,17 @@ class CreateMarriageAllowanceControllerISpec extends IntegrationBaseSpec {
 
     "return error according to spec" when {
 
-      val nino2: String       = "BB123456B"
+      val nino2: String = "BB123456B"
       val invalidNino: String = "BB123456Br"
 
       val validRequestBodyJson: JsValue = Json.parse(
         s"""
-          |{
-          |  "spouseOrCivilPartnerNino": "$nino2",
-          |  "spouseOrCivilPartnerFirstName": "John",
-          |  "spouseOrCivilPartnerSurname": "Smith",
-          |  "spouseOrCivilPartnerDateOfBirth": "1986-04-06"
-          |}
+           |{
+           |  "spouseOrCivilPartnerNino": "$nino2",
+           |  "spouseOrCivilPartnerFirstName": "John",
+           |  "spouseOrCivilPartnerSurname": "Smith",
+           |  "spouseOrCivilPartnerDateOfBirth": "1986-04-06"
+           |}
         """.stripMargin
       )
 
@@ -147,45 +147,45 @@ class CreateMarriageAllowanceControllerISpec extends IntegrationBaseSpec {
 
       val invalidNinoBodyJson: JsValue = Json.parse(
         s"""
-          |{
-          |  "spouseOrCivilPartnerNino": "$invalidNino",
-          |  "spouseOrCivilPartnerFirstName": "John",
-          |  "spouseOrCivilPartnerSurname": "Smith",
-          |  "spouseOrCivilPartnerDateOfBirth": "1986-04-06"
-          |}
+           |{
+           |  "spouseOrCivilPartnerNino": "$invalidNino",
+           |  "spouseOrCivilPartnerFirstName": "John",
+           |  "spouseOrCivilPartnerSurname": "Smith",
+           |  "spouseOrCivilPartnerDateOfBirth": "1986-04-06"
+           |}
         """.stripMargin
       )
 
       val invalidFirstNameBodyJson: JsValue = Json.parse(
         s"""
-          |{
-          |  "spouseOrCivilPartnerNino": "$nino2",
-          |  "spouseOrCivilPartnerFirstName": "Jo37uwfuwjgqof87?@£%£&^*%hn",
-          |  "spouseOrCivilPartnerSurname": "Smith",
-          |  "spouseOrCivilPartnerDateOfBirth": "1986-04-06"
-          |}
+           |{
+           |  "spouseOrCivilPartnerNino": "$nino2",
+           |  "spouseOrCivilPartnerFirstName": "Jo37uwfuwjgqof87?@£%£&^*%hn",
+           |  "spouseOrCivilPartnerSurname": "Smith",
+           |  "spouseOrCivilPartnerDateOfBirth": "1986-04-06"
+           |}
         """.stripMargin
       )
 
       val invalidSurnameBodyJson: JsValue = Json.parse(
         s"""
-          |{
-          |  "spouseOrCivilPartnerNino": "$nino2",
-          |  "spouseOrCivilPartnerFirstName": "John",
-          |  "spouseOrCivilPartnerSurname": "Smi37uwfuwjgqof87?@£%£&^*%th",
-          |  "spouseOrCivilPartnerDateOfBirth": "1986-04-06"
-          |}
+           |{
+           |  "spouseOrCivilPartnerNino": "$nino2",
+           |  "spouseOrCivilPartnerFirstName": "John",
+           |  "spouseOrCivilPartnerSurname": "Smi37uwfuwjgqof87?@£%£&^*%th",
+           |  "spouseOrCivilPartnerDateOfBirth": "1986-04-06"
+           |}
         """.stripMargin
       )
 
       val invalidDobBodyJson: JsValue = Json.parse(
         s"""
-          |{
-          |  "spouseOrCivilPartnerNino": "$nino2",
-          |  "spouseOrCivilPartnerFirstName": "John",
-          |  "spouseOrCivilPartnerSurname": "Smith",
-          |  "spouseOrCivilPartnerDateOfBirth": "1983256-04-06"
-          |}
+           |{
+           |  "spouseOrCivilPartnerNino": "$nino2",
+           |  "spouseOrCivilPartnerFirstName": "John",
+           |  "spouseOrCivilPartnerSurname": "Smith",
+           |  "spouseOrCivilPartnerDateOfBirth": "1983256-04-06"
+           |}
         """.stripMargin
       )
 
@@ -196,7 +196,7 @@ class CreateMarriageAllowanceControllerISpec extends IntegrationBaseSpec {
         def validationErrorTest(requestNino: String, requestBody: JsValue, expectedStatus: Int, expectedBody: MtdError): Unit = {
           s"validation $requestNino fails with ${expectedBody.code} error" in new Test {
 
-            override val nino1: String            = requestNino
+            override val nino1: String = requestNino
             override val requestBodyJson: JsValue = requestBody
 
             override def setupStubs(): StubMapping = {

@@ -260,9 +260,10 @@ class AmendDisclosuresValidatorSpec extends UnitSpec with MockAppConfig {
       "multiple fields fail value validation" in new Test {
         validator.validate(AmendDisclosuresRawData(validNino, validTaxYear, allInvalidValueRawRequestBody)) shouldBe
           List(
-            RuleTaxYearRangeInvalidError.copy(
+            SRNFormatError.copy(
               paths = Some(List(
-                "/taxAvoidance/1/taxYear"
+                "/taxAvoidance/0/srn",
+                "/taxAvoidance/1/srn"
               ))
             ),
             TaxYearFormatError.copy(
@@ -270,17 +271,16 @@ class AmendDisclosuresValidatorSpec extends UnitSpec with MockAppConfig {
                 "/taxAvoidance/0/taxYear"
               ))
             ),
+            RuleTaxYearRangeInvalidError.copy(
+              paths = Some(List(
+                "/taxAvoidance/1/taxYear"
+              ))
+            ),
             RuleVoluntaryClass2ValueInvalidError.copy(
               paths = Some(List(
                 "/class2Nics/class2VoluntaryContributions"
               ))
             ),
-            SRNFormatError.copy(
-              paths = Some(List(
-                "/taxAvoidance/0/srn",
-                "/taxAvoidance/1/srn"
-              ))
-            )
           )
       }
     }

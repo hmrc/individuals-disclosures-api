@@ -210,9 +210,10 @@ class AmendDisclosuresControllerISpec extends IntegrationBaseSpec {
         )
 
         val allInvalidValueRequestError: List[MtdError] = List(
-          RuleTaxYearRangeInvalidError.copy(
+          SRNFormatError.copy(
             paths = Some(List(
-              "/taxAvoidance/1/taxYear"
+              "/taxAvoidance/0/srn",
+              "/taxAvoidance/1/srn"
             ))
           ),
           TaxYearFormatError.copy(
@@ -220,15 +221,14 @@ class AmendDisclosuresControllerISpec extends IntegrationBaseSpec {
               "/taxAvoidance/0/taxYear"
             ))
           ),
+          RuleTaxYearRangeInvalidError.copy(
+            paths = Some(List(
+              "/taxAvoidance/1/taxYear"
+            ))
+          ),
           RuleVoluntaryClass2ValueInvalidError.copy(
             paths = Some(List(
               "/class2Nics/class2VoluntaryContributions"
-            ))
-          ),
-          SRNFormatError.copy(
-            paths = Some(List(
-              "/taxAvoidance/0/srn",
-              "/taxAvoidance/1/srn"
             ))
           )
         )
@@ -278,10 +278,11 @@ class AmendDisclosuresControllerISpec extends IntegrationBaseSpec {
             |   "code": "INVALID_REQUEST",
             |   "errors": [
             |      {
-            |         "code": "RULE_TAX_YEAR_RANGE_INVALID",
-            |         "message": "Tax year range invalid. A tax year range of one year is required",
+            |         "code": "FORMAT_SRN_INVALID",
+            |         "message": "The provided scheme reference number is invalid",
             |         "paths": [
-            |            "/taxAvoidance/1/taxYear"
+            |            "/taxAvoidance/0/srn",
+            |            "/taxAvoidance/1/srn"
             |         ]
             |      },
             |      {
@@ -292,18 +293,17 @@ class AmendDisclosuresControllerISpec extends IntegrationBaseSpec {
             |         ]
             |      },
             |      {
+            |         "code": "RULE_TAX_YEAR_RANGE_INVALID",
+            |         "message": "Tax year range invalid. A tax year range of one year is required",
+            |         "paths": [
+            |            "/taxAvoidance/1/taxYear"
+            |         ]
+            |      },
+            |      {
             |         "code": "RULE_VOLUNTARY_CLASS2_VALUE_INVALID",
             |         "message": "Voluntary Class 2 Contributions can only be set to true",
             |         "paths": [
             |            "/class2Nics/class2VoluntaryContributions"
-            |         ]
-            |      },
-            |      {
-            |         "code": "FORMAT_SRN_INVALID",
-            |         "message": "The provided scheme reference number is invalid",
-            |         "paths": [
-            |            "/taxAvoidance/0/srn",
-            |            "/taxAvoidance/1/srn"
             |         ]
             |      }
             |   ],

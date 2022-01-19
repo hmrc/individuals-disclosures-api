@@ -24,6 +24,7 @@ import v1.models.utils.JsonErrorValidators
 class JsonFormatValidationSpec extends UnitSpec with JsonErrorValidators {
 
   case class TestDataObject(fieldOne: String, fieldTwo: String)
+
   case class TestDataWrapper(arrayField: Seq[TestDataObject])
 
   implicit val testDataObjectFormat: OFormat[TestDataObject] = Json.format[TestDataObject]
@@ -56,7 +57,7 @@ class JsonFormatValidationSpec extends UnitSpec with JsonErrorValidators {
         val json = Json.parse("""{ "arrayField" : [{}]}""")
 
         val validationResult = JsonFormatValidation.validate[TestDataWrapper](json)
-        validationResult shouldBe List(RuleIncorrectOrEmptyBodyError.copy(paths = Some(Seq("/arrayField/0/fieldTwo", "/arrayField/0/fieldOne"))))
+        validationResult shouldBe List(RuleIncorrectOrEmptyBodyError.copy(paths = Some(Seq("/arrayField/0/fieldOne", "/arrayField/0/fieldTwo"))))
       }
 
       "required field is missing in multiple array objects" in {
@@ -67,10 +68,10 @@ class JsonFormatValidationSpec extends UnitSpec with JsonErrorValidators {
         val validationResult = JsonFormatValidation.validate[TestDataWrapper](json)
         validationResult shouldBe List(RuleIncorrectOrEmptyBodyError.copy(paths =
           Some(Seq(
-            "/arrayField/0/fieldTwo",
             "/arrayField/0/fieldOne",
-            "/arrayField/1/fieldTwo",
-            "/arrayField/1/fieldOne"
+            "/arrayField/0/fieldTwo",
+            "/arrayField/1/fieldOne",
+            "/arrayField/1/fieldTwo"
           ))
         ))
       }
@@ -88,7 +89,7 @@ class JsonFormatValidationSpec extends UnitSpec with JsonErrorValidators {
         val json = Json.parse("""{"field": "value"}""")
 
         val validationResult = JsonFormatValidation.validate[TestDataObject](json)
-        validationResult shouldBe List(RuleIncorrectOrEmptyBodyError.copy(paths = Some(Seq("/fieldTwo", "/fieldOne"))))
+        validationResult shouldBe List(RuleIncorrectOrEmptyBodyError.copy(paths = Some(Seq("/fieldOne", "/fieldTwo"))))
       }
 
       "a field is supplied with the wrong data type" in {
