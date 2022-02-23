@@ -8,7 +8,7 @@ The Individuals Disclosures API allows a developer to create and amend, retrieve
 ## Requirements
 - Scala 2.12.x
 - Java 8
-- sbt 1.3.13
+- sbt 1.6.x
 - [Service Manager](https://github.com/hmrc/service-manager)
 
 ## Development Setup
