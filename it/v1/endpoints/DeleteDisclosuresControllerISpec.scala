@@ -21,6 +21,7 @@ import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status._
 import play.api.libs.json.Json
 import play.api.libs.ws.{WSRequest, WSResponse}
+import play.api.test.Helpers.AUTHORIZATION
 import support.IntegrationBaseSpec
 import v1.models.errors._
 import v1.stubs.{AuditStub, AuthStub, DesStub, MtdIdLookupStub}
@@ -41,7 +42,10 @@ class DeleteDisclosuresControllerISpec extends IntegrationBaseSpec {
     def request(): WSRequest = {
       setupStubs()
       buildRequest(uri)
-        .withHttpHeaders((ACCEPT, "application/vnd.hmrc.1.0+json"))
+        .withHttpHeaders(
+          (ACCEPT, "application/vnd.hmrc.1.0+json"),
+          (AUTHORIZATION, "Bearer 123") // some bearer token
+      )
     }
   }
 
@@ -89,8 +93,8 @@ class DeleteDisclosuresControllerISpec extends IntegrationBaseSpec {
           ("AA1123A", "2021-22", BAD_REQUEST, NinoFormatError),
           ("AA123456A", "2017-18", BAD_REQUEST, RuleTaxYearNotSupportedError),
           ("AA123456A", "20177", BAD_REQUEST, TaxYearFormatError),
-          ("AA123456A", "2015-17", BAD_REQUEST, RuleTaxYearRangeInvalidError))
-
+          ("AA123456A", "2015-17", BAD_REQUEST, RuleTaxYearRangeInvalidError)
+        )
         input.foreach(args => (validationErrorTest _).tupled(args))
       }
 
@@ -127,8 +131,8 @@ class DeleteDisclosuresControllerISpec extends IntegrationBaseSpec {
           (NOT_FOUND, "NO_DATA_FOUND", NOT_FOUND, NotFoundError),
           (UNPROCESSABLE_ENTITY, "VOLUNTARY_CLASS2_CANNOT_BE_CHANGED", FORBIDDEN, RuleVoluntaryClass2CannotBeChangedError),
           (INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, DownstreamError),
-          (SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, DownstreamError))
-
+          (SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, DownstreamError)
+        )
         input.foreach(args => (serviceErrorTest _).tupled(args))
       }
     }
