@@ -22,6 +22,6 @@ object VoluntaryClass2ValueValidation {
 
   def validateOptional(class2VoluntaryContributions: Option[Boolean]): List[MtdError] =
     class2VoluntaryContributions.fold(NoValidationErrors: List[MtdError]) { value =>
-      if(value) NoValidationErrors else List(RuleVoluntaryClass2ValueInvalidError)
-  }
+      if (value) NoValidationErrors else List(RuleVoluntaryClass2ValueInvalidError)
+    }
 }

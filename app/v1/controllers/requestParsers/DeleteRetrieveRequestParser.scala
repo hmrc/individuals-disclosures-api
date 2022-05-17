@@ -16,10 +16,11 @@
 
 package v1.controllers.requestParsers
 
-import javax.inject.Inject
-import v1.models.domain.Nino
 import v1.controllers.requestParsers.validators.DeleteRetrieveValidator
+import v1.models.domain.Nino
 import v1.models.request.{DeleteRetrieveRawData, DeleteRetrieveRequest}
+
+import javax.inject.Inject
 
 class DeleteRetrieveRequestParser @Inject()(val validator: DeleteRetrieveValidator)
   extends RequestParser[DeleteRetrieveRawData, DeleteRetrieveRequest] {

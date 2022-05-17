@@ -17,29 +17,23 @@
 package v1.controllers.requestParsers.validators
 
 import config.AppConfig
-import javax.inject.Inject
 import v1.controllers.requestParsers.validators.validations._
 import v1.models.errors.MtdError
 import v1.models.request.DeleteRetrieveRawData
 
-class DeleteRetrieveValidator @Inject()(implicit appConfig: AppConfig) extends Validator[DeleteRetrieveRawData] {
+import javax.inject.Inject
 
+class DeleteRetrieveValidator @Inject()(implicit appConfig: AppConfig) extends Validator[DeleteRetrieveRawData] {
   private val validationSet = List(parameterFormatValidation, parameterValueValidation)
 
-  override def validate(data: DeleteRetrieveRawData): List[MtdError] = {
-    run(validationSet, data).distinct
-  }
+  override def validate(data: DeleteRetrieveRawData): List[MtdError] = run(validationSet, data).distinct
 
-  private def parameterFormatValidation: DeleteRetrieveRawData => List[List[MtdError]] = (data: DeleteRetrieveRawData) => {
-    List(
-      NinoValidation.validate(data.nino),
-      TaxYearValidation.validate(data.taxYear)
-    )
-  }
+  private def parameterFormatValidation: ValidationType = (data: DeleteRetrieveRawData) => List(
+    NinoValidation.validate(data.nino),
+    TaxYearValidation.validate(data.taxYear)
+  )
 
-  private def parameterValueValidation: DeleteRetrieveRawData => List[List[MtdError]] = (data: DeleteRetrieveRawData) => {
-    List(
-      TaxYearNotSupportedValidation.validate(data.taxYear)
-    )
-  }
+  private def parameterValueValidation: ValidationType = (data: DeleteRetrieveRawData) => List(
+    TaxYearNotSupportedValidation.validate(data.taxYear)
+  )
 }

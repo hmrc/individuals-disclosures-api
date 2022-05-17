@@ -22,7 +22,6 @@ import v1.models.errors.{BadRequestError, ErrorWrapper}
 import v1.models.request.RawData
 
 trait RequestParser[Raw <: RawData, Request] extends Logging {
-
   val validator: Validator[Raw]
 
   protected def requestFor(data: Raw): Request

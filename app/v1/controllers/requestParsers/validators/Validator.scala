@@ -20,13 +20,12 @@ import v1.models.errors.MtdError
 import v1.models.request.RawData
 
 trait Validator[A <: RawData] {
-
   type ValidationLevel[T] = T => List[MtdError]
+  type ValidationType = A => List[List[MtdError]]
 
   def validate(data: A): List[MtdError]
 
-  def run(validationSet: List[A => List[List[MtdError]]], data: A): List[MtdError] = {
-
+  def run(validationSet: List[A => List[List[MtdError]]], data: A): List[MtdError] =
     validationSet match {
       case Nil => List()
       case thisLevel :: remainingLevels =>
@@ -35,7 +34,6 @@ trait Validator[A <: RawData] {
           case x if x.nonEmpty => x
         }
     }
-  }
 }
 
 object Validator {

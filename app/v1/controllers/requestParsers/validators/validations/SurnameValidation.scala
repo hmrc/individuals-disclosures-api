@@ -15,6 +15,7 @@
  */
 
 package v1.controllers.requestParsers.validators.validations
+
 import scala.util.matching.Regex
 
 object SurnameValidation extends RegexValidation {
