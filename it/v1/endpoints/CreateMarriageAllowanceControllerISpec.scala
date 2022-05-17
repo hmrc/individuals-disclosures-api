@@ -24,7 +24,7 @@ import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
 import support.IntegrationBaseSpec
 import v1.models.errors._
-import v1.stubs.{AuditStub, AuthStub, DesStub, MtdIdLookupStub}
+import v1.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 
 class CreateMarriageAllowanceControllerISpec extends IntegrationBaseSpec {
 
@@ -70,7 +70,7 @@ class CreateMarriageAllowanceControllerISpec extends IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino1)
-          DesStub.onSuccess(DesStub.POST, Ifs2Uri, NO_CONTENT)
+          DownstreamStub.onSuccess(DownstreamStub.POST, Ifs2Uri, NO_CONTENT)
         }
 
         val response: WSResponse = await(request().post(requestBodyJson))
@@ -233,7 +233,7 @@ class CreateMarriageAllowanceControllerISpec extends IntegrationBaseSpec {
             override def setupStubs(): StubMapping = {
               AuthStub.authorised()
               MtdIdLookupStub.ninoFound(nino1)
-              DesStub.onError(DesStub.POST, Ifs2Uri, ifsStatus, errorBody(ifsCode))
+              DownstreamStub.onError(DownstreamStub.POST, Ifs2Uri, ifsStatus, errorBody(ifsCode))
             }
 
             val response: WSResponse = await(request().post(requestBodyJson))
@@ -251,25 +251,25 @@ class CreateMarriageAllowanceControllerISpec extends IntegrationBaseSpec {
             """.stripMargin
 
         val input = Seq(
-          (BAD_REQUEST, "INVALID_IDTYPE", INTERNAL_SERVER_ERROR, DownstreamError),
+          (BAD_REQUEST, "INVALID_IDTYPE", INTERNAL_SERVER_ERROR, InternalError),
           (BAD_REQUEST, "INVALID_IDVALUE", BAD_REQUEST, NinoFormatError),
-          (BAD_REQUEST, "INVALID_PAYLOAD", INTERNAL_SERVER_ERROR, DownstreamError),
-          (BAD_REQUEST, "INVALID_CORRELATIONID", INTERNAL_SERVER_ERROR, DownstreamError),
-          (NOT_FOUND, "END_DATE_CODE_NOT_FOUND", INTERNAL_SERVER_ERROR, DownstreamError),
+          (BAD_REQUEST, "INVALID_PAYLOAD", INTERNAL_SERVER_ERROR, InternalError),
+          (BAD_REQUEST, "INVALID_CORRELATIONID", INTERNAL_SERVER_ERROR, InternalError),
+          (NOT_FOUND, "END_DATE_CODE_NOT_FOUND", INTERNAL_SERVER_ERROR, InternalError),
           (NOT_FOUND, "NINO_OR_TRN_NOT_FOUND", FORBIDDEN, RuleInvalidRequestError),
-          (UNPROCESSABLE_ENTITY, "INVALID_ACTUAL_END_DATE", INTERNAL_SERVER_ERROR, DownstreamError),
-          (UNPROCESSABLE_ENTITY, "INVALID_PARTICIPANT_END_DATE", INTERNAL_SERVER_ERROR, DownstreamError),
-          (UNPROCESSABLE_ENTITY, "INVALID_PARTICIPANT_START_DATE", INTERNAL_SERVER_ERROR, DownstreamError),
+          (UNPROCESSABLE_ENTITY, "INVALID_ACTUAL_END_DATE", INTERNAL_SERVER_ERROR, InternalError),
+          (UNPROCESSABLE_ENTITY, "INVALID_PARTICIPANT_END_DATE", INTERNAL_SERVER_ERROR, InternalError),
+          (UNPROCESSABLE_ENTITY, "INVALID_PARTICIPANT_START_DATE", INTERNAL_SERVER_ERROR, InternalError),
           (UNPROCESSABLE_ENTITY, "DECEASED_PARTICIPANT", FORBIDDEN, RuleDeceasedRecipientError),
-          (UNPROCESSABLE_ENTITY, "INVALID_RELATIONSHIP_CODE", INTERNAL_SERVER_ERROR, DownstreamError),
-          (UNPROCESSABLE_ENTITY, "PARTICIPANT1_CANNOT_BE_UPDATED", INTERNAL_SERVER_ERROR, DownstreamError),
-          (UNPROCESSABLE_ENTITY, "PARTICIPANT2_CANNOT_BE_UPDATED", INTERNAL_SERVER_ERROR, DownstreamError),
+          (UNPROCESSABLE_ENTITY, "INVALID_RELATIONSHIP_CODE", INTERNAL_SERVER_ERROR, InternalError),
+          (UNPROCESSABLE_ENTITY, "PARTICIPANT1_CANNOT_BE_UPDATED", INTERNAL_SERVER_ERROR, InternalError),
+          (UNPROCESSABLE_ENTITY, "PARTICIPANT2_CANNOT_BE_UPDATED", INTERNAL_SERVER_ERROR, InternalError),
           (UNPROCESSABLE_ENTITY, "RELATIONSHIP_ALREADY_EXISTS", FORBIDDEN, RuleActiveMarriageAllowanceClaimError),
-          (UNPROCESSABLE_ENTITY, "CONFIDENCE_CHECK_FAILED", INTERNAL_SERVER_ERROR, DownstreamError),
-          (UNPROCESSABLE_ENTITY, "CONFIDENCE_CHECK_SURNAME_MISSED", INTERNAL_SERVER_ERROR, DownstreamError),
-          (INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, DownstreamError),
-          (BAD_GATEWAY, "BAD_GATEWAY", INTERNAL_SERVER_ERROR, DownstreamError),
-          (SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, DownstreamError)
+          (UNPROCESSABLE_ENTITY, "CONFIDENCE_CHECK_FAILED", INTERNAL_SERVER_ERROR, InternalError),
+          (UNPROCESSABLE_ENTITY, "CONFIDENCE_CHECK_SURNAME_MISSED", INTERNAL_SERVER_ERROR, InternalError),
+          (INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, InternalError),
+          (BAD_GATEWAY, "BAD_GATEWAY", INTERNAL_SERVER_ERROR, InternalError),
+          (SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, InternalError)
         )
         input.foreach(args => (serviceErrorTest _).tupled(args))
       }

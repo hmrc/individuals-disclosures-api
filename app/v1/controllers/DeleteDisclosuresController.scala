@@ -107,7 +107,7 @@ class DeleteDisclosuresController @Inject()(val authService: EnrolmentsAuthServi
            RuleTaxYearRangeInvalidError => BadRequest(Json.toJson(errorWrapper))
       case RuleVoluntaryClass2CannotBeChangedError => Forbidden(Json.toJson(errorWrapper))
       case NotFoundError => NotFound(Json.toJson(errorWrapper))
-      case DownstreamError => InternalServerError(Json.toJson(errorWrapper))
+      case InternalError => InternalServerError(Json.toJson(errorWrapper))
     }
   }
 
@@ -115,11 +115,11 @@ class DeleteDisclosuresController @Inject()(val authService: EnrolmentsAuthServi
     Map(
       "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
       "INVALID_TAX_YEAR" -> TaxYearFormatError,
-      "INVALID_CORRELATIONID" -> DownstreamError,
+      "INVALID_CORRELATIONID" -> InternalError,
       "NO_DATA_FOUND" -> NotFoundError,
       "VOLUNTARY_CLASS2_CANNOT_BE_CHANGED" -> RuleVoluntaryClass2CannotBeChangedError,
-      "SERVER_ERROR" -> DownstreamError,
-      "SERVICE_UNAVAILABLE" -> DownstreamError
+      "SERVER_ERROR" -> InternalError,
+      "SERVICE_UNAVAILABLE" -> InternalError
     )
 
   private def auditSubmission(details: GenericAuditDetail)

@@ -119,7 +119,7 @@ class CreateMarriageAllowanceController @Inject()(val authService: EnrolmentsAut
       case RuleDeceasedRecipientError |
            RuleInvalidRequestError |
            RuleActiveMarriageAllowanceClaimError => Forbidden(Json.toJson(errorWrapper))
-      case DownstreamError => InternalServerError(Json.toJson(errorWrapper))
+      case InternalError => InternalServerError(Json.toJson(errorWrapper))
     }
   }
 

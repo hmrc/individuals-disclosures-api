@@ -34,7 +34,7 @@ trait MockDeleteRetrieveService extends MockFactory {
 
   object MockDeleteRetrieveService {
 
-    val defaultDesMap: Map[String, MtdError] = Map.empty[String, MtdError]
+    val defaultdownstreamMap: Map[String, MtdError] = Map.empty[String, MtdError]
 
     def delete(): CallHandler[Future[Either[ErrorWrapper, ResponseWrapper[Unit]]]] = {
       (mockDeleteRetrieveService

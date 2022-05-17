@@ -238,7 +238,7 @@ class AmendDisclosuresControllerSpec
           (TaxYearFormatError, BAD_REQUEST),
           (NotFoundError, NOT_FOUND),
           (RuleVoluntaryClass2CannotBeChangedError, FORBIDDEN),
-          (DownstreamError, INTERNAL_SERVER_ERROR)
+          (InternalError, INTERNAL_SERVER_ERROR)
         )
 
         input.foreach(args => (serviceErrors _).tupled(args))

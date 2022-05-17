@@ -116,7 +116,7 @@ class AmendDisclosuresController @Inject()(val authService: EnrolmentsAuthServic
       => BadRequest(Json.toJson(errorWrapper))
       case RuleVoluntaryClass2CannotBeChangedError => Forbidden(Json.toJson(errorWrapper))
       case NotFoundError => NotFound(Json.toJson(errorWrapper))
-      case DownstreamError => InternalServerError(Json.toJson(errorWrapper))
+      case InternalError => InternalServerError(Json.toJson(errorWrapper))
     }
   }
 

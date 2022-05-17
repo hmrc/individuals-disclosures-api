@@ -100,7 +100,7 @@ class RetrieveDisclosuresController @Inject()(val authService: EnrolmentsAuthSer
       case BadRequestError | NinoFormatError | TaxYearFormatError | RuleTaxYearNotSupportedError |
            RuleTaxYearRangeInvalidError => BadRequest(Json.toJson(errorWrapper))
       case NotFoundError => NotFound(Json.toJson(errorWrapper))
-      case DownstreamError => InternalServerError(Json.toJson(errorWrapper))
+      case InternalError => InternalServerError(Json.toJson(errorWrapper))
     }
   }
 }

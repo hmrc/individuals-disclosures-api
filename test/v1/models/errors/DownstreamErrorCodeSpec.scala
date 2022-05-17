@@ -14,22 +14,25 @@
  * limitations under the License.
  */
 
-package v1.models.domain
+package v1.models.errors
 
-/**
-  * Represents a tax year for DES
-  *
-  * @param value the tax year string (where 2018 represents 2017-18)
-  */
-case class DesTaxYear(value: String) extends AnyVal {
-  override def toString: String = value
-}
+import play.api.libs.json.Json
+import support.UnitSpec
 
-object DesTaxYear {
+class DownstreamErrorCodeSpec extends UnitSpec {
 
-  /**
-    * @param taxYear tax year in MTD format (e.g. 2017-18)
-    */
-  def fromMtd(taxYear: String): DesTaxYear =
-    DesTaxYear(taxYear.take(2) + taxYear.drop(5))
+  "reads" should {
+    val json = Json.parse(
+      """
+        |{
+        |   "code": "CODE",
+        |   "reason": "ignored"
+        |}
+      """.stripMargin
+    )
+
+    "generate the correct error code" in {
+      json.as[DownstreamErrorCode] shouldBe DownstreamErrorCode("CODE")
+    }
+  }
 }

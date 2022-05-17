@@ -26,12 +26,12 @@ import v1.controllers.EndpointLogContext
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.disclosures.AmendDisclosuresRequest
-import v1.support.DesResponseMappingSupport
+import v1.support.DownstreamResponseMappingSupport
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class AmendDisclosuresService @Inject()(connector: AmendDisclosuresConnector) extends DesResponseMappingSupport with Logging {
+class AmendDisclosuresService @Inject()(connector: AmendDisclosuresConnector) extends DownstreamResponseMappingSupport with Logging {
 
   def amendDisclosures(request: AmendDisclosuresRequest)
                       (implicit hc: HeaderCarrier,ec: ExecutionContext,
@@ -39,8 +39,8 @@ class AmendDisclosuresService @Inject()(connector: AmendDisclosuresConnector) ex
                        correlationId: String): Future[Either[ErrorWrapper, ResponseWrapper[Unit]]] = {
 
     val result = for {
-      desResponseWrapper <- EitherT(connector.amendDisclosures(request)).leftMap(mapDesErrors(ifsErrorMap))
-    } yield desResponseWrapper
+      downstreamResponseWrapper <- EitherT(connector.amendDisclosures(request)).leftMap(mapdownstreamErrors(ifsErrorMap))
+    } yield downstreamResponseWrapper
 
     result.value
   }
@@ -49,11 +49,11 @@ class AmendDisclosuresService @Inject()(connector: AmendDisclosuresConnector) ex
     Map(
       "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
       "INVALID_TAX_YEAR" -> TaxYearFormatError,
-      "INVALID_CORRELATIONID" -> DownstreamError,
-      "INVALID_PAYLOAD" -> DownstreamError,
+      "INVALID_CORRELATIONID" -> InternalError,
+      "INVALID_PAYLOAD" -> InternalError,
       "INCOME_SOURCE_NOT_FOUND" -> NotFoundError,
       "VOLUNTARY_CLASS2_CANNOT_BE_CHANGED" -> RuleVoluntaryClass2CannotBeChangedError,
-      "SERVER_ERROR" -> DownstreamError,
-      "SERVICE_UNAVAILABLE" -> DownstreamError
+      "SERVER_ERROR" -> InternalError,
+      "SERVICE_UNAVAILABLE" -> InternalError
     )
 }

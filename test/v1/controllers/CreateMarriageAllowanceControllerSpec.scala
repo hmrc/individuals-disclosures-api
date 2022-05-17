@@ -211,7 +211,7 @@ class CreateMarriageAllowanceControllerSpec
           (RuleDeceasedRecipientError, FORBIDDEN),
           (RuleActiveMarriageAllowanceClaimError, FORBIDDEN),
           (RuleInvalidRequestError, FORBIDDEN),
-          (DownstreamError, INTERNAL_SERVER_ERROR)
+          (InternalError, INTERNAL_SERVER_ERROR)
         )
 
         input.foreach(args => (serviceErrors _).tupled(args))
