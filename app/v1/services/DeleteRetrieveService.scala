@@ -47,21 +47,21 @@ class DeleteRetrieveService @Inject()(connector: DeleteRetrieveConnector) extend
     result.value
   }
 
-  def retrieve[Resp: Format](downstreamErrorMap: Map[String, MtdError] = defaultdownstreamErrorMap)(implicit hc: HeaderCarrier,
+  def retrieve[Resp: Format](downstreamErrorMap: Map[String, MtdError] = defaultDownstreamErrorMap)(implicit hc: HeaderCarrier,
                                ec: ExecutionContext,
                                logContext: EndpointLogContext,
                                                                                       ifs1Uri: Ifs1Uri[Resp],
                                correlationId: String): Future[Either[ErrorWrapper, ResponseWrapper[Resp]]] = {
 
     val result = for {
-      downstreamResponseWrapper <- EitherT(connector.retrieve[Resp]()).leftMap(mapdownstreamErrors(downstreamErrorMap))
+      downstreamResponseWrapper <- EitherT(connector.retrieve[Resp]()).leftMap(mapDownstreamErrors(downstreamErrorMap))
       mtdResponseWrapper <- EitherT.fromEither[Future](validateRetrieveResponse(downstreamResponseWrapper))
     } yield mtdResponseWrapper
 
     result.value
   }
 
-  private def defaultdownstreamErrorMap: Map[String, MtdError] =
+  private def defaultDownstreamErrorMap: Map[String, MtdError] =
     Map(
       "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
       "INVALID_TAX_YEAR" -> TaxYearFormatError,

@@ -39,7 +39,7 @@ class AmendDisclosuresService @Inject()(connector: AmendDisclosuresConnector) ex
                        correlationId: String): Future[Either[ErrorWrapper, ResponseWrapper[Unit]]] = {
 
     val result = for {
-      downstreamResponseWrapper <- EitherT(connector.amendDisclosures(request)).leftMap(mapdownstreamErrors(ifsErrorMap))
+      downstreamResponseWrapper <- EitherT(connector.amendDisclosures(request)).leftMap(mapDownstreamErrors(ifsErrorMap))
     } yield downstreamResponseWrapper
 
     result.value
