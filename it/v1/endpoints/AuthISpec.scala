@@ -61,7 +61,7 @@ class AuthISpec extends IntegrationBaseSpec {
           MtdIdLookupStub.internalServerError(nino)
         }
 
-        val response: WSResponse = await(request().delete)
+        val response: WSResponse = await(request().delete())
         response.status shouldBe Status.INTERNAL_SERVER_ERROR
       }
     }
@@ -76,7 +76,7 @@ class AuthISpec extends IntegrationBaseSpec {
           DesStub.onSuccess(DesStub.DELETE, ifs1Uri, NO_CONTENT)
         }
 
-        val response: WSResponse = await(request().delete)
+        val response: WSResponse = await(request().delete())
         response.status shouldBe Status.NO_CONTENT
       }
     }
@@ -92,7 +92,7 @@ class AuthISpec extends IntegrationBaseSpec {
           AuthStub.unauthorisedNotLoggedIn()
         }
 
-        val response: WSResponse = await(request().delete)
+        val response: WSResponse = await(request().delete())
         response.status shouldBe Status.FORBIDDEN
       }
     }
@@ -108,7 +108,7 @@ class AuthISpec extends IntegrationBaseSpec {
           AuthStub.unauthorisedOther()
         }
 
-        val response: WSResponse = await(request().delete)
+        val response: WSResponse = await(request().delete())
         response.status shouldBe Status.FORBIDDEN
       }
     }
