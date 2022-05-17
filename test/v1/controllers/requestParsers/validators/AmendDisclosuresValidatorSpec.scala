@@ -223,7 +223,7 @@ class AmendDisclosuresValidatorSpec extends UnitSpec with MockAppConfig {
 
       "the submitted request body is not in the correct format" in new Test {
         validator.validate(AmendDisclosuresRawData(validNino, validTaxYear, nonValidRawRequestBody)) shouldBe
-          List(RuleIncorrectOrEmptyBodyError.copy(paths = Some(Seq("/taxAvoidance/0/srn", "/class2Nics/class2VoluntaryContributions"))))
+          List(RuleIncorrectOrEmptyBodyError.copy(paths = Some(List("/taxAvoidance/0/srn", "/class2Nics/class2VoluntaryContributions"))))
       }
     }
 

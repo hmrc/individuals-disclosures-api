@@ -26,6 +26,6 @@ object AuditResponse {
   def apply(httpStatus: Int, response: Either[Seq[AuditError], Option[JsValue]]): AuditResponse =
     response match {
       case Right(body) => AuditResponse(httpStatus, None, body)
-      case Left(errs)  => AuditResponse(httpStatus, Some(errs), None)
+      case Left(errs) => AuditResponse(httpStatus, Some(errs), None)
     }
 }

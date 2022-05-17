@@ -121,13 +121,13 @@ class ValidatorSpec extends UnitSpec with MockFactory {
     "combine errors of the same type" in {
       val errors: List[List[MtdError]] = List(
         List(NotFoundError),
-        List(NinoFormatError.copy(paths = Some(Seq("one")))),
-        List(NinoFormatError.copy(paths = Some(Seq("two"))))
+        List(NinoFormatError.copy(paths = Some(List("one")))),
+        List(NinoFormatError.copy(paths = Some(List("two"))))
       )
 
       val flatErrors: List[MtdError] = List(
         NotFoundError,
-        NinoFormatError.copy(paths = Some(Seq("one", "two")))
+        NinoFormatError.copy(paths = Some(List("one", "two")))
       )
 
       Validator.flattenErrors(errors) shouldBe flatErrors
@@ -136,7 +136,7 @@ class ValidatorSpec extends UnitSpec with MockFactory {
     "return the input for a list of unique errors" in {
       val errors: List[List[MtdError]] = List(
         List(NotFoundError),
-        List(NinoFormatError.copy(paths = Some(Seq("one"))))
+        List(NinoFormatError.copy(paths = Some(List("one"))))
       )
 
       Validator.flattenErrors(errors) shouldBe errors.flatten

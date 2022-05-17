@@ -19,6 +19,8 @@ package v1.controllers.requestParsers.validators
 import v1.models.errors.MtdError
 import v1.models.request.RawData
 
+import scala.annotation.tailrec
+
 trait Validator[A <: RawData] {
   type ValidationLevel[T] = T => List[MtdError]
   type ValidationType = A => List[List[MtdError]]
@@ -31,27 +33,27 @@ trait Validator[A <: RawData] {
       case thisLevel :: remainingLevels =>
         thisLevel(data).flatten match {
           case x if x.isEmpty => run(remainingLevels, data)
-          case x if x.nonEmpty => x
+          case x => x
         }
     }
 }
 
 object Validator {
 
-  def flattenErrors(errors: List[List[MtdError]]): List[MtdError] = {
-    errors.flatten.groupBy(_.message).map { case (_, errors) =>
+  @tailrec
+  def flattenErrors(errorsToFlatten: List[List[MtdError]], flatErrors: List[MtdError] = List.empty): List[MtdError] = errorsToFlatten.flatten match {
+    case Nil => flatErrors
+    case item :: Nil => flatErrors :+ item
+    case items =>
+      val nextError: MtdError = items.head
+      val nextErrorPaths = items.tail.filter(_.message == nextError.message).flatMap(_.paths).flatten
 
-      val baseError = errors.head.copy(paths = None)
+      def makeListOptional: List[String] => Option[List[String]] = list => if (list.isEmpty) None else Some(list)
 
-      errors.fold(baseError)(
-        (error1: MtdError, error2: MtdError) => (error1, error2) match {
-          case (MtdError(_, _, Some(paths1)), MtdError(_, _, Some(paths2))) => error1.copy(paths = Some(paths1 ++ paths2))
-          case (MtdError(_, _, Some(_)), MtdError(_, _, None)) => error1
-          case (MtdError(_, _, None), MtdError(_, _, Some(_))) => error2
-          case _ => error1
-        }
-      )
-    }.toList
+      val newFlatError = nextError.copy(paths = makeListOptional(nextError.paths.getOrElse(Nil) ++ nextErrorPaths))
+      val remainingErrorsToFlatten = items.filterNot(_.message == nextError.message)
+
+      flattenErrors(List(remainingErrorsToFlatten), flatErrors :+ newFlatError)
   }
 
   /**

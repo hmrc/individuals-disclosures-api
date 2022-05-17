@@ -55,7 +55,8 @@ class RetrieveDisclosuresController @Inject()(val authService: EnrolmentsAuthSer
       implicit val correlationId: String = idGenerator.generateCorrelationId
       logger.info(
         s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] " +
-          s"with CorrelationId: $correlationId")
+          s"with CorrelationId: $correlationId"
+      )
 
       val rawData: DeleteRetrieveRawData = DeleteRetrieveRawData(
         nino = nino,
@@ -77,7 +78,8 @@ class RetrieveDisclosuresController @Inject()(val authService: EnrolmentsAuthSer
         } yield {
           logger.info(
             s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
-              s"Success response received with CorrelationId: ${serviceResponse.correlationId}")
+              s"Success response received with CorrelationId: ${serviceResponse.correlationId}"
+          )
 
           Ok(Json.toJson(vendorResponse))
             .withApiHeaders(serviceResponse.correlationId)
@@ -89,7 +91,8 @@ class RetrieveDisclosuresController @Inject()(val authService: EnrolmentsAuthSer
         val result = errorResult(errorWrapper).withApiHeaders(resCorrelationId)
         logger.warn(
           s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
-            s"Error response received with CorrelationId: $resCorrelationId")
+            s"Error response received with CorrelationId: $resCorrelationId"
+        )
 
         result
       }.merge

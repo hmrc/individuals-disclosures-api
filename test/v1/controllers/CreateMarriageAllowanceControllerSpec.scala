@@ -127,7 +127,7 @@ class CreateMarriageAllowanceControllerSpec
         header("X-CorrelationId", result) shouldBe Some(correlationId)
 
         val auditResponse: AuditResponse = AuditResponse(CREATED, None, None)
-        MockedAuditService.verifyAuditEvent(event(auditResponse)).once
+        MockedAuditService.verifyAuditEvent(event(auditResponse)).once()
       }
 
       "audit fails" in new Test {
@@ -146,7 +146,7 @@ class CreateMarriageAllowanceControllerSpec
         header("X-CorrelationId", result) shouldBe Some(correlationId)
 
         val auditResponse: AuditResponse = AuditResponse(CREATED, None, None)
-        MockedAuditService.verifyAuditEvent(event(auditResponse), Future.failed(new RuntimeException with NoStackTrace)).once
+        MockedAuditService.verifyAuditEvent(event(auditResponse), Future.failed(new RuntimeException with NoStackTrace)).once()
       }
     }
 
@@ -165,8 +165,8 @@ class CreateMarriageAllowanceControllerSpec
             contentAsJson(result) shouldBe Json.toJson(error)
             header("X-CorrelationId", result) shouldBe Some(correlationId)
 
-            val auditResponse: AuditResponse = AuditResponse(expectedStatus, Some(Seq(AuditError(error.code))), None)
-            MockedAuditService.verifyAuditEvent(event(auditResponse)).once
+            val auditResponse: AuditResponse = AuditResponse(expectedStatus, Some(List(AuditError(error.code))), None)
+            MockedAuditService.verifyAuditEvent(event(auditResponse)).once()
           }
         }
 
@@ -201,8 +201,8 @@ class CreateMarriageAllowanceControllerSpec
             contentAsJson(result) shouldBe Json.toJson(mtdError)
             header("X-CorrelationId", result) shouldBe Some(correlationId)
 
-            val auditResponse: AuditResponse = AuditResponse(expectedStatus, Some(Seq(AuditError(mtdError.code))), None)
-            MockedAuditService.verifyAuditEvent(event(auditResponse)).once
+            val auditResponse: AuditResponse = AuditResponse(expectedStatus, Some(List(AuditError(mtdError.code))), None)
+            MockedAuditService.verifyAuditEvent(event(auditResponse)).once()
           }
         }
 

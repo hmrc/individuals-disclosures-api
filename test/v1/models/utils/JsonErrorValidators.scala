@@ -22,8 +22,8 @@ import support.UnitSpec
 trait JsonErrorValidators {
   _: UnitSpec =>
 
-  type JsError = (JsPath, Seq[JsonValidationError])
-  type JsErrors = Seq[JsError]
+  type JsError = (JsPath, List[JsonValidationError])
+  type JsErrors = List[JsError]
 
   object JsonError {
     val NUMBER_OR_STRING_FORMAT_EXCEPTION = "error.expected.jsnumberorjsstring"
@@ -45,7 +45,7 @@ trait JsonErrorValidators {
 
   implicit class JsResultOps[T](res: JsResult[T]) {
     def errors: JsErrors = res match {
-      case JsError(jsErrors) => jsErrors
+      case JsError(jsErrors) => jsErrors.map(item => (item._1, item._2.toList)).toList
       case JsSuccess(_, _) => fail("A JSON error was expected")
     }
   }
@@ -61,7 +61,6 @@ trait JsonErrorValidators {
 
   def testMandatoryProperty[A : Reads](json: JsValue)(property: String): Unit = {
     s"the JSON is missing the required property $property" should {
-
       val jsPath: JsPath = property.split("/").filterNot(_ == "").foldLeft(JsPath())(_ \ _)
       val jsResult = json.removeProperty(jsPath).validate[A]
 
@@ -70,7 +69,6 @@ trait JsonErrorValidators {
       }
 
       lazy val jsError = jsResult.errors.head
-
       "throw the error against the correct property" in {
         jsError.path shouldBe jsPath
       }
@@ -95,13 +93,11 @@ trait JsonErrorValidators {
     }
 
     s"the JSON has the wrong data type for path $path" should {
-
       "only throw one error" in {
         jsResult.errors.size shouldBe 1
       }
 
       lazy val jsError = jsResult.errors.head
-
       "throw the error against the correct property" in {
         jsError.path shouldBe jsPath
       }
@@ -117,11 +113,9 @@ trait JsonErrorValidators {
     json.as[JsObject](updateReads)
   }
 
-  private def filterErrorByPath(jsPath: JsPath, jsError: JsError): JsonValidationError = {
-    jsError match {
-      case (path, err :: Nil) if jsError.path == path => err
-      case (path, _ :: Nil)=> fail(s"single error returned but path $path does not match $jsPath")
-      case (path, errs @ _ :: _)=> fail(s"multiple errors returned for $path but only 1 required : $errs")
-    }
+  private def filterErrorByPath(jsPath: JsPath, jsError: JsError): JsonValidationError = jsError match {
+    case (path, err :: Nil) if jsError.path == path => err
+    case (path, _ :: Nil) => fail(s"single error returned but path $path does not match $jsPath")
+    case (path, errs) => fail(s"multiple errors returned for $path but only 1 required : $errs")
   }
 }

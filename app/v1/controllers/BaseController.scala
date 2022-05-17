@@ -23,7 +23,6 @@ trait BaseController {
   self: Logging =>
 
   implicit class Response(result: Result) {
-
     def withApiHeaders(correlationId: String, responseHeaders: (String, String)*): Result = {
 
       val newHeaders: Seq[(String, String)] = responseHeaders ++ Seq(

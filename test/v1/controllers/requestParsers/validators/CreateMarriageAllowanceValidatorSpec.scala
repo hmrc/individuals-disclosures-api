@@ -23,9 +23,7 @@ import v1.models.errors._
 import v1.models.request.marriageAllowance.CreateMarriageAllowanceRawData
 
 class CreateMarriageAllowanceValidatorSpec extends UnitSpec {
-
   val validator = new CreateMarriageAllowanceValidator
-
   val nino = "AA123456A"
 
   val body: AnyContentAsJson = AnyContentAsJson(Json.parse("""{
@@ -106,7 +104,7 @@ class CreateMarriageAllowanceValidatorSpec extends UnitSpec {
                  |""".stripMargin))
 
             validator.validate(CreateMarriageAllowanceRawData(nino, bodyWithNoSurname)) shouldBe List(
-              RuleIncorrectOrEmptyBodyError.copy(paths = Some(Seq("/spouseOrCivilPartnerSurname"))))
+              RuleIncorrectOrEmptyBodyError.copy(paths = Some(List("/spouseOrCivilPartnerSurname"))))
           }
         }
 
@@ -150,7 +148,7 @@ class CreateMarriageAllowanceValidatorSpec extends UnitSpec {
                  |}
                  |""".stripMargin))
 
-            validator.validate(CreateMarriageAllowanceRawData(nino, badBody)) should contain allOf (
+            validator.validate(CreateMarriageAllowanceRawData(nino, badBody)) should contain.allOf(
               PartnerNinoFormatError,
               PartnerFirstNameFormatError,
               PartnerSurnameFormatError,

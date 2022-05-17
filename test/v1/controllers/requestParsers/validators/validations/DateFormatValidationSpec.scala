@@ -22,7 +22,7 @@ import v1.models.errors.MtdError
 class DateFormatValidationSpec extends UnitSpec {
 
   "DateFormatValidation" when {
-    object DummyError extends MtdError("ERROR_CODE", "Error message", Some(Seq("/path")))
+    object DummyError extends MtdError(code = "ERROR_CODE", message = "Error message", paths = Some(List("/path")))
 
     "validate" must {
       "return an empty list for a valid date" in {

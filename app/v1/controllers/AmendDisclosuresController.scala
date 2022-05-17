@@ -73,15 +73,15 @@ class AmendDisclosuresController @Inject()(val authService: EnrolmentsAuthServic
         } yield {
           logger.info(
             s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
-              s"Success response received with CorrelationId: ${serviceResponse.correlationId}")
+              s"Success response received with CorrelationId: ${serviceResponse.correlationId}"
+          )
 
           val hateoasResponse = amendDisclosuresHateoasBody(appConfig, nino, taxYear)
 
-          auditSubmission(
-            GenericAuditDetail(request.userDetails, Map("nino" -> nino, "taxYear" -> taxYear), Some(request.body),
-              serviceResponse.correlationId, AuditResponse(httpStatus = OK, response = Right(Some(hateoasResponse)))
-            )
-          )
+          auditSubmission(GenericAuditDetail(
+            request.userDetails, Map("nino" -> nino, "taxYear" -> taxYear), Some(request.body),
+            serviceResponse.correlationId, AuditResponse(httpStatus = OK, response = Right(Some(hateoasResponse)))
+          ))
 
           Ok(hateoasResponse)
             .withApiHeaders(serviceResponse.correlationId)
@@ -93,13 +93,13 @@ class AmendDisclosuresController @Inject()(val authService: EnrolmentsAuthServic
         val result = errorResult(errorWrapper).withApiHeaders(resCorrelationId)
         logger.warn(
           s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
-            s"Error response received with CorrelationId: $resCorrelationId")
-
-        auditSubmission(
-          GenericAuditDetail(request.userDetails, Map("nino" -> nino, "taxYear" -> taxYear), Some(request.body),
-            resCorrelationId, AuditResponse(httpStatus = result.header.status, response = Left(errorWrapper.auditErrors))
-          )
+            s"Error response received with CorrelationId: $resCorrelationId"
         )
+
+        auditSubmission(GenericAuditDetail(
+          request.userDetails, Map("nino" -> nino, "taxYear" -> taxYear), Some(request.body), resCorrelationId,
+          AuditResponse(httpStatus = result.header.status, response = Left(errorWrapper.auditErrors))
+        ))
 
         result
       }.merge
@@ -109,11 +109,9 @@ class AmendDisclosuresController @Inject()(val authService: EnrolmentsAuthServic
     (errorWrapper.error: @unchecked) match {
       case BadRequestError | NinoFormatError | TaxYearFormatError | RuleTaxYearNotSupportedError |
            RuleTaxYearRangeInvalidError | MtdErrorWithCustomMessage(RuleIncorrectOrEmptyBodyError.code) |
-           MtdErrorWithCustomMessage(SRNFormatError.code) |
-           MtdErrorWithCustomMessage(TaxYearFormatError.code) |
+           MtdErrorWithCustomMessage(SRNFormatError.code) | MtdErrorWithCustomMessage(TaxYearFormatError.code) |
            MtdErrorWithCustomMessage(RuleTaxYearRangeInvalidError.code) |
-           MtdErrorWithCustomMessage(RuleVoluntaryClass2ValueInvalidError.code)
-      => BadRequest(Json.toJson(errorWrapper))
+           MtdErrorWithCustomMessage(RuleVoluntaryClass2ValueInvalidError.code) => BadRequest(Json.toJson(errorWrapper))
       case RuleVoluntaryClass2CannotBeChangedError => Forbidden(Json.toJson(errorWrapper))
       case NotFoundError => NotFound(Json.toJson(errorWrapper))
       case InternalError => InternalServerError(Json.toJson(errorWrapper))

@@ -397,7 +397,7 @@ class AmendDisclosuresControllerISpec extends IntegrationBaseSpec {
       )
 
       val incorrectBodyError: MtdError = RuleIncorrectOrEmptyBodyError.copy(
-        paths = Some(Seq("/taxAvoidance/0/srn"))
+        paths = Some(List("/taxAvoidance/0/srn"))
       )
 
       val invalidSRNRequestBodyJson: JsValue = Json.parse(
@@ -417,7 +417,7 @@ class AmendDisclosuresControllerISpec extends IntegrationBaseSpec {
       )
 
       val srnFormatError: MtdError = SRNFormatError.copy(
-        paths = Some(Seq("/taxAvoidance/0/srn"))
+        paths = Some(List("/taxAvoidance/0/srn"))
       )
 
       val invalidClass2ValueRequestBodyJson: JsValue = Json.parse(
@@ -437,7 +437,7 @@ class AmendDisclosuresControllerISpec extends IntegrationBaseSpec {
       )
 
       val ruleVoluntaryClass2ValueInvalidError: MtdError = RuleVoluntaryClass2ValueInvalidError.copy(
-        paths = Some(Seq("/class2Nics/class2VoluntaryContributions"))
+        paths = Some(List("/class2Nics/class2VoluntaryContributions"))
       )
 
       "validation error" when {
