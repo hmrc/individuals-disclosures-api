@@ -194,7 +194,7 @@ class CreateMarriageAllowanceControllerISpec extends IntegrationBaseSpec {
       )
 
       val nonsenseBodyPaths: MtdError =
-        RuleIncorrectOrEmptyBodyError.copy(paths = Some(Seq("/spouseOrCivilPartnerNino", "/spouseOrCivilPartnerSurname")))
+        RuleIncorrectOrEmptyBodyError.copy(paths = Some(List("/spouseOrCivilPartnerNino", "/spouseOrCivilPartnerSurname")))
 
       "validation error" when {
         def validationErrorTest(requestNino: String, requestBody: JsValue, expectedStatus: Int, expectedBody: MtdError): Unit = {
