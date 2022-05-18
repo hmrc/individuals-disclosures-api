@@ -20,6 +20,8 @@ import play.api.Logger
 import play.api.libs.json._
 import v1.models.errors.{MtdError, RuleIncorrectOrEmptyBodyError}
 
+import scala.collection.immutable.ListSet
+
 object JsonFormatValidation {
   private val logger: Logger = Logger(this.getClass)
 
@@ -44,7 +46,7 @@ object JsonFormatValidation {
       .toString().dropRight(1).drop(5)
 
     logger.warn(s"[JsonFormatValidation][validate] - Request body failed validation with errors - $logString")
-    List(RuleIncorrectOrEmptyBodyError.copy(paths = Some(failures.map(_.fromJsPath))))
+    List(RuleIncorrectOrEmptyBodyError.copy(paths = Some(ListSet.from(failures.map(_.fromJsPath)))))
   }
 
   private class JsonFormatValidationFailure(path: JsPath, failure: String) {

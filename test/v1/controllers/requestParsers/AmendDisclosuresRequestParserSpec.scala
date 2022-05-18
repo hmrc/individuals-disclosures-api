@@ -24,6 +24,8 @@ import v1.mocks.validators.MockAmendDisclosuresValidator
 import v1.models.errors._
 import v1.models.request.disclosures._
 
+import scala.collection.immutable.ListSet
+
 class AmendDisclosuresRequestParserSpec extends UnitSpec {
 
   val nino: String = "AA123456B"
@@ -143,22 +145,22 @@ class AmendDisclosuresRequestParserSpec extends UnitSpec {
 
         private val allInvalidValueErrors = List(
           RuleTaxYearRangeInvalidError.copy(
-            paths = Some(List(
+            paths = Some(ListSet(
               "/taxAvoidance/1/taxYear"
             ))
           ),
           TaxYearFormatError.copy(
-            paths = Some(List(
+            paths = Some(ListSet(
               "/taxAvoidance/0/taxYear"
             ))
           ),
           RuleVoluntaryClass2ValueInvalidError.copy(
-            paths = Some(List(
+            paths = Some(ListSet(
               "/class2Nics/class2VoluntaryContributions"
             ))
           ),
           SRNFormatError.copy(
-            paths = Some(List(
+            paths = Some(ListSet(
               "/taxAvoidance/0/srn",
               "/taxAvoidance/1/srn"
             ))

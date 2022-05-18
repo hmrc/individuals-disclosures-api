@@ -18,7 +18,9 @@ package v1.models.errors
 
 import play.api.libs.json.{Json, OWrites}
 
-case class MtdError(code: String, message: String, paths: Option[List[String]] = None)
+import scala.collection.immutable.ListSet
+
+case class MtdError(code: String, message: String, paths: Option[ListSet[String]] = None)
 
 object MtdError {
   implicit val writes: OWrites[MtdError] = Json.writes[MtdError]

@@ -22,6 +22,8 @@ import support.UnitSpec
 import v1.models.errors._
 import v1.models.request.marriageAllowance.CreateMarriageAllowanceRawData
 
+import scala.collection.immutable.ListSet
+
 class CreateMarriageAllowanceValidatorSpec extends UnitSpec {
   val validator = new CreateMarriageAllowanceValidator
   val nino = "AA123456A"
@@ -104,7 +106,7 @@ class CreateMarriageAllowanceValidatorSpec extends UnitSpec {
                  |""".stripMargin))
 
             validator.validate(CreateMarriageAllowanceRawData(nino, bodyWithNoSurname)) shouldBe List(
-              RuleIncorrectOrEmptyBodyError.copy(paths = Some(List("/spouseOrCivilPartnerSurname"))))
+              RuleIncorrectOrEmptyBodyError.copy(paths = Some(ListSet("/spouseOrCivilPartnerSurname"))))
           }
         }
 

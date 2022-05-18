@@ -21,6 +21,8 @@ import support.UnitSpec
 import v1.models.errors._
 import v1.models.request.RawData
 
+import scala.collection.immutable.ListSet
+
 class ValidatorSpec extends UnitSpec with MockFactory {
 
   private trait Test {
@@ -121,13 +123,13 @@ class ValidatorSpec extends UnitSpec with MockFactory {
     "combine errors of the same type" in {
       val errors: List[List[MtdError]] = List(
         List(NotFoundError),
-        List(NinoFormatError.copy(paths = Some(List("one")))),
-        List(NinoFormatError.copy(paths = Some(List("two"))))
+        List(NinoFormatError.copy(paths = Some(ListSet("one")))),
+        List(NinoFormatError.copy(paths = Some(ListSet("two"))))
       )
 
       val flatErrors: List[MtdError] = List(
         NotFoundError,
-        NinoFormatError.copy(paths = Some(List("one", "two")))
+        NinoFormatError.copy(paths = Some(ListSet("one", "two")))
       )
 
       Validator.flattenErrors(errors) shouldBe flatErrors
@@ -136,7 +138,7 @@ class ValidatorSpec extends UnitSpec with MockFactory {
     "return the input for a list of unique errors" in {
       val errors: List[List[MtdError]] = List(
         List(NotFoundError),
-        List(NinoFormatError.copy(paths = Some(List("one"))))
+        List(NinoFormatError.copy(paths = Some(ListSet("one"))))
       )
 
       Validator.flattenErrors(errors) shouldBe errors.flatten

@@ -22,6 +22,7 @@ import v1.models.errors.MtdError
 import v1.models.request.disclosures._
 
 import javax.inject.Inject
+import scala.collection.immutable.ListSet
 
 class AmendDisclosuresValidator @Inject()(implicit appConfig: AppConfig) extends Validator[AmendDisclosuresRawData] {
 
@@ -62,16 +63,16 @@ class AmendDisclosuresValidator @Inject()(implicit appConfig: AppConfig) extends
 
   private def validateTaxAvoidance(taxAvoidance: AmendTaxAvoidanceItem, arrayIndex: Int): List[MtdError] = List(
     SRNValidation.validate(taxAvoidance.srn).map(
-      _.copy(paths = Some(List(s"/taxAvoidance/$arrayIndex/srn")))
+      _.copy(paths = Some(ListSet(s"/taxAvoidance/$arrayIndex/srn")))
     ),
     TaxYearValidation.validate(taxAvoidance.taxYear).map(
-      _.copy(paths = Some(List(s"/taxAvoidance/$arrayIndex/taxYear")))
+      _.copy(paths = Some(ListSet(s"/taxAvoidance/$arrayIndex/taxYear")))
     )
   ).flatten
 
   private def validateClass2Nics(class2Nics: AmendClass2Nics): List[MtdError] = List(
     VoluntaryClass2ValueValidation.validateOptional(class2Nics.class2VoluntaryContributions).map(
-      _.copy(paths = Some(List("/class2Nics/class2VoluntaryContributions")))
+      _.copy(paths = Some(ListSet("/class2Nics/class2VoluntaryContributions")))
     )
   ).flatten
 }

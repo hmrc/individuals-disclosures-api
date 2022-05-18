@@ -20,6 +20,7 @@ import v1.models.errors.MtdError
 import v1.models.request.RawData
 
 import scala.annotation.tailrec
+import scala.collection.immutable.ListSet
 
 trait Validator[A <: RawData] {
   type ValidationLevel[T] = T => List[MtdError]
@@ -48,9 +49,9 @@ object Validator {
       val nextError: MtdError = items.head
       val nextErrorPaths = items.tail.filter(_.message == nextError.message).flatMap(_.paths).flatten
 
-      def makeListOptional: List[String] => Option[List[String]] = list => if (list.isEmpty) None else Some(list)
+      def makeListSetOptional: ListSet[String] => Option[ListSet[String]] = listSet => if (listSet.isEmpty) None else Some(listSet)
 
-      val newFlatError = nextError.copy(paths = makeListOptional(nextError.paths.getOrElse(Nil) ++ nextErrorPaths))
+      val newFlatError = nextError.copy(paths = makeListSetOptional(nextError.paths.getOrElse(ListSet.empty) ++ nextErrorPaths))
       val remainingErrorsToFlatten = items.filterNot(_.message == nextError.message)
 
       flattenErrors(List(remainingErrorsToFlatten), flatErrors :+ newFlatError)

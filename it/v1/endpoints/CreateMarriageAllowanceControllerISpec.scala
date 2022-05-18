@@ -26,6 +26,8 @@ import support.IntegrationBaseSpec
 import v1.models.errors._
 import v1.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 
+import scala.collection.immutable.ListSet
+
 class CreateMarriageAllowanceControllerISpec extends IntegrationBaseSpec {
 
   private trait Test {
@@ -194,7 +196,7 @@ class CreateMarriageAllowanceControllerISpec extends IntegrationBaseSpec {
       )
 
       val nonsenseBodyPaths: MtdError =
-        RuleIncorrectOrEmptyBodyError.copy(paths = Some(List("/spouseOrCivilPartnerNino", "/spouseOrCivilPartnerSurname")))
+        RuleIncorrectOrEmptyBodyError.copy(paths = Some(ListSet("/spouseOrCivilPartnerNino", "/spouseOrCivilPartnerSurname")))
 
       "validation error" when {
         def validationErrorTest(requestNino: String, requestBody: JsValue, expectedStatus: Int, expectedBody: MtdError): Unit = {

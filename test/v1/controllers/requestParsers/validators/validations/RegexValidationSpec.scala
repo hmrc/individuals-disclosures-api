@@ -19,6 +19,7 @@ package v1.controllers.requestParsers.validators.validations
 import support.UnitSpec
 import v1.models.errors.MtdError
 
+import scala.collection.immutable.ListSet
 import scala.util.matching.Regex
 
 class RegexValidationSpec extends UnitSpec {
@@ -28,7 +29,7 @@ class RegexValidationSpec extends UnitSpec {
   }
 
   "RegexValidation" when {
-    object DummyError extends MtdError(code = "ERROR_CODE", message = "Error message", paths = Some(List("/path")))
+    object DummyError extends MtdError(code = "ERROR_CODE", message = "Error message", paths = Some(ListSet("/path")))
 
     "matches regex" must {
       "return an empty list" in {
