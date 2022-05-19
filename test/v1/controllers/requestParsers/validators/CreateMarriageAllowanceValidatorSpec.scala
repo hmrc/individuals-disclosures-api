@@ -39,13 +39,13 @@ class CreateMarriageAllowanceValidatorSpec extends UnitSpec {
   "CreateMarriageAllowanceValidator" when {
     "valid request" must {
       "return no errors" in {
-        validator.validate(CreateMarriageAllowanceRawData(nino, body)) shouldBe Nil
+        validator.validate(CreateMarriageAllowanceRawData(nino, body)) shouldBe ListSet.empty[MtdError]
       }
     }
 
     "bad nino" must {
       "return FORMAT_NINO" in {
-        validator.validate(CreateMarriageAllowanceRawData("BADNINO", body)) shouldBe List(NinoFormatError)
+        validator.validate(CreateMarriageAllowanceRawData("BADNINO", body)) shouldBe ListSet(NinoFormatError)
       }
     }
 

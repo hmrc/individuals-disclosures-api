@@ -89,12 +89,12 @@ class ErrorWrapperSpec extends UnitSpec {
   "auditErrors" should {
     "map a single error to a single audit error" in {
       val singleWrappedError = ErrorWrapper(correlationId, NinoFormatError, None)
-      singleWrappedError.auditErrors shouldBe Seq(AuditError(NinoFormatError.code))
+      singleWrappedError.auditErrors shouldBe ListSet(AuditError(NinoFormatError.code))
     }
 
     "map multiple errors to a sequence of audit errors" in {
       val singleWrappedError = ErrorWrapper(correlationId, BadRequestError, Some(ListSet(NinoFormatError, TaxYearFormatError)))
-      singleWrappedError.auditErrors shouldBe Seq(AuditError(NinoFormatError.code), AuditError(TaxYearFormatError.code))
+      singleWrappedError.auditErrors shouldBe ListSet(AuditError(NinoFormatError.code), AuditError(TaxYearFormatError.code))
     }
   }
 }

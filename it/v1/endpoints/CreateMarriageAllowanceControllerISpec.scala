@@ -19,7 +19,7 @@ package v1.endpoints
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status._
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.{JsResult, JsSuccess, JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
 import support.IntegrationBaseSpec
@@ -50,7 +50,7 @@ class CreateMarriageAllowanceControllerISpec extends IntegrationBaseSpec {
 
     def uri: String = s"/marriage-allowance/$nino1"
 
-    def Ifs2Uri: String = s"/income-tax/marriage-allowance/claim/nino/$nino1"
+    def ifs2Uri: String = s"/income-tax/marriage-allowance/claim/nino/$nino1"
 
     def setupStubs(): StubMapping
 
@@ -72,7 +72,7 @@ class CreateMarriageAllowanceControllerISpec extends IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino1)
-          DownstreamStub.onSuccess(DownstreamStub.POST, Ifs2Uri, NO_CONTENT)
+          DownstreamStub.onSuccess(DownstreamStub.POST, ifs2Uri, NO_CONTENT)
         }
 
         val response: WSResponse = await(request().post(requestBodyJson))
@@ -136,14 +136,6 @@ class CreateMarriageAllowanceControllerISpec extends IntegrationBaseSpec {
         """.stripMargin
       )
 
-      val nonsenseRequestBodyJson: JsValue = Json.parse(
-        """
-          |{
-          |   "field": "value"
-          |}
-        """.stripMargin
-      )
-
       val emptyBodyJson: JsValue = Json.parse(
         """
           |{
@@ -195,9 +187,6 @@ class CreateMarriageAllowanceControllerISpec extends IntegrationBaseSpec {
         """.stripMargin
       )
 
-      val nonsenseBodyPaths: MtdError =
-        RuleIncorrectOrEmptyBodyError.copy(paths = Some(ListSet("/spouseOrCivilPartnerNino", "/spouseOrCivilPartnerSurname")))
-
       "validation error" when {
         def validationErrorTest(requestNino: String, requestBody: JsValue, expectedStatus: Int, expectedBody: MtdError): Unit = {
           s"validation $requestNino fails with ${expectedBody.code} error" in new Test {
@@ -218,7 +207,6 @@ class CreateMarriageAllowanceControllerISpec extends IntegrationBaseSpec {
 
         val input = Seq(
           ("AA1123A", validRequestBodyJson, BAD_REQUEST, NinoFormatError),
-          ("AA123456A", nonsenseRequestBodyJson, BAD_REQUEST, nonsenseBodyPaths),
           ("AA123458A", emptyBodyJson, BAD_REQUEST, RuleIncorrectOrEmptyBodyError),
           ("AA123457A", invalidNinoBodyJson, BAD_REQUEST, PartnerNinoFormatError),
           ("AA123457A", invalidFirstNameBodyJson, BAD_REQUEST, PartnerFirstNameFormatError),
@@ -226,6 +214,38 @@ class CreateMarriageAllowanceControllerISpec extends IntegrationBaseSpec {
           ("AA123459A", invalidDobBodyJson, BAD_REQUEST, PartnerDoBFormatError),
         )
         input.foreach(args => (validationErrorTest _).tupled(args))
+
+        "with complex body format errors" in new Test {
+          val nonsenseBodyPaths: ListSet[String] = ListSet("/spouseOrCivilPartnerNino", "/spouseOrCivilPartnerSurname")
+
+          val nonsenseRequestBodyJson: JsValue = Json.parse(
+            """
+              |{
+              |   "field": "value"
+              |}
+            """.stripMargin
+          )
+
+          override def setupStubs(): StubMapping = {
+            AuthStub.authorised()
+            MtdIdLookupStub.ninoFound(nino1)
+          }
+
+          val response: WSResponse = await(request().post(nonsenseRequestBodyJson))
+          response.status shouldBe BAD_REQUEST
+
+          val responseErrorCode: JsResult[String] = (response.json \ "code").validate[String]
+          val responseErrorMessage: JsResult[String] = (response.json \ "message").validate[String]
+          val responseErrorPaths: JsResult[Seq[String]] = (response.json \ "paths").validate[Seq[String]]
+
+          responseErrorCode shouldBe a[JsSuccess[_]]
+          responseErrorMessage shouldBe a[JsSuccess[_]]
+          responseErrorPaths shouldBe a[JsSuccess[_]]
+
+          responseErrorCode.get shouldBe RuleIncorrectOrEmptyBodyError.code
+          responseErrorMessage.get shouldBe RuleIncorrectOrEmptyBodyError.message
+          responseErrorPaths.get should contain.allElementsOf(nonsenseBodyPaths)
+        }
       }
 
       "ifs service error" when {
@@ -235,7 +255,7 @@ class CreateMarriageAllowanceControllerISpec extends IntegrationBaseSpec {
             override def setupStubs(): StubMapping = {
               AuthStub.authorised()
               MtdIdLookupStub.ninoFound(nino1)
-              DownstreamStub.onError(DownstreamStub.POST, Ifs2Uri, ifsStatus, errorBody(ifsCode))
+              DownstreamStub.onError(DownstreamStub.POST, ifs2Uri, ifsStatus, errorBody(ifsCode))
             }
 
             val response: WSResponse = await(request().post(requestBodyJson))
