@@ -25,33 +25,32 @@ import javax.inject.Inject
 import scala.collection.immutable.ListSet
 
 class AmendDisclosuresValidator @Inject()(implicit appConfig: AppConfig) extends Validator[AmendDisclosuresRawData] {
-
-  private val validationSet = List(
+  private val validationSet = ListSet(
     parameterFormatValidation,
     parameterRuleValidation,
     bodyFormatValidator,
     bodyValueValidator
   )
 
-  override def validate(data: AmendDisclosuresRawData): List[MtdError] = run(validationSet, data).distinct
+  override def validate(data: AmendDisclosuresRawData): ListSet[MtdError] = run(validationSet, data)
 
-  private def parameterFormatValidation: ValidationType = (data: AmendDisclosuresRawData) => List(
+  private def parameterFormatValidation: ValidationType = (data: AmendDisclosuresRawData) => ListSet(
     NinoValidation.validate(data.nino),
     TaxYearValidation.validate(data.taxYear)
   )
 
-  private def parameterRuleValidation: ValidationType = (data: AmendDisclosuresRawData) => List(
+  private def parameterRuleValidation: ValidationType = (data: AmendDisclosuresRawData) => ListSet(
     TaxYearNotSupportedValidation.validate(data.taxYear)
   )
 
-  private def bodyFormatValidator: ValidationType = (data: AmendDisclosuresRawData) => List(
+  private def bodyFormatValidator: ValidationType = (data: AmendDisclosuresRawData) => ListSet(
     JsonFormatValidation.validate[AmendDisclosuresRequestBody](data.body.json)
   )
 
   private def bodyValueValidator: ValidationType = (data: AmendDisclosuresRawData) => {
     val requestBodyData = data.body.json.as[AmendDisclosuresRequestBody]
 
-    List(Validator.flattenErrors(
+    ListSet(Validator.flattenErrors(
       List(
         requestBodyData.taxAvoidance.map(
           _.zipWithIndex.flatMap(item => validateTaxAvoidance(item._1, item._2))

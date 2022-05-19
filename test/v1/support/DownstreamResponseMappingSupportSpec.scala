@@ -23,6 +23,8 @@ import v1.controllers.EndpointLogContext
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
 
+import scala.collection.immutable.ListSet
+
 class DownstreamResponseMappingSupportSpec extends UnitSpec {
   implicit val logContext: EndpointLogContext = EndpointLogContext("ctrl", "ep")
   val mapping: DownstreamResponseMappingSupport with Logging = new DownstreamResponseMappingSupport with Logging {}
@@ -84,7 +86,7 @@ class DownstreamResponseMappingSupportSpec extends UnitSpec {
       "the error codes is in the map provided" must {
         "use the mapping and wrap with main error type of BadRequest" in {
           mapping.mapDownstreamErrors(errorCodeMap)(ResponseWrapper(correlationId, DownstreamErrors(List(DownstreamErrorCode("ERR1"), DownstreamErrorCode("ERR2"))))) shouldBe
-            ErrorWrapper(correlationId, BadRequestError, Some(Seq(Error1, Error2)))
+            ErrorWrapper(correlationId, BadRequestError, Some(ListSet(Error1, Error2)))
         }
       }
 
@@ -112,8 +114,8 @@ class DownstreamResponseMappingSupportSpec extends UnitSpec {
 
     "the error code is an OutboundError with multiple errors" must {
       "return the error as is (in an ErrorWrapper)" in {
-        mapping.mapDownstreamErrors(errorCodeMap)(ResponseWrapper(correlationId, OutboundError(ErrorBvrMain, Some(Seq(ErrorBvr))))) shouldBe
-          ErrorWrapper(correlationId, ErrorBvrMain, Some(Seq(ErrorBvr)))
+        mapping.mapDownstreamErrors(errorCodeMap)(ResponseWrapper(correlationId, OutboundError(ErrorBvrMain, Some(ListSet(ErrorBvr))))) shouldBe
+          ErrorWrapper(correlationId, ErrorBvrMain, Some(ListSet(ErrorBvr)))
       }
     }
   }

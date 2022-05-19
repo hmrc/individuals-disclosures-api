@@ -24,6 +24,8 @@ import v1.connectors.DownstreamOutcome
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
 
+import scala.collection.immutable.ListSet
+
 // WLOG if Reads tested elsewhere
 case class SomeModel(data: String)
 
@@ -209,8 +211,6 @@ class StandardDownstreamHttpParserSpec extends UnitSpec {
 
 
   private def handleBvrsCorrectly[A](httpReads: HttpReads[DownstreamOutcome[A]]): Unit = {
-
-
     val singleBvrJson = Json.parse(
       """
         |{
@@ -233,7 +233,7 @@ class StandardDownstreamHttpParserSpec extends UnitSpec {
 
         httpReads.read(method, url, httpResponse) shouldBe
           Left(ResponseWrapper(correlationId,
-            OutboundError(BVRError, Some(Seq(MtdError("BVR1", ""), MtdError("BVR2", ""))))))
+            OutboundError(BVRError, Some(ListSet(MtdError("BVR1", ""), MtdError("BVR2", ""))))))
       }
     }
   }

@@ -22,18 +22,19 @@ import v1.models.errors.MtdError
 import v1.models.request.DeleteRetrieveRawData
 
 import javax.inject.Inject
+import scala.collection.immutable.ListSet
 
 class DeleteRetrieveValidator @Inject()(implicit appConfig: AppConfig) extends Validator[DeleteRetrieveRawData] {
-  private val validationSet = List(parameterFormatValidation, parameterValueValidation)
+  private val validationSet = ListSet(parameterFormatValidation, parameterValueValidation)
 
-  override def validate(data: DeleteRetrieveRawData): List[MtdError] = run(validationSet, data).distinct
+  override def validate(data: DeleteRetrieveRawData): ListSet[MtdError] = run(validationSet, data)
 
-  private def parameterFormatValidation: ValidationType = (data: DeleteRetrieveRawData) => List(
+  private def parameterFormatValidation: ValidationType = (data: DeleteRetrieveRawData) => ListSet(
     NinoValidation.validate(data.nino),
     TaxYearValidation.validate(data.taxYear)
   )
 
-  private def parameterValueValidation: ValidationType = (data: DeleteRetrieveRawData) => List(
+  private def parameterValueValidation: ValidationType = (data: DeleteRetrieveRawData) => ListSet(
     TaxYearNotSupportedValidation.validate(data.taxYear)
   )
 }

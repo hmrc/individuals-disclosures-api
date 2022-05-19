@@ -61,7 +61,7 @@ class CreateMarriageAllowanceValidatorSpec extends UnitSpec {
               |}
               |""".stripMargin))
 
-          validator.validate(CreateMarriageAllowanceRawData(nino, badBody)) shouldBe Nil
+          validator.validate(CreateMarriageAllowanceRawData(nino, badBody)) shouldBe ListSet.empty[MtdError]
         }
       }
 
@@ -77,7 +77,7 @@ class CreateMarriageAllowanceValidatorSpec extends UnitSpec {
                  |""".stripMargin))
 
             validator.validate(CreateMarriageAllowanceRawData(nino, bodyWithLongFirstName)) shouldBe
-              List(PartnerFirstNameFormatError)
+              ListSet(PartnerFirstNameFormatError)
           }
         }
 
@@ -92,7 +92,7 @@ class CreateMarriageAllowanceValidatorSpec extends UnitSpec {
                  |""".stripMargin))
 
             validator.validate(CreateMarriageAllowanceRawData(nino, bodyWithLongFirstName)) shouldBe
-              List(PartnerSurnameFormatError)
+              ListSet(PartnerSurnameFormatError)
           }
         }
 
@@ -105,7 +105,7 @@ class CreateMarriageAllowanceValidatorSpec extends UnitSpec {
                  |}
                  |""".stripMargin))
 
-            validator.validate(CreateMarriageAllowanceRawData(nino, bodyWithNoSurname)) shouldBe List(
+            validator.validate(CreateMarriageAllowanceRawData(nino, bodyWithNoSurname)) shouldBe ListSet(
               RuleIncorrectOrEmptyBodyError.copy(paths = Some(ListSet("/spouseOrCivilPartnerSurname"))))
           }
         }
@@ -121,7 +121,7 @@ class CreateMarriageAllowanceValidatorSpec extends UnitSpec {
                 |""".stripMargin))
 
             validator.validate(CreateMarriageAllowanceRawData(nino, bodyWithBadNino)) shouldBe
-              List(PartnerNinoFormatError)
+              ListSet(PartnerNinoFormatError)
           }
         }
 
@@ -136,7 +136,7 @@ class CreateMarriageAllowanceValidatorSpec extends UnitSpec {
                 |""".stripMargin))
 
             validator.validate(CreateMarriageAllowanceRawData(nino, bodyWithBadDob)) shouldBe
-              List(PartnerDoBFormatError)
+              ListSet(PartnerDoBFormatError)
           }
         }
 
@@ -150,12 +150,13 @@ class CreateMarriageAllowanceValidatorSpec extends UnitSpec {
                  |}
                  |""".stripMargin))
 
-            validator.validate(CreateMarriageAllowanceRawData(nino, badBody)) should contain.allOf(
-              PartnerNinoFormatError,
-              PartnerFirstNameFormatError,
-              PartnerSurnameFormatError,
-              PartnerDoBFormatError,
-            )
+            validator.validate(CreateMarriageAllowanceRawData(nino, badBody)) shouldBe
+              ListSet(
+                PartnerNinoFormatError,
+                PartnerFirstNameFormatError,
+                PartnerSurnameFormatError,
+                PartnerDoBFormatError,
+              )
           }
         }
       }

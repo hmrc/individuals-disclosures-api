@@ -215,7 +215,7 @@ class AmendDisclosuresControllerISpec extends IntegrationBaseSpec {
           """.stripMargin
         )
 
-        val allInvalidValueRequestError: List[MtdError] = List(
+        val allInvalidValueRequestError: ListSet[MtdError] = ListSet(
           SRNFormatError.copy(
             paths = Some(ListSet(
               "/taxAvoidance/0/srn",

@@ -87,7 +87,7 @@ class AmendDisclosuresRequestParserSpec extends UnitSpec {
   "parse" should {
     "return a request object" when {
       "valid request data is supplied" in new Test {
-        MockAmendDisclosuresValidator.validate(amendDisclosuresRawData).returns(Nil)
+        MockAmendDisclosuresValidator.validate(amendDisclosuresRawData).returns(ListSet.empty[MtdError])
 
         parser.parseRequest(amendDisclosuresRawData) shouldBe
           Right(AmendDisclosuresRequest(Nino(nino), taxYear, validRequestBodyModel))
@@ -97,7 +97,7 @@ class AmendDisclosuresRequestParserSpec extends UnitSpec {
     "return an ErrorWrapper" when {
       "a single validation error occurs" in new Test {
         MockAmendDisclosuresValidator.validate(amendDisclosuresRawData.copy(nino = "notANino"))
-          .returns(List(NinoFormatError))
+          .returns(ListSet(NinoFormatError))
 
         parser.parseRequest(amendDisclosuresRawData.copy(nino = "notANino")) shouldBe
           Left(ErrorWrapper(correlationId, NinoFormatError, None))
@@ -105,15 +105,15 @@ class AmendDisclosuresRequestParserSpec extends UnitSpec {
 
       "multiple path parameter validation errors occur" in new Test {
         MockAmendDisclosuresValidator.validate(amendDisclosuresRawData.copy(nino = "notANino", taxYear = "notATaxYear"))
-          .returns(List(NinoFormatError, TaxYearFormatError))
+          .returns(ListSet(NinoFormatError, TaxYearFormatError))
 
         parser.parseRequest(amendDisclosuresRawData.copy(nino = "notANino", taxYear = "notATaxYear")) shouldBe
-          Left(ErrorWrapper(correlationId, BadRequestError, Some(Seq(NinoFormatError, TaxYearFormatError))))
+          Left(ErrorWrapper(correlationId, BadRequestError, Some(ListSet(NinoFormatError, TaxYearFormatError))))
       }
 
       "path parameter TaxYearNotSupported validation occurs" in new Test {
         MockAmendDisclosuresValidator.validate(amendDisclosuresRawData.copy(taxYear = "2019-20"))
-          .returns(List(RuleTaxYearNotSupportedError))
+          .returns(ListSet(RuleTaxYearNotSupportedError))
 
         parser.parseRequest(amendDisclosuresRawData.copy(taxYear = "2019-20")) shouldBe
           Left(ErrorWrapper(correlationId, RuleTaxYearNotSupportedError))
@@ -143,7 +143,7 @@ class AmendDisclosuresRequestParserSpec extends UnitSpec {
 
         private val allInvalidValueRawRequestBody = AnyContentAsJson(allInvalidValueRequestBodyJson)
 
-        private val allInvalidValueErrors = List(
+        private val allInvalidValueErrors = ListSet(
           RuleTaxYearRangeInvalidError.copy(
             paths = Some(ListSet(
               "/taxAvoidance/1/taxYear"

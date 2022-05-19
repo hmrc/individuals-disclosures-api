@@ -18,12 +18,14 @@ package v1.models.audit
 
 import play.api.libs.json.{JsValue, Json, OWrites}
 
-case class AuditResponse(httpStatus: Int, errors: Option[Seq[AuditError]], body: Option[JsValue])
+import scala.collection.immutable.ListSet
+
+case class AuditResponse(httpStatus: Int, errors: Option[ListSet[AuditError]], body: Option[JsValue])
 
 object AuditResponse {
   implicit val writes: OWrites[AuditResponse] = Json.writes[AuditResponse]
 
-  def apply(httpStatus: Int, response: Either[Seq[AuditError], Option[JsValue]]): AuditResponse =
+  def apply(httpStatus: Int, response: Either[ListSet[AuditError], Option[JsValue]]): AuditResponse =
     response match {
       case Right(body) => AuditResponse(httpStatus, None, body)
       case Left(errs) => AuditResponse(httpStatus, Some(errs), None)

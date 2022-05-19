@@ -21,10 +21,10 @@ import play.api.libs.json._
 import uk.gov.hmrc.http.HttpResponse
 import v1.models.errors._
 
+import scala.collection.immutable.ListSet
 import scala.util.{Success, Try}
 
 trait HttpParser {
-
   private val logger: Logger = Logger(this.getClass)
 
   implicit class KnownJsonResponse(response: HttpResponse) {
@@ -39,7 +39,6 @@ trait HttpParser {
     }
 
     def parseResult[T](json: JsValue)(implicit reads: Reads[T]): Option[T] = json.validate[T] match {
-
       case JsSuccess(value, _) => Some(value)
       case JsError(error) =>
         logger.warn(s"[KnownJsonResponse][validateJson] Unable to parse JSON: $error")
@@ -51,9 +50,9 @@ trait HttpParser {
 
   private val multipleErrorReads: Reads[List[DownstreamErrorCode]] = (__ \ "failures").read[List[DownstreamErrorCode]]
 
-  private val bvrErrorReads: Reads[Seq[DownstreamErrorCode]] = {
+  private val bvrErrorReads: Reads[ListSet[DownstreamErrorCode]] = {
     implicit val errorIdReads: Reads[DownstreamErrorCode] = (__ \ "id").read[String].map(DownstreamErrorCode(_))
-    (__ \ "bvrfailureResponseElement" \ "validationRuleFailures").read[Seq[DownstreamErrorCode]]
+    (__ \ "bvrfailureResponseElement" \ "validationRuleFailures").read[ListSet[DownstreamErrorCode]]
   }
 
   def parseErrors(response: HttpResponse): DownstreamError = {
@@ -67,5 +66,4 @@ trait HttpParser {
 
     singleError orElse multipleErrors orElse bvrErrors getOrElse unableToParseJsonError
   }
-
 }

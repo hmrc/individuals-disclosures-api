@@ -23,20 +23,20 @@ import scala.annotation.tailrec
 import scala.collection.immutable.ListSet
 
 trait Validator[A <: RawData] {
-  type ValidationLevel[T] = T => List[MtdError]
-  type ValidationType = A => List[List[MtdError]]
+  type ValidationType = A => ListSet[List[MtdError]]
 
-  def validate(data: A): List[MtdError]
+  def validate(data: A): ListSet[MtdError]
 
-  def run(validationSet: List[A => List[List[MtdError]]], data: A): List[MtdError] =
-    validationSet match {
-      case Nil => List()
-      case thisLevel :: remainingLevels =>
-        thisLevel(data).flatten match {
-          case x if x.isEmpty => run(remainingLevels, data)
-          case x => x
-        }
+  @tailrec
+  final def run(validationSet: ListSet[ValidationType], data: A): ListSet[MtdError] = {
+    val nextValidationResultOpt: Option[ListSet[MtdError]] = validationSet.headOption.map(_(data).flatten)
+
+    nextValidationResultOpt match {
+      case None => ListSet.empty[MtdError]
+      case Some(errs) if errs.nonEmpty => errs
+      case _ => run(validationSet.tail, data)
     }
+  }
 }
 
 object Validator {

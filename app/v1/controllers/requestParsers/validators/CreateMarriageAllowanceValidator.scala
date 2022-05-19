@@ -20,16 +20,18 @@ import v1.controllers.requestParsers.validators.validations._
 import v1.models.errors._
 import v1.models.request.marriageAllowance.{CreateMarriageAllowanceBody, CreateMarriageAllowanceRawData}
 
+import scala.collection.immutable.ListSet
+
 class CreateMarriageAllowanceValidator extends Validator[CreateMarriageAllowanceRawData] {
-  private val validationSet = List(parameterFormatValidation, bodyFormatValidation, bodyValueValidation)
+  private val validationSet = ListSet(parameterFormatValidation, bodyFormatValidation, bodyValueValidation)
 
-  override def validate(data: CreateMarriageAllowanceRawData): List[MtdError] = run(validationSet, data).distinct
+  override def validate(data: CreateMarriageAllowanceRawData): ListSet[MtdError] = run(validationSet, data)
 
-  private def parameterFormatValidation: ValidationType = (data: CreateMarriageAllowanceRawData) => List(
+  private def parameterFormatValidation: ValidationType = (data: CreateMarriageAllowanceRawData) => ListSet(
     NinoValidation.validate(data.nino)
   )
 
-  private def bodyFormatValidation: ValidationType = (data: CreateMarriageAllowanceRawData) => List(
+  private def bodyFormatValidation: ValidationType = (data: CreateMarriageAllowanceRawData) => ListSet(
     JsonFormatValidation.validate[CreateMarriageAllowanceBody](data.body.json)
   )
 
@@ -37,7 +39,7 @@ class CreateMarriageAllowanceValidator extends Validator[CreateMarriageAllowance
     val body = data.body.json.as[CreateMarriageAllowanceBody]
     import body._
 
-    List(Validator.flattenErrors(
+    ListSet(Validator.flattenErrors(
       List(
         NinoValidation.validate(spouseOrCivilPartnerNino, PartnerNinoFormatError),
         SurnameValidation.validate(spouseOrCivilPartnerSurname, PartnerSurnameFormatError),

@@ -27,7 +27,6 @@ import v1.models.request.disclosures.AmendDisclosuresRawData
 import scala.collection.immutable.ListSet
 
 class AmendDisclosuresValidatorSpec extends UnitSpec with MockAppConfig {
-
   private val validNino = "AA123456A"
   private val validTaxYear = "2021-22"
 
@@ -157,9 +156,7 @@ class AmendDisclosuresValidatorSpec extends UnitSpec with MockAppConfig {
   private val allInvalidValueRawRequestBody = AnyContentAsJson(allInvalidValueRequestBodyJson)
 
   class Test extends MockAppConfig {
-
     implicit val appConfig: AppConfig = mockAppConfig
-
     val validator = new AmendDisclosuresValidator()
 
     MockAppConfig.minimumPermittedTaxYear
@@ -170,7 +167,8 @@ class AmendDisclosuresValidatorSpec extends UnitSpec with MockAppConfig {
   "running a validation" should {
     "return no errors" when {
       "a valid request is supplied" in new Test {
-        validator.validate(AmendDisclosuresRawData(validNino, validTaxYear, validRawRequestBody)) shouldBe Nil
+        validator.validate(AmendDisclosuresRawData(validNino, validTaxYear, validRawRequestBody)) shouldBe
+          ListSet.empty[MtdError]
       }
     }
 
@@ -178,21 +176,21 @@ class AmendDisclosuresValidatorSpec extends UnitSpec with MockAppConfig {
     "return NinoFormatError error" when {
       "an invalid nino is supplied" in new Test {
         validator.validate(AmendDisclosuresRawData("A12344A", validTaxYear, validRawRequestBody)) shouldBe
-          List(NinoFormatError)
+          ListSet(NinoFormatError)
       }
     }
 
     "return TaxYearFormatError error" when {
       "an invalid tax year is supplied" in new Test {
         validator.validate(AmendDisclosuresRawData(validNino, "20178", validRawRequestBody)) shouldBe
-          List(TaxYearFormatError)
+          ListSet(TaxYearFormatError)
       }
     }
 
     "return multiple errors" when {
       "request supplied has multiple errors (path parameters)" in new Test {
         validator.validate(AmendDisclosuresRawData("A12344A", "20178", emptyRawRequestBody)) shouldBe
-          List(NinoFormatError, TaxYearFormatError)
+          ListSet(NinoFormatError, TaxYearFormatError)
       }
     }
 
@@ -200,14 +198,14 @@ class AmendDisclosuresValidatorSpec extends UnitSpec with MockAppConfig {
     "return RuleTaxYearNotSupportedError error" when {
       "an unsupported tax year is supplied" in new Test {
         validator.validate(AmendDisclosuresRawData(validNino, "2020-21", validRawRequestBody)) shouldBe
-          List(RuleTaxYearNotSupportedError)
+          ListSet(RuleTaxYearNotSupportedError)
       }
     }
 
     "return RuleTaxYearRangeInvalidError error" when {
       "an invalid tax year range is supplied" in new Test {
         validator.validate(AmendDisclosuresRawData(validNino, "2019-21", validRawRequestBody)) shouldBe
-          List(RuleTaxYearRangeInvalidError)
+          ListSet(RuleTaxYearRangeInvalidError)
       }
     }
 
@@ -215,17 +213,19 @@ class AmendDisclosuresValidatorSpec extends UnitSpec with MockAppConfig {
     "return RuleIncorrectOrEmptyBodyError error" when {
       "an empty JSON body is submitted" in new Test {
         validator.validate(AmendDisclosuresRawData(validNino, validTaxYear, emptyRawRequestBody)) shouldBe
-          List(RuleIncorrectOrEmptyBodyError)
+          ListSet(RuleIncorrectOrEmptyBodyError)
       }
 
       "a non-empty JSON body is submitted without any expected fields" in new Test {
         validator.validate(AmendDisclosuresRawData(validNino, validTaxYear, nonsenseRawRequestBody)) shouldBe
-          List(RuleIncorrectOrEmptyBodyError)
+          ListSet(RuleIncorrectOrEmptyBodyError)
       }
 
       "the submitted request body is not in the correct format" in new Test {
         validator.validate(AmendDisclosuresRawData(validNino, validTaxYear, nonValidRawRequestBody)) shouldBe
-          List(RuleIncorrectOrEmptyBodyError.copy(paths = Some(ListSet("/taxAvoidance/0/srn", "/class2Nics/class2VoluntaryContributions"))))
+          ListSet(RuleIncorrectOrEmptyBodyError.copy(
+            paths = Some(ListSet("/taxAvoidance/0/srn", "/class2Nics/class2VoluntaryContributions")))
+          )
       }
     }
 
@@ -233,56 +233,39 @@ class AmendDisclosuresValidatorSpec extends UnitSpec with MockAppConfig {
     "return SRNFormatError error" when {
       "an incorrectly formatted srn is submitted in the request body" in new Test {
         validator.validate(AmendDisclosuresRawData(validNino, validTaxYear, invalidSRNRawRequestBody)) shouldBe
-          List(SRNFormatError.copy(paths = Some(ListSet("/taxAvoidance/0/srn"))))
+          ListSet(SRNFormatError.copy(paths = Some(ListSet("/taxAvoidance/0/srn"))))
       }
     }
 
     "return TaxYearFormatError error" when {
       "an incorrectly formatted tax year is submitted in the request body" in new Test {
         validator.validate(AmendDisclosuresRawData(validNino, validTaxYear, invalidTaxYearRawRequestBody)) shouldBe
-          List(TaxYearFormatError.copy(paths = Some(ListSet("/taxAvoidance/0/taxYear"))))
+          ListSet(TaxYearFormatError.copy(paths = Some(ListSet("/taxAvoidance/0/taxYear"))))
       }
     }
 
     "return RuleTaxYearRangeInvalidError error" when {
       "an invalid tax year range is submitted in the request body" in new Test {
         validator.validate(AmendDisclosuresRawData(validNino, validTaxYear, invalidTaxYearRangeRuleRawRequestBody)) shouldBe
-          List(RuleTaxYearRangeInvalidError.copy(paths = Some(ListSet("/taxAvoidance/0/taxYear"))))
+          ListSet(RuleTaxYearRangeInvalidError.copy(paths = Some(ListSet("/taxAvoidance/0/taxYear"))))
       }
     }
 
     "return RuleVoluntaryClass2ValueInvalidError error" when {
       "an incorrect boolean value is submitted for class2VoluntaryContributions in the request body" in new Test {
         validator.validate(AmendDisclosuresRawData(validNino, validTaxYear, invalidClass2ValueRawRequestBody)) shouldBe
-          List(RuleVoluntaryClass2ValueInvalidError.copy(paths = Some(ListSet("/class2Nics/class2VoluntaryContributions"))))
+          ListSet(RuleVoluntaryClass2ValueInvalidError.copy(paths = Some(ListSet("/class2Nics/class2VoluntaryContributions"))))
       }
     }
 
     "return multiple errors (multiple failures)" when {
       "multiple fields fail value validation" in new Test {
         validator.validate(AmendDisclosuresRawData(validNino, validTaxYear, allInvalidValueRawRequestBody)) shouldBe
-          List(
-            SRNFormatError.copy(
-              paths = Some(ListSet(
-                "/taxAvoidance/0/srn",
-                "/taxAvoidance/1/srn"
-              ))
-            ),
-            TaxYearFormatError.copy(
-              paths = Some(ListSet(
-                "/taxAvoidance/0/taxYear"
-              ))
-            ),
-            RuleTaxYearRangeInvalidError.copy(
-              paths = Some(ListSet(
-                "/taxAvoidance/1/taxYear"
-              ))
-            ),
-            RuleVoluntaryClass2ValueInvalidError.copy(
-              paths = Some(ListSet(
-                "/class2Nics/class2VoluntaryContributions"
-              ))
-            ),
+          ListSet(
+            SRNFormatError.copy(paths = Some(ListSet("/taxAvoidance/0/srn", "/taxAvoidance/1/srn"))),
+            TaxYearFormatError.copy(paths = Some(ListSet("/taxAvoidance/0/taxYear"))),
+            RuleTaxYearRangeInvalidError.copy(paths = Some(ListSet("/taxAvoidance/1/taxYear"))),
+            RuleVoluntaryClass2ValueInvalidError.copy(paths = Some(ListSet("/class2Nics/class2VoluntaryContributions"))),
           )
       }
     }

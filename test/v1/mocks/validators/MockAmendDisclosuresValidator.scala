@@ -22,17 +22,17 @@ import v1.controllers.requestParsers.validators.AmendDisclosuresValidator
 import v1.models.errors.MtdError
 import v1.models.request.disclosures.AmendDisclosuresRawData
 
-class MockAmendDisclosuresValidator extends MockFactory {
+import scala.collection.immutable.ListSet
 
+class MockAmendDisclosuresValidator extends MockFactory {
   val mockAmendDisclosuresValidator: AmendDisclosuresValidator = mock[AmendDisclosuresValidator]
 
   object MockAmendDisclosuresValidator {
 
-    def validate(data: AmendDisclosuresRawData): CallHandler1[AmendDisclosuresRawData, List[MtdError]] = {
+    def validate(data: AmendDisclosuresRawData): CallHandler1[AmendDisclosuresRawData, ListSet[MtdError]] = {
       (mockAmendDisclosuresValidator
         .validate(_: AmendDisclosuresRawData))
         .expects(data)
     }
   }
-
 }

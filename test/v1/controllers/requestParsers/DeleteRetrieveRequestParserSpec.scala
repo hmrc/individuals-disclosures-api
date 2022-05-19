@@ -22,6 +22,8 @@ import v1.mocks.validators.MockDeleteRetrieveValidator
 import v1.models.errors._
 import v1.models.request.{DeleteRetrieveRawData, DeleteRetrieveRequest}
 
+import scala.collection.immutable.ListSet
+
 class DeleteRetrieveRequestParserSpec extends UnitSpec {
 
   val nino: String = "AA123456B"
@@ -42,7 +44,7 @@ class DeleteRetrieveRequestParserSpec extends UnitSpec {
   "parse" should {
     "return a request object" when {
       "valid request data is supplied" in new Test {
-        MockDeleteRetrieveValidator.validate(deleteRetrieveDisclosuresRawData).returns(Nil)
+        MockDeleteRetrieveValidator.validate(deleteRetrieveDisclosuresRawData).returns(ListSet.empty[MtdError])
 
         parser.parseRequest(deleteRetrieveDisclosuresRawData) shouldBe
           Right(DeleteRetrieveRequest(Nino(nino), taxYear))
@@ -52,7 +54,7 @@ class DeleteRetrieveRequestParserSpec extends UnitSpec {
     "return an ErrorWrapper" when {
       "a single validation error occurs" in new Test {
         MockDeleteRetrieveValidator.validate(deleteRetrieveDisclosuresRawData)
-          .returns(List(NinoFormatError))
+          .returns(ListSet(NinoFormatError))
 
         parser.parseRequest(deleteRetrieveDisclosuresRawData) shouldBe
           Left(ErrorWrapper(correlationId, NinoFormatError, None))
@@ -60,7 +62,7 @@ class DeleteRetrieveRequestParserSpec extends UnitSpec {
 
       "path parameter TaxYearNotSupported validation occurs" in new Test {
         MockDeleteRetrieveValidator.validate(deleteRetrieveDisclosuresRawData)
-          .returns(List(RuleTaxYearNotSupportedError))
+          .returns(ListSet(RuleTaxYearNotSupportedError))
 
         parser.parseRequest(deleteRetrieveDisclosuresRawData) shouldBe
           Left(ErrorWrapper(correlationId, RuleTaxYearNotSupportedError))
@@ -68,10 +70,10 @@ class DeleteRetrieveRequestParserSpec extends UnitSpec {
 
       "multiple validation errors occur" in new Test {
         MockDeleteRetrieveValidator.validate(deleteRetrieveDisclosuresRawData)
-          .returns(List(NinoFormatError, TaxYearFormatError))
+          .returns(ListSet(NinoFormatError, TaxYearFormatError))
 
         parser.parseRequest(deleteRetrieveDisclosuresRawData) shouldBe
-          Left(ErrorWrapper(correlationId, BadRequestError, Some(Seq(NinoFormatError, TaxYearFormatError))))
+          Left(ErrorWrapper(correlationId, BadRequestError, Some(ListSet(NinoFormatError, TaxYearFormatError))))
       }
     }
   }

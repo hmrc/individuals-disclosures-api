@@ -22,6 +22,8 @@ import v1.controllers.EndpointLogContext
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
 
+import scala.collection.immutable.ListSet
+
 trait DownstreamResponseMappingSupport {
   self: Logging =>
 
@@ -46,6 +48,7 @@ trait DownstreamResponseMappingSupport {
         ErrorWrapper(correlationId, errorCodeMap.applyOrElse(error.code, defaultErrorCodeMapping), None)
 
       case ResponseWrapper(correlationId, DownstreamErrors(errorCodes)) =>
+
         val mtdErrors = errorCodes.map(error => errorCodeMap.applyOrElse(error.code, defaultErrorCodeMapping))
 
         if (mtdErrors.contains(InternalError)) {
@@ -54,7 +57,7 @@ trait DownstreamResponseMappingSupport {
               s" - downstream returned ${errorCodes.map(_.code).mkString(",")}. Revert to ISE")
           ErrorWrapper(correlationId, InternalError, None)
         } else {
-          ErrorWrapper(correlationId, BadRequestError, Some(mtdErrors))
+          ErrorWrapper(correlationId, BadRequestError, Some(ListSet.from(mtdErrors)))
         }
 
       case ResponseWrapper(correlationId, OutboundError(error, errors)) =>

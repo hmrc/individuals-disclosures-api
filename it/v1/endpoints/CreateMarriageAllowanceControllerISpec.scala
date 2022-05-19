@@ -96,7 +96,7 @@ class CreateMarriageAllowanceControllerISpec extends IntegrationBaseSpec {
           """.stripMargin
         )
 
-        val allInvalidValueRequestError: List[MtdError] = List(
+        val allInvalidValueRequestError: ListSet[MtdError] = ListSet(
           PartnerNinoFormatError,
           PartnerSurnameFormatError,
           PartnerFirstNameFormatError,
