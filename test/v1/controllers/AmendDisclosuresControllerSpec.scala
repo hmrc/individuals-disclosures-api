@@ -29,7 +29,6 @@ import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.disclosures._
 
-import scala.collection.immutable.ListSet
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
@@ -193,7 +192,7 @@ class AmendDisclosuresControllerSpec
             contentAsJson(result) shouldBe Json.toJson(error)
             header("X-CorrelationId", result) shouldBe Some(correlationId)
 
-            val auditResponse: AuditResponse = AuditResponse(expectedStatus, Some(ListSet(AuditError(error.code))), None)
+            val auditResponse: AuditResponse = AuditResponse(expectedStatus, Some(List(AuditError(error.code))), None)
             MockedAuditService.verifyAuditEvent(event(auditResponse)).once()
           }
         }
@@ -229,7 +228,7 @@ class AmendDisclosuresControllerSpec
             contentAsJson(result) shouldBe Json.toJson(mtdError)
             header("X-CorrelationId", result) shouldBe Some(correlationId)
 
-            val auditResponse: AuditResponse = AuditResponse(expectedStatus, Some(ListSet(AuditError(mtdError.code))), None)
+            val auditResponse: AuditResponse = AuditResponse(expectedStatus, Some(List(AuditError(mtdError.code))), None)
             MockedAuditService.verifyAuditEvent(event(auditResponse)).once()
           }
         }

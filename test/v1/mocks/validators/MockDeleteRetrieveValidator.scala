@@ -22,14 +22,13 @@ import v1.controllers.requestParsers.validators.DeleteRetrieveValidator
 import v1.models.errors.MtdError
 import v1.models.request.DeleteRetrieveRawData
 
-import scala.collection.immutable.ListSet
 
 class MockDeleteRetrieveValidator extends MockFactory {
   val mockDeleteRetrieveValidator: DeleteRetrieveValidator = mock[DeleteRetrieveValidator]
 
   object MockDeleteRetrieveValidator {
 
-    def validate(data: DeleteRetrieveRawData): CallHandler1[DeleteRetrieveRawData, ListSet[MtdError]] = {
+    def validate(data: DeleteRetrieveRawData): CallHandler1[DeleteRetrieveRawData, List[MtdError]] = {
       (mockDeleteRetrieveValidator
         .validate(_: DeleteRetrieveRawData))
         .expects(data)

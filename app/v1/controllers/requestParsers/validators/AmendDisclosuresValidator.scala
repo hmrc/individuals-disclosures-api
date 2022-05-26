@@ -22,35 +22,34 @@ import v1.models.errors.MtdError
 import v1.models.request.disclosures._
 
 import javax.inject.Inject
-import scala.collection.immutable.ListSet
 
 class AmendDisclosuresValidator @Inject()(implicit appConfig: AppConfig) extends Validator[AmendDisclosuresRawData] {
-  private val validationSet = ListSet(
+  private val validationSet = List(
     parameterFormatValidation,
     parameterRuleValidation,
     bodyFormatValidator,
     bodyValueValidator
   )
 
-  override def validate(data: AmendDisclosuresRawData): ListSet[MtdError] = run(validationSet, data)
+  override def validate(data: AmendDisclosuresRawData): List[MtdError] = run(validationSet, data)
 
-  private def parameterFormatValidation: ValidationType = (data: AmendDisclosuresRawData) => ListSet(
+  private def parameterFormatValidation: ValidationType = (data: AmendDisclosuresRawData) => List(
     NinoValidation.validate(data.nino),
     TaxYearValidation.validate(data.taxYear)
   )
 
-  private def parameterRuleValidation: ValidationType = (data: AmendDisclosuresRawData) => ListSet(
+  private def parameterRuleValidation: ValidationType = (data: AmendDisclosuresRawData) => List(
     TaxYearNotSupportedValidation.validate(data.taxYear)
   )
 
-  private def bodyFormatValidator: ValidationType = (data: AmendDisclosuresRawData) => ListSet(
+  private def bodyFormatValidator: ValidationType = (data: AmendDisclosuresRawData) => List(
     JsonFormatValidation.validate[AmendDisclosuresRequestBody](data.body.json)
   )
 
   private def bodyValueValidator: ValidationType = (data: AmendDisclosuresRawData) => {
     val requestBodyData = data.body.json.as[AmendDisclosuresRequestBody]
 
-    ListSet(Validator.flattenErrors(
+    List(Validator.flattenErrors(
       List(
         requestBodyData.taxAvoidance.map(
           _.zipWithIndex.flatMap(item => validateTaxAvoidance(item._1, item._2))
@@ -62,16 +61,16 @@ class AmendDisclosuresValidator @Inject()(implicit appConfig: AppConfig) extends
 
   private def validateTaxAvoidance(taxAvoidance: AmendTaxAvoidanceItem, arrayIndex: Int): List[MtdError] = List(
     SRNValidation.validate(taxAvoidance.srn).map(
-      _.copy(paths = Some(ListSet(s"/taxAvoidance/$arrayIndex/srn")))
+      _.copy(paths = Some(List(s"/taxAvoidance/$arrayIndex/srn")))
     ),
     TaxYearValidation.validate(taxAvoidance.taxYear).map(
-      _.copy(paths = Some(ListSet(s"/taxAvoidance/$arrayIndex/taxYear")))
+      _.copy(paths = Some(List(s"/taxAvoidance/$arrayIndex/taxYear")))
     )
   ).flatten
 
   private def validateClass2Nics(class2Nics: AmendClass2Nics): List[MtdError] = List(
     VoluntaryClass2ValueValidation.validateOptional(class2Nics.class2VoluntaryContributions).map(
-      _.copy(paths = Some(ListSet("/class2Nics/class2VoluntaryContributions")))
+      _.copy(paths = Some(List("/class2Nics/class2VoluntaryContributions")))
     )
   ).flatten
 }

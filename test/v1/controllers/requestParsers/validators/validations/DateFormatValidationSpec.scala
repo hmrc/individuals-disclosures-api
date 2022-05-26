@@ -19,12 +19,11 @@ package v1.controllers.requestParsers.validators.validations
 import support.UnitSpec
 import v1.models.errors.MtdError
 
-import scala.collection.immutable.ListSet
 
 class DateFormatValidationSpec extends UnitSpec {
 
   "DateFormatValidation" when {
-    object DummyError extends MtdError(code = "ERROR_CODE", message = "Error message", paths = Some(ListSet("/path")))
+    object DummyError extends MtdError(code = "ERROR_CODE", message = "Error message", paths = Some(List("/path")))
 
     "validate" must {
       "return an empty list for a valid date" in {

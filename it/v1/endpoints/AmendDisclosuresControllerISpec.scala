@@ -26,7 +26,6 @@ import support.IntegrationBaseSpec
 import v1.models.errors._
 import v1.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 
-import scala.collection.immutable.ListSet
 
 class AmendDisclosuresControllerISpec extends IntegrationBaseSpec {
 
@@ -145,7 +144,7 @@ class AmendDisclosuresControllerISpec extends IntegrationBaseSpec {
         response.json shouldBe Json.toJson(ErrorWrapper(
           correlationId = correlationId,
           error = TaxYearFormatError.copy(
-            paths = Some(ListSet("/taxAvoidance/0/taxYear"))
+            paths = Some(List("/taxAvoidance/0/taxYear"))
           ),
           errors = None
         ))
@@ -184,7 +183,7 @@ class AmendDisclosuresControllerISpec extends IntegrationBaseSpec {
         response.json shouldBe Json.toJson(ErrorWrapper(
           correlationId = correlationId,
           error = RuleTaxYearRangeInvalidError.copy(
-            paths = Some(ListSet("/taxAvoidance/0/taxYear"))
+            paths = Some(List("/taxAvoidance/0/taxYear"))
           ),
           errors = None
         ))
@@ -215,25 +214,25 @@ class AmendDisclosuresControllerISpec extends IntegrationBaseSpec {
           """.stripMargin
         )
 
-        val allInvalidValueRequestError: ListSet[MtdError] = ListSet(
+        val allInvalidValueRequestError: List[MtdError] = List(
           SRNFormatError.copy(
-            paths = Some(ListSet(
+            paths = Some(List(
               "/taxAvoidance/0/srn",
               "/taxAvoidance/1/srn"
             ))
           ),
           TaxYearFormatError.copy(
-            paths = Some(ListSet(
+            paths = Some(List(
               "/taxAvoidance/0/taxYear"
             ))
           ),
           RuleTaxYearRangeInvalidError.copy(
-            paths = Some(ListSet(
+            paths = Some(List(
               "/taxAvoidance/1/taxYear"
             ))
           ),
           RuleVoluntaryClass2ValueInvalidError.copy(
-            paths = Some(ListSet(
+            paths = Some(List(
               "/class2Nics/class2VoluntaryContributions"
             ))
           )
@@ -399,7 +398,7 @@ class AmendDisclosuresControllerISpec extends IntegrationBaseSpec {
       )
 
       val incorrectBodyError: MtdError = RuleIncorrectOrEmptyBodyError.copy(
-        paths = Some(ListSet("/taxAvoidance/0/srn"))
+        paths = Some(List("/taxAvoidance/0/srn"))
       )
 
       val invalidSRNRequestBodyJson: JsValue = Json.parse(
@@ -419,7 +418,7 @@ class AmendDisclosuresControllerISpec extends IntegrationBaseSpec {
       )
 
       val srnFormatError: MtdError = SRNFormatError.copy(
-        paths = Some(ListSet("/taxAvoidance/0/srn"))
+        paths = Some(List("/taxAvoidance/0/srn"))
       )
 
       val invalidClass2ValueRequestBodyJson: JsValue = Json.parse(
@@ -439,7 +438,7 @@ class AmendDisclosuresControllerISpec extends IntegrationBaseSpec {
       )
 
       val ruleVoluntaryClass2ValueInvalidError: MtdError = RuleVoluntaryClass2ValueInvalidError.copy(
-        paths = Some(ListSet("/class2Nics/class2VoluntaryContributions"))
+        paths = Some(List("/class2Nics/class2VoluntaryContributions"))
       )
 
       "validation error" when {

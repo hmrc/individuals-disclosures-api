@@ -20,19 +20,18 @@ import v1.models.errors.MtdError
 import v1.models.request.RawData
 
 import scala.annotation.tailrec
-import scala.collection.immutable.ListSet
 
 trait Validator[A <: RawData] {
-  type ValidationType = A => ListSet[List[MtdError]]
+  type ValidationType = A => List[List[MtdError]]
 
-  def validate(data: A): ListSet[MtdError]
+  def validate(data: A): List[MtdError]
 
   @tailrec
-  final def run(validationSet: ListSet[ValidationType], data: A): ListSet[MtdError] = {
-    val nextValidationResultOpt: Option[ListSet[MtdError]] = validationSet.headOption.map(_(data).flatten)
+  final def run(validationSet: List[ValidationType], data: A): List[MtdError] = {
+    val nextValidationResultOpt: Option[List[MtdError]] = validationSet.headOption.map(_(data).flatten)
 
     nextValidationResultOpt match {
-      case None => ListSet.empty[MtdError]
+      case None => List.empty[MtdError]
       case Some(errs) if errs.nonEmpty => errs
       case _ => run(validationSet.tail, data)
     }
@@ -45,16 +44,15 @@ object Validator {
   def flattenErrors(errorsToFlatten: List[List[MtdError]], flatErrors: List[MtdError] = List.empty): List[MtdError] = errorsToFlatten.flatten match {
     case Nil => flatErrors
     case item :: Nil => flatErrors :+ item
-    case items =>
-      val nextError: MtdError = items.head
-      val nextErrorPaths = items.tail.filter(_.message == nextError.message).flatMap(_.paths).flatten
+    case nextError :: tail =>
+      val (matchingErrors, nonMatchingErrors) = tail.partition(_.message == nextError.message)
+      val nextErrorPaths = matchingErrors.flatMap(_.paths).flatten
 
-      def makeListSetOptional: ListSet[String] => Option[ListSet[String]] = listSet => if (listSet.isEmpty) None else Some(listSet)
+      def makeListOptional: List[String] => Option[List[String]] = List => if (List.isEmpty) None else Some(List)
 
-      val newFlatError = nextError.copy(paths = makeListSetOptional(nextError.paths.getOrElse(ListSet.empty) ++ nextErrorPaths))
-      val remainingErrorsToFlatten = items.filterNot(_.message == nextError.message)
+      val newFlatError = nextError.copy(paths = makeListOptional(nextError.paths.getOrElse(List.empty) ++ nextErrorPaths))
 
-      flattenErrors(List(remainingErrorsToFlatten), flatErrors :+ newFlatError)
+      flattenErrors(List(nonMatchingErrors), flatErrors :+ newFlatError)
   }
 
   /**

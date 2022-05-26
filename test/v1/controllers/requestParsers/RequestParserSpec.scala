@@ -22,7 +22,6 @@ import v1.models.domain.Nino
 import v1.models.errors._
 import v1.models.request.RawData
 
-import scala.collection.immutable.ListSet
 
 class RequestParserSpec extends UnitSpec {
   private val nino = "AA123456A"
@@ -46,7 +45,7 @@ class RequestParserSpec extends UnitSpec {
   "parse" should {
     "return a Request" when {
       "the validator returns no errors" in new Test {
-        lazy val validator: Validator[Raw] = (_: Raw) => ListSet.empty[MtdError]
+        lazy val validator: Validator[Raw] = (_: Raw) => List.empty[MtdError]
 
         parser.parseRequest(Raw(nino)) shouldBe Right(Request(Nino(nino)))
       }
@@ -54,7 +53,7 @@ class RequestParserSpec extends UnitSpec {
 
     "return a single error" when {
       "the validator returns a single error" in new Test {
-        lazy val validator: Validator[Raw] = (_: Raw) => ListSet(NinoFormatError)
+        lazy val validator: Validator[Raw] = (_: Raw) => List(NinoFormatError)
 
         parser.parseRequest(Raw(nino)) shouldBe Left(ErrorWrapper(correlationId, NinoFormatError, None))
       }
@@ -62,10 +61,10 @@ class RequestParserSpec extends UnitSpec {
 
     "return multiple errors" when {
       "the validator returns multiple errors" in new Test {
-        lazy val validator: Validator[Raw] = (_: Raw) => ListSet(NinoFormatError, RuleIncorrectOrEmptyBodyError)
+        lazy val validator: Validator[Raw] = (_: Raw) => List(NinoFormatError, RuleIncorrectOrEmptyBodyError)
 
         parser.parseRequest(Raw(nino)) shouldBe
-          Left(ErrorWrapper(correlationId, BadRequestError, Some(ListSet(NinoFormatError, RuleIncorrectOrEmptyBodyError))))
+          Left(ErrorWrapper(correlationId, BadRequestError, Some(List(NinoFormatError, RuleIncorrectOrEmptyBodyError))))
       }
     }
   }

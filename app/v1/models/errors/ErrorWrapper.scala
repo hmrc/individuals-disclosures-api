@@ -19,16 +19,15 @@ package v1.models.errors
 import play.api.libs.json.{JsObject, Json, Writes}
 import v1.models.audit.AuditError
 
-import scala.collection.immutable.ListSet
 
-case class ErrorWrapper(correlationId: String, error: MtdError, errors: Option[ListSet[MtdError]] = None) {
+case class ErrorWrapper(correlationId: String, error: MtdError, errors: Option[List[MtdError]] = None) {
 
-  private def allErrors: ListSet[MtdError] = errors match {
-    case Some(listSet) => listSet
-    case None      => ListSet(error)
+  private def allErrors: List[MtdError] = errors match {
+    case Some(list) => list
+    case None      => List(error)
   }
 
-  def auditErrors: ListSet[AuditError] =
+  def auditErrors: List[AuditError] =
     allErrors.map(error => AuditError(error.code))
 }
 

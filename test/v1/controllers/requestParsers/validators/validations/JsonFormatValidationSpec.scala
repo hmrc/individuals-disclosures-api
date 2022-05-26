@@ -21,7 +21,6 @@ import support.UnitSpec
 import v1.models.errors.RuleIncorrectOrEmptyBodyError
 import v1.models.utils.JsonErrorValidators
 
-import scala.collection.immutable.ListSet
 
 class JsonFormatValidationSpec extends UnitSpec with JsonErrorValidators {
 
@@ -47,7 +46,7 @@ class JsonFormatValidationSpec extends UnitSpec with JsonErrorValidators {
         val json = Json.parse("""{ "fieldOne" : "Something" }""")
         val validationResult = JsonFormatValidation.validate[TestDataObject](json)
 
-        validationResult shouldBe List(RuleIncorrectOrEmptyBodyError.copy(paths = Some(ListSet("/fieldTwo"))))
+        validationResult shouldBe List(RuleIncorrectOrEmptyBodyError.copy(paths = Some(List("/fieldTwo"))))
       }
 
       "required field is missing in array object" in {
@@ -55,7 +54,10 @@ class JsonFormatValidationSpec extends UnitSpec with JsonErrorValidators {
         val json = Json.parse("""{ "arrayField" : [{}]}""")
         val validationResult = JsonFormatValidation.validate[TestDataWrapper](json)
 
-        validationResult shouldBe List(RuleIncorrectOrEmptyBodyError.copy(paths = Some(ListSet("/arrayField/0/fieldOne", "/arrayField/0/fieldTwo"))))
+        val error =  validationResult.head
+        error.message shouldBe RuleIncorrectOrEmptyBodyError.message
+        error.code shouldBe RuleIncorrectOrEmptyBodyError.code
+        error.paths.get should contain.allElementsOf(List("/arrayField/0/fieldOne", "/arrayField/0/fieldTwo"))
       }
 
       "required field is missing in multiple array objects" in {
@@ -63,12 +65,15 @@ class JsonFormatValidationSpec extends UnitSpec with JsonErrorValidators {
         val json = Json.parse("""{ "arrayField" : [{}, {}]}""")
         val validationResult = JsonFormatValidation.validate[TestDataWrapper](json)
 
-        validationResult shouldBe List(RuleIncorrectOrEmptyBodyError.copy(paths = Some(ListSet(
+        val error =  validationResult.head
+        error.message shouldBe RuleIncorrectOrEmptyBodyError.message
+        error.code shouldBe RuleIncorrectOrEmptyBodyError.code
+        error.paths.get should contain.allElementsOf(List(
           "/arrayField/0/fieldOne",
           "/arrayField/0/fieldTwo",
           "/arrayField/1/fieldOne",
           "/arrayField/1/fieldTwo"
-        ))))
+        ))
       }
 
       "empty body is submitted" in {
@@ -82,14 +87,20 @@ class JsonFormatValidationSpec extends UnitSpec with JsonErrorValidators {
         val json = Json.parse("""{"field": "value"}""")
         val validationResult = JsonFormatValidation.validate[TestDataObject](json)
 
-        validationResult shouldBe List(RuleIncorrectOrEmptyBodyError.copy(paths = Some(ListSet("/fieldOne", "/fieldTwo"))))
+        val error =  validationResult.head
+        error.message shouldBe RuleIncorrectOrEmptyBodyError.message
+        error.code shouldBe RuleIncorrectOrEmptyBodyError.code
+        error.paths.get should contain.allElementsOf(List(
+          "/fieldOne",
+          "/fieldTwo",
+        ))
       }
 
       "a field is supplied with the wrong data type" in {
         val json = Json.parse("""{"fieldOne": true, "fieldTwo": "value"}""")
         val validationResult = JsonFormatValidation.validate[TestDataObject](json)
 
-        validationResult shouldBe List(RuleIncorrectOrEmptyBodyError.copy(paths = Some(ListSet("/fieldOne"))))
+        validationResult shouldBe List(RuleIncorrectOrEmptyBodyError.copy(paths = Some(List("/fieldOne"))))
       }
     }
   }

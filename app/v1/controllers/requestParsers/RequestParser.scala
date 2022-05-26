@@ -21,7 +21,6 @@ import v1.controllers.requestParsers.validators.Validator
 import v1.models.errors.{BadRequestError, ErrorWrapper, MtdError}
 import v1.models.request.RawData
 
-import scala.collection.immutable.ListSet
 
 trait RequestParser[Raw <: RawData, Request] extends Logging {
   val validator: Validator[Raw]
@@ -29,9 +28,9 @@ trait RequestParser[Raw <: RawData, Request] extends Logging {
   protected def requestFor(data: Raw): Request
 
   def parseRequest(data: Raw)(implicit correlationId: String): Either[ErrorWrapper, Request] = {
-    val validationResult: ListSet[MtdError] = validator.validate(data)
+    val validationResult: List[MtdError] = validator.validate(data)
 
-    validationResult.toSeq match {
+    validationResult match {
       case Nil =>
         logger.info(
           "[RequestParser][parseRequest] " +

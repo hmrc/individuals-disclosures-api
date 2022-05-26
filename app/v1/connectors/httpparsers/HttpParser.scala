@@ -21,7 +21,6 @@ import play.api.libs.json._
 import uk.gov.hmrc.http.HttpResponse
 import v1.models.errors._
 
-import scala.collection.immutable.ListSet
 import scala.util.{Success, Try}
 
 trait HttpParser {
@@ -50,9 +49,9 @@ trait HttpParser {
 
   private val multipleErrorReads: Reads[List[DownstreamErrorCode]] = (__ \ "failures").read[List[DownstreamErrorCode]]
 
-  private val bvrErrorReads: Reads[ListSet[DownstreamErrorCode]] = {
+  private val bvrErrorReads: Reads[List[DownstreamErrorCode]] = {
     implicit val errorIdReads: Reads[DownstreamErrorCode] = (__ \ "id").read[String].map(DownstreamErrorCode(_))
-    (__ \ "bvrfailureResponseElement" \ "validationRuleFailures").read[ListSet[DownstreamErrorCode]]
+    (__ \ "bvrfailureResponseElement" \ "validationRuleFailures").read[List[DownstreamErrorCode]]
   }
 
   def parseErrors(response: HttpResponse): DownstreamError = {

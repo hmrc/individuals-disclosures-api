@@ -26,7 +26,6 @@ import support.IntegrationBaseSpec
 import v1.models.errors._
 import v1.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 
-import scala.collection.immutable.ListSet
 
 class CreateMarriageAllowanceControllerISpec extends IntegrationBaseSpec {
 
@@ -96,7 +95,7 @@ class CreateMarriageAllowanceControllerISpec extends IntegrationBaseSpec {
           """.stripMargin
         )
 
-        val allInvalidValueRequestError: ListSet[MtdError] = ListSet(
+        val allInvalidValueRequestError: List[MtdError] = List(
           PartnerNinoFormatError,
           PartnerSurnameFormatError,
           PartnerFirstNameFormatError,
@@ -216,7 +215,7 @@ class CreateMarriageAllowanceControllerISpec extends IntegrationBaseSpec {
         input.foreach(args => (validationErrorTest _).tupled(args))
 
         "with complex body format errors" in new Test {
-          val nonsenseBodyPaths: ListSet[String] = ListSet("/spouseOrCivilPartnerNino", "/spouseOrCivilPartnerSurname")
+          val nonsenseBodyPaths: List[String] = List("/spouseOrCivilPartnerNino", "/spouseOrCivilPartnerSurname")
 
           val nonsenseRequestBodyJson: JsValue = Json.parse(
             """

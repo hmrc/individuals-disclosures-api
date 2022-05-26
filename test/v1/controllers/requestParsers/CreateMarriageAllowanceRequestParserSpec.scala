@@ -24,7 +24,6 @@ import v1.models.domain.Nino
 import v1.models.errors.{BadRequestError, ErrorWrapper, MtdError, NinoFormatError, RuleIncorrectOrEmptyBodyError}
 import v1.models.request.marriageAllowance.{CreateMarriageAllowanceBody, CreateMarriageAllowanceRawData, CreateMarriageAllowanceRequest}
 
-import scala.collection.immutable.ListSet
 
 class CreateMarriageAllowanceRequestParserSpec extends UnitSpec {
 
@@ -50,7 +49,7 @@ class CreateMarriageAllowanceRequestParserSpec extends UnitSpec {
             |}
             |""".stripMargin)))
 
-        MockCreateMarriageAllowanceValidator.validate(rawData) returns ListSet.empty[MtdError]
+        MockCreateMarriageAllowanceValidator.validate(rawData) returns List.empty[MtdError]
 
         parser.parseRequest(rawData) shouldBe Right(CreateMarriageAllowanceRequest(Nino(nino), CreateMarriageAllowanceBody(
           spouseOrCivilPartnerNino = "AA123456B",
@@ -71,7 +70,7 @@ class CreateMarriageAllowanceRequestParserSpec extends UnitSpec {
           val rawData: CreateMarriageAllowanceRawData = CreateMarriageAllowanceRawData(ignoredNino, ignoredBody)
 
           val error: NinoFormatError.type = NinoFormatError
-          MockCreateMarriageAllowanceValidator.validate(rawData) returns ListSet(error)
+          MockCreateMarriageAllowanceValidator.validate(rawData) returns List(error)
 
           parser.parseRequest(rawData) shouldBe Left(ErrorWrapper(correlationId, error))
         }
@@ -81,7 +80,7 @@ class CreateMarriageAllowanceRequestParserSpec extends UnitSpec {
         "return a ErrorWrapper for a BadRequestError with the errors" in new Test {
           val rawData: CreateMarriageAllowanceRawData = CreateMarriageAllowanceRawData(ignoredNino, ignoredBody)
 
-          val errors: ListSet[MtdError] = ListSet(NinoFormatError, RuleIncorrectOrEmptyBodyError)
+          val errors: List[MtdError] = List(NinoFormatError, RuleIncorrectOrEmptyBodyError)
           MockCreateMarriageAllowanceValidator.validate(rawData) returns errors
 
           parser.parseRequest(rawData) shouldBe Left(ErrorWrapper(correlationId, BadRequestError, Some(errors)))

@@ -22,13 +22,12 @@ import v1.controllers.requestParsers.validators.CreateMarriageAllowanceValidator
 import v1.models.errors.MtdError
 import v1.models.request.marriageAllowance.CreateMarriageAllowanceRawData
 
-import scala.collection.immutable.ListSet
 
 class MockCreateMarriageAllowanceValidator extends MockFactory {
   val mockCreateMarriageAllowanceValidator: CreateMarriageAllowanceValidator = mock[CreateMarriageAllowanceValidator]
 
   object MockCreateMarriageAllowanceValidator {
-    def validate(data: CreateMarriageAllowanceRawData): CallHandler1[CreateMarriageAllowanceRawData, ListSet[MtdError]] =
+    def validate(data: CreateMarriageAllowanceRawData): CallHandler1[CreateMarriageAllowanceRawData, List[MtdError]] =
       (mockCreateMarriageAllowanceValidator
         .validate(_: CreateMarriageAllowanceRawData))
         .expects(data)

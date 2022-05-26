@@ -18,7 +18,6 @@ package v1.models.errors
 
 import play.api.libs.json.{Json, Reads}
 
-import scala.collection.immutable.ListSet
 
 case class DownstreamErrorCode(code: String) {
   def toMtd: MtdError = MtdError(code = code, message = "")
@@ -36,4 +35,4 @@ object DownstreamErrors {
   def single(error: DownstreamErrorCode): DownstreamErrors = DownstreamErrors(List(error))
 }
 
-case class OutboundError(error: MtdError, errors: Option[ListSet[MtdError]] = None) extends DownstreamError
+case class OutboundError(error: MtdError, errors: Option[List[MtdError]] = None) extends DownstreamError
