@@ -21,12 +21,10 @@ import v1.models.errors.MtdError
 import scala.util.matching.Regex
 
 trait RegexValidation {
-
   val regex: Regex
 
   def isValid(value: String): Boolean = {
     val matcher = regex.pattern.matcher(value)
-
     matcher.matches
   }
 

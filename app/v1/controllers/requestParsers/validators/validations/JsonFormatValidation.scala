@@ -20,31 +20,32 @@ import play.api.Logger
 import play.api.libs.json._
 import v1.models.errors.{MtdError, RuleIncorrectOrEmptyBodyError}
 
-object JsonFormatValidation {
 
+object JsonFormatValidation {
   private val logger: Logger = Logger(this.getClass)
 
-  def validate[A: OFormat](data: JsValue): List[MtdError] = {
-    if (data == JsObject.empty) List(RuleIncorrectOrEmptyBodyError) else
+  def validate[A: OFormat](data: JsValue): List[MtdError] =
+    if (data == JsObject.empty) List(RuleIncorrectOrEmptyBodyError) else {
       data.validate[A] match {
-        case JsSuccess(body, _) => if (Json.toJson(body) == JsObject.empty) List(RuleIncorrectOrEmptyBodyError) else NoValidationErrors
-        case JsError(errors: Seq[(JsPath, Seq[JsonValidationError])]) => handleErrors(errors)
+        case JsSuccess(body, _) if Json.toJson(body) == JsObject.empty => List(RuleIncorrectOrEmptyBodyError)
+        case JsSuccess(_, _) => NoValidationErrors
+        case jsError: JsError => handleErrors(jsError)
       }
-  }
+    }
 
-  private def handleErrors(errors: Seq[(JsPath, Seq[JsonValidationError])]): List[MtdError] = {
-    val failures = errors.map {
+  private def handleErrors(jsError: JsError): List[MtdError] = {
+    val failures = jsError.errors.map {
       case (path: JsPath, Seq(JsonValidationError(Seq("error.path.missing")))) => MissingMandatoryField(path)
       case (path: JsPath, Seq(JsonValidationError(Seq(error: String)))) if error.contains("error.expected") => WrongFieldType(path)
       case (path: JsPath, _) => OtherFailure(path)
-    }
+    }.toList
 
     val logString = failures.groupBy(_.getClass)
       .values.map(failure => s"${failure.head.failureReason}: " + s"${failure.map(_.fromJsPath)}")
       .toString().dropRight(1).drop(5)
 
     logger.warn(s"[JsonFormatValidation][validate] - Request body failed validation with errors - $logString")
-    List(RuleIncorrectOrEmptyBodyError.copy(paths = Some(failures.map(_.fromJsPath))))
+    List(RuleIncorrectOrEmptyBodyError.copy(paths = Some(List.from(failures.map(_.fromJsPath)))))
   }
 
   private class JsonFormatValidationFailure(path: JsPath, failure: String) {
@@ -57,9 +58,7 @@ object JsonFormatValidation {
   }
 
   private case class MissingMandatoryField(path: JsPath) extends JsonFormatValidationFailure(path, "Missing mandatory field")
-
   private case class WrongFieldType(path: JsPath) extends JsonFormatValidationFailure(path, "Wrong field type")
-
   private case class OtherFailure(path: JsPath) extends JsonFormatValidationFailure(path, "Other failure")
 
 }

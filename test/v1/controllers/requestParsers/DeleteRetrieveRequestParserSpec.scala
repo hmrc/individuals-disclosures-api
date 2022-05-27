@@ -22,6 +22,7 @@ import v1.mocks.validators.MockDeleteRetrieveValidator
 import v1.models.errors._
 import v1.models.request.{DeleteRetrieveRawData, DeleteRetrieveRequest}
 
+
 class DeleteRetrieveRequestParserSpec extends UnitSpec {
 
   val nino: String = "AA123456B"
@@ -42,7 +43,7 @@ class DeleteRetrieveRequestParserSpec extends UnitSpec {
   "parse" should {
     "return a request object" when {
       "valid request data is supplied" in new Test {
-        MockDeleteRetrieveValidator.validate(deleteRetrieveDisclosuresRawData).returns(Nil)
+        MockDeleteRetrieveValidator.validate(deleteRetrieveDisclosuresRawData).returns(List.empty[MtdError])
 
         parser.parseRequest(deleteRetrieveDisclosuresRawData) shouldBe
           Right(DeleteRetrieveRequest(Nino(nino), taxYear))
@@ -71,7 +72,7 @@ class DeleteRetrieveRequestParserSpec extends UnitSpec {
           .returns(List(NinoFormatError, TaxYearFormatError))
 
         parser.parseRequest(deleteRetrieveDisclosuresRawData) shouldBe
-          Left(ErrorWrapper(correlationId, BadRequestError, Some(Seq(NinoFormatError, TaxYearFormatError))))
+          Left(ErrorWrapper(correlationId, BadRequestError, Some(List(NinoFormatError, TaxYearFormatError))))
       }
     }
   }

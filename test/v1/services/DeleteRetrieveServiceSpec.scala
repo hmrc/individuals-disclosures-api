@@ -64,7 +64,7 @@ class DeleteRetrieveServiceSpec extends ServiceSpec {
           s"a $ifsErrorCode error is returned from the service" in new Test {
 
             MockDeleteRetrieveConnector.delete()
-              .returns(Future.successful(Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode(ifsErrorCode))))))
+              .returns(Future.successful(Left(ResponseWrapper(correlationId, DownstreamErrors.single(DownstreamErrorCode(ifsErrorCode))))))
 
             await(service.delete()) shouldBe Left(ErrorWrapper(correlationId, error))
           }
@@ -72,10 +72,10 @@ class DeleteRetrieveServiceSpec extends ServiceSpec {
         val input = Seq(
           ("INVALID_TAXABLE_ENTITY_ID", NinoFormatError),
           ("INVALID_TAX_YEAR", TaxYearFormatError),
-          ("INVALID_CORRELATIONID", DownstreamError),
+          ("INVALID_CORRELATIONID", InternalError),
           ("NO_DATA_FOUND", NotFoundError),
-          ("SERVER_ERROR", DownstreamError),
-          ("SERVICE_UNAVAILABLE", DownstreamError)
+          ("SERVER_ERROR", InternalError),
+          ("SERVICE_UNAVAILABLE", InternalError)
         )
 
         input.foreach(args => (serviceError _).tupled(args))
@@ -107,7 +107,7 @@ class DeleteRetrieveServiceSpec extends ServiceSpec {
           s"a $ifsErrorCode error is returned from the service" in new Test {
 
             MockDeleteRetrieveConnector.retrieve[Data]()
-              .returns(Future.successful(Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode(ifsErrorCode))))))
+              .returns(Future.successful(Left(ResponseWrapper(correlationId, DownstreamErrors.single(DownstreamErrorCode(ifsErrorCode))))))
 
             await(service.retrieve[Data]()) shouldBe Left(ErrorWrapper(correlationId, error))
           }
@@ -115,10 +115,10 @@ class DeleteRetrieveServiceSpec extends ServiceSpec {
         val input = Seq(
           ("INVALID_TAXABLE_ENTITY_ID", NinoFormatError),
           ("INVALID_TAX_YEAR", TaxYearFormatError),
-          ("INVALID_CORRELATIONID", DownstreamError),
+          ("INVALID_CORRELATIONID", InternalError),
           ("NO_DATA_FOUND", NotFoundError),
-          ("SERVER_ERROR", DownstreamError),
-          ("SERVICE_UNAVAILABLE", DownstreamError)
+          ("SERVER_ERROR", InternalError),
+          ("SERVICE_UNAVAILABLE", InternalError)
         )
 
         input.foreach(args => (serviceError _).tupled(args))

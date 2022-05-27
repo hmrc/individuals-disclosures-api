@@ -173,7 +173,7 @@ class AmendDisclosuresControllerSpec
         header("X-CorrelationId", result) shouldBe Some(correlationId)
 
         val auditResponse: AuditResponse = AuditResponse(OK, None, Some(hateoasResponse))
-        MockedAuditService.verifyAuditEvent(event(auditResponse)).once
+        MockedAuditService.verifyAuditEvent(event(auditResponse)).once()
       }
     }
 
@@ -192,8 +192,8 @@ class AmendDisclosuresControllerSpec
             contentAsJson(result) shouldBe Json.toJson(error)
             header("X-CorrelationId", result) shouldBe Some(correlationId)
 
-            val auditResponse: AuditResponse = AuditResponse(expectedStatus, Some(Seq(AuditError(error.code))), None)
-            MockedAuditService.verifyAuditEvent(event(auditResponse)).once
+            val auditResponse: AuditResponse = AuditResponse(expectedStatus, Some(List(AuditError(error.code))), None)
+            MockedAuditService.verifyAuditEvent(event(auditResponse)).once()
           }
         }
 
@@ -228,8 +228,8 @@ class AmendDisclosuresControllerSpec
             contentAsJson(result) shouldBe Json.toJson(mtdError)
             header("X-CorrelationId", result) shouldBe Some(correlationId)
 
-            val auditResponse: AuditResponse = AuditResponse(expectedStatus, Some(Seq(AuditError(mtdError.code))), None)
-            MockedAuditService.verifyAuditEvent(event(auditResponse)).once
+            val auditResponse: AuditResponse = AuditResponse(expectedStatus, Some(List(AuditError(mtdError.code))), None)
+            MockedAuditService.verifyAuditEvent(event(auditResponse)).once()
           }
         }
 
@@ -238,7 +238,7 @@ class AmendDisclosuresControllerSpec
           (TaxYearFormatError, BAD_REQUEST),
           (NotFoundError, NOT_FOUND),
           (RuleVoluntaryClass2CannotBeChangedError, FORBIDDEN),
-          (DownstreamError, INTERNAL_SERVER_ERROR)
+          (InternalError, INTERNAL_SERVER_ERROR)
         )
 
         input.foreach(args => (serviceErrors _).tupled(args))

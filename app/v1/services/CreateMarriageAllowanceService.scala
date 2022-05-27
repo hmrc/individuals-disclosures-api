@@ -26,12 +26,12 @@ import v1.controllers.EndpointLogContext
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.marriageAllowance.CreateMarriageAllowanceRequest
-import v1.support.DesResponseMappingSupport
+import v1.support.DownstreamResponseMappingSupport
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class CreateMarriageAllowanceService @Inject()(connector: CreateMarriageAllowanceConnector) extends DesResponseMappingSupport with Logging {
+class CreateMarriageAllowanceService @Inject()(connector: CreateMarriageAllowanceConnector) extends DownstreamResponseMappingSupport with Logging {
 
   def create(request: CreateMarriageAllowanceRequest)
                       (implicit hc: HeaderCarrier,ec: ExecutionContext,
@@ -39,8 +39,8 @@ class CreateMarriageAllowanceService @Inject()(connector: CreateMarriageAllowanc
                        correlationId: String): Future[Either[ErrorWrapper, ResponseWrapper[Unit]]] = {
 
     val result = for {
-      desResponseWrapper <- EitherT(connector.create(request)).leftMap(mapDesErrors(ifsErrorMap))
-    } yield desResponseWrapper
+      downstreamResponseWrapper <- EitherT(connector.create(request)).leftMap(mapDownstreamErrors(ifsErrorMap))
+    } yield downstreamResponseWrapper
 
     result.value
   }
@@ -50,21 +50,21 @@ class CreateMarriageAllowanceService @Inject()(connector: CreateMarriageAllowanc
       "INVALID_IDVALUE" -> NinoFormatError,
       "DECEASED_PARTICIPANT" -> RuleDeceasedRecipientError,
       "RELATIONSHIP_ALREADY_EXISTS" -> RuleActiveMarriageAllowanceClaimError,
-      "INVALID_IDTYPE" -> DownstreamError,
-      "END_DATE_CODE_NOT_FOUND" -> DownstreamError,
-      "INVALID_CORRELATIONID" -> DownstreamError,
-      "INVALID_PAYLOAD" -> DownstreamError,
+      "INVALID_IDTYPE" -> InternalError,
+      "END_DATE_CODE_NOT_FOUND" -> InternalError,
+      "INVALID_CORRELATIONID" -> InternalError,
+      "INVALID_PAYLOAD" -> InternalError,
       "NINO_OR_TRN_NOT_FOUND" -> RuleInvalidRequestError,
-      "INVALID_ACTUAL_END_DATE" -> DownstreamError,
-      "INVALID_PARTICIPANT_END_DATE" -> DownstreamError,
-      "INVALID_PARTICIPANT_START_DATE" -> DownstreamError,
-      "INVALID_RELATIONSHIP_CODE" -> DownstreamError,
-      "PARTICIPANT1_CANNOT_BE_UPDATED" -> DownstreamError,
-      "PARTICIPANT2_CANNOT_BE_UPDATED" -> DownstreamError,
-      "CONFIDENCE_CHECK_FAILED" -> DownstreamError,
-      "CONFIDENCE_CHECK_SURNAME_MISSED" -> DownstreamError,
-      "BAD_GATEWAY" -> DownstreamError,
-      "SERVER_ERROR" -> DownstreamError,
-      "SERVICE_UNAVAILABLE" -> DownstreamError
+      "INVALID_ACTUAL_END_DATE" -> InternalError,
+      "INVALID_PARTICIPANT_END_DATE" -> InternalError,
+      "INVALID_PARTICIPANT_START_DATE" -> InternalError,
+      "INVALID_RELATIONSHIP_CODE" -> InternalError,
+      "PARTICIPANT1_CANNOT_BE_UPDATED" -> InternalError,
+      "PARTICIPANT2_CANNOT_BE_UPDATED" -> InternalError,
+      "CONFIDENCE_CHECK_FAILED" -> InternalError,
+      "CONFIDENCE_CHECK_SURNAME_MISSED" -> InternalError,
+      "BAD_GATEWAY" -> InternalError,
+      "SERVER_ERROR" -> InternalError,
+      "SERVICE_UNAVAILABLE" -> InternalError
     )
 }

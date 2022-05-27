@@ -60,7 +60,7 @@ class CreateMarriageAllowanceServiceSpec extends ServiceSpec {
           s"a $ifsErrorCode error is returned from the service" in new Test {
 
             MockCreateMarriageAllowanceConnector.create(createMarriageAllowanceRequest)
-              .returns(Future.successful(Left(ResponseWrapper(correlationId, DesErrors.single(DesErrorCode(ifsErrorCode))))))
+              .returns(Future.successful(Left(ResponseWrapper(correlationId, DownstreamErrors.single(DownstreamErrorCode(ifsErrorCode))))))
 
             await(service.create(createMarriageAllowanceRequest)) shouldBe Left(ErrorWrapper(correlationId, error))
           }
@@ -69,22 +69,22 @@ class CreateMarriageAllowanceServiceSpec extends ServiceSpec {
           ("INVALID_IDVALUE", NinoFormatError),
           ("DECEASED_PARTICIPANT", RuleDeceasedRecipientError),
           ("RELATIONSHIP_ALREADY_EXISTS", RuleActiveMarriageAllowanceClaimError),
-          ("INVALID_IDTYPE", DownstreamError),
-          ("END_DATE_CODE_NOT_FOUND", DownstreamError),
-          ("INVALID_CORRELATIONID", DownstreamError),
-          ("INVALID_PAYLOAD", DownstreamError),
+          ("INVALID_IDTYPE", InternalError),
+          ("END_DATE_CODE_NOT_FOUND", InternalError),
+          ("INVALID_CORRELATIONID", InternalError),
+          ("INVALID_PAYLOAD", InternalError),
           ("NINO_OR_TRN_NOT_FOUND", RuleInvalidRequestError),
-          ("INVALID_ACTUAL_END_DATE", DownstreamError),
-          ("INVALID_PARTICIPANT_END_DATE", DownstreamError),
-          ("INVALID_PARTICIPANT_START_DATE", DownstreamError),
-          ("INVALID_RELATIONSHIP_CODE", DownstreamError),
-          ("PARTICIPANT1_CANNOT_BE_UPDATED", DownstreamError),
-          ("PARTICIPANT2_CANNOT_BE_UPDATED", DownstreamError),
-          ("CONFIDENCE_CHECK_FAILED", DownstreamError),
-          ("CONFIDENCE_CHECK_SURNAME_MISSED", DownstreamError),
-          ("BAD_GATEWAY", DownstreamError),
-          ("SERVER_ERROR", DownstreamError),
-          ("SERVICE_UNAVAILABLE", DownstreamError)
+          ("INVALID_ACTUAL_END_DATE", InternalError),
+          ("INVALID_PARTICIPANT_END_DATE", InternalError),
+          ("INVALID_PARTICIPANT_START_DATE", InternalError),
+          ("INVALID_RELATIONSHIP_CODE", InternalError),
+          ("PARTICIPANT1_CANNOT_BE_UPDATED", InternalError),
+          ("PARTICIPANT2_CANNOT_BE_UPDATED", InternalError),
+          ("CONFIDENCE_CHECK_FAILED", InternalError),
+          ("CONFIDENCE_CHECK_SURNAME_MISSED", InternalError),
+          ("BAD_GATEWAY", InternalError),
+          ("SERVER_ERROR", InternalError),
+          ("SERVICE_UNAVAILABLE", InternalError)
         )
 
         input.foreach(args => (serviceError _).tupled(args))

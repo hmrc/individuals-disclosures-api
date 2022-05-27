@@ -16,8 +16,8 @@
 
 package v1.controllers.requestParsers.validators
 
+import v1.models.errors.MtdError
+
 package object validations {
-
-  val NoValidationErrors = List()
-
+  val NoValidationErrors = List.empty[MtdError]
 }

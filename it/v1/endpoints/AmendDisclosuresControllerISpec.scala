@@ -24,7 +24,8 @@ import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
 import support.IntegrationBaseSpec
 import v1.models.errors._
-import v1.stubs.{AuditStub, AuthStub, DesStub, MtdIdLookupStub}
+import v1.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
+
 
 class AmendDisclosuresControllerISpec extends IntegrationBaseSpec {
 
@@ -102,7 +103,7 @@ class AmendDisclosuresControllerISpec extends IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DesStub.onSuccess(DesStub.PUT, ifs1Uri, NO_CONTENT)
+          DownstreamStub.onSuccess(DownstreamStub.PUT, ifs1Uri, NO_CONTENT)
         }
 
         val response: WSResponse = await(request().put(requestBodyJson))
@@ -135,7 +136,7 @@ class AmendDisclosuresControllerISpec extends IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DesStub.onSuccess(DesStub.PUT, ifs1Uri, NO_CONTENT)
+          DownstreamStub.onSuccess(DownstreamStub.PUT, ifs1Uri, NO_CONTENT)
         }
 
         val response: WSResponse = await(request().put(invalidTaxYearRequestBodyJson))
@@ -174,7 +175,7 @@ class AmendDisclosuresControllerISpec extends IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DesStub.onSuccess(DesStub.PUT, ifs1Uri, NO_CONTENT)
+          DownstreamStub.onSuccess(DownstreamStub.PUT, ifs1Uri, NO_CONTENT)
         }
 
         val response: WSResponse = await(request().put(invalidTaxYearRequestBodyJson))
@@ -397,7 +398,7 @@ class AmendDisclosuresControllerISpec extends IntegrationBaseSpec {
       )
 
       val incorrectBodyError: MtdError = RuleIncorrectOrEmptyBodyError.copy(
-        paths = Some(Seq("/taxAvoidance/0/srn"))
+        paths = Some(List("/taxAvoidance/0/srn"))
       )
 
       val invalidSRNRequestBodyJson: JsValue = Json.parse(
@@ -417,7 +418,7 @@ class AmendDisclosuresControllerISpec extends IntegrationBaseSpec {
       )
 
       val srnFormatError: MtdError = SRNFormatError.copy(
-        paths = Some(Seq("/taxAvoidance/0/srn"))
+        paths = Some(List("/taxAvoidance/0/srn"))
       )
 
       val invalidClass2ValueRequestBodyJson: JsValue = Json.parse(
@@ -437,7 +438,7 @@ class AmendDisclosuresControllerISpec extends IntegrationBaseSpec {
       )
 
       val ruleVoluntaryClass2ValueInvalidError: MtdError = RuleVoluntaryClass2ValueInvalidError.copy(
-        paths = Some(Seq("/class2Nics/class2VoluntaryContributions"))
+        paths = Some(List("/class2Nics/class2VoluntaryContributions"))
       )
 
       "validation error" when {
@@ -483,7 +484,7 @@ class AmendDisclosuresControllerISpec extends IntegrationBaseSpec {
               AuditStub.audit()
               AuthStub.authorised()
               MtdIdLookupStub.ninoFound(nino)
-              DesStub.onError(DesStub.PUT, ifs1Uri, ifsStatus, errorBody(ifsCode))
+              DownstreamStub.onError(DownstreamStub.PUT, ifs1Uri, ifsStatus, errorBody(ifsCode))
             }
 
             val response: WSResponse = await(request().put(requestBodyJson))
@@ -503,12 +504,12 @@ class AmendDisclosuresControllerISpec extends IntegrationBaseSpec {
         val input = Seq(
           (BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", BAD_REQUEST, NinoFormatError),
           (BAD_REQUEST, "INVALID_TAX_YEAR", BAD_REQUEST, TaxYearFormatError),
-          (BAD_REQUEST, "INVALID_CORRELATIONID", INTERNAL_SERVER_ERROR, DownstreamError),
-          (BAD_REQUEST, "INVALID_PAYLOAD", INTERNAL_SERVER_ERROR, DownstreamError),
+          (BAD_REQUEST, "INVALID_CORRELATIONID", INTERNAL_SERVER_ERROR, InternalError),
+          (BAD_REQUEST, "INVALID_PAYLOAD", INTERNAL_SERVER_ERROR, InternalError),
           (NOT_FOUND, "INCOME_SOURCE_NOT_FOUND", NOT_FOUND, NotFoundError),
           (UNPROCESSABLE_ENTITY, "VOLUNTARY_CLASS2_CANNOT_BE_CHANGED", FORBIDDEN, RuleVoluntaryClass2CannotBeChangedError),
-          (SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, DownstreamError),
-          (INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, DownstreamError)
+          (SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, InternalError),
+          (INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, InternalError)
         )
         input.foreach(args => (serviceErrorTest _).tupled(args))
       }

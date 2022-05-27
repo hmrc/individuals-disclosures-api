@@ -24,6 +24,7 @@ import v1.mocks.validators.MockAmendDisclosuresValidator
 import v1.models.errors._
 import v1.models.request.disclosures._
 
+
 class AmendDisclosuresRequestParserSpec extends UnitSpec {
 
   val nino: String = "AA123456B"
@@ -85,7 +86,7 @@ class AmendDisclosuresRequestParserSpec extends UnitSpec {
   "parse" should {
     "return a request object" when {
       "valid request data is supplied" in new Test {
-        MockAmendDisclosuresValidator.validate(amendDisclosuresRawData).returns(Nil)
+        MockAmendDisclosuresValidator.validate(amendDisclosuresRawData).returns(List.empty[MtdError])
 
         parser.parseRequest(amendDisclosuresRawData) shouldBe
           Right(AmendDisclosuresRequest(Nino(nino), taxYear, validRequestBodyModel))
@@ -106,7 +107,7 @@ class AmendDisclosuresRequestParserSpec extends UnitSpec {
           .returns(List(NinoFormatError, TaxYearFormatError))
 
         parser.parseRequest(amendDisclosuresRawData.copy(nino = "notANino", taxYear = "notATaxYear")) shouldBe
-          Left(ErrorWrapper(correlationId, BadRequestError, Some(Seq(NinoFormatError, TaxYearFormatError))))
+          Left(ErrorWrapper(correlationId, BadRequestError, Some(List(NinoFormatError, TaxYearFormatError))))
       }
 
       "path parameter TaxYearNotSupported validation occurs" in new Test {

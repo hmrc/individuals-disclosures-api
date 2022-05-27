@@ -23,7 +23,6 @@ import java.time.format.DateTimeFormatter
 import scala.util.{Failure, Success, Try}
 
 object DateFormatValidation {
-
   val datePattern = "yyyy-MM-dd"
   val dateFormat: DateTimeFormatter = DateTimeFormatter.ofPattern(datePattern)
 
@@ -36,4 +35,3 @@ object DateFormatValidation {
     }
   }
 }
-

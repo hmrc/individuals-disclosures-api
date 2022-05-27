@@ -16,10 +16,11 @@
 
 package v1.controllers.requestParsers
 
-import javax.inject.Inject
-import v1.models.domain.Nino
 import v1.controllers.requestParsers.validators.AmendDisclosuresValidator
+import v1.models.domain.Nino
 import v1.models.request.disclosures.{AmendDisclosuresRawData, AmendDisclosuresRequest, AmendDisclosuresRequestBody}
+
+import javax.inject.Inject
 
 class AmendDisclosuresRequestParser @Inject()(val validator: AmendDisclosuresValidator)
   extends RequestParser[AmendDisclosuresRawData, AmendDisclosuresRequest] {

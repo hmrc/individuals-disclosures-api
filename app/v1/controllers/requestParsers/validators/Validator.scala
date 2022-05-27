@@ -19,41 +19,40 @@ package v1.controllers.requestParsers.validators
 import v1.models.errors.MtdError
 import v1.models.request.RawData
 
-trait Validator[A <: RawData] {
+import scala.annotation.tailrec
 
-  type ValidationLevel[T] = T => List[MtdError]
+trait Validator[A <: RawData] {
+  type ValidationType = A => List[List[MtdError]]
 
   def validate(data: A): List[MtdError]
 
-  def run(validationSet: List[A => List[List[MtdError]]], data: A): List[MtdError] = {
+  @tailrec
+  final def run(validationSet: List[ValidationType], data: A): List[MtdError] = {
+    val nextValidationResultOpt: Option[List[MtdError]] = validationSet.headOption.map(_(data).flatten)
 
-    validationSet match {
-      case Nil => List()
-      case thisLevel :: remainingLevels =>
-        thisLevel(data).flatten match {
-          case x if x.isEmpty => run(remainingLevels, data)
-          case x if x.nonEmpty => x
-        }
+    nextValidationResultOpt match {
+      case None => List.empty[MtdError]
+      case Some(errs) if errs.nonEmpty => errs
+      case _ => run(validationSet.tail, data)
     }
   }
 }
 
 object Validator {
 
-  def flattenErrors(errors: List[List[MtdError]]): List[MtdError] = {
-    errors.flatten.groupBy(_.message).map { case (_, errors) =>
+  @tailrec
+  def flattenErrors(errorsToFlatten: List[List[MtdError]], flatErrors: List[MtdError] = List.empty): List[MtdError] = errorsToFlatten.flatten match {
+    case Nil => flatErrors
+    case item :: Nil => flatErrors :+ item
+    case nextError :: tail =>
+      val (matchingErrors, nonMatchingErrors) = tail.partition(_.message == nextError.message)
+      val nextErrorPaths = matchingErrors.flatMap(_.paths).flatten
 
-      val baseError = errors.head.copy(paths = None)
+      def makeListOptional: List[String] => Option[List[String]] = List => if (List.isEmpty) None else Some(List)
 
-      errors.fold(baseError)(
-        (error1: MtdError, error2: MtdError) => (error1, error2) match {
-          case (MtdError(_, _, Some(paths1)), MtdError(_, _, Some(paths2))) => error1.copy(paths = Some(paths1 ++ paths2))
-          case (MtdError(_, _, Some(_)), MtdError(_, _, None)) => error1
-          case (MtdError(_, _, None), MtdError(_, _, Some(_))) => error2
-          case _ => error1
-        }
-      )
-    }.toList
+      val newFlatError = nextError.copy(paths = makeListOptional(nextError.paths.getOrElse(List.empty) ++ nextErrorPaths))
+
+      flattenErrors(List(nonMatchingErrors), flatErrors :+ newFlatError)
   }
 
   /**

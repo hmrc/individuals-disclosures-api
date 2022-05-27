@@ -24,8 +24,8 @@ import support.UnitSpec
 import v1.models.errors._
 import v1.models.request.disclosures.AmendDisclosuresRawData
 
-class AmendDisclosuresValidatorSpec extends UnitSpec with MockAppConfig {
 
+class AmendDisclosuresValidatorSpec extends UnitSpec with MockAppConfig {
   private val validNino = "AA123456A"
   private val validTaxYear = "2021-22"
 
@@ -155,9 +155,7 @@ class AmendDisclosuresValidatorSpec extends UnitSpec with MockAppConfig {
   private val allInvalidValueRawRequestBody = AnyContentAsJson(allInvalidValueRequestBodyJson)
 
   class Test extends MockAppConfig {
-
     implicit val appConfig: AppConfig = mockAppConfig
-
     val validator = new AmendDisclosuresValidator()
 
     MockAppConfig.minimumPermittedTaxYear
@@ -168,7 +166,8 @@ class AmendDisclosuresValidatorSpec extends UnitSpec with MockAppConfig {
   "running a validation" should {
     "return no errors" when {
       "a valid request is supplied" in new Test {
-        validator.validate(AmendDisclosuresRawData(validNino, validTaxYear, validRawRequestBody)) shouldBe Nil
+        validator.validate(AmendDisclosuresRawData(validNino, validTaxYear, validRawRequestBody)) shouldBe
+          List.empty[MtdError]
       }
     }
 
@@ -223,7 +222,9 @@ class AmendDisclosuresValidatorSpec extends UnitSpec with MockAppConfig {
 
       "the submitted request body is not in the correct format" in new Test {
         validator.validate(AmendDisclosuresRawData(validNino, validTaxYear, nonValidRawRequestBody)) shouldBe
-          List(RuleIncorrectOrEmptyBodyError.copy(paths = Some(Seq("/taxAvoidance/0/srn", "/class2Nics/class2VoluntaryContributions"))))
+          List(RuleIncorrectOrEmptyBodyError.copy(
+            paths = Some(List("/taxAvoidance/0/srn", "/class2Nics/class2VoluntaryContributions")))
+          )
       }
     }
 
@@ -260,27 +261,10 @@ class AmendDisclosuresValidatorSpec extends UnitSpec with MockAppConfig {
       "multiple fields fail value validation" in new Test {
         validator.validate(AmendDisclosuresRawData(validNino, validTaxYear, allInvalidValueRawRequestBody)) shouldBe
           List(
-            SRNFormatError.copy(
-              paths = Some(List(
-                "/taxAvoidance/0/srn",
-                "/taxAvoidance/1/srn"
-              ))
-            ),
-            TaxYearFormatError.copy(
-              paths = Some(List(
-                "/taxAvoidance/0/taxYear"
-              ))
-            ),
-            RuleTaxYearRangeInvalidError.copy(
-              paths = Some(List(
-                "/taxAvoidance/1/taxYear"
-              ))
-            ),
-            RuleVoluntaryClass2ValueInvalidError.copy(
-              paths = Some(List(
-                "/class2Nics/class2VoluntaryContributions"
-              ))
-            ),
+            SRNFormatError.copy(paths = Some(List("/taxAvoidance/0/srn", "/taxAvoidance/1/srn"))),
+            TaxYearFormatError.copy(paths = Some(List("/taxAvoidance/0/taxYear"))),
+            RuleTaxYearRangeInvalidError.copy(paths = Some(List("/taxAvoidance/1/taxYear"))),
+            RuleVoluntaryClass2ValueInvalidError.copy(paths = Some(List("/class2Nics/class2VoluntaryContributions"))),
           )
       }
     }

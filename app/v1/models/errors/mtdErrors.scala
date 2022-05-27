@@ -18,7 +18,8 @@ package v1.models.errors
 
 import play.api.libs.json.{Json, OWrites}
 
-case class MtdError(code: String, message: String, paths: Option[Seq[String]] = None)
+
+case class MtdError(code: String, message: String, paths: Option[List[String]] = None)
 
 object MtdError {
   implicit val writes: OWrites[MtdError] = Json.writes[MtdError]
@@ -114,7 +115,7 @@ object NotFoundError extends MtdError(
   message = "Matching resource not found"
 )
 
-object DownstreamError extends MtdError(
+object InternalError extends MtdError(
   code = "INTERNAL_SERVER_ERROR",
   message = "An internal server error occurred"
 )

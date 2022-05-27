@@ -138,7 +138,7 @@ class BaseDownstreamConnectorSpec extends ConnectorSpec {
       "AnotherHeader" -> "HeaderValue"
     )
 
-    "making a HTTP request to a downstream service (i.e DES)" must {
+    "making a HTTP request to a downstream service (i.e DOWNSTREAM)" must {
       ifs2TestHttpMethods(dummyIfs1HeaderCarrierConfig, requiredHeaders, excludedHeaders, Some(allowedIfs1Headers))
 
       "exclude all `otherHeaders` when no external service header allow-list is found" should {

@@ -20,9 +20,10 @@ import play.api.http.Status.{BAD_REQUEST, OK}
 import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec
 
+
 class AuditResponseSpec extends UnitSpec {
 
-  val auditErrors: Seq[AuditError] = Seq(AuditError(errorCode = "FORMAT_NINO"), AuditError(errorCode = "FORMAT_TAX_YEAR"))
+  val auditErrors: List[AuditError] = List(AuditError(errorCode = "FORMAT_NINO"), AuditError(errorCode = "FORMAT_TAX_YEAR"))
   val body: JsValue = Json.parse("""{ "aField" : "aValue" }""")
 
   val auditResponseModelWithBody: AuditResponse =

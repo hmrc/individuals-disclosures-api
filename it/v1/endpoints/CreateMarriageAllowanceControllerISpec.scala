@@ -19,12 +19,13 @@ package v1.endpoints
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status._
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.{JsResult, JsSuccess, JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
 import support.IntegrationBaseSpec
 import v1.models.errors._
-import v1.stubs.{AuditStub, AuthStub, DesStub, MtdIdLookupStub}
+import v1.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
+
 
 class CreateMarriageAllowanceControllerISpec extends IntegrationBaseSpec {
 
@@ -48,7 +49,7 @@ class CreateMarriageAllowanceControllerISpec extends IntegrationBaseSpec {
 
     def uri: String = s"/marriage-allowance/$nino1"
 
-    def Ifs2Uri: String = s"/income-tax/marriage-allowance/claim/nino/$nino1"
+    def ifs2Uri: String = s"/income-tax/marriage-allowance/claim/nino/$nino1"
 
     def setupStubs(): StubMapping
 
@@ -70,7 +71,7 @@ class CreateMarriageAllowanceControllerISpec extends IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino1)
-          DesStub.onSuccess(DesStub.POST, Ifs2Uri, NO_CONTENT)
+          DownstreamStub.onSuccess(DownstreamStub.POST, ifs2Uri, NO_CONTENT)
         }
 
         val response: WSResponse = await(request().post(requestBodyJson))
@@ -134,14 +135,6 @@ class CreateMarriageAllowanceControllerISpec extends IntegrationBaseSpec {
         """.stripMargin
       )
 
-      val nonsenseRequestBodyJson: JsValue = Json.parse(
-        """
-          |{
-          |   "field": "value"
-          |}
-        """.stripMargin
-      )
-
       val emptyBodyJson: JsValue = Json.parse(
         """
           |{
@@ -193,9 +186,6 @@ class CreateMarriageAllowanceControllerISpec extends IntegrationBaseSpec {
         """.stripMargin
       )
 
-      val nonsenseBodyPaths: MtdError =
-        RuleIncorrectOrEmptyBodyError.copy(paths = Some(Seq("/spouseOrCivilPartnerNino", "/spouseOrCivilPartnerSurname")))
-
       "validation error" when {
         def validationErrorTest(requestNino: String, requestBody: JsValue, expectedStatus: Int, expectedBody: MtdError): Unit = {
           s"validation $requestNino fails with ${expectedBody.code} error" in new Test {
@@ -216,7 +206,6 @@ class CreateMarriageAllowanceControllerISpec extends IntegrationBaseSpec {
 
         val input = Seq(
           ("AA1123A", validRequestBodyJson, BAD_REQUEST, NinoFormatError),
-          ("AA123456A", nonsenseRequestBodyJson, BAD_REQUEST, nonsenseBodyPaths),
           ("AA123458A", emptyBodyJson, BAD_REQUEST, RuleIncorrectOrEmptyBodyError),
           ("AA123457A", invalidNinoBodyJson, BAD_REQUEST, PartnerNinoFormatError),
           ("AA123457A", invalidFirstNameBodyJson, BAD_REQUEST, PartnerFirstNameFormatError),
@@ -224,6 +213,38 @@ class CreateMarriageAllowanceControllerISpec extends IntegrationBaseSpec {
           ("AA123459A", invalidDobBodyJson, BAD_REQUEST, PartnerDoBFormatError),
         )
         input.foreach(args => (validationErrorTest _).tupled(args))
+
+        "with complex body format errors" in new Test {
+          val nonsenseBodyPaths: List[String] = List("/spouseOrCivilPartnerNino", "/spouseOrCivilPartnerSurname")
+
+          val nonsenseRequestBodyJson: JsValue = Json.parse(
+            """
+              |{
+              |   "field": "value"
+              |}
+            """.stripMargin
+          )
+
+          override def setupStubs(): StubMapping = {
+            AuthStub.authorised()
+            MtdIdLookupStub.ninoFound(nino1)
+          }
+
+          val response: WSResponse = await(request().post(nonsenseRequestBodyJson))
+          response.status shouldBe BAD_REQUEST
+
+          val responseErrorCode: JsResult[String] = (response.json \ "code").validate[String]
+          val responseErrorMessage: JsResult[String] = (response.json \ "message").validate[String]
+          val responseErrorPaths: JsResult[Seq[String]] = (response.json \ "paths").validate[Seq[String]]
+
+          responseErrorCode shouldBe a[JsSuccess[_]]
+          responseErrorMessage shouldBe a[JsSuccess[_]]
+          responseErrorPaths shouldBe a[JsSuccess[_]]
+
+          responseErrorCode.get shouldBe RuleIncorrectOrEmptyBodyError.code
+          responseErrorMessage.get shouldBe RuleIncorrectOrEmptyBodyError.message
+          responseErrorPaths.get should contain.allElementsOf(nonsenseBodyPaths)
+        }
       }
 
       "ifs service error" when {
@@ -233,7 +254,7 @@ class CreateMarriageAllowanceControllerISpec extends IntegrationBaseSpec {
             override def setupStubs(): StubMapping = {
               AuthStub.authorised()
               MtdIdLookupStub.ninoFound(nino1)
-              DesStub.onError(DesStub.POST, Ifs2Uri, ifsStatus, errorBody(ifsCode))
+              DownstreamStub.onError(DownstreamStub.POST, ifs2Uri, ifsStatus, errorBody(ifsCode))
             }
 
             val response: WSResponse = await(request().post(requestBodyJson))
@@ -251,25 +272,25 @@ class CreateMarriageAllowanceControllerISpec extends IntegrationBaseSpec {
             """.stripMargin
 
         val input = Seq(
-          (BAD_REQUEST, "INVALID_IDTYPE", INTERNAL_SERVER_ERROR, DownstreamError),
+          (BAD_REQUEST, "INVALID_IDTYPE", INTERNAL_SERVER_ERROR, InternalError),
           (BAD_REQUEST, "INVALID_IDVALUE", BAD_REQUEST, NinoFormatError),
-          (BAD_REQUEST, "INVALID_PAYLOAD", INTERNAL_SERVER_ERROR, DownstreamError),
-          (BAD_REQUEST, "INVALID_CORRELATIONID", INTERNAL_SERVER_ERROR, DownstreamError),
-          (NOT_FOUND, "END_DATE_CODE_NOT_FOUND", INTERNAL_SERVER_ERROR, DownstreamError),
+          (BAD_REQUEST, "INVALID_PAYLOAD", INTERNAL_SERVER_ERROR, InternalError),
+          (BAD_REQUEST, "INVALID_CORRELATIONID", INTERNAL_SERVER_ERROR, InternalError),
+          (NOT_FOUND, "END_DATE_CODE_NOT_FOUND", INTERNAL_SERVER_ERROR, InternalError),
           (NOT_FOUND, "NINO_OR_TRN_NOT_FOUND", FORBIDDEN, RuleInvalidRequestError),
-          (UNPROCESSABLE_ENTITY, "INVALID_ACTUAL_END_DATE", INTERNAL_SERVER_ERROR, DownstreamError),
-          (UNPROCESSABLE_ENTITY, "INVALID_PARTICIPANT_END_DATE", INTERNAL_SERVER_ERROR, DownstreamError),
-          (UNPROCESSABLE_ENTITY, "INVALID_PARTICIPANT_START_DATE", INTERNAL_SERVER_ERROR, DownstreamError),
+          (UNPROCESSABLE_ENTITY, "INVALID_ACTUAL_END_DATE", INTERNAL_SERVER_ERROR, InternalError),
+          (UNPROCESSABLE_ENTITY, "INVALID_PARTICIPANT_END_DATE", INTERNAL_SERVER_ERROR, InternalError),
+          (UNPROCESSABLE_ENTITY, "INVALID_PARTICIPANT_START_DATE", INTERNAL_SERVER_ERROR, InternalError),
           (UNPROCESSABLE_ENTITY, "DECEASED_PARTICIPANT", FORBIDDEN, RuleDeceasedRecipientError),
-          (UNPROCESSABLE_ENTITY, "INVALID_RELATIONSHIP_CODE", INTERNAL_SERVER_ERROR, DownstreamError),
-          (UNPROCESSABLE_ENTITY, "PARTICIPANT1_CANNOT_BE_UPDATED", INTERNAL_SERVER_ERROR, DownstreamError),
-          (UNPROCESSABLE_ENTITY, "PARTICIPANT2_CANNOT_BE_UPDATED", INTERNAL_SERVER_ERROR, DownstreamError),
+          (UNPROCESSABLE_ENTITY, "INVALID_RELATIONSHIP_CODE", INTERNAL_SERVER_ERROR, InternalError),
+          (UNPROCESSABLE_ENTITY, "PARTICIPANT1_CANNOT_BE_UPDATED", INTERNAL_SERVER_ERROR, InternalError),
+          (UNPROCESSABLE_ENTITY, "PARTICIPANT2_CANNOT_BE_UPDATED", INTERNAL_SERVER_ERROR, InternalError),
           (UNPROCESSABLE_ENTITY, "RELATIONSHIP_ALREADY_EXISTS", FORBIDDEN, RuleActiveMarriageAllowanceClaimError),
-          (UNPROCESSABLE_ENTITY, "CONFIDENCE_CHECK_FAILED", INTERNAL_SERVER_ERROR, DownstreamError),
-          (UNPROCESSABLE_ENTITY, "CONFIDENCE_CHECK_SURNAME_MISSED", INTERNAL_SERVER_ERROR, DownstreamError),
-          (INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, DownstreamError),
-          (BAD_GATEWAY, "BAD_GATEWAY", INTERNAL_SERVER_ERROR, DownstreamError),
-          (SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, DownstreamError)
+          (UNPROCESSABLE_ENTITY, "CONFIDENCE_CHECK_FAILED", INTERNAL_SERVER_ERROR, InternalError),
+          (UNPROCESSABLE_ENTITY, "CONFIDENCE_CHECK_SURNAME_MISSED", INTERNAL_SERVER_ERROR, InternalError),
+          (INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, InternalError),
+          (BAD_GATEWAY, "BAD_GATEWAY", INTERNAL_SERVER_ERROR, InternalError),
+          (SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, InternalError)
         )
         input.foreach(args => (serviceErrorTest _).tupled(args))
       }

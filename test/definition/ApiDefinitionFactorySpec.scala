@@ -44,7 +44,7 @@ class ApiDefinitionFactorySpec extends UnitSpec {
       def testDefinitionWithConfidence(confidenceLevelConfig: ConfidenceLevelConfig): Unit = new Test {
         MockAppConfig.apiStatus returns "1.0"
         MockAppConfig.endpointsEnabled returns true
-        MockAppConfig.confidenceLevelCheckEnabled returns confidenceLevelConfig anyNumberOfTimes()
+        MockAppConfig.confidenceLevelCheckEnabled.returns(confidenceLevelConfig).anyNumberOfTimes()
 
         val readScope: String = "read:self-assessment"
         val writeScope: String = "write:self-assessment"

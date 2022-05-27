@@ -22,8 +22,8 @@ import v1.controllers.requestParsers.validators.AmendDisclosuresValidator
 import v1.models.errors.MtdError
 import v1.models.request.disclosures.AmendDisclosuresRawData
 
-class MockAmendDisclosuresValidator extends MockFactory {
 
+class MockAmendDisclosuresValidator extends MockFactory {
   val mockAmendDisclosuresValidator: AmendDisclosuresValidator = mock[AmendDisclosuresValidator]
 
   object MockAmendDisclosuresValidator {
@@ -34,5 +34,4 @@ class MockAmendDisclosuresValidator extends MockFactory {
         .expects(data)
     }
   }
-
 }

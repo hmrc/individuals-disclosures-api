@@ -28,7 +28,7 @@ class RegexValidationSpec extends UnitSpec {
   }
 
   "RegexValidation" when {
-    object DummyError extends MtdError("ERROR_CODE", "Error message", Some(Seq("/path")))
+    object DummyError extends MtdError(code = "ERROR_CODE", message = "Error message", paths = Some(List("/path")))
 
     "matches regex" must {
       "return an empty list" in {

@@ -14,24 +14,21 @@
  * limitations under the License.
  */
 
-package v1.models.errors
+package v1.models.domain
 
-import play.api.libs.json.{Json, Reads}
-
-case class DesErrorCode(code: String) {
-  def toMtd: MtdError = MtdError(code = code, message = "")
+/**
+  * Represents a tax year in the format required by downstream services
+  *
+  * @param value the tax year string (where 2018 represents 2017-18)
+  */
+case class DownstreamTaxYear(value: String) extends AnyVal {
+  override def toString: String = value
 }
 
-object DesErrorCode {
-  implicit val reads: Reads[DesErrorCode] = Json.reads[DesErrorCode]
+object DownstreamTaxYear {
+
+  /**
+    * @param taxYear tax year in MTD format (e.g. 2017-18)
+    */
+  def fromMtd(taxYear: String): DownstreamTaxYear = DownstreamTaxYear(taxYear.take(2) + taxYear.drop(5))
 }
-
-sealed trait DesError
-
-case class DesErrors(errors: List[DesErrorCode]) extends DesError
-
-object DesErrors {
-  def single(error: DesErrorCode): DesErrors = DesErrors(List(error))
-}
-
-case class OutboundError(error: MtdError, errors: Option[Seq[MtdError]] = None) extends DesError

@@ -24,7 +24,7 @@ import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
 import support.IntegrationBaseSpec
 import v1.models.errors._
-import v1.stubs.{AuditStub, AuthStub, DesStub, MtdIdLookupStub}
+import v1.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 
 class DeleteDisclosuresControllerISpec extends IntegrationBaseSpec {
 
@@ -57,10 +57,10 @@ class DeleteDisclosuresControllerISpec extends IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DesStub.onSuccess(DesStub.DELETE, ifs1Uri, NO_CONTENT)
+          DownstreamStub.onSuccess(DownstreamStub.DELETE, ifs1Uri, NO_CONTENT)
         }
 
-        val response: WSResponse = await(request().delete)
+        val response: WSResponse = await(request().delete())
         response.status shouldBe NO_CONTENT
         response.body shouldBe ""
         response.header("Content-Type") shouldBe Some("application/json")
@@ -82,7 +82,7 @@ class DeleteDisclosuresControllerISpec extends IntegrationBaseSpec {
               MtdIdLookupStub.ninoFound(nino)
             }
 
-            val response: WSResponse = await(request().delete)
+            val response: WSResponse = await(request().delete())
             response.status shouldBe expectedStatus
             response.json shouldBe Json.toJson(expectedBody)
             response.header("Content-Type") shouldBe Some("application/json")
@@ -106,10 +106,10 @@ class DeleteDisclosuresControllerISpec extends IntegrationBaseSpec {
               AuditStub.audit()
               AuthStub.authorised()
               MtdIdLookupStub.ninoFound(nino)
-              DesStub.onError(DesStub.DELETE, ifs1Uri, ifsStatus, errorBody(ifsCode))
+              DownstreamStub.onError(DownstreamStub.DELETE, ifs1Uri, ifsStatus, errorBody(ifsCode))
             }
 
-            val response: WSResponse = await(request().delete)
+            val response: WSResponse = await(request().delete())
             response.status shouldBe expectedStatus
             response.json shouldBe Json.toJson(expectedBody)
             response.header("Content-Type") shouldBe Some("application/json")
@@ -127,11 +127,11 @@ class DeleteDisclosuresControllerISpec extends IntegrationBaseSpec {
         val input = Seq(
           (BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", BAD_REQUEST, NinoFormatError),
           (BAD_REQUEST, "INVALID_TAX_YEAR", BAD_REQUEST, TaxYearFormatError),
-          (BAD_REQUEST, "INVALID_CORRELATIONID", INTERNAL_SERVER_ERROR, DownstreamError),
+          (BAD_REQUEST, "INVALID_CORRELATIONID", INTERNAL_SERVER_ERROR, InternalError),
           (NOT_FOUND, "NO_DATA_FOUND", NOT_FOUND, NotFoundError),
           (UNPROCESSABLE_ENTITY, "VOLUNTARY_CLASS2_CANNOT_BE_CHANGED", FORBIDDEN, RuleVoluntaryClass2CannotBeChangedError),
-          (INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, DownstreamError),
-          (SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, DownstreamError)
+          (INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, InternalError),
+          (SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, InternalError)
         )
         input.foreach(args => (serviceErrorTest _).tupled(args))
       }

@@ -21,6 +21,7 @@ import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec
 import v1.models.errors.TaxYearFormatError
 
+
 class GenericAuditDetailSpec extends UnitSpec {
 
   val nino: String = "XX751130C"
@@ -173,7 +174,7 @@ class GenericAuditDetailSpec extends UnitSpec {
       """.stripMargin
     )),
     `X-CorrelationId` = correlationId,
-    response = AuditResponse(BAD_REQUEST, Left(Seq(AuditError(TaxYearFormatError.code))))
+    response = AuditResponse(BAD_REQUEST, Left(List(AuditError(TaxYearFormatError.code))))
   )
 
   "GenericAuditDetail" when {

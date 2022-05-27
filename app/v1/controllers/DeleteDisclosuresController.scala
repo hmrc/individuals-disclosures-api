@@ -18,7 +18,6 @@ package v1.controllers
 
 import cats.data.EitherT
 import cats.implicits._
-import javax.inject.{Inject, Singleton}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import play.mvc.Http.MimeTypes
@@ -32,6 +31,7 @@ import v1.models.errors._
 import v1.models.request.DeleteRetrieveRawData
 import v1.services.{AuditService, DeleteRetrieveService, EnrolmentsAuthService, MtdIdLookupService}
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -56,7 +56,8 @@ class DeleteDisclosuresController @Inject()(val authService: EnrolmentsAuthServi
       implicit val correlationId: String = idGenerator.generateCorrelationId
       logger.info(
         s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] " +
-          s"with CorrelationId: $correlationId")
+          s"with CorrelationId: $correlationId"
+      )
 
       val rawData: DeleteRetrieveRawData = DeleteRetrieveRawData(
         nino = nino,
@@ -72,18 +73,19 @@ class DeleteDisclosuresController @Inject()(val authService: EnrolmentsAuthServi
         } yield {
           logger.info(
             s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
-              s"Success response received with CorrelationId: ${serviceResponse.correlationId}")
-
-          auditSubmission(
-            GenericAuditDetail(
-              request.userDetails, Map("nino" -> nino, "taxYear" -> taxYear), None,
-              serviceResponse.correlationId, AuditResponse(httpStatus = NO_CONTENT, response = Right(None))
-            )
+              s"Success response received with CorrelationId: ${serviceResponse.correlationId}"
           )
+
+          auditSubmission(GenericAuditDetail(
+            request.userDetails, Map("nino" -> nino, "taxYear" -> taxYear), None,
+            serviceResponse.correlationId, AuditResponse(httpStatus = NO_CONTENT, response = Right(None))
+          ))
+
           NoContent
             .withApiHeaders(serviceResponse.correlationId)
             .as(MimeTypes.JSON)
         }
+
       result.leftMap { errorWrapper =>
         val resCorrelationId = errorWrapper.correlationId
         val result = errorResult(errorWrapper).withApiHeaders(resCorrelationId)
@@ -91,12 +93,11 @@ class DeleteDisclosuresController @Inject()(val authService: EnrolmentsAuthServi
           s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
             s"Error response received with CorrelationId: $resCorrelationId")
 
-        auditSubmission(
-          GenericAuditDetail(
-            request.userDetails, Map("nino" -> nino, "taxYear" -> taxYear), None,
-            resCorrelationId, AuditResponse(httpStatus = result.header.status, response = Left(errorWrapper.auditErrors))
-          )
-        )
+        auditSubmission(GenericAuditDetail(
+          request.userDetails, Map("nino" -> nino, "taxYear" -> taxYear), None,
+          resCorrelationId, AuditResponse(httpStatus = result.header.status, response = Left(errorWrapper.auditErrors))
+        ))
+
         result
       }.merge
     }
@@ -107,20 +108,19 @@ class DeleteDisclosuresController @Inject()(val authService: EnrolmentsAuthServi
            RuleTaxYearRangeInvalidError => BadRequest(Json.toJson(errorWrapper))
       case RuleVoluntaryClass2CannotBeChangedError => Forbidden(Json.toJson(errorWrapper))
       case NotFoundError => NotFound(Json.toJson(errorWrapper))
-      case DownstreamError => InternalServerError(Json.toJson(errorWrapper))
+      case InternalError => InternalServerError(Json.toJson(errorWrapper))
     }
   }
 
-  private def ifsErrorMap: Map[String, MtdError] =
-    Map(
-      "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
-      "INVALID_TAX_YEAR" -> TaxYearFormatError,
-      "INVALID_CORRELATIONID" -> DownstreamError,
-      "NO_DATA_FOUND" -> NotFoundError,
-      "VOLUNTARY_CLASS2_CANNOT_BE_CHANGED" -> RuleVoluntaryClass2CannotBeChangedError,
-      "SERVER_ERROR" -> DownstreamError,
-      "SERVICE_UNAVAILABLE" -> DownstreamError
-    )
+  private def ifsErrorMap: Map[String, MtdError] = Map(
+    "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
+    "INVALID_TAX_YEAR" -> TaxYearFormatError,
+    "INVALID_CORRELATIONID" -> InternalError,
+    "NO_DATA_FOUND" -> NotFoundError,
+    "VOLUNTARY_CLASS2_CANNOT_BE_CHANGED" -> RuleVoluntaryClass2CannotBeChangedError,
+    "SERVER_ERROR" -> InternalError,
+    "SERVICE_UNAVAILABLE" -> InternalError
+  )
 
   private def auditSubmission(details: GenericAuditDetail)
                              (implicit hc: HeaderCarrier,

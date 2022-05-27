@@ -21,6 +21,7 @@ import support.UnitSpec
 import v1.models.errors._
 import v1.models.request.RawData
 
+
 class ValidatorSpec extends UnitSpec with MockFactory {
 
   private trait Test {
@@ -30,7 +31,6 @@ class ValidatorSpec extends UnitSpec with MockFactory {
   "running a validation" should {
     "return no errors" when {
       "when all data is correct " in new Test {
-
         // Set up the mock validations
         val levelOneValidationOne = new MockFunctionObject("Level: 1    Validation 1")
         val levelOneValidationTwo = new MockFunctionObject("Level: 1    Validation 2")
@@ -42,7 +42,7 @@ class ValidatorSpec extends UnitSpec with MockFactory {
           )
         }
 
-        val validationSet = List(levelOneValidations)
+        val validationSet: List[TestRawData => List[List[MtdError]]] = List(levelOneValidations)
 
         val inputData: TestRawData = TestRawData("ABCDEF", "12345")
         val result: List[MtdError] = validator.run(validationSet, inputData)
@@ -67,7 +67,7 @@ class ValidatorSpec extends UnitSpec with MockFactory {
           )
         }
 
-        val validationSet = List(levelOneValidations)
+        val validationSet: List[TestRawData => List[List[MtdError]]] = List(levelOneValidations)
 
         val inputData: TestRawData = TestRawData("ABCDEF", "12345")
         val result: List[MtdError] = validator.run(validationSet, inputData)
@@ -102,7 +102,7 @@ class ValidatorSpec extends UnitSpec with MockFactory {
           )
         }
 
-        val validationSet = List(levelOneValidations, levelTwoValidations)
+        val validationSet: List[TestRawData => List[List[MtdError]]] = List(levelOneValidations, levelTwoValidations)
 
         val inputData: TestRawData = TestRawData("ABCDEF", "12345")
         val result: List[MtdError] = validator.run(validationSet, inputData)
@@ -121,13 +121,13 @@ class ValidatorSpec extends UnitSpec with MockFactory {
     "combine errors of the same type" in {
       val errors: List[List[MtdError]] = List(
         List(NotFoundError),
-        List(NinoFormatError.copy(paths = Some(Seq("one")))),
-        List(NinoFormatError.copy(paths = Some(Seq("two"))))
+        List(NinoFormatError.copy(paths = Some(List("one")))),
+        List(NinoFormatError.copy(paths = Some(List("two"))))
       )
 
       val flatErrors: List[MtdError] = List(
         NotFoundError,
-        NinoFormatError.copy(paths = Some(Seq("one", "two")))
+        NinoFormatError.copy(paths = Some(List("one", "two")))
       )
 
       Validator.flattenErrors(errors) shouldBe flatErrors
@@ -136,7 +136,7 @@ class ValidatorSpec extends UnitSpec with MockFactory {
     "return the input for a list of unique errors" in {
       val errors: List[List[MtdError]] = List(
         List(NotFoundError),
-        List(NinoFormatError.copy(paths = Some(Seq("one"))))
+        List(NinoFormatError.copy(paths = Some(List("one"))))
       )
 
       Validator.flattenErrors(errors) shouldBe errors.flatten
@@ -166,11 +166,13 @@ private case class TestRawData(fieldOne: String, fieldTwo: String) extends RawDa
 
 // Create a Validator based off the trait to be able to test it
 private class TestValidator extends Validator[TestRawData] {
+  val ListNil: List[MtdError] = List.empty[MtdError]
+
   override def validate(data: TestRawData): List[MtdError] = {
-    run(List(), data) match {
-      case Nil        => List()
-      case err :: Nil => List(err)
-      case errs       => errs
+    run(List.empty[ValidationType], data) match {
+      case `ListNil` => List.empty[MtdError]
+      case errs if errs.nonEmpty => List(errs.head)
+      case errs => errs
     }
   }
 }

@@ -77,7 +77,7 @@ class AuthorisedControllerSpec extends ControllerBaseSpec {
 
         MockedEnrolmentsAuthService
           .authorised(predicate)
-          .returns(Future.successful(Left(DownstreamError)))
+          .returns(Future.successful(Left(InternalError)))
 
         private val result = target.action(nino)(fakeGetRequest)
         status(result) shouldBe INTERNAL_SERVER_ERROR
@@ -127,7 +127,7 @@ class AuthorisedControllerSpec extends ControllerBaseSpec {
 
       MockedMtdIdLookupService
         .lookup(nino)
-        .returns(Future.successful(Left(DownstreamError)))
+        .returns(Future.successful(Left(InternalError)))
 
       private val result = target.action(nino)(fakeGetRequest)
       status(result) shouldBe INTERNAL_SERVER_ERROR
