@@ -34,9 +34,9 @@ import scala.concurrent.{ExecutionContext, Future}
 class CreateMarriageAllowanceService @Inject()(connector: CreateMarriageAllowanceConnector) extends DownstreamResponseMappingSupport with Logging {
 
   def create(request: CreateMarriageAllowanceRequest)
-                      (implicit hc: HeaderCarrier,ec: ExecutionContext,
-                       logContext: EndpointLogContext,
-                       correlationId: String): Future[Either[ErrorWrapper, ResponseWrapper[Unit]]] = {
+            (implicit hc: HeaderCarrier, ec: ExecutionContext,
+             logContext: EndpointLogContext,
+             correlationId: String): Future[Either[ErrorWrapper, ResponseWrapper[Unit]]] = {
 
     val result = for {
       downstreamResponseWrapper <- EitherT(connector.create(request)).leftMap(mapDownstreamErrors(ifsErrorMap))
@@ -45,8 +45,8 @@ class CreateMarriageAllowanceService @Inject()(connector: CreateMarriageAllowanc
     result.value
   }
 
-  private def ifsErrorMap =
-    Map(
+  private def ifsErrorMap = {
+    val errors = Map(
       "INVALID_IDVALUE" -> NinoFormatError,
       "DECEASED_PARTICIPANT" -> RuleDeceasedRecipientError,
       "RELATIONSHIP_ALREADY_EXISTS" -> RuleActiveMarriageAllowanceClaimError,
@@ -67,4 +67,10 @@ class CreateMarriageAllowanceService @Inject()(connector: CreateMarriageAllowanc
       "SERVER_ERROR" -> InternalError,
       "SERVICE_UNAVAILABLE" -> InternalError
     )
+
+    val extra_errors = Map (
+      ("INVALID_NINO" -> NinoFormatError )
+    )
+    errors ++ extra_errors
+  }
 }

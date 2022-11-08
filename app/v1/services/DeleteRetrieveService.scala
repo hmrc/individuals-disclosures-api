@@ -61,13 +61,19 @@ class DeleteRetrieveService @Inject()(connector: DeleteRetrieveConnector) extend
     result.value
   }
 
-  private def defaultDownstreamErrorMap: Map[String, MtdError] =
-    Map(
-      "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
-      "INVALID_TAX_YEAR" -> TaxYearFormatError,
+  private def defaultDownstreamErrorMap: Map[String, MtdError] = {
+    val error = Map(
+      "INVALID_NINO"          -> NinoFormatError,
+      "INVALID_TAX_YEAR"      -> TaxYearFormatError,
       "INVALID_CORRELATIONID" -> InternalError,
-      "NO_DATA_FOUND" -> NotFoundError,
-      "SERVER_ERROR" -> InternalError,
-      "SERVICE_UNAVAILABLE" -> InternalError
+      "NO_DATA_FOUND"         -> NotFoundError,
+      "SERVER_ERROR"          -> InternalError,
+      "SERVICE_UNAVAILABLE"   -> InternalError
     )
+
+    val extra_error = Map {
+      "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError
+    }
+    error ++ extra_error
+  }
 }
