@@ -87,7 +87,11 @@ class CreateMarriageAllowanceServiceSpec extends ServiceSpec {
           ("SERVICE_UNAVAILABLE", InternalError)
         )
 
-        input.foreach(args => (serviceError _).tupled(args))
+        val extra_errors = Map {
+          ("INVALID_NINO", NinoFormatError )
+        }
+
+        (input ++ extra_errors).foreach(args => (serviceError _).tupled(args))
       }
     }
   }

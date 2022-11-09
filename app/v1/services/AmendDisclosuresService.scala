@@ -45,15 +45,20 @@ class AmendDisclosuresService @Inject()(connector: AmendDisclosuresConnector) ex
     result.value
   }
 
-  private def ifsErrorMap =
-    Map(
-      "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
-      "INVALID_TAX_YEAR" -> TaxYearFormatError,
-      "INVALID_CORRELATIONID" -> InternalError,
-      "INVALID_PAYLOAD" -> InternalError,
-      "INCOME_SOURCE_NOT_FOUND" -> NotFoundError,
+  private def ifsErrorMap = {
+    val error = Map(
+      "INVALID_NINO"                       -> NinoFormatError,
+      "INVALID_TAX_YEAR"                   -> TaxYearFormatError,
+      "INVALID_CORRELATIONID"              -> InternalError,
+      "INVALID_PAYLOAD"                    -> InternalError,
+      "INCOME_SOURCE_NOT_FOUND"            -> NotFoundError,
       "VOLUNTARY_CLASS2_CANNOT_BE_CHANGED" -> RuleVoluntaryClass2CannotBeChangedError,
-      "SERVER_ERROR" -> InternalError,
-      "SERVICE_UNAVAILABLE" -> InternalError
+      "SERVER_ERROR"                       -> InternalError,
+      "SERVICE_UNAVAILABLE"                -> InternalError
     )
+    val extra_error = Map {
+      "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError
+    }
+    error ++ extra_error
+  }
 }

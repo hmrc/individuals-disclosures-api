@@ -79,7 +79,7 @@ class AmendDisclosuresServiceSpec extends ServiceSpec {
           }
 
         val input = Seq(
-          ("INVALID_TAXABLE_ENTITY_ID", NinoFormatError),
+          ("INVALID_NINO", NinoFormatError),
           ("INVALID_TAX_YEAR", TaxYearFormatError),
           ("INVALID_CORRELATIONID", InternalError),
           ("INVALID_PAYLOAD", InternalError),
@@ -89,7 +89,11 @@ class AmendDisclosuresServiceSpec extends ServiceSpec {
           ("SERVICE_UNAVAILABLE", InternalError)
         )
 
-        input.foreach(args => (serviceError _).tupled(args))
+        val extra_error = Seq(
+          ("INVALID_TAXABLE_ENTITY_ID", NinoFormatError)
+        )
+
+        (input ++ extra_error).foreach(args => (serviceError _).tupled(args))
       }
     }
   }
