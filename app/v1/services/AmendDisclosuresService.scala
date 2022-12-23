@@ -18,7 +18,6 @@ package v1.services
 
 import cats.data.EitherT
 import cats.implicits._
-import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.Logging
 import v1.connectors.AmendDisclosuresConnector
@@ -28,15 +27,16 @@ import v1.models.outcomes.ResponseWrapper
 import v1.models.request.disclosures.AmendDisclosuresRequest
 import v1.support.DownstreamResponseMappingSupport
 
-import scala.concurrent.{ExecutionContext, Future}
+import javax.inject.{ Inject, Singleton }
+import scala.concurrent.{ ExecutionContext, Future }
 
 @Singleton
 class AmendDisclosuresService @Inject()(connector: AmendDisclosuresConnector) extends DownstreamResponseMappingSupport with Logging {
 
-  def amendDisclosures(request: AmendDisclosuresRequest)
-                      (implicit hc: HeaderCarrier,ec: ExecutionContext,
-                       logContext: EndpointLogContext,
-                       correlationId: String): Future[Either[ErrorWrapper, ResponseWrapper[Unit]]] = {
+  def amendDisclosures(request: AmendDisclosuresRequest)(implicit hc: HeaderCarrier,
+                                                         ec: ExecutionContext,
+                                                         logContext: EndpointLogContext,
+                                                         correlationId: String): Future[Either[ErrorWrapper, ResponseWrapper[Unit]]] = {
 
     val result = for {
       downstreamResponseWrapper <- EitherT(connector.amendDisclosures(request)).leftMap(mapDownstreamErrors(ifsErrorMap))

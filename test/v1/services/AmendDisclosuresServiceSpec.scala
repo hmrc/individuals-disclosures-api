@@ -16,9 +16,9 @@
 
 package v1.services
 
-import v1.models.domain.Nino
 import v1.controllers.EndpointLogContext
 import v1.mocks.connectors.MockAmendDisclosuresConnector
+import v1.models.domain.Nino
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.disclosures._
@@ -27,7 +27,7 @@ import scala.concurrent.Future
 
 class AmendDisclosuresServiceSpec extends ServiceSpec {
 
-  private val nino = "AA112233A"
+  private val nino    = "AA112233A"
   private val taxYear = "2021-22"
 
   val taxAvoidanceModel: Seq[AmendTaxAvoidanceItem] = Seq(
@@ -48,7 +48,7 @@ class AmendDisclosuresServiceSpec extends ServiceSpec {
     )
   )
 
-  trait Test extends MockAmendDisclosuresConnector{
+  trait Test extends MockAmendDisclosuresConnector {
     implicit val logContext: EndpointLogContext = EndpointLogContext("c", "ep")
 
     val service: AmendDisclosuresService = new AmendDisclosuresService(
@@ -61,7 +61,8 @@ class AmendDisclosuresServiceSpec extends ServiceSpec {
       "return correct result for a success" in new Test {
         val outcome = Right(ResponseWrapper(correlationId, ()))
 
-        MockAmendDisclosuresConnector.amendDisclosures(amendDisclosuresRequest)
+        MockAmendDisclosuresConnector
+          .amendDisclosures(amendDisclosuresRequest)
           .returns(Future.successful(outcome))
 
         await(service.amendDisclosures(amendDisclosuresRequest)) shouldBe outcome
@@ -72,7 +73,8 @@ class AmendDisclosuresServiceSpec extends ServiceSpec {
         def serviceError(ifsErrorCode: String, error: MtdError): Unit =
           s"a $ifsErrorCode error is returned from the service" in new Test {
 
-            MockAmendDisclosuresConnector.amendDisclosures(amendDisclosuresRequest)
+            MockAmendDisclosuresConnector
+              .amendDisclosures(amendDisclosuresRequest)
               .returns(Future.successful(Left(ResponseWrapper(correlationId, DownstreamErrors.single(DownstreamErrorCode(ifsErrorCode))))))
 
             await(service.amendDisclosures(amendDisclosuresRequest)) shouldBe Left(ErrorWrapper(correlationId, error))

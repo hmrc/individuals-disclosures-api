@@ -50,7 +50,7 @@ traits:
                   code: RULE_TAX_YEAR_NOT_SUPPORTED
   ruleInvalidRequest:
     responses:
-      403:
+      400:
         body:
           application/json:
             type: types.errorResponse
@@ -138,7 +138,7 @@ traits:
                   code: FORMAT_SPOUSE_OR_CIVIL_PARTNERS_DATE_OF_BIRTH
   voluntaryClass2CannotBeChanged:
     responses:
-      403:
+      400:
         body:
           application/json:
             type: types.errorResponse
@@ -149,7 +149,7 @@ traits:
                   code: RULE_VOLUNTARY_CLASS2_CANNOT_BE_CHANGED
   ruleDeceasedRecipient:
     responses:
-      403:
+      400:
         body:
           application/json:
             type: types.errorResponse
@@ -160,7 +160,7 @@ traits:
                   code: RULE_DECEASED_RECIPIENT
   ruleActiveMarriageAllowanceClaim:
     responses:
-      403:
+      400:
         body:
           application/json:
             type: types.errorResponse

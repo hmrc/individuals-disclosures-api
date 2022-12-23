@@ -17,17 +17,17 @@
 package v1.controllers
 
 import mocks.MockAppConfig
-import play.api.libs.json.{JsValue, Json}
-import play.api.mvc.{AnyContentAsJson, Result}
+import play.api.libs.json.{ JsValue, Json }
+import play.api.mvc.{ AnyContentAsJson, Result }
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.mocks.MockIdGenerator
 import v1.mocks.requestParsers.MockCreateMarriageAllowanceRequestParser
-import v1.mocks.services.{MockAuditService, MockCreateMarriageAllowanceService, MockEnrolmentsAuthService, MockMtdIdLookupService}
-import v1.models.audit.{AuditError, AuditEvent, AuditResponse, GenericAuditDetail}
+import v1.mocks.services.{ MockAuditService, MockCreateMarriageAllowanceService, MockEnrolmentsAuthService, MockMtdIdLookupService }
+import v1.models.audit.{ AuditError, AuditEvent, AuditResponse, GenericAuditDetail }
 import v1.models.domain.Nino
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
-import v1.models.request.marriageAllowance.{CreateMarriageAllowanceBody, CreateMarriageAllowanceRawData, CreateMarriageAllowanceRequest}
+import v1.models.request.marriageAllowance.{ CreateMarriageAllowanceBody, CreateMarriageAllowanceRawData, CreateMarriageAllowanceRequest }
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -208,9 +208,9 @@ class CreateMarriageAllowanceControllerSpec
 
         val input = Seq(
           (NinoFormatError, BAD_REQUEST),
-          (RuleDeceasedRecipientError, FORBIDDEN),
-          (RuleActiveMarriageAllowanceClaimError, FORBIDDEN),
-          (RuleInvalidRequestError, FORBIDDEN),
+          (RuleDeceasedRecipientError, BAD_REQUEST),
+          (RuleActiveMarriageAllowanceClaimError, BAD_REQUEST),
+          (RuleInvalidRequestError, BAD_REQUEST),
           (InternalError, INTERNAL_SERVER_ERROR)
         )
 
