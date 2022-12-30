@@ -18,21 +18,21 @@ package v1.controllers
 
 import play.api.libs.json.Json
 import play.api.mvc.Result
-import v1.models.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.mocks.MockIdGenerator
 import v1.mocks.requestParsers.MockDeleteRetrieveRequestParser
-import v1.mocks.services.{MockAuditService, MockDeleteRetrieveService, MockEnrolmentsAuthService, MockMtdIdLookupService}
-import v1.models.audit.{AuditError, AuditEvent, AuditResponse, GenericAuditDetail}
+import v1.mocks.services.{ MockAuditService, MockDeleteRetrieveService, MockEnrolmentsAuthService, MockMtdIdLookupService }
+import v1.models.audit.{ AuditError, AuditEvent, AuditResponse, GenericAuditDetail }
+import v1.models.domain.Nino
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
-import v1.models.request.{DeleteRetrieveRawData, DeleteRetrieveRequest}
+import v1.models.request.{ DeleteRetrieveRawData, DeleteRetrieveRequest }
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class DeleteDisclosuresControllerSpec
-  extends ControllerBaseSpec
+    extends ControllerBaseSpec
     with MockEnrolmentsAuthService
     with MockMtdIdLookupService
     with MockDeleteRetrieveService
@@ -40,8 +40,8 @@ class DeleteDisclosuresControllerSpec
     with MockAuditService
     with MockIdGenerator {
 
-  val nino: String = "AA123456A"
-  val taxYear: String = "2021-22"
+  val nino: String          = "AA123456A"
+  val taxYear: String       = "2021-22"
   val correlationId: String = "X-123"
 
   val rawData: DeleteRetrieveRawData = DeleteRetrieveRawData(
@@ -166,7 +166,7 @@ class DeleteDisclosuresControllerSpec
           (NinoFormatError, BAD_REQUEST),
           (TaxYearFormatError, BAD_REQUEST),
           (NotFoundError, NOT_FOUND),
-          (RuleVoluntaryClass2CannotBeChangedError, FORBIDDEN),
+          (RuleVoluntaryClass2CannotBeChangedError, BAD_REQUEST),
           (InternalError, INTERNAL_SERVER_ERROR)
         )
 

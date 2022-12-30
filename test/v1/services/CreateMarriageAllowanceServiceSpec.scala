@@ -21,13 +21,13 @@ import v1.mocks.connectors.MockCreateMarriageAllowanceConnector
 import v1.models.domain.Nino
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
-import v1.models.request.marriageAllowance.{CreateMarriageAllowanceBody, CreateMarriageAllowanceRequest}
+import v1.models.request.marriageAllowance.{ CreateMarriageAllowanceBody, CreateMarriageAllowanceRequest }
 
 import scala.concurrent.Future
 
 class CreateMarriageAllowanceServiceSpec extends ServiceSpec {
 
-  private val nino = "AA112233A"
+  private val nino             = "AA112233A"
   private val requestBodyModel = CreateMarriageAllowanceBody("TC663795B", Some("John"), "Smith", Some("1987-10-18"))
 
   val createMarriageAllowanceRequest: CreateMarriageAllowanceRequest = CreateMarriageAllowanceRequest(
@@ -35,7 +35,7 @@ class CreateMarriageAllowanceServiceSpec extends ServiceSpec {
     body = requestBodyModel
   )
 
-  trait Test extends MockCreateMarriageAllowanceConnector{
+  trait Test extends MockCreateMarriageAllowanceConnector {
     implicit val logContext: EndpointLogContext = EndpointLogContext("c", "ep")
 
     val service: CreateMarriageAllowanceService = new CreateMarriageAllowanceService(
@@ -48,7 +48,8 @@ class CreateMarriageAllowanceServiceSpec extends ServiceSpec {
       "a valid request is supplied" in new Test {
         val outcome = Right(ResponseWrapper(correlationId, ()))
 
-        MockCreateMarriageAllowanceConnector.create(createMarriageAllowanceRequest)
+        MockCreateMarriageAllowanceConnector
+          .create(createMarriageAllowanceRequest)
           .returns(Future.successful(outcome))
 
         await(service.create(createMarriageAllowanceRequest)) shouldBe outcome
@@ -59,13 +60,14 @@ class CreateMarriageAllowanceServiceSpec extends ServiceSpec {
         def serviceError(ifsErrorCode: String, error: MtdError): Unit =
           s"a $ifsErrorCode error is returned from the service" in new Test {
 
-            MockCreateMarriageAllowanceConnector.create(createMarriageAllowanceRequest)
+            MockCreateMarriageAllowanceConnector
+              .create(createMarriageAllowanceRequest)
               .returns(Future.successful(Left(ResponseWrapper(correlationId, DownstreamErrors.single(DownstreamErrorCode(ifsErrorCode))))))
 
             await(service.create(createMarriageAllowanceRequest)) shouldBe Left(ErrorWrapper(correlationId, error))
           }
 
-        val input = Seq(
+        val input = List(
           ("INVALID_IDVALUE", NinoFormatError),
           ("DECEASED_PARTICIPANT", RuleDeceasedRecipientError),
           ("RELATIONSHIP_ALREADY_EXISTS", RuleActiveMarriageAllowanceClaimError),
@@ -87,8 +89,8 @@ class CreateMarriageAllowanceServiceSpec extends ServiceSpec {
           ("SERVICE_UNAVAILABLE", InternalError)
         )
 
-        val extra_errors = Map {
-          ("INVALID_NINO", NinoFormatError )
+        val extra_errors = List {
+          ("INVALID_NINO", NinoFormatError)
         }
 
         (input ++ extra_errors).foreach(args => (serviceError _).tupled(args))

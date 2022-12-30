@@ -108,17 +108,11 @@ class CreateMarriageAllowanceController @Inject()(val authService: EnrolmentsAut
 
   private def errorResult(errorWrapper: ErrorWrapper) = {
     (errorWrapper.error: @unchecked) match {
-      case BadRequestError |
-           NinoFormatError |
-           PartnerFirstNameFormatError |
-           PartnerSurnameFormatError |
-           PartnerNinoFormatError |
-           PartnerDoBFormatError |
-           MtdErrorWithCustomMessage(RuleIncorrectOrEmptyBodyError.code)
-      => BadRequest(Json.toJson(errorWrapper))
-      case RuleDeceasedRecipientError |
-           RuleInvalidRequestError |
-           RuleActiveMarriageAllowanceClaimError => Forbidden(Json.toJson(errorWrapper))
+      case BadRequestError | NinoFormatError | PartnerFirstNameFormatError | PartnerSurnameFormatError | PartnerNinoFormatError |
+          PartnerDoBFormatError | RuleDeceasedRecipientError | RuleInvalidRequestError | RuleActiveMarriageAllowanceClaimError |
+          MtdErrorWithCustomMessage(RuleIncorrectOrEmptyBodyError.code) =>
+        BadRequest(Json.toJson(errorWrapper))
+
       case InternalError => InternalServerError(Json.toJson(errorWrapper))
     }
   }

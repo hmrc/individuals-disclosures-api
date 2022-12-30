@@ -19,21 +19,20 @@ package v1.endpoints
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status._
-import play.api.libs.json.{JsResult, JsSuccess, JsValue, Json}
-import play.api.libs.ws.{WSRequest, WSResponse}
+import play.api.libs.json.{ JsResult, JsSuccess, JsValue, Json }
+import play.api.libs.ws.{ WSRequest, WSResponse }
 import play.api.test.Helpers.AUTHORIZATION
 import support.IntegrationBaseSpec
 import v1.models.errors._
-import v1.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
-
+import v1.stubs.{ AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub }
 
 class CreateMarriageAllowanceControllerISpec extends IntegrationBaseSpec {
 
   private trait Test {
 
-    val nino1: String = "AA123456A"
-    val nino2: String = "BB123456B"
-    val invalidNino: String = "BB123456Br"
+    val nino1: String         = "AA123456A"
+    val nino2: String         = "BB123456B"
+    val invalidNino: String   = "BB123456Br"
     val correlationId: String = "X-123"
 
     val requestBodyJson: JsValue = Json.parse(
@@ -59,7 +58,7 @@ class CreateMarriageAllowanceControllerISpec extends IntegrationBaseSpec {
         .withHttpHeaders(
           (ACCEPT, "application/vnd.hmrc.1.0+json"),
           (AUTHORIZATION, "Bearer 123") // some bearer token
-      )
+        )
     }
   }
 
@@ -121,7 +120,7 @@ class CreateMarriageAllowanceControllerISpec extends IntegrationBaseSpec {
 
     "return error according to spec" when {
 
-      val nino2: String = "BB123456B"
+      val nino2: String       = "BB123456B"
       val invalidNino: String = "BB123456Br"
 
       val validRequestBodyJson: JsValue = Json.parse(
@@ -190,7 +189,7 @@ class CreateMarriageAllowanceControllerISpec extends IntegrationBaseSpec {
         def validationErrorTest(requestNino: String, requestBody: JsValue, expectedStatus: Int, expectedBody: MtdError): Unit = {
           s"validation $requestNino fails with ${expectedBody.code} error" in new Test {
 
-            override val nino1: String = requestNino
+            override val nino1: String            = requestNino
             override val requestBodyJson: JsValue = requestBody
 
             override def setupStubs(): StubMapping = {
@@ -233,8 +232,8 @@ class CreateMarriageAllowanceControllerISpec extends IntegrationBaseSpec {
           val response: WSResponse = await(request().post(nonsenseRequestBodyJson))
           response.status shouldBe BAD_REQUEST
 
-          val responseErrorCode: JsResult[String] = (response.json \ "code").validate[String]
-          val responseErrorMessage: JsResult[String] = (response.json \ "message").validate[String]
+          val responseErrorCode: JsResult[String]       = (response.json \ "code").validate[String]
+          val responseErrorMessage: JsResult[String]    = (response.json \ "message").validate[String]
           val responseErrorPaths: JsResult[Seq[String]] = (response.json \ "paths").validate[Seq[String]]
 
           responseErrorCode shouldBe a[JsSuccess[_]]
@@ -277,15 +276,15 @@ class CreateMarriageAllowanceControllerISpec extends IntegrationBaseSpec {
           (BAD_REQUEST, "INVALID_PAYLOAD", INTERNAL_SERVER_ERROR, InternalError),
           (BAD_REQUEST, "INVALID_CORRELATIONID", INTERNAL_SERVER_ERROR, InternalError),
           (NOT_FOUND, "END_DATE_CODE_NOT_FOUND", INTERNAL_SERVER_ERROR, InternalError),
-          (NOT_FOUND, "NINO_OR_TRN_NOT_FOUND", FORBIDDEN, RuleInvalidRequestError),
+          (NOT_FOUND, "NINO_OR_TRN_NOT_FOUND", BAD_REQUEST, RuleInvalidRequestError),
           (UNPROCESSABLE_ENTITY, "INVALID_ACTUAL_END_DATE", INTERNAL_SERVER_ERROR, InternalError),
           (UNPROCESSABLE_ENTITY, "INVALID_PARTICIPANT_END_DATE", INTERNAL_SERVER_ERROR, InternalError),
           (UNPROCESSABLE_ENTITY, "INVALID_PARTICIPANT_START_DATE", INTERNAL_SERVER_ERROR, InternalError),
-          (UNPROCESSABLE_ENTITY, "DECEASED_PARTICIPANT", FORBIDDEN, RuleDeceasedRecipientError),
+          (UNPROCESSABLE_ENTITY, "DECEASED_PARTICIPANT", BAD_REQUEST, RuleDeceasedRecipientError),
           (UNPROCESSABLE_ENTITY, "INVALID_RELATIONSHIP_CODE", INTERNAL_SERVER_ERROR, InternalError),
           (UNPROCESSABLE_ENTITY, "PARTICIPANT1_CANNOT_BE_UPDATED", INTERNAL_SERVER_ERROR, InternalError),
           (UNPROCESSABLE_ENTITY, "PARTICIPANT2_CANNOT_BE_UPDATED", INTERNAL_SERVER_ERROR, InternalError),
-          (UNPROCESSABLE_ENTITY, "RELATIONSHIP_ALREADY_EXISTS", FORBIDDEN, RuleActiveMarriageAllowanceClaimError),
+          (UNPROCESSABLE_ENTITY, "RELATIONSHIP_ALREADY_EXISTS", BAD_REQUEST, RuleActiveMarriageAllowanceClaimError),
           (UNPROCESSABLE_ENTITY, "CONFIDENCE_CHECK_FAILED", INTERNAL_SERVER_ERROR, InternalError),
           (UNPROCESSABLE_ENTITY, "CONFIDENCE_CHECK_SURNAME_MISSED", INTERNAL_SERVER_ERROR, InternalError),
           (INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, InternalError),

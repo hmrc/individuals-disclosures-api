@@ -17,14 +17,14 @@
 package v1.controllers
 
 import mocks.MockAppConfig
-import play.api.libs.json.{JsValue, Json}
-import play.api.mvc.{AnyContentAsJson, Result}
-import v1.models.domain.Nino
+import play.api.libs.json.{ JsValue, Json }
+import play.api.mvc.{ AnyContentAsJson, Result }
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.mocks.MockIdGenerator
 import v1.mocks.requestParsers.MockAmendDisclosuresRequestParser
-import v1.mocks.services.{MockAmendDisclosuresService, MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService}
-import v1.models.audit.{AuditError, AuditEvent, AuditResponse, GenericAuditDetail}
+import v1.mocks.services.{ MockAmendDisclosuresService, MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService }
+import v1.models.audit.{ AuditError, AuditEvent, AuditResponse, GenericAuditDetail }
+import v1.models.domain.Nino
 import v1.models.errors._
 import v1.models.outcomes.ResponseWrapper
 import v1.models.request.disclosures._
@@ -33,7 +33,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class AmendDisclosuresControllerSpec
-  extends ControllerBaseSpec
+    extends ControllerBaseSpec
     with MockEnrolmentsAuthService
     with MockMtdIdLookupService
     with MockAppConfig
@@ -42,8 +42,8 @@ class AmendDisclosuresControllerSpec
     with MockAuditService
     with MockIdGenerator {
 
-  val nino: String = "AA123456A"
-  val taxYear: String = "2021-22"
+  val nino: String          = "AA123456A"
+  val taxYear: String       = "2021-22"
   val correlationId: String = "X-123"
 
   trait Test {
@@ -237,7 +237,7 @@ class AmendDisclosuresControllerSpec
           (NinoFormatError, BAD_REQUEST),
           (TaxYearFormatError, BAD_REQUEST),
           (NotFoundError, NOT_FOUND),
-          (RuleVoluntaryClass2CannotBeChangedError, FORBIDDEN),
+          (RuleVoluntaryClass2CannotBeChangedError, BAD_REQUEST),
           (InternalError, INTERNAL_SERVER_ERROR)
         )
 

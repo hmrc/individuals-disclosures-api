@@ -19,20 +19,19 @@ package v1.endpoints
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status._
-import play.api.libs.json.{JsValue, Json}
-import play.api.libs.ws.{WSRequest, WSResponse}
+import play.api.libs.json.{ JsValue, Json }
+import play.api.libs.ws.{ WSRequest, WSResponse }
 import play.api.test.Helpers.AUTHORIZATION
 import support.IntegrationBaseSpec
 import v1.models.errors._
-import v1.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
-
+import v1.stubs.{ AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub }
 
 class AmendDisclosuresControllerISpec extends IntegrationBaseSpec {
 
   private trait Test {
 
-    val nino: String = "AA123456A"
-    val taxYear: String = "2021-22"
+    val nino: String          = "AA123456A"
+    val taxYear: String       = "2021-22"
     val correlationId: String = "X-123"
 
     val requestBodyJson: JsValue = Json.parse(
@@ -91,7 +90,7 @@ class AmendDisclosuresControllerISpec extends IntegrationBaseSpec {
         .withHttpHeaders(
           (ACCEPT, "application/vnd.hmrc.1.0+json"),
           (AUTHORIZATION, "Bearer 123") // some bearer token
-      )
+        )
     }
   }
 
@@ -141,13 +140,14 @@ class AmendDisclosuresControllerISpec extends IntegrationBaseSpec {
 
         val response: WSResponse = await(request().put(invalidTaxYearRequestBodyJson))
         response.status shouldBe BAD_REQUEST
-        response.json shouldBe Json.toJson(ErrorWrapper(
-          correlationId = correlationId,
-          error = TaxYearFormatError.copy(
-            paths = Some(List("/taxAvoidance/0/taxYear"))
-          ),
-          errors = None
-        ))
+        response.json shouldBe Json.toJson(
+          ErrorWrapper(
+            correlationId = correlationId,
+            error = TaxYearFormatError.copy(
+              paths = Some(List("/taxAvoidance/0/taxYear"))
+            ),
+            errors = None
+          ))
         response.header("Content-Type") shouldBe Some("application/json")
       }
     }
@@ -180,13 +180,14 @@ class AmendDisclosuresControllerISpec extends IntegrationBaseSpec {
 
         val response: WSResponse = await(request().put(invalidTaxYearRequestBodyJson))
         response.status shouldBe BAD_REQUEST
-        response.json shouldBe Json.toJson(ErrorWrapper(
-          correlationId = correlationId,
-          error = RuleTaxYearRangeInvalidError.copy(
-            paths = Some(List("/taxAvoidance/0/taxYear"))
-          ),
-          errors = None
-        ))
+        response.json shouldBe Json.toJson(
+          ErrorWrapper(
+            correlationId = correlationId,
+            error = RuleTaxYearRangeInvalidError.copy(
+              paths = Some(List("/taxAvoidance/0/taxYear"))
+            ),
+            errors = None
+          ))
         response.header("Content-Type") shouldBe Some("application/json")
       }
     }
@@ -216,25 +217,29 @@ class AmendDisclosuresControllerISpec extends IntegrationBaseSpec {
 
         val allInvalidValueRequestError: List[MtdError] = List(
           SRNFormatError.copy(
-            paths = Some(List(
-              "/taxAvoidance/0/srn",
-              "/taxAvoidance/1/srn"
-            ))
+            paths = Some(
+              List(
+                "/taxAvoidance/0/srn",
+                "/taxAvoidance/1/srn"
+              ))
           ),
           TaxYearFormatError.copy(
-            paths = Some(List(
-              "/taxAvoidance/0/taxYear"
-            ))
+            paths = Some(
+              List(
+                "/taxAvoidance/0/taxYear"
+              ))
           ),
           RuleTaxYearRangeInvalidError.copy(
-            paths = Some(List(
-              "/taxAvoidance/1/taxYear"
-            ))
+            paths = Some(
+              List(
+                "/taxAvoidance/1/taxYear"
+              ))
           ),
           RuleVoluntaryClass2ValueInvalidError.copy(
-            paths = Some(List(
-              "/class2Nics/class2VoluntaryContributions"
-            ))
+            paths = Some(
+              List(
+                "/class2Nics/class2VoluntaryContributions"
+              ))
           )
         )
 
@@ -442,11 +447,15 @@ class AmendDisclosuresControllerISpec extends IntegrationBaseSpec {
       )
 
       "validation error" when {
-        def validationErrorTest(requestNino: String, requestTaxYear: String, requestBody: JsValue, expectedStatus: Int, expectedBody: MtdError): Unit = {
+        def validationErrorTest(requestNino: String,
+                                requestTaxYear: String,
+                                requestBody: JsValue,
+                                expectedStatus: Int,
+                                expectedBody: MtdError): Unit = {
           s"validation $requestNino fails with ${expectedBody.code} error" in new Test {
 
-            override val nino: String = requestNino
-            override val taxYear: String = requestTaxYear
+            override val nino: String             = requestNino
+            override val taxYear: String          = requestTaxYear
             override val requestBodyJson: JsValue = requestBody
 
             override def setupStubs(): StubMapping = {
@@ -463,7 +472,7 @@ class AmendDisclosuresControllerISpec extends IntegrationBaseSpec {
 
         val input = Seq(
           ("AA1123A", "2021-22", validRequestBodyJson, BAD_REQUEST, NinoFormatError),
-          ("AA123456A", "20177", validRequestBodyJson,  BAD_REQUEST, TaxYearFormatError),
+          ("AA123456A", "20177", validRequestBodyJson, BAD_REQUEST, TaxYearFormatError),
           ("AA123456A", "2015-17", validRequestBodyJson, BAD_REQUEST, RuleTaxYearRangeInvalidError),
           ("AA123456A", "2015-16", validRequestBodyJson, BAD_REQUEST, RuleTaxYearNotSupportedError),
           ("AA123456A", "2021-22", nonsenseRequestBodyJson, BAD_REQUEST, RuleIncorrectOrEmptyBodyError),
@@ -507,7 +516,7 @@ class AmendDisclosuresControllerISpec extends IntegrationBaseSpec {
           (BAD_REQUEST, "INVALID_CORRELATIONID", INTERNAL_SERVER_ERROR, InternalError),
           (BAD_REQUEST, "INVALID_PAYLOAD", INTERNAL_SERVER_ERROR, InternalError),
           (NOT_FOUND, "INCOME_SOURCE_NOT_FOUND", NOT_FOUND, NotFoundError),
-          (UNPROCESSABLE_ENTITY, "VOLUNTARY_CLASS2_CANNOT_BE_CHANGED", FORBIDDEN, RuleVoluntaryClass2CannotBeChangedError),
+          (UNPROCESSABLE_ENTITY, "VOLUNTARY_CLASS2_CANNOT_BE_CHANGED", BAD_REQUEST, RuleVoluntaryClass2CannotBeChangedError),
           (SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, InternalError),
           (INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, InternalError)
         )
