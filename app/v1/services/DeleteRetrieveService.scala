@@ -16,7 +16,6 @@
 
 package v1.services
 
-import cats.data.EitherT
 import cats.implicits._
 import javax.inject.{Inject, Singleton}
 import play.api.libs.json.Format
@@ -40,11 +39,9 @@ class DeleteRetrieveService @Inject()(connector: DeleteRetrieveConnector) extend
                                                                       ifs1Uri: Ifs1Uri[Unit],
                correlationId: String): Future[Either[ErrorWrapper, ResponseWrapper[Unit]]] = {
 
-    val result = for {
-      downstreamResponseWrapper <- EitherT(connector.delete()).leftMap(mapDownstreamErrors(downstreamErrorMap))
-    } yield downstreamResponseWrapper
 
-    result.value
+      connector.delete().map(_.leftMap(mapDownstreamErrors(downstreamErrorMap)))
+
   }
 
   def retrieve[Resp: Format](downstreamErrorMap: Map[String, MtdError] = defaultDownstreamErrorMap)(implicit hc: HeaderCarrier,
@@ -53,15 +50,11 @@ class DeleteRetrieveService @Inject()(connector: DeleteRetrieveConnector) extend
                                                                                       ifs1Uri: Ifs1Uri[Resp],
                                correlationId: String): Future[Either[ErrorWrapper, ResponseWrapper[Resp]]] = {
 
-    val result = for {
-      downstreamResponseWrapper <- EitherT(connector.retrieve[Resp]()).leftMap(mapDownstreamErrors(downstreamErrorMap))
-      mtdResponseWrapper <- EitherT.fromEither[Future](validateRetrieveResponse(downstreamResponseWrapper))
-    } yield mtdResponseWrapper
+    connector.retrieve[Resp]().map(_.leftMap(mapDownstreamErrors(downstreamErrorMap)))
 
-    result.value
   }
 
-  private def defaultDownstreamErrorMap: Map[String, MtdError] = {
+  private val defaultDownstreamErrorMap: Map[String, MtdError] = {
     val error = Map(
       "INVALID_NINO"          -> NinoFormatError,
       "INVALID_TAX_YEAR"      -> TaxYearFormatError,
