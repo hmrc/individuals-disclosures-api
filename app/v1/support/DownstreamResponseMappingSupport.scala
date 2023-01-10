@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 
 package v1.support
 
-import play.api.libs.json.{JsObject, Json, Writes}
 import utils.Logging
 import v1.controllers.EndpointLogContext
 import v1.models.errors._
@@ -24,14 +23,6 @@ import v1.models.outcomes.ResponseWrapper
 
 trait DownstreamResponseMappingSupport {
   self: Logging =>
-
-  final def validateRetrieveResponse[T: Writes](downstreamResponseWrapper: ResponseWrapper[T]): Either[ErrorWrapper, ResponseWrapper[T]] = {
-    if (Json.toJson(downstreamResponseWrapper.responseData) == JsObject.empty) {
-      Left(ErrorWrapper(downstreamResponseWrapper.correlationId, NotFoundError, None))
-    } else {
-      Right(downstreamResponseWrapper)
-    }
-  }
 
   final def mapDownstreamErrors[D](errorCodeMap: PartialFunction[String, MtdError])(downstreamResponseWrapper: ResponseWrapper[DownstreamError])(
     implicit logContext: EndpointLogContext): ErrorWrapper = {
