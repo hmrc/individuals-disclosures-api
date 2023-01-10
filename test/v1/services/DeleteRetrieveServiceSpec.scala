@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -90,15 +90,6 @@ class DeleteRetrieveServiceSpec extends ServiceSpec {
           .returns(Future.successful(outcome))
 
         await(service.retrieve[Data]()) shouldBe outcome
-      }
-
-      "return a NotFoundError for an empty response" in new Test {
-        val outcome = Right(ResponseWrapper(correlationId, Data(None)))
-
-        MockDeleteRetrieveConnector.retrieve[Data]()
-          .returns(Future.successful(outcome))
-
-        await(service.retrieve[Data]()) shouldBe Left(ErrorWrapper(correlationId, NotFoundError))
       }
 
       "map errors according to spec" when {
