@@ -1,0 +1,6 @@
+get:
+  $ref: "./retrieve.yaml"
+put:
+  $ref: "./amend.yaml"
+delete:
+  $ref: "./delete.yaml"
