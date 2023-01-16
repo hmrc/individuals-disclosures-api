@@ -23,6 +23,9 @@ description: |
     </tbody>
   </table>
 
+tags:
+  - Disclosures
+
 parameters:
   - $ref: '../../common/pathParameters.yaml#/components/parameters/nino'
   - $ref: '../../common/pathParameters.yaml#/components/parameters/taxYear'
