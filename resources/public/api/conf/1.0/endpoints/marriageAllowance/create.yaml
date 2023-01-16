@@ -32,6 +32,9 @@ post:
         </tbody>
     </table>
 
+  tags:
+    - Marriage Allowance
+
   parameters:
     - $ref: '../../common/pathParameters.yaml#/components/parameters/nino'
     - $ref: '../../common/headers.yaml#/components/parameters/acceptJson'
