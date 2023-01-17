@@ -81,6 +81,8 @@ responses:
             $ref: '../../common/errors.yaml#/components/examples/formatTaxYear'
           RULE_TAX_YEAR_NOT_SUPPORTED:
             $ref: '../../common/errors.yaml#/components/examples/ruleTaxYearNotSupported'
+          RULE_TAX_YEAR_RANGE_INVALID:
+            $ref: '../../common/errors.yaml#/components/examples/ruleTaxYearRangeInvalid'
           FORMAT_SRN_INVALID:
             $ref: '../../common/errors.yaml#/components/examples/srnInvalid'
           RULE_INCORRECT_OR_EMPTY_BODY_SUBMITTED:
