@@ -1,0 +1,116 @@
+components:
+  examples:
+
+    # 400
+
+    formatNino:
+      description: |
+        The format of the supplied NINO field is not valid.
+      value:
+        code: FORMAT_NINO
+
+    formatTaxYear:
+      description: |
+        The format of the supplied taxYear value is not valid.
+      value:
+        code: FORMAT_TAX_YEAR
+
+    ruleIncorrectOrEmptyBody:
+      description: |
+        An empty or non-matching body was submitted.
+      value:
+        code: RULE_INCORRECT_OR_EMPTY_BODY_SUBMITTED
+
+    ruleTaxYearNotSupported:
+      description: |
+        The specified tax year is not supported. That is, the tax year specified is before the minimum tax year value.
+      value:
+        code: RULE_TAX_YEAR_NOT_SUPPORTED
+
+    ruleInvalidRequest:
+      description: |
+        The request cannot be made as the current NINO supplied is invalid.
+      value:
+        code: RULE_INVALID_REQUEST
+
+    ruleTaxYearRangeInvalid:
+      description: |
+        Tax year range invalid. A tax year range of one year is required.
+      value:
+        code: RULE_TAX_YEAR_RANGE_INVALID
+
+    srnInvalid:
+      description: |
+        The format of the supplied scheme reference number is not valid.
+      value:
+        code: FORMAT_SRN_INVALID
+
+    voluntaryClass2Contributions:
+      description: |
+        Voluntary Class 2 Contributions can only be set to true.
+      value:
+        code: RULE_VOLUNTARY_CLASS2_VALUE_INVALID
+
+    formatSpouseOrCivilPartnersFirstName:
+      description: |
+        The format of your spouse or civil partner's first name is not valid.
+      value:
+        code: FORMAT_SPOUSE_OR_CIVIL_PARTNERS_FIRST_NAME
+
+    formatSpouseOrCivilPartnersSurname:
+      description: |
+        The format of your spouse or civil partner's surname name is not valid.
+      value:
+        code: FORMAT_SPOUSE_OR_CIVIL_PARTNERS_SURNAME
+
+    formatSpouseOrCivilPartnersNino:
+      description: |
+        The format of your spouse or civil partner's National Insurance Number is not valid.
+      value:
+        code: FORMAT_SPOUSE_OR_CIVIL_PARTNERS_NINO
+
+    formatSpouseOrCivilPartnersDateOfBirth:
+      description: |
+        The format of the supplied spouse or civil partner's date of birth is not valid.
+      value:
+        code: FORMAT_SPOUSE_OR_CIVIL_PARTNERS_DATE_OF_BIRTH
+
+    voluntaryClass2CannotBeChanged:
+      description: |
+        Voluntary Class 2 NICs cannot be changed after 31st Jan following the year of submission.
+      value:
+        code: RULE_VOLUNTARY_CLASS2_CANNOT_BE_CHANGED
+
+    ruleDeceasedRecipient:
+      description: |
+        The supplied spouse or civil partner is invalid because they are deceased.
+      value:
+        code: RULE_DECEASED_RECIPIENT
+
+    ruleActiveMarriageAllowanceClaim:
+      description: |
+        The request cannot be made as there is an existing Marriage Allowance claim.
+      value:
+        code: RULE_ACTIVE_MARRIAGE_ALLOWANCE_CLAIM
+
+    # 403
+
+    clientOrAgentNotAuthorised:
+      description: |
+        The client and/or agent is not authorised. This is normally because: the client is not subscribed to MTD, the agent is not subscribed to Agent Services, or the client has not authorised the agent to act on their behalf.
+      value:
+        code: CLIENT_OR_AGENT_NOT_AUTHORISED
+
+    # 404
+
+    notFound:
+      description: |
+        The matching resource is not found.
+      value:
+        code: MATCHING_RESOURCE_NOT_FOUND
+
+    notFoundBusiness:
+      description: |
+        The supplied income source could not be found.
+      value:
+        code: MATCHING_RESOURCE_NOT_FOUND
