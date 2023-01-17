@@ -49,6 +49,11 @@ components:
 
 paths:
   /individuals/disclosures/marriage-allowance/{nino}:
-    $ref: "./endpoints/marriageAllowance/create.yaml"
+    $ref: "./create.yaml"
   /individuals/disclosures/{nino}/{taxYear}:
-    $ref: "./endpoints/disclosures/disclosures.yaml"
+    get:
+      $ref: "./retrieve.yaml"
+    put:
+      $ref: "./amend.yaml"
+    delete:
+      $ref: "./delete.yaml"
