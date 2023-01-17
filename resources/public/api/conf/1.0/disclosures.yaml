@@ -47,11 +47,11 @@ get:
       content:
         application/json:
           schema:
-            $ref: '../../schemas/retrieve_disclosures_response.json'
+            $ref: './schemas/retrieve_disclosures_response.json'
           examples:
             Request:
               value:
-                $ref: '../../examples/disclosures/retrieve_response.json'
+                $ref: './examples/disclosures/retrieve_response.json'
 
 
     "400":
@@ -59,7 +59,7 @@ get:
       content:
         application/json:
           schema:
-            $ref: '../../schemas/error-response.yaml'
+            $ref: './schemas/error-response.yaml'
           examples:
             FORMAT_NINO:
               $ref: './common/errors.yaml#/components/examples/formatNino'
@@ -75,7 +75,7 @@ get:
       content:
         application/json:
           schema:
-            $ref: '../../schemas/error-response.yaml'
+            $ref: './schemas/error-response.yaml'
           examples:
             CLIENT_OR_AGENT_NOT_AUTHORISED:
               $ref: './common/errors.yaml#/components/examples/clientOrAgentNotAuthorised'
@@ -84,7 +84,7 @@ get:
       content:
         application/json:
           schema:
-            $ref: '../../schemas/error-response.yaml'
+            $ref: './schemas/error-response.yaml'
           examples:
             MATCHING_RESOURCE_NOT_FOUND:
               $ref: './common/errors.yaml#/components/examples/notFound'
@@ -137,11 +137,11 @@ put:
     content:
       application/json:
         schema:
-          $ref: '../../schemas/amend_disclosures_request.json'
+          $ref: './schemas/amend_disclosures_request.json'
         examples:
           Request:
             value:
-              $ref: '../../examples/disclosures/amend_request.json'
+              $ref: './examples/disclosures/amend_request.json'
 
   responses:
     "200":
@@ -152,11 +152,11 @@ put:
       content:
         application/json:
           schema:
-            $ref: '../../schemas/amend_disclosures_response.json'
+            $ref: './schemas/amend_disclosures_response.json'
           examples:
             Request:
               value:
-                $ref: '../../examples/disclosures/amend_response.json'
+                $ref: './examples/disclosures/amend_response.json'
 
 
     "400":
@@ -164,7 +164,7 @@ put:
       content:
         application/json:
           schema:
-            $ref: '../../schemas/error-response.yaml'
+            $ref: './schemas/error-response.yaml'
           examples:
             FORMAT_NINO:
               $ref: './common/errors.yaml#/components/examples/formatNino'
@@ -188,7 +188,7 @@ put:
       content:
         application/json:
           schema:
-            $ref: '../../schemas/error-response.yaml'
+            $ref: './schemas/error-response.yaml'
           examples:
             CLIENT_OR_AGENT_NOT_AUTHORISED:
               $ref: './common/errors.yaml#/components/examples/clientOrAgentNotAuthorised'
@@ -197,7 +197,7 @@ put:
       content:
         application/json:
           schema:
-            $ref: '../../schemas/error-response.yaml'
+            $ref: './schemas/error-response.yaml'
           examples:
             MATCHING_RESOURCE_NOT_FOUND:
               $ref: './common/errors.yaml#/components/examples/notFound'
@@ -257,7 +257,7 @@ delete:
       content:
         application/json:
           schema:
-            $ref: '../../schemas/error-response.yaml'
+            $ref: './schemas/error-response.yaml'
           examples:
             FORMAT_NINO:
               $ref: './common/errors.yaml#/components/examples/formatNino'
@@ -275,7 +275,7 @@ delete:
       content:
         application/json:
           schema:
-            $ref: '../../schemas/error-response.yaml'
+            $ref: './schemas/error-response.yaml'
           examples:
             CLIENT_OR_AGENT_NOT_AUTHORISED:
               $ref: './common/errors.yaml#/components/examples/clientOrAgentNotAuthorised'
@@ -284,7 +284,7 @@ delete:
       content:
         application/json:
           schema:
-            $ref: '../../schemas/error-response.yaml'
+            $ref: './schemas/error-response.yaml'
           examples:
             MATCHING_RESOURCE_NOT_FOUND:
               $ref: './common/errors.yaml#/components/examples/notFound'

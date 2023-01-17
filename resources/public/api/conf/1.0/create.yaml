@@ -50,11 +50,11 @@ post:
     content:
       application/json:
         schema:
-          $ref: '../../schemas/create_marriageAllowance_request.json'
+          $ref: './schemas/create_marriageAllowance_request.json'
         examples:
           Request:
             value:
-              $ref: '../../examples/marriageAllowance/create_marriageAllowance_request.json'
+              $ref: './examples/marriageAllowance/create_marriageAllowance_request.json'
 
   responses:
 
@@ -69,7 +69,7 @@ post:
       content:
         application/json:
           schema:
-            $ref: '../../schemas/error-response.yaml'
+            $ref: './schemas/error-response.yaml'
           examples:
             FORMAT_NINO:
               $ref: './common/errors.yaml#/components/examples/formatNino'
@@ -95,7 +95,7 @@ post:
       content:
         application/json:
           schema:
-            $ref: '../../schemas/error-response.yaml'
+            $ref: './schemas/error-response.yaml'
           examples:
             CLIENT_OR_AGENT_NOT_AUTHORISED:
               $ref: './common/errors.yaml#/components/examples/clientOrAgentNotAuthorised'
