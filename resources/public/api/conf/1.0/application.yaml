@@ -51,9 +51,4 @@ paths:
   /individuals/disclosures/marriage-allowance/{nino}:
     $ref: "./create.yaml"
   /individuals/disclosures/{nino}/{taxYear}:
-    get:
-      $ref: "./retrieve.yaml"
-    put:
-      $ref: "./amend.yaml"
-    delete:
-      $ref: "./delete.yaml"
+    $ref: "./disclosures.yaml"
