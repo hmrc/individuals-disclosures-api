@@ -48,6 +48,6 @@ components:
 
 paths:
   /individuals/disclosures/marriage-allowance/{nino}:
-    $ref: "./create.yaml"
+    $ref: "./marriageAllowance.yaml"
   /individuals/disclosures/{nino}/{taxYear}:
     $ref: "./disclosures.yaml"
