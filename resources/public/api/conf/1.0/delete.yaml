@@ -1,4 +1,3 @@
-summary: Delete Disclosures
 description: |
   This endpoint allows a developer to delete data related to disclosures, for a given tax year. A National Insurance number and tax year must be provided.
   
@@ -31,56 +30,52 @@ tags:
   - Disclosures
 
 parameters:
-  - $ref: '../../common/pathParameters.yaml#/components/parameters/nino'
-  - $ref: '../../common/pathParameters.yaml#/components/parameters/taxYear'
-  - $ref: '../../common/headers.yaml#/components/parameters/acceptJson'
-  - $ref: '../../common/headers.yaml#/components/parameters/testScenarioHeader'
-  - $ref: '../../common/headers.yaml#/components/parameters/authorization'
-
-security:
-  - User-Restricted:
-      - write:self-assessment
+  - $ref: './common/pathParameters.yaml#/components/parameters/nino'
+  - $ref: './common/pathParameters.yaml#/components/parameters/taxYear'
+  - $ref: './common/headers.yaml#/components/parameters/acceptJson'
+  - $ref: './common/headers.yaml#/components/parameters/testScenarioHeader'
+  - $ref: './common/headers.yaml#/components/parameters/authorization'
 
 responses:
   "204":
     description: Success
     headers:
       X-CorrelationId:
-        $ref: '../../common/headers.yaml#/components/parameters/correlationId'
+        $ref: './common/headers.yaml#/components/parameters/correlationId'
 
   "400":
     description: Bad request
     content:
       application/json:
         schema:
-          $ref: '../../schemas/error-response.yaml'
+          $ref: './schemas/error-response.yaml'
         examples:
           FORMAT_NINO:
-            $ref: '../../common/errors.yaml#/components/examples/formatNino'
+            $ref: './common/errors.yaml#/components/examples/formatNino'
           FORMAT_TAX_YEAR:
-            $ref: '../../common/errors.yaml#/components/examples/formatTaxYear'
+            $ref: './common/errors.yaml#/components/examples/formatTaxYear'
           RULE_TAX_YEAR_NOT_SUPPORTED:
-            $ref: '../../common/errors.yaml#/components/examples/ruleTaxYearNotSupported'
+            $ref: './common/errors.yaml#/components/examples/ruleTaxYearNotSupported'
           RULE_TAX_YEAR_RANGE_INVALID:
-            $ref: '../../common/errors.yaml#/components/examples/ruleTaxYearRangeInvalid'
+            $ref: './common/errors.yaml#/components/examples/ruleTaxYearRangeInvalid'
           RULE_VOLUNTARY_CLASS2_CANNOT_BE_CHANGED:
-            $ref: '../../common/errors.yaml#/components/examples/voluntaryClass2CannotBeChanged'
+            $ref: './common/errors.yaml#/components/examples/voluntaryClass2CannotBeChanged'
 
   "403":
     description: Forbidden
     content:
       application/json:
         schema:
-          $ref: '../../schemas/error-response.yaml'
+          $ref: './schemas/error-response.yaml'
         examples:
           CLIENT_OR_AGENT_NOT_AUTHORISED:
-            $ref: '../../common/errors.yaml#/components/examples/clientOrAgentNotAuthorised'
+            $ref: './common/errors.yaml#/components/examples/clientOrAgentNotAuthorised'
   "404":
     description: Not Found
     content:
       application/json:
         schema:
-          $ref: '../../schemas/error-response.yaml'
+          $ref: './schemas/error-response.yaml'
         examples:
           MATCHING_RESOURCE_NOT_FOUND:
-            $ref: '../../common/errors.yaml#/components/examples/notFound'
+            $ref: './common/errors.yaml#/components/examples/notFound'
