@@ -16,10 +16,11 @@
 
 package v1.controllers.requestParsers.validators
 
+import api.controllers.requestParsers.validators.Validator
+import api.controllers.requestParsers.validators.validations._
 import config.AppConfig
-import v1.controllers.requestParsers.validators.validations._
-import v1.models.errors.MtdError
-import v1.models.request.disclosures._
+import api.models.errors.MtdError
+import v1.models.request.amend._
 
 import javax.inject.Inject
 
@@ -33,44 +34,62 @@ class AmendDisclosuresValidator @Inject()(implicit appConfig: AppConfig) extends
 
   override def validate(data: AmendDisclosuresRawData): List[MtdError] = run(validationSet, data)
 
-  private def parameterFormatValidation: ValidationType = (data: AmendDisclosuresRawData) => List(
-    NinoValidation.validate(data.nino),
-    TaxYearValidation.validate(data.taxYear)
-  )
+  private def parameterFormatValidation: AmendDisclosuresRawData => List[List[MtdError]] =
+    data =>
+      List(
+        NinoValidation.validate(data.nino),
+        TaxYearValidation.validate(data.taxYear)
+    )
 
-  private def parameterRuleValidation: ValidationType = (data: AmendDisclosuresRawData) => List(
-    TaxYearNotSupportedValidation.validate(data.taxYear)
-  )
+  private def parameterRuleValidation: AmendDisclosuresRawData => List[List[MtdError]] =
+    data =>
+      List(
+        TaxYearNotSupportedValidation.validate(data.taxYear)
+    )
 
-  private def bodyFormatValidator: ValidationType = (data: AmendDisclosuresRawData) => List(
-    JsonFormatValidation.validate[AmendDisclosuresRequestBody](data.body.json)
-  )
+  private def bodyFormatValidator: AmendDisclosuresRawData => List[List[MtdError]] =
+    data =>
+      List(
+        JsonFormatValidation.validate[AmendDisclosuresRequestBody](data.body.json)
+    )
 
-  private def bodyValueValidator: ValidationType = (data: AmendDisclosuresRawData) => {
+  private def bodyValueValidator: AmendDisclosuresRawData => List[List[MtdError]] = data => {
     val requestBodyData = data.body.json.as[AmendDisclosuresRequestBody]
 
-    List(Validator.flattenErrors(
-      List(
-        requestBodyData.taxAvoidance.map(
-          _.zipWithIndex.flatMap(item => validateTaxAvoidance(item._1, item._2))
-        ).getOrElse(NoValidationErrors).toList,
-        requestBodyData.class2Nics.map(validateClass2Nics).getOrElse(NoValidationErrors)
-      )
-    ))
+    List(
+      Validator.flattenErrors(
+        List(
+          requestBodyData.taxAvoidance
+            .map(
+              _.zipWithIndex.flatMap(item => validateTaxAvoidance(item._1, item._2))
+            )
+            .getOrElse(NoValidationErrors)
+            .toList,
+          requestBodyData.class2Nics.map(validateClass2Nics).getOrElse(NoValidationErrors)
+        )
+      ))
   }
 
-  private def validateTaxAvoidance(taxAvoidance: AmendTaxAvoidanceItem, arrayIndex: Int): List[MtdError] = List(
-    SRNValidation.validate(taxAvoidance.srn).map(
-      _.copy(paths = Some(List(s"/taxAvoidance/$arrayIndex/srn")))
-    ),
-    TaxYearValidation.validate(taxAvoidance.taxYear).map(
-      _.copy(paths = Some(List(s"/taxAvoidance/$arrayIndex/taxYear")))
-    )
-  ).flatten
+  private def validateTaxAvoidance(taxAvoidance: AmendTaxAvoidanceItem, arrayIndex: Int): List[MtdError] =
+    List(
+      SRNValidation
+        .validate(taxAvoidance.srn)
+        .map(
+          _.copy(paths = Some(List(s"/taxAvoidance/$arrayIndex/srn")))
+        ),
+      TaxYearValidation
+        .validate(taxAvoidance.taxYear)
+        .map(
+          _.copy(paths = Some(List(s"/taxAvoidance/$arrayIndex/taxYear")))
+        )
+    ).flatten
 
-  private def validateClass2Nics(class2Nics: AmendClass2Nics): List[MtdError] = List(
-    VoluntaryClass2ValueValidation.validateOptional(class2Nics.class2VoluntaryContributions).map(
-      _.copy(paths = Some(List("/class2Nics/class2VoluntaryContributions")))
-    )
-  ).flatten
+  private def validateClass2Nics(class2Nics: AmendClass2Nics): List[MtdError] =
+    List(
+      VoluntaryClass2ValueValidation
+        .validateOptional(class2Nics.class2VoluntaryContributions)
+        .map(
+          _.copy(paths = Some(List("/class2Nics/class2VoluntaryContributions")))
+        )
+    ).flatten
 }

@@ -16,35 +16,40 @@
 
 package v1.controllers.requestParsers.validators
 
-import v1.controllers.requestParsers.validators.validations._
-import v1.models.errors._
-import v1.models.request.marriageAllowance.{CreateMarriageAllowanceBody, CreateMarriageAllowanceRawData}
-
+import api.controllers.requestParsers.validators.Validator
+import api.controllers.requestParsers.validators.validations._
+import api.models.errors.{ MtdError, PartnerDoBFormatError, PartnerFirstNameFormatError, PartnerNinoFormatError, PartnerSurnameFormatError }
+import v1.models.request.create.{ CreateMarriageAllowanceBody, CreateMarriageAllowanceRawData }
 
 class CreateMarriageAllowanceValidator extends Validator[CreateMarriageAllowanceRawData] {
   private val validationSet = List(parameterFormatValidation, bodyFormatValidation, bodyValueValidation)
 
   override def validate(data: CreateMarriageAllowanceRawData): List[MtdError] = run(validationSet, data)
 
-  private def parameterFormatValidation: ValidationType = (data: CreateMarriageAllowanceRawData) => List(
-    NinoValidation.validate(data.nino)
-  )
+  private def parameterFormatValidation: CreateMarriageAllowanceRawData => List[List[MtdError]] =
+    data =>
+      List(
+        NinoValidation.validate(data.nino)
+    )
 
-  private def bodyFormatValidation: ValidationType = (data: CreateMarriageAllowanceRawData) => List(
-    JsonFormatValidation.validate[CreateMarriageAllowanceBody](data.body.json)
-  )
+  private def bodyFormatValidation: CreateMarriageAllowanceRawData => List[List[MtdError]] =
+    data =>
+      List(
+        JsonFormatValidation.validate[CreateMarriageAllowanceBody](data.body.json)
+    )
 
-  private def bodyValueValidation: ValidationType = (data: CreateMarriageAllowanceRawData) => {
+  private def bodyValueValidation: CreateMarriageAllowanceRawData => List[List[MtdError]] = data => {
     val body = data.body.json.as[CreateMarriageAllowanceBody]
     import body._
 
-    List(Validator.flattenErrors(
-      List(
-        NinoValidation.validate(spouseOrCivilPartnerNino, PartnerNinoFormatError),
-        SurnameValidation.validate(spouseOrCivilPartnerSurname, PartnerSurnameFormatError),
-        Validator.validateOptional(spouseOrCivilPartnerFirstName)(GivenNameValidation.validate(_, PartnerFirstNameFormatError)),
-        Validator.validateOptional(spouseOrCivilPartnerDateOfBirth)(DateFormatValidation.validate(_, PartnerDoBFormatError)),
-      )
-    ))
+    List(
+      Validator.flattenErrors(
+        List(
+          NinoValidation.validate(spouseOrCivilPartnerNino, PartnerNinoFormatError),
+          SurnameValidation.validate(spouseOrCivilPartnerSurname, PartnerSurnameFormatError),
+          Validator.validateOptional(spouseOrCivilPartnerFirstName)(GivenNameValidation.validate(_, PartnerFirstNameFormatError)),
+          Validator.validateOptional(spouseOrCivilPartnerDateOfBirth)(DateFormatValidation.validate(_, PartnerDoBFormatError)),
+        )
+      ))
   }
 }

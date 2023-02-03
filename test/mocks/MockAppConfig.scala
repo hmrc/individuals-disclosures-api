@@ -16,7 +16,7 @@
 
 package mocks
 
-import config.{AppConfig, ConfidenceLevelConfig}
+import config.{ AppConfig, ConfidenceLevelConfig }
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import play.api.Configuration
@@ -30,25 +30,25 @@ trait MockAppConfig extends MockFactory {
     def mtdIdBaseUrl: CallHandler[String] = (() => mockAppConfig.mtdIdBaseUrl: String).expects()
 
     // IFS-1 Config
-    def ifs1BaseUrl: CallHandler[String] = (() => mockAppConfig.ifs1BaseUrl: String).expects()
-    def ifs1Token: CallHandler[String] = (() => mockAppConfig.ifs1Token: String).expects()
-    def ifs1Environment: CallHandler[String] = (() => mockAppConfig.ifs1Env: String).expects()
+    def ifs1BaseUrl: CallHandler[String]                         = (() => mockAppConfig.ifs1BaseUrl: String).expects()
+    def ifs1Token: CallHandler[String]                           = (() => mockAppConfig.ifs1Token: String).expects()
+    def ifs1Environment: CallHandler[String]                     = (() => mockAppConfig.ifs1Env: String).expects()
     def ifs1EnvironmentHeaders: CallHandler[Option[Seq[String]]] = (() => mockAppConfig.ifs1EnvironmentHeaders: Option[Seq[String]]).expects()
 
     // IFS-2 Config
-    def ifs2BaseUrl: CallHandler[String] = (() => mockAppConfig.ifs2BaseUrl: String).expects()
-    def ifs2Token: CallHandler[String] = (() => mockAppConfig.ifs2Token: String).expects()
-    def ifs2Environment: CallHandler[String] = (() => mockAppConfig.ifs2Env: String).expects()
+    def ifs2BaseUrl: CallHandler[String]                         = (() => mockAppConfig.ifs2BaseUrl: String).expects()
+    def ifs2Token: CallHandler[String]                           = (() => mockAppConfig.ifs2Token: String).expects()
+    def ifs2Environment: CallHandler[String]                     = (() => mockAppConfig.ifs2Env: String).expects()
     def ifs2EnvironmentHeaders: CallHandler[Option[Seq[String]]] = (() => mockAppConfig.ifs2EnvironmentHeaders: Option[Seq[String]]).expects()
 
     // Business Rule Config
     def minimumPermittedTaxYear: CallHandler[Int] = (() => mockAppConfig.minimumPermittedTaxYear: Int).expects()
 
     // API Config
-    def featureSwitch: CallHandler[Option[Configuration]] = (() => mockAppConfig.featureSwitch: Option[Configuration]).expects()
-    def apiGatewayContext: CallHandler[String]            = (() => mockAppConfig.apiGatewayContext: String).expects()
-    def apiStatus: CallHandler[String] = (mockAppConfig.apiStatus: String => String).expects("1.0")
-    def endpointsEnabled: CallHandler[Boolean] = (mockAppConfig.endpointsEnabled: String => Boolean).expects("1.0")
+    def featureSwitches: CallHandler[Configuration]                     = (() => mockAppConfig.featureSwitches: Configuration).expects()
+    def apiGatewayContext: CallHandler[String]                          = (() => mockAppConfig.apiGatewayContext: String).expects()
+    def apiStatus: CallHandler[String]                                  = (mockAppConfig.apiStatus: String => String).expects("1.0")
+    def endpointsEnabled: CallHandler[Boolean]                          = (mockAppConfig.endpointsEnabled: String => Boolean).expects("1.0")
     def confidenceLevelCheckEnabled: CallHandler[ConfidenceLevelConfig] = (() => mockAppConfig.confidenceLevelConfig: ConfidenceLevelConfig).expects()
   }
 }

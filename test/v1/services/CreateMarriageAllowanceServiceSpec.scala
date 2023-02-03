@@ -16,12 +16,14 @@
 
 package v1.services
 
-import v1.controllers.EndpointLogContext
+import api.controllers.EndpointLogContext
+import api.models.errors
+import api.models.errors._
+import api.models.outcomes.ResponseWrapper
+import api.services.ServiceSpec
 import v1.mocks.connectors.MockCreateMarriageAllowanceConnector
 import v1.models.domain.Nino
-import v1.models.errors._
-import v1.models.outcomes.ResponseWrapper
-import v1.models.request.marriageAllowance.{ CreateMarriageAllowanceBody, CreateMarriageAllowanceRequest }
+import v1.models.request.create.{ CreateMarriageAllowanceBody, CreateMarriageAllowanceRequest }
 
 import scala.concurrent.Future
 
@@ -57,12 +59,12 @@ class CreateMarriageAllowanceServiceSpec extends ServiceSpec {
 
       "map errors according to spec" when {
 
-        def serviceError(ifsErrorCode: String, error: MtdError): Unit =
-          s"a $ifsErrorCode error is returned from the service" in new Test {
+        def serviceError(downstreamErrorCode: String, error: MtdError): Unit =
+          s"a $downstreamErrorCode error is returned from the service" in new Test {
 
             MockCreateMarriageAllowanceConnector
               .create(createMarriageAllowanceRequest)
-              .returns(Future.successful(Left(ResponseWrapper(correlationId, DownstreamErrors.single(DownstreamErrorCode(ifsErrorCode))))))
+              .returns(Future.successful(Left(ResponseWrapper(correlationId, DownstreamErrors.single(DownstreamErrorCode(downstreamErrorCode))))))
 
             await(service.create(createMarriageAllowanceRequest)) shouldBe Left(ErrorWrapper(correlationId, error))
           }
@@ -71,22 +73,22 @@ class CreateMarriageAllowanceServiceSpec extends ServiceSpec {
           ("INVALID_IDVALUE", NinoFormatError),
           ("DECEASED_PARTICIPANT", RuleDeceasedRecipientError),
           ("RELATIONSHIP_ALREADY_EXISTS", RuleActiveMarriageAllowanceClaimError),
-          ("INVALID_IDTYPE", InternalError),
-          ("END_DATE_CODE_NOT_FOUND", InternalError),
-          ("INVALID_CORRELATIONID", InternalError),
-          ("INVALID_PAYLOAD", InternalError),
+          ("INVALID_IDTYPE", errors.InternalError),
+          ("END_DATE_CODE_NOT_FOUND", errors.InternalError),
+          ("INVALID_CORRELATIONID", errors.InternalError),
+          ("INVALID_PAYLOAD", errors.InternalError),
           ("NINO_OR_TRN_NOT_FOUND", RuleInvalidRequestError),
-          ("INVALID_ACTUAL_END_DATE", InternalError),
-          ("INVALID_PARTICIPANT_END_DATE", InternalError),
-          ("INVALID_PARTICIPANT_START_DATE", InternalError),
-          ("INVALID_RELATIONSHIP_CODE", InternalError),
-          ("PARTICIPANT1_CANNOT_BE_UPDATED", InternalError),
-          ("PARTICIPANT2_CANNOT_BE_UPDATED", InternalError),
-          ("CONFIDENCE_CHECK_FAILED", InternalError),
-          ("CONFIDENCE_CHECK_SURNAME_MISSED", InternalError),
-          ("BAD_GATEWAY", InternalError),
-          ("SERVER_ERROR", InternalError),
-          ("SERVICE_UNAVAILABLE", InternalError)
+          ("INVALID_ACTUAL_END_DATE", errors.InternalError),
+          ("INVALID_PARTICIPANT_END_DATE", errors.InternalError),
+          ("INVALID_PARTICIPANT_START_DATE", errors.InternalError),
+          ("INVALID_RELATIONSHIP_CODE", errors.InternalError),
+          ("PARTICIPANT1_CANNOT_BE_UPDATED", errors.InternalError),
+          ("PARTICIPANT2_CANNOT_BE_UPDATED", errors.InternalError),
+          ("CONFIDENCE_CHECK_FAILED", errors.InternalError),
+          ("CONFIDENCE_CHECK_SURNAME_MISSED", errors.InternalError),
+          ("BAD_GATEWAY", errors.InternalError),
+          ("SERVER_ERROR", errors.InternalError),
+          ("SERVICE_UNAVAILABLE", errors.InternalError)
         )
 
         val extra_errors = List {
