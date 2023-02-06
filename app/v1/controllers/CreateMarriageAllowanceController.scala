@@ -16,109 +16,55 @@
 
 package v1.controllers
 
-import cats.data.EitherT
-import cats.implicits._
-import play.api.libs.json.{ JsValue, Json }
+import api.controllers.{ AuditHandler, AuthorisedController, EndpointLogContext, RequestContext, RequestHandler }
+import api.services.{ AuditService, EnrolmentsAuthService, MtdIdLookupService }
+
+import play.api.libs.json.JsValue
 import play.api.mvc.{ Action, AnyContentAsJson, ControllerComponents }
-import play.mvc.Http.MimeTypes
-import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.audit.http.connector.AuditResult
-import utils.{ IdGenerator, Logging }
+import utils.IdGenerator
 import v1.controllers.requestParsers.CreateMarriageAllowanceRequestParser
-import v1.models.audit.{ AuditEvent, AuditResponse, GenericAuditDetail }
-import v1.models.errors._
-import v1.models.request.marriageAllowance.CreateMarriageAllowanceRawData
-import v1.services.{ AuditService, CreateMarriageAllowanceService, EnrolmentsAuthService, MtdIdLookupService }
+import v1.models.request.create.CreateMarriageAllowanceRawData
+import v1.services.CreateMarriageAllowanceService
 
 import javax.inject.Inject
-import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent.ExecutionContext
 
 class CreateMarriageAllowanceController @Inject()(val authService: EnrolmentsAuthService,
                                                   val lookupService: MtdIdLookupService,
-                                                  requestParser: CreateMarriageAllowanceRequestParser,
+                                                  parser: CreateMarriageAllowanceRequestParser,
                                                   service: CreateMarriageAllowanceService,
                                                   auditService: AuditService,
                                                   cc: ControllerComponents,
                                                   val idGenerator: IdGenerator)(implicit ec: ExecutionContext)
-    extends AuthorisedController(cc)
-    with BaseController
-    with Logging {
+    extends AuthorisedController(cc) {
 
   implicit val endpointLogContext: EndpointLogContext =
-    EndpointLogContext(
-      controllerName = "CreateMarriageAllowanceController",
-      endpointName = "createMarriageAllowance"
-    )
+    EndpointLogContext(controllerName = "CreateMarriageAllowanceController", endpointName = "createMarriageAllowance")
 
-  //noinspection ScalaStyle
   def createMarriageAllowance(nino: String): Action[JsValue] =
     authorisedAction(nino).async(parse.json) { implicit request =>
-      implicit val correlationId: String = idGenerator.generateCorrelationId
-      logger.info(
-        s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] " +
-          s"with CorrelationId: $correlationId")
+      implicit val ctx: RequestContext = RequestContext.from(idGenerator, endpointLogContext)
 
       val rawData: CreateMarriageAllowanceRawData = CreateMarriageAllowanceRawData(
         nino = nino,
         body = AnyContentAsJson(request.body)
       )
 
-      val result =
-        for {
-          parsedRequest   <- EitherT.fromEither[Future](requestParser.parseRequest(rawData))
-          serviceResponse <- EitherT(service.create(parsedRequest))
-        } yield {
-          logger.info(
-            s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
-              s"Success response received with CorrelationId: ${serviceResponse.correlationId}")
-
-          auditSubmission(
-            GenericAuditDetail(request.userDetails,
-                               Map("nino" -> nino),
-                               Some(request.body),
-                               serviceResponse.correlationId,
-                               AuditResponse(httpStatus = CREATED, response = Right(None)))
-          )
-
-          Created
-            .withApiHeaders(serviceResponse.correlationId)
-            .as(MimeTypes.JSON)
-        }
-
-      result.leftMap { errorWrapper =>
-        val resCorrelationId = errorWrapper.correlationId
-        val result           = errorResult(errorWrapper).withApiHeaders(resCorrelationId)
-        logger.warn(
-          s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
-            s"Error response received with CorrelationId: $resCorrelationId")
-
-        auditSubmission(
-          GenericAuditDetail(
-            request.userDetails,
-            Map("nino" -> nino),
+      val requestHandler =
+        RequestHandler
+          .withParser(parser)
+          .withService(service.create)
+          .withNoContentResult(CREATED)
+          .withAuditing(AuditHandler(
+            auditService,
+            auditType = "CreateMarriageAllowanceClaim",
+            transactionName = "create-marriage-allowance-claim",
+            params = Map("nino" -> nino),
             Some(request.body),
-            resCorrelationId,
-            AuditResponse(httpStatus = result.header.status, response = Left(errorWrapper.auditErrors))
-          )
-        )
+            includeResponse = true
+          ))
 
-        result
-      }.merge
+      requestHandler.handleRequest(rawData)
     }
 
-  private def errorResult(errorWrapper: ErrorWrapper) = {
-    (errorWrapper.error: @unchecked) match {
-      case BadRequestError | NinoFormatError | PartnerFirstNameFormatError | PartnerSurnameFormatError | PartnerNinoFormatError |
-          PartnerDoBFormatError | RuleDeceasedRecipientError | RuleInvalidRequestError | RuleActiveMarriageAllowanceClaimError |
-          MtdErrorWithCustomMessage(RuleIncorrectOrEmptyBodyError.code) =>
-        BadRequest(Json.toJson(errorWrapper))
-
-      case InternalError => InternalServerError(Json.toJson(errorWrapper))
-    }
-  }
-
-  private def auditSubmission(details: GenericAuditDetail)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[AuditResult] = {
-    val event = AuditEvent("CreateMarriageAllowanceClaim", "create-marriage-allowance-claim", details)
-    auditService.auditEvent(event)
-  }
 }

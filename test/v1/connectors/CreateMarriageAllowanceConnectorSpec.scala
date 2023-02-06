@@ -16,12 +16,11 @@
 
 package v1.connectors
 
-import mocks.MockAppConfig
-import uk.gov.hmrc.http.HeaderCarrier
-import v1.mocks.MockHttpClient
+import api.connectors.ConnectorSpec
+import api.models.errors._
+import api.models.outcomes.ResponseWrapper
 import v1.models.domain.Nino
-import v1.models.outcomes.ResponseWrapper
-import v1.models.request.marriageAllowance.{CreateMarriageAllowanceBody, CreateMarriageAllowanceRequest}
+import v1.models.request.create.{ CreateMarriageAllowanceBody, CreateMarriageAllowanceRequest }
 
 import scala.concurrent.Future
 
@@ -29,44 +28,58 @@ class CreateMarriageAllowanceConnectorSpec extends ConnectorSpec {
 
   private val nino: String = "AA111111A"
 
-  private val requestBodyModel = CreateMarriageAllowanceBody("TC663795B", Some("John"), "Smith", Some("1987-10-18"))
+  "CreateMarriageAllowanceConnector" when {
+    "a valid request is supplied" should {
+      "return a successful response with the correct correlationId" in new Ifs2Test with Test {
+        protected val outcome = Right(ResponseWrapper(correlationId, ()))
 
-  val createMarriageAllowanceRequest: CreateMarriageAllowanceRequest = CreateMarriageAllowanceRequest(
+        willPost(url = s"$baseUrl/income-tax/marriage-allowance/claim/nino/$nino", body = request.body)
+          .returns(Future.successful(outcome))
+
+        val result = await(connector.create(request))
+
+        result shouldBe outcome
+      }
+    }
+
+    "A request returning a single error" should {
+      "return an unsuccessful response with the correct correlationId and a single error" in new Ifs2Test with Test {
+
+        val outcome = Left(ResponseWrapper(correlationId, NinoFormatError))
+
+        willPost(url = s"$baseUrl/income-tax/marriage-allowance/claim/nino/$nino", body = request.body)
+          .returns(Future.successful(outcome))
+
+        await(connector.create(request)) shouldBe outcome
+      }
+    }
+
+    "a request returning multiple errors" should {
+      "return an unsuccessful response with the correct correlationId and multiple errors" in new Ifs2Test with Test {
+        val outcome = Left(ResponseWrapper(correlationId, Seq(NinoFormatError, InternalError, TaxYearFormatError)))
+
+        willPost(url = s"$baseUrl/income-tax/marriage-allowance/claim/nino/$nino", body = request.body)
+          .returns(Future.successful(outcome))
+
+        await(connector.create(request)) shouldBe outcome
+      }
+    }
+  }
+
+  trait Test {
+    _: ConnectorTest =>
+
+    protected val requestBody: CreateMarriageAllowanceBody =
+      CreateMarriageAllowanceBody("TC663795B", None, "Smith", None)
+
+    protected val request: CreateMarriageAllowanceRequest = CreateMarriageAllowanceRequest(
       nino = Nino(nino),
-      body = requestBodyModel
-  )
+      body = requestBody
+    )
 
-  class Test extends MockHttpClient with MockAppConfig {
-    val connector: CreateMarriageAllowanceConnector = new CreateMarriageAllowanceConnector(
+    protected val connector: CreateMarriageAllowanceConnector = new CreateMarriageAllowanceConnector(
       http = mockHttpClient,
       appConfig = mockAppConfig
     )
-
-    MockAppConfig.ifs2BaseUrl returns baseUrl
-    MockAppConfig.ifs2Token returns "ifs2-token"
-    MockAppConfig.ifs2Environment returns "ifs2-environment"
-    MockAppConfig.ifs2EnvironmentHeaders returns Some(allowedIfs2Headers)
-  }
-
-  "CreateMarriageAllowanceConnector.create" should {
-    "return a 201 status" when {
-      "a valid request is supplied" in new Test {
-        val outcome = Right(ResponseWrapper(correlationId, ()))
-
-        implicit val hc: HeaderCarrier = HeaderCarrier(otherHeaders = otherHeaders ++ Seq("Content-Type" -> "application/json"))
-        val requiredIfsHeadersPost: Seq[(String, String)] = requiredIfs2Headers ++ Seq("Content-Type" -> "application/json")
-
-        MockedHttpClient
-          .post(
-            url = s"$baseUrl/income-tax/marriage-allowance/claim/nino/$nino",
-            config = dummyIfs2HeaderCarrierConfig,
-            body = createMarriageAllowanceRequest.body,
-            requiredHeaders = requiredIfsHeadersPost,
-            excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-          ).returns(Future.successful(outcome))
-
-        await(connector.create(createMarriageAllowanceRequest)) shouldBe outcome
-      }
-    }
   }
 }

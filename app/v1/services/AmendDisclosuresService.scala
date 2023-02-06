@@ -16,36 +16,27 @@
 
 package v1.services
 
-import cats.data.EitherT
+import api.controllers.RequestContext
+import api.models.errors._
+import api.services.BaseService
 import cats.implicits._
-import uk.gov.hmrc.http.HeaderCarrier
-import utils.Logging
 import v1.connectors.AmendDisclosuresConnector
-import v1.controllers.EndpointLogContext
-import v1.models.errors._
-import v1.models.outcomes.ResponseWrapper
-import v1.models.request.disclosures.AmendDisclosuresRequest
-import v1.support.DownstreamResponseMappingSupport
+import v1.models.request.amend.AmendDisclosuresRequest
 
 import javax.inject.{ Inject, Singleton }
 import scala.concurrent.{ ExecutionContext, Future }
 
 @Singleton
-class AmendDisclosuresService @Inject()(connector: AmendDisclosuresConnector) extends DownstreamResponseMappingSupport with Logging {
+class AmendDisclosuresService @Inject()(connector: AmendDisclosuresConnector) extends BaseService {
 
-  def amendDisclosures(request: AmendDisclosuresRequest)(implicit hc: HeaderCarrier,
-                                                         ec: ExecutionContext,
-                                                         logContext: EndpointLogContext,
-                                                         correlationId: String): Future[Either[ErrorWrapper, ResponseWrapper[Unit]]] = {
+  def amendDisclosures(request: AmendDisclosuresRequest)(implicit ctx: RequestContext, ec: ExecutionContext): Future[AmendPensionChargesOutcome] = {
 
-    val result = for {
-      downstreamResponseWrapper <- EitherT(connector.amendDisclosures(request)).leftMap(mapDownstreamErrors(ifsErrorMap))
-    } yield downstreamResponseWrapper
-
-    result.value
+    connector
+      .amendDisclosures(request)
+      .map(_.leftMap(mapDownstreamErrors(downstreamErrorMap)))
   }
 
-  private def ifsErrorMap = {
+  private def downstreamErrorMap = {
     val error = Map(
       "INVALID_NINO"                       -> NinoFormatError,
       "INVALID_TAX_YEAR"                   -> TaxYearFormatError,

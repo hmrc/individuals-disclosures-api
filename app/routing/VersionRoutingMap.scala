@@ -17,7 +17,7 @@
 package routing
 
 import com.google.inject.ImplementedBy
-import config.{ AppConfig, FeatureSwitch }
+import config.{ AppConfig, FeatureSwitches }
 import definition.Versions.VERSION_1
 import play.api.routing.Router
 import utils.Logging
@@ -44,7 +44,7 @@ case class VersionRoutingMapImpl @Inject()(appConfig: AppConfig,
     extends VersionRoutingMap
     with Logging {
 
-  val featureSwitch: FeatureSwitch = FeatureSwitch(appConfig.featureSwitch)
+  val featureSwitch: FeatureSwitches = FeatureSwitches(appConfig.featureSwitches)
 
   val map: Map[String, Router] = Map(
     VERSION_1 -> {

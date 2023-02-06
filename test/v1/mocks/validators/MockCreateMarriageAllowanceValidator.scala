@@ -19,14 +19,14 @@ package v1.mocks.validators
 import org.scalamock.handlers.CallHandler1
 import org.scalamock.scalatest.MockFactory
 import v1.controllers.requestParsers.validators.CreateMarriageAllowanceValidator
-import v1.models.errors.MtdError
-import v1.models.request.marriageAllowance.CreateMarriageAllowanceRawData
-
+import api.models.errors.MtdError
+import v1.models.request.create.CreateMarriageAllowanceRawData
 
 class MockCreateMarriageAllowanceValidator extends MockFactory {
   val mockCreateMarriageAllowanceValidator: CreateMarriageAllowanceValidator = mock[CreateMarriageAllowanceValidator]
 
   object MockCreateMarriageAllowanceValidator {
+
     def validate(data: CreateMarriageAllowanceRawData): CallHandler1[CreateMarriageAllowanceRawData, List[MtdError]] =
       (mockCreateMarriageAllowanceValidator
         .validate(_: CreateMarriageAllowanceRawData))

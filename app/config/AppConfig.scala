@@ -17,10 +17,10 @@
 package config
 
 import com.typesafe.config.Config
-import play.api.{ConfigLoader, Configuration}
+import play.api.{ ConfigLoader, Configuration }
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
-import javax.inject.{Inject, Singleton}
+import javax.inject.{ Inject, Singleton }
 
 trait AppConfig {
   // MTD ID Lookup Config
@@ -32,11 +32,17 @@ trait AppConfig {
   def ifs1Token: String
   def ifs1EnvironmentHeaders: Option[Seq[String]]
 
+  lazy val ifs1DownstreamConfig: DownstreamConfig =
+    DownstreamConfig(baseUrl = ifs1BaseUrl, env = ifs1Env, token = ifs1Token, environmentHeaders = ifs1EnvironmentHeaders)
+
   // IFS-2 Config
   def ifs2BaseUrl: String
   def ifs2Env: String
   def ifs2Token: String
   def ifs2EnvironmentHeaders: Option[Seq[String]]
+
+  lazy val ifs2DownstreamConfig: DownstreamConfig =
+    DownstreamConfig(baseUrl = ifs2BaseUrl, env = ifs2Env, token = ifs2Token, environmentHeaders = ifs2EnvironmentHeaders)
 
   // Business Rule Config
   def minimumPermittedTaxYear: Int
@@ -45,36 +51,36 @@ trait AppConfig {
   def apiGatewayContext: String
   def confidenceLevelConfig: ConfidenceLevelConfig
   def apiStatus(version: String): String
-  def featureSwitch: Option[Configuration]
+  def featureSwitches: Configuration
   def endpointsEnabled(version: String): Boolean
 }
 
 @Singleton
 class AppConfigImpl @Inject()(config: ServicesConfig, configuration: Configuration) extends AppConfig {
   // MTD ID Lookup Config
-  val mtdIdBaseUrl: String = config.baseUrl(serviceName ="mtd-id-lookup")
+  val mtdIdBaseUrl: String = config.baseUrl(serviceName = "mtd-id-lookup")
 
   // IFS-1 Config
-  val ifs1BaseUrl: String = config.baseUrl("ifs1")
-  val ifs1Env: String = config.getString("microservice.services.ifs1.env")
-  val ifs1Token: String = config.getString("microservice.services.ifs1.token")
+  val ifs1BaseUrl: String                         = config.baseUrl("ifs1")
+  val ifs1Env: String                             = config.getString("microservice.services.ifs1.env")
+  val ifs1Token: String                           = config.getString("microservice.services.ifs1.token")
   val ifs1EnvironmentHeaders: Option[Seq[String]] = configuration.getOptional[Seq[String]]("microservice.services.ifs1.environmentHeaders")
 
   // IFS-2 Config
-  val ifs2BaseUrl: String = config.baseUrl("ifs2")
-  val ifs2Env: String = config.getString("microservice.services.ifs2.env")
-  val ifs2Token: String = config.getString("microservice.services.ifs2.token")
+  val ifs2BaseUrl: String                         = config.baseUrl("ifs2")
+  val ifs2Env: String                             = config.getString("microservice.services.ifs2.env")
+  val ifs2Token: String                           = config.getString("microservice.services.ifs2.token")
   val ifs2EnvironmentHeaders: Option[Seq[String]] = configuration.getOptional[Seq[String]]("microservice.services.ifs2.environmentHeaders")
 
   // Business rule Config
   val minimumPermittedTaxYear: Int = config.getInt("minimumPermittedTaxYear")
 
   // API Config
-  val apiGatewayContext: String = config.getString("api.gateway.context")
+  val apiGatewayContext: String                    = config.getString("api.gateway.context")
   val confidenceLevelConfig: ConfidenceLevelConfig = configuration.get[ConfidenceLevelConfig](s"api.confidence-level-check")
-  def apiStatus(version: String): String = config.getString(s"api.$version.status")
-  def featureSwitch: Option[Configuration] = configuration.getOptional[Configuration](s"feature-switch")
-  def endpointsEnabled(version: String): Boolean = config.getBoolean(s"api.$version.endpoints.enabled")
+  def apiStatus(version: String): String           = config.getString(s"api.$version.status")
+  def featureSwitches: Configuration               = configuration.getOptional[Configuration](s"feature-switch").getOrElse(Configuration.empty)
+  def endpointsEnabled(version: String): Boolean   = config.getBoolean(s"api.$version.endpoints.enabled")
 }
 
 trait FixedConfig {
@@ -83,6 +89,7 @@ trait FixedConfig {
 }
 
 case class ConfidenceLevelConfig(definitionEnabled: Boolean, authValidationEnabled: Boolean)
+
 object ConfidenceLevelConfig {
   implicit val configLoader: ConfigLoader[ConfidenceLevelConfig] = (rootConfig: Config, path: String) => {
     val config = rootConfig.getConfig(path)

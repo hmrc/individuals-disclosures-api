@@ -16,16 +16,15 @@
 
 package v1.mocks.services
 
+import api.controllers.RequestContext
+import api.models.errors.ErrorWrapper
+import api.models.outcomes.ResponseWrapper
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
-import uk.gov.hmrc.http.HeaderCarrier
-import v1.controllers.EndpointLogContext
-import v1.models.errors.ErrorWrapper
-import v1.models.outcomes.ResponseWrapper
-import v1.models.request.disclosures.AmendDisclosuresRequest
+import v1.models.request.amend.AmendDisclosuresRequest
 import v1.services.AmendDisclosuresService
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{ ExecutionContext, Future }
 
 trait MockAmendDisclosuresService extends MockFactory {
 
@@ -35,8 +34,8 @@ trait MockAmendDisclosuresService extends MockFactory {
 
     def amendDisclosures(requestData: AmendDisclosuresRequest): CallHandler[Future[Either[ErrorWrapper, ResponseWrapper[Unit]]]] = {
       (mockAmendDisclosuresService
-        .amendDisclosures(_: AmendDisclosuresRequest)(_: HeaderCarrier, _: ExecutionContext, _: EndpointLogContext, _: String))
-        .expects(requestData, *, *, *, *)
+        .amendDisclosures(_: AmendDisclosuresRequest)(_: RequestContext, _: ExecutionContext))
+        .expects(requestData, *, *)
     }
   }
 

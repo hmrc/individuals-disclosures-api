@@ -16,19 +16,28 @@
 
 package v1.controllers.requestParsers
 
-import play.api.libs.json.{JsValue, Json}
+import api.models.errors.{
+  BadRequestError,
+  ErrorWrapper,
+  MtdError,
+  NinoFormatError,
+  RuleTaxYearNotSupportedError,
+  RuleTaxYearRangeInvalidError,
+  RuleVoluntaryClass2ValueInvalidError,
+  SRNFormatError,
+  TaxYearFormatError
+}
+import play.api.libs.json.{ JsValue, Json }
 import play.api.mvc.AnyContentAsJson
 import support.UnitSpec
 import v1.models.domain.Nino
 import v1.mocks.validators.MockAmendDisclosuresValidator
-import v1.models.errors._
-import v1.models.request.disclosures._
-
+import v1.models.request.amend._
 
 class AmendDisclosuresRequestParserSpec extends UnitSpec {
 
-  val nino: String = "AA123456B"
-  val taxYear: String = "2021-22"
+  val nino: String                   = "AA123456B"
+  val taxYear: String                = "2021-22"
   implicit val correlationId: String = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
 
   private val validRequestBodyJson: JsValue = Json.parse(
@@ -95,7 +104,8 @@ class AmendDisclosuresRequestParserSpec extends UnitSpec {
 
     "return an ErrorWrapper" when {
       "a single validation error occurs" in new Test {
-        MockAmendDisclosuresValidator.validate(amendDisclosuresRawData.copy(nino = "notANino"))
+        MockAmendDisclosuresValidator
+          .validate(amendDisclosuresRawData.copy(nino = "notANino"))
           .returns(List(NinoFormatError))
 
         parser.parseRequest(amendDisclosuresRawData.copy(nino = "notANino")) shouldBe
@@ -103,7 +113,8 @@ class AmendDisclosuresRequestParserSpec extends UnitSpec {
       }
 
       "multiple path parameter validation errors occur" in new Test {
-        MockAmendDisclosuresValidator.validate(amendDisclosuresRawData.copy(nino = "notANino", taxYear = "notATaxYear"))
+        MockAmendDisclosuresValidator
+          .validate(amendDisclosuresRawData.copy(nino = "notANino", taxYear = "notATaxYear"))
           .returns(List(NinoFormatError, TaxYearFormatError))
 
         parser.parseRequest(amendDisclosuresRawData.copy(nino = "notANino", taxYear = "notATaxYear")) shouldBe
@@ -111,7 +122,8 @@ class AmendDisclosuresRequestParserSpec extends UnitSpec {
       }
 
       "path parameter TaxYearNotSupported validation occurs" in new Test {
-        MockAmendDisclosuresValidator.validate(amendDisclosuresRawData.copy(taxYear = "2019-20"))
+        MockAmendDisclosuresValidator
+          .validate(amendDisclosuresRawData.copy(taxYear = "2019-20"))
           .returns(List(RuleTaxYearNotSupportedError))
 
         parser.parseRequest(amendDisclosuresRawData.copy(taxYear = "2019-20")) shouldBe
@@ -144,29 +156,34 @@ class AmendDisclosuresRequestParserSpec extends UnitSpec {
 
         private val allInvalidValueErrors = List(
           RuleTaxYearRangeInvalidError.copy(
-            paths = Some(List(
-              "/taxAvoidance/1/taxYear"
-            ))
+            paths = Some(
+              List(
+                "/taxAvoidance/1/taxYear"
+              ))
           ),
           TaxYearFormatError.copy(
-            paths = Some(List(
-              "/taxAvoidance/0/taxYear"
-            ))
+            paths = Some(
+              List(
+                "/taxAvoidance/0/taxYear"
+              ))
           ),
           RuleVoluntaryClass2ValueInvalidError.copy(
-            paths = Some(List(
-              "/class2Nics/class2VoluntaryContributions"
-            ))
+            paths = Some(
+              List(
+                "/class2Nics/class2VoluntaryContributions"
+              ))
           ),
           SRNFormatError.copy(
-            paths = Some(List(
-              "/taxAvoidance/0/srn",
-              "/taxAvoidance/1/srn"
-            ))
+            paths = Some(
+              List(
+                "/taxAvoidance/0/srn",
+                "/taxAvoidance/1/srn"
+              ))
           )
         )
 
-        MockAmendDisclosuresValidator.validate(amendDisclosuresRawData.copy(body = allInvalidValueRawRequestBody))
+        MockAmendDisclosuresValidator
+          .validate(amendDisclosuresRawData.copy(body = allInvalidValueRawRequestBody))
           .returns(allInvalidValueErrors)
 
         parser.parseRequest(amendDisclosuresRawData.copy(body = allInvalidValueRawRequestBody)) shouldBe

@@ -16,12 +16,14 @@
 
 package v1.services
 
-import v1.controllers.EndpointLogContext
+import api.controllers.EndpointLogContext
+import api.models.errors
+import api.models.errors._
+import api.models.outcomes.ResponseWrapper
+import api.services.ServiceSpec
 import v1.mocks.connectors.MockAmendDisclosuresConnector
 import v1.models.domain.Nino
-import v1.models.errors._
-import v1.models.outcomes.ResponseWrapper
-import v1.models.request.disclosures._
+import v1.models.request.amend._
 
 import scala.concurrent.Future
 
@@ -70,12 +72,12 @@ class AmendDisclosuresServiceSpec extends ServiceSpec {
 
       "map errors according to spec" when {
 
-        def serviceError(ifsErrorCode: String, error: MtdError): Unit =
-          s"a $ifsErrorCode error is returned from the service" in new Test {
+        def serviceError(downstreamErrorCode: String, error: MtdError): Unit =
+          s"a $downstreamErrorCode error is returned from the service" in new Test {
 
             MockAmendDisclosuresConnector
               .amendDisclosures(amendDisclosuresRequest)
-              .returns(Future.successful(Left(ResponseWrapper(correlationId, DownstreamErrors.single(DownstreamErrorCode(ifsErrorCode))))))
+              .returns(Future.successful(Left(ResponseWrapper(correlationId, DownstreamErrors.single(DownstreamErrorCode(downstreamErrorCode))))))
 
             await(service.amendDisclosures(amendDisclosuresRequest)) shouldBe Left(ErrorWrapper(correlationId, error))
           }
@@ -83,12 +85,12 @@ class AmendDisclosuresServiceSpec extends ServiceSpec {
         val input = Seq(
           ("INVALID_NINO", NinoFormatError),
           ("INVALID_TAX_YEAR", TaxYearFormatError),
-          ("INVALID_CORRELATIONID", InternalError),
-          ("INVALID_PAYLOAD", InternalError),
+          ("INVALID_CORRELATIONID", errors.InternalError),
+          ("INVALID_PAYLOAD", errors.InternalError),
           ("INCOME_SOURCE_NOT_FOUND", NotFoundError),
           ("VOLUNTARY_CLASS2_CANNOT_BE_CHANGED", RuleVoluntaryClass2CannotBeChangedError),
-          ("SERVER_ERROR", InternalError),
-          ("SERVICE_UNAVAILABLE", InternalError)
+          ("SERVER_ERROR", errors.InternalError),
+          ("SERVICE_UNAVAILABLE", errors.InternalError)
         )
 
         val extra_error = Seq(
