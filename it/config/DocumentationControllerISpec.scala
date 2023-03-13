@@ -17,7 +17,7 @@
 package config
 
 import play.api.http.Status
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.{ JsValue, Json }
 import play.api.libs.ws.WSResponse
 import support.IntegrationBaseSpec
 
@@ -68,12 +68,6 @@ class DocumentationControllerISpec extends IntegrationBaseSpec {
   }
 
   "a documentation request" must {
-    "return the documentation when RAML" in {
-      val response: WSResponse = await(buildRequest("/api/conf/1.0/application.raml").get())
-      response.status shouldBe Status.OK
-      response.body[String] should startWith("#%RAML 1.0")
-    }
-
     "return the documentation when OAS" in {
       val response: WSResponse = await(buildRequest("/api/conf/1.0/application.yaml").get())
       response.status shouldBe Status.OK
