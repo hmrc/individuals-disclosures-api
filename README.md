@@ -21,19 +21,6 @@ Run unit tests: `sbt test`
 
 Run integration tests: `sbt it:test`
 
-## To view the RAML
-To view documentation locally, ensure the Individuals Disclosures API is running, and run api-documentation-frontend:
-
-```
-./run_local_with_dependencies.sh
-```
-
-Then go to http://localhost:9680/api-documentation/docs/preview and enter the full URL path to the RAML file with the appropriate port and version:
-
-```
-http://localhost:7799/api/conf/1.0/application.raml
-```
-
 ## Changelog
 
 You can see our changelog [here](https://github.com/hmrc/income-tax-mtd-changelog/wiki)
