@@ -31,23 +31,6 @@ import scala.concurrent.{ ExecutionContext, Future }
 
 class EnrolmentsAuthServiceSpec extends ServiceSpec with MockAppConfig {
 
-  trait Test {
-    val mockAuthConnector: AuthConnector = mock[AuthConnector]
-
-    val authRetrievals: Retrieval[Option[AffinityGroup] ~ Enrolments] = affinityGroup and authorisedEnrolments
-
-    object MockedAuthConnector {
-
-      def authorised[A](predicate: Predicate, retrievals: Retrieval[A]): CallHandler[Future[A]] = {
-        (mockAuthConnector
-          .authorise[A](_: Predicate, _: Retrieval[A])(_: HeaderCarrier, _: ExecutionContext))
-          .expects(predicate, retrievals, *, *)
-      }
-    }
-
-    lazy val target = new EnrolmentsAuthService(mockAuthConnector, mockAppConfig)
-  }
-
   private val extraPredicatesAnd = CompositePredicate(
     _,
     AlternatePredicate(
@@ -249,8 +232,10 @@ class EnrolmentsAuthServiceSpec extends ServiceSpec with MockAppConfig {
     val authRetrievals: Retrieval[Option[AffinityGroup] ~ Enrolments] = affinityGroup and authorisedEnrolments
 
     object MockedAuthConnector {
+
       def authorised[A](predicate: Predicate, retrievals: Retrieval[A]): CallHandler[Future[A]] = {
-        (mockAuthConnector.authorise[A](_: Predicate, _: Retrieval[A])(_: HeaderCarrier, _: ExecutionContext))
+        (mockAuthConnector
+          .authorise[A](_: Predicate, _: Retrieval[A])(_: HeaderCarrier, _: ExecutionContext))
           .expects(predicate, retrievals, *, *)
       }
     }
