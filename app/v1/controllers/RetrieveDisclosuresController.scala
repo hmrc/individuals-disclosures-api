@@ -16,32 +16,28 @@
 
 package v1.controllers
 
-import cats.data.EitherT
-import cats.implicits._
-import javax.inject.{Inject, Singleton}
-import play.api.libs.json.Json
-import play.api.mvc.{Action, AnyContent, ControllerComponents}
-import play.mvc.Http.MimeTypes
-import utils.{IdGenerator, Logging}
-import v1.connectors.DownstreamUri.Ifs1Uri
-import v1.controllers.requestParsers.DeleteRetrieveRequestParser
-import v1.hateoas.HateoasFactory
-import v1.models.errors._
-import v1.models.request.DeleteRetrieveRawData
-import v1.models.response.retrieveDisclosures.{RetrieveDisclosuresHateoasData, RetrieveDisclosuresResponse}
-import v1.services.{DeleteRetrieveService, EnrolmentsAuthService, MtdIdLookupService}
+import api.controllers._
+import api.hateoas.HateoasFactory
+import api.services.{ EnrolmentsAuthService, MtdIdLookupService }
+import play.api.mvc.{ Action, AnyContent, ControllerComponents }
+import utils.IdGenerator
+import v1.controllers.requestParsers.RetrieveDisclosuresRequestParser
+import v1.models.request.retrieve.RetrieveDisclosuresRawData
+import v1.models.response.retrieveDisclosures.RetrieveDisclosuresHateoasData
+import v1.services._
 
-import scala.concurrent.{ExecutionContext, Future}
+import javax.inject.{ Inject, Singleton }
+import scala.concurrent.ExecutionContext
 
 @Singleton
 class RetrieveDisclosuresController @Inject()(val authService: EnrolmentsAuthService,
                                               val lookupService: MtdIdLookupService,
-                                              requestParser: DeleteRetrieveRequestParser,
-                                              service: DeleteRetrieveService,
+                                              parser: RetrieveDisclosuresRequestParser,
+                                              service: RetrieveDisclosuresService,
                                               hateoasFactory: HateoasFactory,
                                               cc: ControllerComponents,
                                               val idGenerator: IdGenerator)(implicit ec: ExecutionContext)
-  extends AuthorisedController(cc) with BaseController with Logging {
+    extends AuthorisedController(cc) {
 
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(
@@ -51,59 +47,20 @@ class RetrieveDisclosuresController @Inject()(val authService: EnrolmentsAuthSer
 
   def retrieveDisclosures(nino: String, taxYear: String): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>
+      implicit val ctx: RequestContext = RequestContext.from(idGenerator, endpointLogContext)
 
-      implicit val correlationId: String = idGenerator.generateCorrelationId
-      logger.info(
-        s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] " +
-          s"with CorrelationId: $correlationId"
-      )
-
-      val rawData: DeleteRetrieveRawData = DeleteRetrieveRawData(
+      val rawData: RetrieveDisclosuresRawData = RetrieveDisclosuresRawData(
         nino = nino,
         taxYear = taxYear
       )
 
-      implicit val ifs1Uri: Ifs1Uri[RetrieveDisclosuresResponse] = Ifs1Uri[RetrieveDisclosuresResponse](
-        s"income-tax/disclosures/$nino/$taxYear"
-      )
+      val requestHandler =
+        RequestHandler
+          .withParser(parser)
+          .withService(service.retrieve)
+          .withHateoasResult(hateoasFactory)(RetrieveDisclosuresHateoasData(nino, taxYear))
 
-      val result =
-        for {
-          _ <- EitherT.fromEither[Future](requestParser.parseRequest(rawData))
-          serviceResponse <- EitherT(service.retrieve[RetrieveDisclosuresResponse]())
-          vendorResponse <- EitherT.fromEither[Future](
-            hateoasFactory
-              .wrap(serviceResponse.responseData, RetrieveDisclosuresHateoasData(nino, taxYear))
-              .asRight[ErrorWrapper])
-        } yield {
-          logger.info(
-            s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
-              s"Success response received with CorrelationId: ${serviceResponse.correlationId}"
-          )
+      requestHandler.handleRequest(rawData)
 
-          Ok(Json.toJson(vendorResponse))
-            .withApiHeaders(serviceResponse.correlationId)
-            .as(MimeTypes.JSON)
-        }
-
-      result.leftMap { errorWrapper =>
-        val resCorrelationId = errorWrapper.correlationId
-        val result = errorResult(errorWrapper).withApiHeaders(resCorrelationId)
-        logger.warn(
-          s"[${endpointLogContext.controllerName}][${endpointLogContext.endpointName}] - " +
-            s"Error response received with CorrelationId: $resCorrelationId"
-        )
-
-        result
-      }.merge
     }
-
-  private def errorResult(errorWrapper: ErrorWrapper) = {
-    (errorWrapper.error: @unchecked) match {
-      case BadRequestError | NinoFormatError | TaxYearFormatError | RuleTaxYearNotSupportedError |
-           RuleTaxYearRangeInvalidError => BadRequest(Json.toJson(errorWrapper))
-      case NotFoundError => NotFound(Json.toJson(errorWrapper))
-      case InternalError => InternalServerError(Json.toJson(errorWrapper))
-    }
-  }
 }

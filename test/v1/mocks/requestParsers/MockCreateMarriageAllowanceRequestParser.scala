@@ -16,17 +16,18 @@
 
 package v1.mocks.requestParsers
 
+import api.models.errors.ErrorWrapper
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import v1.controllers.requestParsers.CreateMarriageAllowanceRequestParser
-import v1.models.errors.ErrorWrapper
-import v1.models.request.marriageAllowance.{CreateMarriageAllowanceRawData, CreateMarriageAllowanceRequest}
+import v1.models.request.create.{ CreateMarriageAllowanceRawData, CreateMarriageAllowanceRequest }
 
 trait MockCreateMarriageAllowanceRequestParser extends MockFactory {
 
   val mockCreateMarriageAllowanceRequestParser: CreateMarriageAllowanceRequestParser = mock[CreateMarriageAllowanceRequestParser]
 
   object MockCreateMarriageAllowanceRequestParser {
+
     def parse(data: CreateMarriageAllowanceRawData): CallHandler[Either[ErrorWrapper, CreateMarriageAllowanceRequest]] = {
       (mockCreateMarriageAllowanceRequestParser.parseRequest(_: CreateMarriageAllowanceRawData)(_: String)).expects(data, *)
     }

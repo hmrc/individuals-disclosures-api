@@ -16,13 +16,14 @@
 
 package v1.mocks.connectors
 
+import api.connectors.DownstreamOutcome
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
-import v1.connectors.{CreateMarriageAllowanceConnector, DownstreamOutcome}
-import v1.models.request.marriageAllowance.CreateMarriageAllowanceRequest
+import v1.connectors.CreateMarriageAllowanceConnector
+import v1.models.request.create.CreateMarriageAllowanceRequest
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{ ExecutionContext, Future }
 
 trait MockCreateMarriageAllowanceConnector extends MockFactory {
 

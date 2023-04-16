@@ -16,16 +16,15 @@
 
 package v1.controllers.requestParsers.validators
 
+import api.models.errors._
 import play.api.libs.json.Json
 import play.api.mvc.AnyContentAsJson
 import support.UnitSpec
-import v1.models.errors._
-import v1.models.request.marriageAllowance.CreateMarriageAllowanceRawData
-
+import v1.models.request.create.CreateMarriageAllowanceRawData
 
 class CreateMarriageAllowanceValidatorSpec extends UnitSpec {
   val validator = new CreateMarriageAllowanceValidator
-  val nino = "AA123456A"
+  val nino      = "AA123456A"
 
   val body: AnyContentAsJson = AnyContentAsJson(Json.parse("""{
       |  "spouseOrCivilPartnerNino": "AA123456B",

@@ -16,14 +16,15 @@
 
 package v1.controllers.requestParsers
 
+import api.controllers.requestParsers.RequestParser
 import v1.controllers.requestParsers.validators.AmendDisclosuresValidator
 import v1.models.domain.Nino
-import v1.models.request.disclosures.{AmendDisclosuresRawData, AmendDisclosuresRequest, AmendDisclosuresRequestBody}
+import v1.models.request.amend.{ AmendDisclosuresRawData, AmendDisclosuresRequest, AmendDisclosuresRequestBody }
 
 import javax.inject.Inject
 
 class AmendDisclosuresRequestParser @Inject()(val validator: AmendDisclosuresValidator)
-  extends RequestParser[AmendDisclosuresRawData, AmendDisclosuresRequest] {
+    extends RequestParser[AmendDisclosuresRawData, AmendDisclosuresRequest] {
 
   override protected def requestFor(data: AmendDisclosuresRawData): AmendDisclosuresRequest =
     AmendDisclosuresRequest(Nino(data.nino), data.taxYear, data.body.json.as[AmendDisclosuresRequestBody])

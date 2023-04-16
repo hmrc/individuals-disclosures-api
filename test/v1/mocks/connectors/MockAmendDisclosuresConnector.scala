@@ -16,13 +16,14 @@
 
 package v1.mocks.connectors
 
+import api.connectors.DownstreamOutcome
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
-import v1.connectors.{AmendDisclosuresConnector, DownstreamOutcome}
-import v1.models.request.disclosures.AmendDisclosuresRequest
+import v1.connectors.AmendDisclosuresConnector
+import v1.models.request.amend.AmendDisclosuresRequest
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{ ExecutionContext, Future }
 
 trait MockAmendDisclosuresConnector extends MockFactory {
 

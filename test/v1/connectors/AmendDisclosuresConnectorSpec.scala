@@ -16,68 +16,67 @@
 
 package v1.connectors
 
-import mocks.MockAppConfig
-import uk.gov.hmrc.http.HeaderCarrier
+import api.connectors.ConnectorSpec
+import api.models.errors._
+import api.models.outcomes.ResponseWrapper
 import v1.models.domain.Nino
-import v1.mocks.MockHttpClient
-import v1.models.outcomes.ResponseWrapper
-import v1.models.request.disclosures._
+import v1.models.request.amend._
 
 import scala.concurrent.Future
 
 class AmendDisclosuresConnectorSpec extends ConnectorSpec {
-  private val nino: String = "AA111111A"
+  private val nino: String    = "AA111111A"
   private val taxYear: String = "2021-22"
 
-  val taxAvoidanceModel: Seq[AmendTaxAvoidanceItem] = Seq(
-    AmendTaxAvoidanceItem(
-      srn = "14211123",
-      taxYear = "2020-21"
+  "AmendDisclosuresConnector" when {
+    "a valid request is supplied" should {
+      "return a successful response with the correct correlationId" in new Ifs1Test with Test {
+
+        val expected = Right(ResponseWrapper(correlationId, ()))
+
+        willPut(url = s"$baseUrl/income-tax/disclosures/$nino/$taxYear", body = request.body).returns(Future.successful(expected))
+
+        await(connector.amendDisclosures(request)) shouldBe expected
+      }
+    }
+
+    "A request returning a single error" should {
+      "return an unsuccessful response with the correct correlationId and a single error" in new Ifs1Test with Test {
+
+        val expected = Left(ResponseWrapper(correlationId, NinoFormatError))
+
+        willPut(url = s"$baseUrl/income-tax/disclosures/$nino/$taxYear", body = request.body).returns(Future.successful(expected))
+
+        await(connector.amendDisclosures(request)) shouldBe expected
+      }
+    }
+
+    "a request returning multiple errors" should {
+      "return an unsuccessful response with the correct correlationId and multiple errors" in new Ifs1Test with Test {
+        val expected = Left(ResponseWrapper(correlationId, Seq(NinoFormatError, InternalError, TaxYearFormatError)))
+
+        willPut(url = s"$baseUrl/income-tax/disclosures/$nino/$taxYear", body = request.body).returns(Future.successful(expected))
+
+        await(connector.amendDisclosures(request)) shouldBe expected
+      }
+    }
+  }
+
+  trait Test {
+    _: ConnectorTest =>
+
+    val requestBody: AmendDisclosuresRequestBody =
+      AmendDisclosuresRequestBody(None, None)
+
+    protected val request: AmendDisclosuresRequest = AmendDisclosuresRequest(
+      nino = Nino(nino),
+      taxYear = taxYear,
+      body = requestBody
     )
-  )
 
-  val class2NicsModel: AmendClass2Nics = AmendClass2Nics(class2VoluntaryContributions = Some(true))
-
-  val amendDisclosuresRequest: AmendDisclosuresRequest = AmendDisclosuresRequest(
-    nino = Nino(nino),
-    taxYear = taxYear,
-    body = AmendDisclosuresRequestBody(
-      taxAvoidance = Some(taxAvoidanceModel),
-      class2Nics = Some(class2NicsModel)
-    )
-  )
-
-  class Test extends MockHttpClient with MockAppConfig {
     val connector: AmendDisclosuresConnector = new AmendDisclosuresConnector(
       http = mockHttpClient,
       appConfig = mockAppConfig
     )
-
-    MockAppConfig.ifs1BaseUrl returns baseUrl
-    MockAppConfig.ifs1Token returns "ifs1-token"
-    MockAppConfig.ifs1Environment returns "ifs1-environment"
-    MockAppConfig.ifs1EnvironmentHeaders returns Some(allowedIfs1Headers)
-  }
-
-  "AmendDisclosuresConnector" when {
-    "amendDisclosures" must {
-      "return a 204 status for a success scenario" in new Test {
-        val outcome = Right(ResponseWrapper(correlationId, ()))
-
-        implicit val hc: HeaderCarrier = HeaderCarrier(otherHeaders = otherHeaders ++ Seq("Content-Type" -> "application/json"))
-        val requiredIfsHeadersPut: Seq[(String, String)] = requiredIfs1Headers ++ Seq("Content-Type" -> "application/json")
-
-        MockedHttpClient
-          .put(
-            url = s"$baseUrl/income-tax/disclosures/$nino/$taxYear",
-            config = dummyIfs1HeaderCarrierConfig,
-            body = amendDisclosuresRequest.body,
-            requiredHeaders = requiredIfsHeadersPut,
-            excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-          ).returns(Future.successful(outcome))
-
-        await(connector.amendDisclosures(amendDisclosuresRequest)) shouldBe outcome
-      }
-    }
   }
 }

@@ -19,10 +19,9 @@ package definition
 import config.ConfidenceLevelConfig
 import definition.APIStatus.{ ALPHA, BETA }
 import definition.Versions.VERSION_1
-import mocks.MockAppConfig
+import mocks.{ MockAppConfig, MockHttpClient }
 import support.UnitSpec
 import uk.gov.hmrc.auth.core.ConfidenceLevel
-import v1.mocks.MockHttpClient
 
 class ApiDefinitionFactorySpec extends UnitSpec {
 
