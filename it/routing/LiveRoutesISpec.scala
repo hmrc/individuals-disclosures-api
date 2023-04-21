@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,28 +16,28 @@
 
 package routing
 
+import api.models.errors.NotFoundError
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status._
-import play.api.libs.json.{JsValue, Json}
-import play.api.libs.ws.{WSRequest, WSResponse}
+import play.api.libs.json.{ JsValue, Json }
+import play.api.libs.ws.{ WSRequest, WSResponse }
 import support.IntegrationBaseSpec
-import v1.models.errors.NotFoundError
-import v1.stubs.{AuditStub, AuthStub, MtdIdLookupStub}
+import v1.stubs.{ AuditStub, AuthStub, MtdIdLookupStub }
 
 class LiveRoutesISpec extends IntegrationBaseSpec {
 
   override def servicesConfig: Map[String, Any] = Map(
-    "microservice.services.ifs1.host" -> mockHost,
-    "microservice.services.ifs1.port" -> mockPort,
-    "microservice.services.ifs2.host" -> mockHost,
-    "microservice.services.ifs2.port" -> mockPort,
-    "microservice.services.mtd-id-lookup.host" -> mockHost,
-    "microservice.services.mtd-id-lookup.port" -> mockPort,
-    "microservice.services.auth.host" -> mockHost,
-    "microservice.services.auth.port" -> mockPort,
-    "auditing.consumer.baseUri.port" -> mockPort,
-    "minimumPermittedTaxYear" -> 2020,
+    "microservice.services.ifs1.host"           -> mockHost,
+    "microservice.services.ifs1.port"           -> mockPort,
+    "microservice.services.ifs2.host"           -> mockHost,
+    "microservice.services.ifs2.port"           -> mockPort,
+    "microservice.services.mtd-id-lookup.host"  -> mockHost,
+    "microservice.services.mtd-id-lookup.port"  -> mockPort,
+    "microservice.services.auth.host"           -> mockHost,
+    "microservice.services.auth.port"           -> mockPort,
+    "auditing.consumer.baseUri.port"            -> mockPort,
+    "minimumPermittedTaxYear"                   -> 2020,
     "feature-switch.marriage-allowance.enabled" -> false,
   )
 

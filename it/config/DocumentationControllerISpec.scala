@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,27 +17,31 @@
 package config
 
 import play.api.http.Status
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.{Json, JsValue}
 import play.api.libs.ws.WSResponse
 import support.IntegrationBaseSpec
+import uk.gov.hmrc.auth.core.ConfidenceLevel
 
 class DocumentationControllerISpec extends IntegrationBaseSpec {
 
+  val config: AppConfig = app.injector.instanceOf[AppConfig]
+  val confidenceLevel: ConfidenceLevel = config.confidenceLevelConfig.confidenceLevel
+
   val apiDefinitionJson: JsValue = Json.parse(
-    """
+    s"""
     |{
     |   "scopes":[
     |      {
     |         "key":"read:self-assessment",
     |         "name":"View your Self Assessment information",
     |         "description":"Allow read access to self assessment data",
-    |         "confidenceLevel": 200
+    |         "confidenceLevel": $confidenceLevel
     |      },
     |      {
     |         "key":"write:self-assessment",
     |         "name":"Change your Self Assessment information",
     |         "description":"Allow write access to self assessment data",
-    |         "confidenceLevel": 200
+    |         "confidenceLevel": $confidenceLevel
     |      }
     |   ],
     |   "api":{
@@ -68,10 +72,10 @@ class DocumentationControllerISpec extends IntegrationBaseSpec {
   }
 
   "a documentation request" must {
-    "return the documentation" in {
-      val response: WSResponse = await(buildRequest("/api/conf/1.0/application.raml").get())
+    "return the documentation when OAS" in {
+      val response: WSResponse = await(buildRequest("/api/conf/1.0/application.yaml").get())
       response.status shouldBe Status.OK
-      response.body[String] should startWith("#%RAML 1.0")
+      response.body[String] should startWith("openapi: \"3.0.3\"")
     }
   }
 

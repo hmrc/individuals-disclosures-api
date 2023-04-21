@@ -16,79 +16,89 @@
 
 package utils
 
-import javax.inject._
-import play.api._
+import definition.Versions
+import play.api.Configuration
 import play.api.http.Status._
-import play.api.libs.json.Json
 import play.api.mvc.Results._
-import play.api.mvc._
+import play.api.mvc.{ RequestHeader, Result }
 import uk.gov.hmrc.auth.core.AuthorisationException
 import uk.gov.hmrc.http._
-import uk.gov.hmrc.play.http.HeaderCarrierConverter
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.bootstrap.config.HttpAuditEvent
 import uk.gov.hmrc.play.bootstrap.backend.http.JsonErrorHandler
-import v1.models.errors._
+import uk.gov.hmrc.play.http.HeaderCarrierConverter
+import api.models.errors._
 
+import javax.inject.{ Inject, Singleton }
 import scala.concurrent._
 
 @Singleton
-class ErrorHandler @Inject()(config: Configuration,
-                             auditConnector: AuditConnector,
-                             httpAuditEvent: HttpAuditEvent)(implicit ec: ExecutionContext)
-  extends JsonErrorHandler(auditConnector, httpAuditEvent, config) {
+class ErrorHandler @Inject()(config: Configuration, auditConnector: AuditConnector, httpAuditEvent: HttpAuditEvent)(implicit ec: ExecutionContext)
+    extends JsonErrorHandler(auditConnector, httpAuditEvent, config)
+    with Logging {
 
   import httpAuditEvent.dataEvent
-
-  private val logger: Logger = Logger(this.getClass)
 
   override def onClientError(request: RequestHeader, statusCode: Int, message: String): Future[Result] = {
     implicit val headerCarrier: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
-    logger.warn(s"[ErrorHandler][onClientError] error in version 1, for (${request.method}) [${request.uri}] with status:" +
-      s" $statusCode and message: $message")
+    logger.warn(
+      message = s"[ErrorHandler][onClientError] error in version " +
+        s"${versionIfSpecified(request)}, " +
+        s"for (${request.method}) [${request.uri}] with status: " +
+        s"$statusCode and message: $message")
+
     statusCode match {
+
       case BAD_REQUEST =>
-        auditConnector.sendEvent(dataEvent("ServerValidationError",
-          "Request bad format exception", request))
-        Future.successful(BadRequest(Json.toJson(BadRequestError)))
+        auditConnector.sendEvent(dataEvent("ServerValidationError", "Request bad format exception", request))
+        Future.successful(BadRequest(BadRequestError.asJson))
+
       case NOT_FOUND =>
-        auditConnector.sendEvent(dataEvent("ResourceNotFound",
-          "Resource Endpoint Not Found", request))
-        Future.successful(NotFound(Json.toJson(NotFoundError)))
+        auditConnector.sendEvent(dataEvent("ResourceNotFound", "Resource Endpoint Not Found", request))
+        Future.successful(NotFound(NotFoundError.asJson))
+
       case _ =>
         val errorCode = statusCode match {
-          case UNAUTHORIZED => UnauthorisedError
+          case UNAUTHORIZED           => ClientNotAuthenticatedError
+          case METHOD_NOT_ALLOWED     => InvalidHttpMethodError
           case UNSUPPORTED_MEDIA_TYPE => InvalidBodyTypeError
-          case _ => MtdError("INVALID_REQUEST", message)
+          case _                      => MtdError("INVALID_REQUEST", message, BAD_REQUEST)
         }
 
         auditConnector.sendEvent(
           dataEvent(
             eventType = "ClientError",
-            transactionName = s"A client error occurred, status: $statusCode",
+            transactionName = s"A client error occurred, status: ${errorCode.httpStatus}",
             request = request,
             detail = Map.empty
           )
         )
 
-        Future.successful(Status(statusCode)(Json.toJson(errorCode)))
+        Future.successful(Status(errorCode.httpStatus)(errorCode.asJson))
     }
   }
 
   override def onServerError(request: RequestHeader, ex: Throwable): Future[Result] = {
     implicit val headerCarrier: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
-    logger.warn(s"[ErrorHandler][onServerError] Internal server error in version 1, for (${request.method}) [${request.uri}] -> ", ex)
+    logger.warn(
+      message = s"[ErrorHandler][onServerError] Internal server error in version " +
+        s"${versionIfSpecified(request)}, " +
+        s"for (${request.method}) [${request.uri}] -> ",
+      ex
+    )
 
-    val (status, errorCode, eventType) = ex match {
-      case _: NotFoundException => (NOT_FOUND, NotFoundError, "ResourceNotFound")
-      case _: AuthorisationException => (UNAUTHORIZED, UnauthorisedError, "ClientError")
-      case _: JsValidationException => (BAD_REQUEST, BadRequestError, "ServerValidationError")
-      case e: HttpException => (e.responseCode, BadRequestError, "ServerValidationError")
-      case e: UpstreamErrorResponse if UpstreamErrorResponse.Upstream4xxResponse.unapply(e).isDefined => (e.reportAs, BadRequestError, "ServerValidationError")
-      case e: UpstreamErrorResponse if UpstreamErrorResponse.Upstream5xxResponse.unapply(e).isDefined => (e.reportAs, InternalError, "ServerInternalError")
-      case _ => (INTERNAL_SERVER_ERROR, InternalError, "ServerInternalError")
+    val (errorCode: MtdError, eventType) = ex match {
+      case _: NotFoundException      => (NotFoundError, "ResourceNotFound")
+      case _: AuthorisationException => (ClientNotAuthenticatedError, "ClientError")
+      case _: JsValidationException  => (BadRequestError, "ServerValidationError")
+      case e: HttpException          => (BadRequestError, "ServerValidationError")
+      case e: UpstreamErrorResponse if UpstreamErrorResponse.Upstream4xxResponse.unapply(e).isDefined =>
+        (BadRequestError, "ServerValidationError")
+      case e: UpstreamErrorResponse if UpstreamErrorResponse.Upstream5xxResponse.unapply(e).isDefined =>
+        (InternalError, "ServerInternalError")
+      case _ => (InternalError, "ServerInternalError")
     }
 
     auditConnector.sendEvent(
@@ -100,7 +110,8 @@ class ErrorHandler @Inject()(config: Configuration,
       )
     )
 
-    Future.successful(Status(status)(Json.toJson(errorCode)))
+    Future.successful(Status(errorCode.httpStatus)(errorCode.asJson))
   }
-}
 
+  private def versionIfSpecified(request: RequestHeader): String = Versions.getFromRequest(request).getOrElse("<unspecified>")
+}

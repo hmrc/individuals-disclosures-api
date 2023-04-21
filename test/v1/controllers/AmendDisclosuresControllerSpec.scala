@@ -16,55 +16,40 @@
 
 package v1.controllers
 
+import api.controllers.{ ControllerBaseSpec, ControllerTestRunner }
+import api.mocks.MockIdGenerator
+import api.mocks.hateoas.MockHateoasFactory
+import api.mocks.services.{ MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService }
+import api.models.audit.{ AuditEvent, AuditResponse, GenericAuditDetail }
+import api.models.errors
+import api.models.errors._
+import api.models.hateoas.HateoasWrapper
+import api.models.outcomes.ResponseWrapper
 import mocks.MockAppConfig
 import play.api.libs.json.{ JsValue, Json }
 import play.api.mvc.{ AnyContentAsJson, Result }
-import uk.gov.hmrc.http.HeaderCarrier
-import v1.mocks.MockIdGenerator
 import v1.mocks.requestParsers.MockAmendDisclosuresRequestParser
-import v1.mocks.services.{ MockAmendDisclosuresService, MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService }
-import v1.models.audit.{ AuditError, AuditEvent, AuditResponse, GenericAuditDetail }
+import v1.mocks.services.MockAmendDisclosuresService
 import v1.models.domain.Nino
-import v1.models.errors._
-import v1.models.outcomes.ResponseWrapper
-import v1.models.request.disclosures._
+import v1.models.request.amend._
+import v1.models.response.amendDisclosures.AmendDisclosuresHateoasData
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class AmendDisclosuresControllerSpec
     extends ControllerBaseSpec
+    with ControllerTestRunner
     with MockEnrolmentsAuthService
     with MockMtdIdLookupService
     with MockAppConfig
     with MockAmendDisclosuresService
+    with MockHateoasFactory
     with MockAmendDisclosuresRequestParser
     with MockAuditService
     with MockIdGenerator {
 
-  val nino: String          = "AA123456A"
-  val taxYear: String       = "2021-22"
-  val correlationId: String = "X-123"
-
-  trait Test {
-    val hc: HeaderCarrier = HeaderCarrier()
-
-    val controller = new AmendDisclosuresController(
-      authService = mockEnrolmentsAuthService,
-      lookupService = mockMtdIdLookupService,
-      appConfig = mockAppConfig,
-      requestParser = mockAmendDisclosuresRequestParser,
-      service = mockAmendDisclosuresService,
-      auditService = mockAuditService,
-      cc = cc,
-      idGenerator = mockIdGenerator
-    )
-
-    MockedMtdIdLookupService.lookup(nino).returns(Future.successful(Right("test-mtd-id")))
-    MockedEnrolmentsAuthService.authoriseUser()
-    MockAppConfig.apiGatewayContext.returns("baseUrl").anyNumberOfTimes()
-    MockIdGenerator.generateCorrelationId.returns(correlationId)
-  }
+  val taxYear: String = "2021-22"
 
   val requestBodyJson: JsValue = Json.parse(
     """
@@ -140,23 +125,41 @@ class AmendDisclosuresControllerSpec
     """.stripMargin
   )
 
-  def event(auditResponse: AuditResponse): AuditEvent[GenericAuditDetail] =
-    AuditEvent(
-      auditType = "CreateAmendDisclosures",
-      transactionName = "create-amend-disclosures",
-      detail = GenericAuditDetail(
-        userType = "Individual",
-        agentReferenceNumber = None,
-        params = Map("nino" -> nino, "taxYear" -> taxYear),
-        request = Some(requestBodyJson),
-        `X-CorrelationId` = correlationId,
-        response = auditResponse
-      )
+  trait Test extends ControllerTest with AuditEventChecking {
+
+    val controller = new AmendDisclosuresController(
+      authService = mockEnrolmentsAuthService,
+      lookupService = mockMtdIdLookupService,
+      appConfig = mockAppConfig,
+      parser = mockAmendDisclosuresRequestParser,
+      service = mockAmendDisclosuresService,
+      auditService = mockAuditService,
+      cc = cc,
+      idGenerator = mockIdGenerator,
+      hateoasFactory = mockHateoasFactory,
     )
 
+    override protected def callController(): Future[Result] = controller.amendDisclosures(nino, taxYear)(fakePostRequest(requestBodyJson))
+
+    override protected def event(auditResponse: AuditResponse, maybeRequestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
+      AuditEvent(
+        auditType = "CreateAmendDisclosures",
+        transactionName = "create-amend-disclosures",
+        detail = GenericAuditDetail(
+          userType = "Individual",
+          agentReferenceNumber = None,
+          params = Map("nino" -> nino, "taxYear" -> taxYear),
+          request = Some(requestBodyJson),
+          `X-CorrelationId` = correlationId,
+          response = auditResponse
+        )
+      )
+
+  }
+
   "AmendDisclosuresController" should {
-    "return OK" when {
-      "happy path" in new Test {
+    "return a successful response with header X-CorrelationId and body" when {
+      "the request received is valid" in new Test {
 
         MockAmendDisclosuresRequestParser
           .parse(rawData)
@@ -166,82 +169,40 @@ class AmendDisclosuresControllerSpec
           .amendDisclosures(requestData)
           .returns(Future.successful(Right(ResponseWrapper(correlationId, ()))))
 
-        val result: Future[Result] = controller.amendDisclosures(nino, taxYear)(fakePutRequest(requestBodyJson))
+        MockHateoasFactory
+          .wrap((), AmendDisclosuresHateoasData(nino, taxYear))
+          .returns(HateoasWrapper((), hateoaslinks))
 
-        status(result) shouldBe OK
-        contentAsJson(result) shouldBe hateoasResponse
-        header("X-CorrelationId", result) shouldBe Some(correlationId)
-
-        val auditResponse: AuditResponse = AuditResponse(OK, None, Some(hateoasResponse))
-        MockedAuditService.verifyAuditEvent(event(auditResponse)).once()
+        runOkTestWithAudit(
+          expectedStatus = OK,
+          maybeExpectedResponseBody = Some(hateoaslinksJson),
+          maybeAuditRequestBody = Some(requestBodyJson),
+          maybeAuditResponseBody = Some(hateoaslinksJson)
+        )
       }
     }
 
     "return the error as per spec" when {
-      "parser errors occur" must {
-        def errorsFromParserTester(error: MtdError, expectedStatus: Int): Unit = {
-          s"a ${error.code} error is returned from the parser" in new Test {
+      "parser validation fails" in new Test {
 
-            MockAmendDisclosuresRequestParser
-              .parse(rawData)
-              .returns(Left(ErrorWrapper(correlationId, error, None)))
+        MockAmendDisclosuresRequestParser
+          .parse(rawData)
+          .returns(Left(errors.ErrorWrapper(correlationId, NinoFormatError)))
 
-            val result: Future[Result] = controller.amendDisclosures(nino, taxYear)(fakePutRequest(requestBodyJson))
-
-            status(result) shouldBe expectedStatus
-            contentAsJson(result) shouldBe Json.toJson(error)
-            header("X-CorrelationId", result) shouldBe Some(correlationId)
-
-            val auditResponse: AuditResponse = AuditResponse(expectedStatus, Some(List(AuditError(error.code))), None)
-            MockedAuditService.verifyAuditEvent(event(auditResponse)).once()
-          }
-        }
-
-        val input = Seq(
-          (BadRequestError, BAD_REQUEST),
-          (NinoFormatError, BAD_REQUEST),
-          (TaxYearFormatError, BAD_REQUEST),
-          (RuleTaxYearRangeInvalidError, BAD_REQUEST),
-          (RuleIncorrectOrEmptyBodyError, BAD_REQUEST),
-          (SRNFormatError, BAD_REQUEST),
-          (RuleVoluntaryClass2ValueInvalidError, BAD_REQUEST)
-        )
-
-        input.foreach(args => (errorsFromParserTester _).tupled(args))
+        runErrorTestWithAudit(NinoFormatError, Some(requestBodyJson))
       }
 
-      "service errors occur" must {
-        def serviceErrors(mtdError: MtdError, expectedStatus: Int): Unit = {
-          s"a $mtdError error is returned from the service" in new Test {
+      "service errors occur" in new Test {
 
-            MockAmendDisclosuresRequestParser
-              .parse(rawData)
-              .returns(Right(requestData))
+        MockAmendDisclosuresRequestParser
+          .parse(rawData)
+          .returns(Right(requestData))
 
-            MockAmendDisclosuresService
-              .amendDisclosures(requestData)
-              .returns(Future.successful(Left(ErrorWrapper(correlationId, mtdError))))
+        MockAmendDisclosuresService
+          .amendDisclosures(requestData)
+          .returns(Future.successful(Left(ErrorWrapper(correlationId, RuleTaxYearNotSupportedError))))
 
-            val result: Future[Result] = controller.amendDisclosures(nino, taxYear)(fakePutRequest(requestBodyJson))
-
-            status(result) shouldBe expectedStatus
-            contentAsJson(result) shouldBe Json.toJson(mtdError)
-            header("X-CorrelationId", result) shouldBe Some(correlationId)
-
-            val auditResponse: AuditResponse = AuditResponse(expectedStatus, Some(List(AuditError(mtdError.code))), None)
-            MockedAuditService.verifyAuditEvent(event(auditResponse)).once()
-          }
-        }
-
-        val input = Seq(
-          (NinoFormatError, BAD_REQUEST),
-          (TaxYearFormatError, BAD_REQUEST),
-          (NotFoundError, NOT_FOUND),
-          (RuleVoluntaryClass2CannotBeChangedError, BAD_REQUEST),
-          (InternalError, INTERNAL_SERVER_ERROR)
-        )
-
-        input.foreach(args => (serviceErrors _).tupled(args))
+        runErrorTestWithAudit(RuleTaxYearNotSupportedError, maybeAuditRequestBody = Some(requestBodyJson))
       }
     }
   }

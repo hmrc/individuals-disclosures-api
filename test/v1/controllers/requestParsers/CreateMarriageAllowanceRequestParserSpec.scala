@@ -16,14 +16,13 @@
 
 package v1.controllers.requestParsers
 
-import play.api.libs.json.{JsObject, Json}
+import api.models.errors.{ BadRequestError, ErrorWrapper, MtdError, NinoFormatError, RuleIncorrectOrEmptyBodyError }
+import play.api.libs.json.{ JsObject, Json }
 import play.api.mvc.AnyContentAsJson
 import support.UnitSpec
 import v1.mocks.validators.MockCreateMarriageAllowanceValidator
 import v1.models.domain.Nino
-import v1.models.errors.{BadRequestError, ErrorWrapper, MtdError, NinoFormatError, RuleIncorrectOrEmptyBodyError}
-import v1.models.request.marriageAllowance.{CreateMarriageAllowanceBody, CreateMarriageAllowanceRawData, CreateMarriageAllowanceRequest}
-
+import v1.models.request.create.{ CreateMarriageAllowanceBody, CreateMarriageAllowanceRawData, CreateMarriageAllowanceRequest }
 
 class CreateMarriageAllowanceRequestParserSpec extends UnitSpec {
 
@@ -40,29 +39,35 @@ class CreateMarriageAllowanceRequestParserSpec extends UnitSpec {
 
       "return the request" in new Test {
         val nino = "AA123456B"
-        val rawData: CreateMarriageAllowanceRawData = CreateMarriageAllowanceRawData(nino, AnyContentAsJson(Json.parse(
-          """{
+        val rawData: CreateMarriageAllowanceRawData = CreateMarriageAllowanceRawData(
+          nino,
+          AnyContentAsJson(Json.parse("""{
             |  "spouseOrCivilPartnerNino": "AA123456B",
             |  "spouseOrCivilPartnerFirstName": "Marge",
             |  "spouseOrCivilPartnerSurname": "Simpson",
             |  "spouseOrCivilPartnerDateOfBirth": "1970-01-01"
             |}
-            |""".stripMargin)))
+            |""".stripMargin))
+        )
 
         MockCreateMarriageAllowanceValidator.validate(rawData) returns List.empty[MtdError]
 
-        parser.parseRequest(rawData) shouldBe Right(CreateMarriageAllowanceRequest(Nino(nino), CreateMarriageAllowanceBody(
-          spouseOrCivilPartnerNino = "AA123456B",
-          spouseOrCivilPartnerFirstName = Some("Marge"),
-          spouseOrCivilPartnerSurname = "Simpson",
-          spouseOrCivilPartnerDateOfBirth = Some("1970-01-01")
-        )))
+        parser.parseRequest(rawData) shouldBe Right(
+          CreateMarriageAllowanceRequest(
+            Nino(nino),
+            CreateMarriageAllowanceBody(
+              spouseOrCivilPartnerNino = "AA123456B",
+              spouseOrCivilPartnerFirstName = Some("Marge"),
+              spouseOrCivilPartnerSurname = "Simpson",
+              spouseOrCivilPartnerDateOfBirth = Some("1970-01-01")
+            )
+          ))
       }
     }
 
     "fails to parse" when {
       // WLOG as params and body ignored when validation fails
-      val ignoredNino  = "SomeNino"
+      val ignoredNino = "SomeNino"
       val ignoredBody = AnyContentAsJson(JsObject.empty)
 
       "single error" must {

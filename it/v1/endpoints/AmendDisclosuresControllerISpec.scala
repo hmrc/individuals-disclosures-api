@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,8 @@
 
 package v1.endpoints
 
+import api.models.errors
+import api.models.errors._
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status._
@@ -23,7 +25,6 @@ import play.api.libs.json.{ JsValue, Json }
 import play.api.libs.ws.{ WSRequest, WSResponse }
 import play.api.test.Helpers.AUTHORIZATION
 import support.IntegrationBaseSpec
-import v1.models.errors._
 import v1.stubs.{ AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub }
 
 class AmendDisclosuresControllerISpec extends IntegrationBaseSpec {
@@ -216,17 +217,17 @@ class AmendDisclosuresControllerISpec extends IntegrationBaseSpec {
         )
 
         val allInvalidValueRequestError: List[MtdError] = List(
+          TaxYearFormatError.copy(
+            paths = Some(
+              List(
+                "/taxAvoidance/0/taxYear"
+              ))
+          ),
           SRNFormatError.copy(
             paths = Some(
               List(
                 "/taxAvoidance/0/srn",
                 "/taxAvoidance/1/srn"
-              ))
-          ),
-          TaxYearFormatError.copy(
-            paths = Some(
-              List(
-                "/taxAvoidance/0/taxYear"
               ))
           ),
           RuleTaxYearRangeInvalidError.copy(
@@ -288,18 +289,18 @@ class AmendDisclosuresControllerISpec extends IntegrationBaseSpec {
             |   "code": "INVALID_REQUEST",
             |   "errors": [
             |      {
+            |         "code": "FORMAT_TAX_YEAR",
+            |         "message": "The provided tax year is invalid",
+            |         "paths": [
+            |            "/taxAvoidance/0/taxYear"
+            |         ]
+            |      },
+            |      {
             |         "code": "FORMAT_SRN_INVALID",
             |         "message": "The provided scheme reference number is invalid",
             |         "paths": [
             |            "/taxAvoidance/0/srn",
             |            "/taxAvoidance/1/srn"
-            |         ]
-            |      },
-            |      {
-            |         "code": "FORMAT_TAX_YEAR",
-            |         "message": "The provided tax year is invalid",
-            |         "paths": [
-            |            "/taxAvoidance/0/taxYear"
             |         ]
             |      },
             |      {
@@ -513,12 +514,12 @@ class AmendDisclosuresControllerISpec extends IntegrationBaseSpec {
         val input = Seq(
           (BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", BAD_REQUEST, NinoFormatError),
           (BAD_REQUEST, "INVALID_TAX_YEAR", BAD_REQUEST, TaxYearFormatError),
-          (BAD_REQUEST, "INVALID_CORRELATIONID", INTERNAL_SERVER_ERROR, InternalError),
-          (BAD_REQUEST, "INVALID_PAYLOAD", INTERNAL_SERVER_ERROR, InternalError),
+          (BAD_REQUEST, "INVALID_CORRELATIONID", INTERNAL_SERVER_ERROR, errors.InternalError),
+          (BAD_REQUEST, "INVALID_PAYLOAD", INTERNAL_SERVER_ERROR, errors.InternalError),
           (NOT_FOUND, "INCOME_SOURCE_NOT_FOUND", NOT_FOUND, NotFoundError),
           (UNPROCESSABLE_ENTITY, "VOLUNTARY_CLASS2_CANNOT_BE_CHANGED", BAD_REQUEST, RuleVoluntaryClass2CannotBeChangedError),
-          (SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, InternalError),
-          (INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, InternalError)
+          (SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, errors.InternalError),
+          (INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, errors.InternalError)
         )
         input.foreach(args => (serviceErrorTest _).tupled(args))
       }

@@ -16,26 +16,25 @@
 
 package utils
 
+import api.models.errors._
 import java.time.Instant
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Configuration
 import play.api.http.Status
 import play.api.http.Status.UNSUPPORTED_MEDIA_TYPE
-import play.api.libs.json.Json
-import play.api.mvc.{AnyContentAsEmpty, RequestHeader}
+import play.api.mvc.{ AnyContentAsEmpty, RequestHeader }
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import support.UnitSpec
 import uk.gov.hmrc.auth.core.InsufficientEnrolments
-import uk.gov.hmrc.http.{HeaderCarrier, JsValidationException, NotFoundException}
+import uk.gov.hmrc.http.{ HeaderCarrier, JsValidationException, NotFoundException }
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.audit.http.connector.AuditResult.Success
-import uk.gov.hmrc.play.audit.model.{DataEvent, TruncationLog}
+import uk.gov.hmrc.play.audit.model.{ DataEvent, TruncationLog }
 import uk.gov.hmrc.play.bootstrap.config.HttpAuditEvent
-import v1.models.errors._
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{ ExecutionContext, Future }
 import scala.util.control.NoStackTrace
 
 class ErrorHandlerSpec extends UnitSpec with GuiceOneAppPerSuite {
@@ -61,15 +60,19 @@ class ErrorHandlerSpec extends UnitSpec with GuiceOneAppPerSuite {
       generatedAt = Instant.now()
     )
 
-    (httpAuditEvent.dataEvent(_: String, _: String, _: RequestHeader, _: Map[String, String], _: TruncationLog)(_: HeaderCarrier)).expects(*, *, *, *, *, *)
+    (httpAuditEvent
+      .dataEvent(_: String, _: String, _: RequestHeader, _: Map[String, String], _: TruncationLog)(_: HeaderCarrier))
+      .expects(*, *, *, *, *, *)
       .returns(dataEvent)
 
-    (auditConnector.sendEvent(_ : DataEvent)(_: HeaderCarrier, _: ExecutionContext)).expects(*, *, *)
+    (auditConnector
+      .sendEvent(_: DataEvent)(_: HeaderCarrier, _: ExecutionContext))
+      .expects(*, *, *)
       .returns(Future.successful(Success))
 
     val configuration: Configuration = Configuration(
-      "appName" -> "myApp",
-      "bootstrap.errorHandler.warnOnly.statusCodes" -> List.empty,
+      "appName"                                         -> "myApp",
+      "bootstrap.errorHandler.warnOnly.statusCodes"     -> List.empty,
       "bootstrap.errorHandler.suppress4xxErrorMessages" -> false,
       "bootstrap.errorHandler.suppress5xxErrorMessages" -> false
     )
@@ -84,7 +87,7 @@ class ErrorHandlerSpec extends UnitSpec with GuiceOneAppPerSuite {
         private val result = handler.onClientError(requestHeader, Status.NOT_FOUND, "test")
         status(result) shouldBe Status.NOT_FOUND
 
-        contentAsJson(result) shouldBe Json.toJson(NotFoundError)
+        contentAsJson(result) shouldBe NotFoundError.asJson
       }
     }
 
@@ -93,7 +96,7 @@ class ErrorHandlerSpec extends UnitSpec with GuiceOneAppPerSuite {
         private val result = handler.onClientError(requestHeader, BAD_REQUEST, "test")
         status(result) shouldBe BAD_REQUEST
 
-        contentAsJson(result) shouldBe Json.toJson(BadRequestError)
+        contentAsJson(result) shouldBe BadRequestError.asJson
       }
     }
 
@@ -102,7 +105,7 @@ class ErrorHandlerSpec extends UnitSpec with GuiceOneAppPerSuite {
         private val result = handler.onClientError(requestHeader, UNAUTHORIZED, "test")
         status(result) shouldBe UNAUTHORIZED
 
-        contentAsJson(result) shouldBe Json.toJson(UnauthorisedError)
+        contentAsJson(result) shouldBe ClientNotAuthorisedError.asJson
       }
     }
 
@@ -111,7 +114,7 @@ class ErrorHandlerSpec extends UnitSpec with GuiceOneAppPerSuite {
         private val result = handler.onClientError(requestHeader, UNSUPPORTED_MEDIA_TYPE, "test")
         status(result) shouldBe UNSUPPORTED_MEDIA_TYPE
 
-        contentAsJson(result) shouldBe Json.toJson(InvalidBodyTypeError)
+        contentAsJson(result) shouldBe InvalidBodyTypeError.asJson
       }
     }
 
@@ -120,7 +123,7 @@ class ErrorHandlerSpec extends UnitSpec with GuiceOneAppPerSuite {
         private val result = handler.onClientError(requestHeader, METHOD_NOT_ALLOWED, "test")
         status(result) shouldBe METHOD_NOT_ALLOWED
 
-        contentAsJson(result) shouldBe Json.toJson(MtdError("INVALID_REQUEST", "test"))
+        contentAsJson(result) shouldBe InvalidHttpMethodError.asJson
       }
     }
   }
@@ -132,7 +135,7 @@ class ErrorHandlerSpec extends UnitSpec with GuiceOneAppPerSuite {
         private val result = handler.onServerError(requestHeader, new NotFoundException("test") with NoStackTrace)
         status(result) shouldBe NOT_FOUND
 
-        contentAsJson(result) shouldBe Json.toJson(NotFoundError)
+        contentAsJson(result) shouldBe NotFoundError.asJson
       }
     }
 
@@ -141,16 +144,17 @@ class ErrorHandlerSpec extends UnitSpec with GuiceOneAppPerSuite {
         private val result = handler.onServerError(requestHeader, new InsufficientEnrolments("test") with NoStackTrace)
         status(result) shouldBe UNAUTHORIZED
 
-        contentAsJson(result) shouldBe Json.toJson(UnauthorisedError)
+        contentAsJson(result) shouldBe ClientNotAuthorisedError.asJson
       }
     }
 
     "return 400 with error body" when {
       "JsValidationException thrown" in new Test() {
-        private val result = handler.onServerError(requestHeader, new JsValidationException("test", "test", classOf[String], "errs") with NoStackTrace)
+        private val result =
+          handler.onServerError(requestHeader, new JsValidationException("test", "test", classOf[String], "errs") with NoStackTrace)
         status(result) shouldBe BAD_REQUEST
 
-        contentAsJson(result) shouldBe Json.toJson(BadRequestError)
+        contentAsJson(result) shouldBe BadRequestError.asJson
       }
     }
 
@@ -159,9 +163,8 @@ class ErrorHandlerSpec extends UnitSpec with GuiceOneAppPerSuite {
         private val result = handler.onServerError(requestHeader, new Exception with NoStackTrace)
         status(result) shouldBe INTERNAL_SERVER_ERROR
 
-        contentAsJson(result) shouldBe Json.toJson(InternalError)
+        contentAsJson(result) shouldBe InternalError.asJson
       }
     }
   }
 }
-
