@@ -14,20 +14,13 @@
  * limitations under the License.
  */
 
-package v1
+package api
 
 import api.models.errors.ErrorWrapper
 import api.models.outcomes.ResponseWrapper
-import v1.models.response.retrieveDisclosures.RetrieveDisclosuresResponse
 
 package object services {
 
-  type DeleteDisclosuresOutcome = Either[ErrorWrapper, ResponseWrapper[Unit]]
-
-  type RetrieveDisclosuresOutcome = Either[ErrorWrapper, ResponseWrapper[RetrieveDisclosuresResponse]]
-
-  type CreateMarriageAllowanceOutcome = Either[ErrorWrapper, ResponseWrapper[Unit]]
-
-  type AmendPensionChargesOutcome = Either[ErrorWrapper, ResponseWrapper[Unit]]
+  type ServiceOutcome[A] = Either[ErrorWrapper, ResponseWrapper[A]]
 
 }

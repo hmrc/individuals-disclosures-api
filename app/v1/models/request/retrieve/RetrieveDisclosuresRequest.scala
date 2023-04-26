@@ -16,6 +16,6 @@
 
 package v1.models.request.retrieve
 
-import v1.models.domain.Nino
+import api.models.domain.Nino
 
 case class RetrieveDisclosuresRequest(nino: Nino, taxYear: String)
