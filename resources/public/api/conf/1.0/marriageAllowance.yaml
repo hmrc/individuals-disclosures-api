@@ -89,6 +89,8 @@ post:
               $ref: './common/errors.yaml#/components/examples/ruleIncorrectOrEmptyBody'
             RULE_INVALID_REQUEST:
               $ref: './common/errors.yaml#/components/examples/ruleInvalidRequest'
+            RULE_INCORRECT_GOV_TEST_SCENARIO:
+              $ref: './common/errors.yaml#/components/examples/ruleIncorrectGovTestScenario'
 
     "403":
       description: Forbidden
