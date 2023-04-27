@@ -18,15 +18,15 @@ package api.support
 
 import api.controllers.EndpointLogContext
 import api.models.errors
-import api.models.errors.{ BadRequestError, DownstreamErrorCode, DownstreamErrors, ErrorWrapper, MtdError, OutboundError }
+import api.models.errors.{BadRequestError, DownstreamErrorCode, DownstreamErrors, ErrorWrapper, MtdError, OutboundError, RuleIncorrectGovTestScenarioError}
 import api.models.outcomes.ResponseWrapper
 import play.api.http.Status.BAD_REQUEST
-import play.api.libs.json.{ Format, Json }
+import play.api.libs.json.{Format, Json}
 import support.UnitSpec
 import utils.Logging
 
 class DownstreamResponseMappingSupportSpec extends UnitSpec {
-  implicit val logContext: EndpointLogContext                = EndpointLogContext("ctrl", "ep")
+  implicit val logContext: EndpointLogContext = EndpointLogContext("ctrl", "ep")
   val mapping: DownstreamResponseMappingSupport with Logging = new DownstreamResponseMappingSupport with Logging {}
 
   val correlationId: String = "someCorrelationId"
@@ -34,7 +34,8 @@ class DownstreamResponseMappingSupportSpec extends UnitSpec {
   val errorCodeMap: PartialFunction[String, MtdError] = {
     case "ERR1" => Error1
     case "ERR2" => Error2
-    case "DS"   => errors.InternalError
+    case "DS" => errors.InternalError
+    case "UNMATCHED_STUB_ERROR" => RuleIncorrectGovTestScenarioError
   }
 
   case class TestClass(field: Option[String])
@@ -65,6 +66,14 @@ class DownstreamResponseMappingSupportSpec extends UnitSpec {
           mapping.mapDownstreamErrors(errorCodeMap)(ResponseWrapper(correlationId, DownstreamErrors.single(DownstreamErrorCode("UNKNOWN")))) shouldBe
             ErrorWrapper(correlationId, errors.InternalError)
         }
+      }
+    }
+
+    "downstream returns UNMATCHED_STUB_ERROR" must {
+      "return a RuleIncorrectGovTestScenario error" in {
+        mapping.mapDownstreamErrors(errorCodeMap)(
+          ResponseWrapper(correlationId, DownstreamErrors.single(DownstreamErrorCode("UNMATCHED_STUB_ERROR")))) shouldBe
+          ErrorWrapper(correlationId, RuleIncorrectGovTestScenarioError)
       }
     }
 
