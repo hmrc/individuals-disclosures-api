@@ -17,10 +17,12 @@
 package v1.mocks.services
 
 import api.controllers.RequestContext
+import api.services.ServiceOutcome
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import v1.models.request.retrieve.RetrieveDisclosuresRequest
-import v1.services.{ RetrieveDisclosuresOutcome, RetrieveDisclosuresService }
+import v1.models.response.retrieveDisclosures.RetrieveDisclosuresResponse
+import v1.services.RetrieveDisclosuresService
 
 import scala.concurrent.{ ExecutionContext, Future }
 
@@ -30,7 +32,7 @@ trait MockRetrieveDisclosuresService extends MockFactory {
 
   object MockRetrieveDisclosuresService {
 
-    def retrieve(requestData: RetrieveDisclosuresRequest): CallHandler[Future[RetrieveDisclosuresOutcome]] = {
+    def retrieve(requestData: RetrieveDisclosuresRequest): CallHandler[Future[ServiceOutcome[RetrieveDisclosuresResponse]]] = {
       (mockRetrieveDisclosuresService
         .retrieve(_: RetrieveDisclosuresRequest)(_: RequestContext, _: ExecutionContext))
         .expects(requestData, *, *)

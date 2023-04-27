@@ -19,7 +19,7 @@ package v1.connectors
 import api.connectors.{ BaseDownstreamConnector, DownstreamOutcome }
 import api.connectors.DownstreamUri.Ifs1Uri
 import config.AppConfig
-import api.connectors.httpParsers.StandardDownstreamHttpParser._
+import api.connectors.httpparsers.StandardDownstreamHttpParser._
 import javax.inject.{ Inject, Singleton }
 import uk.gov.hmrc.http.{ HeaderCarrier, HttpClient }
 import v1.models.request.delete.DeleteDisclosuresRequest
@@ -36,7 +36,7 @@ class DeleteDisclosuresConnector @Inject()(val http: HttpClient, val appConfig: 
 
     import request._
 
-    val downstreamUri = Ifs1Uri[Unit](s"income-tax/disclosures/${nino.nino}/$taxYear")
+    val downstreamUri = Ifs1Uri[Unit](s"income-tax/disclosures/$nino/$taxYear")
 
     delete(downstreamUri)
   }

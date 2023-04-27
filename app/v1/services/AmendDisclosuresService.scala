@@ -18,7 +18,7 @@ package v1.services
 
 import api.controllers.RequestContext
 import api.models.errors._
-import api.services.BaseService
+import api.services.{ BaseService, ServiceOutcome }
 import cats.implicits._
 import v1.connectors.AmendDisclosuresConnector
 import v1.models.request.amend.AmendDisclosuresRequest
@@ -29,14 +29,14 @@ import scala.concurrent.{ ExecutionContext, Future }
 @Singleton
 class AmendDisclosuresService @Inject()(connector: AmendDisclosuresConnector) extends BaseService {
 
-  def amendDisclosures(request: AmendDisclosuresRequest)(implicit ctx: RequestContext, ec: ExecutionContext): Future[AmendPensionChargesOutcome] = {
+  def amendDisclosures(request: AmendDisclosuresRequest)(implicit ctx: RequestContext, ec: ExecutionContext): Future[ServiceOutcome[Unit]] = {
 
     connector
       .amendDisclosures(request)
       .map(_.leftMap(mapDownstreamErrors(downstreamErrorMap)))
   }
 
-  private def downstreamErrorMap = {
+  private def downstreamErrorMap: Map[String, MtdError] = {
     val error = Map(
       "INVALID_NINO"                       -> NinoFormatError,
       "INVALID_TAX_YEAR"                   -> TaxYearFormatError,
@@ -47,9 +47,11 @@ class AmendDisclosuresService @Inject()(connector: AmendDisclosuresConnector) ex
       "SERVER_ERROR"                       -> InternalError,
       "SERVICE_UNAVAILABLE"                -> InternalError
     )
+
     val extra_error = Map {
       "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError
     }
+
     error ++ extra_error
   }
 }

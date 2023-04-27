@@ -17,11 +17,11 @@
 package v1.controllers.requestParsers
 
 import api.models.errors.{ BadRequestError, ErrorWrapper, MtdError, NinoFormatError, RuleIncorrectOrEmptyBodyError }
+import api.models.domain.Nino
 import play.api.libs.json.{ JsObject, Json }
 import play.api.mvc.AnyContentAsJson
 import support.UnitSpec
 import v1.mocks.validators.MockCreateMarriageAllowanceValidator
-import v1.models.domain.Nino
 import v1.models.request.create.{ CreateMarriageAllowanceBody, CreateMarriageAllowanceRawData, CreateMarriageAllowanceRequest }
 
 class CreateMarriageAllowanceRequestParserSpec extends UnitSpec {

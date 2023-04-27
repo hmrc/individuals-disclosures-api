@@ -17,7 +17,7 @@
 package api.connectors.parsers
 
 import api.connectors.MtdIdLookupOutcome
-import api.connectors.httpParsers.MtdIdLookupHttpParser.mtdIdLookupHttpReads
+import api.connectors.httpparsers.MtdIdLookupHttpParser.mtdIdLookupHttpReads
 import api.models.errors.{ InternalError, InvalidBearerTokenError, NinoFormatError }
 import play.api.libs.json.Writes.StringWrites
 import play.api.libs.json.{ JsObject, Json }

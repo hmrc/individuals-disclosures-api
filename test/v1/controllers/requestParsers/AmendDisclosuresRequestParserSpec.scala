@@ -16,21 +16,11 @@
 
 package v1.controllers.requestParsers
 
-import api.models.errors.{
-  BadRequestError,
-  ErrorWrapper,
-  MtdError,
-  NinoFormatError,
-  RuleTaxYearNotSupportedError,
-  RuleTaxYearRangeInvalidError,
-  RuleVoluntaryClass2ValueInvalidError,
-  SRNFormatError,
-  TaxYearFormatError
-}
+import api.models.errors._
 import play.api.libs.json.{ JsValue, Json }
 import play.api.mvc.AnyContentAsJson
 import support.UnitSpec
-import v1.models.domain.Nino
+import api.models.domain.Nino
 import v1.mocks.validators.MockAmendDisclosuresValidator
 import v1.models.request.amend._
 

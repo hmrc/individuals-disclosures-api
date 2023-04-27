@@ -22,7 +22,7 @@ import config.AppConfig
 
 import javax.inject.{ Inject, Singleton }
 import uk.gov.hmrc.http.{ HeaderCarrier, HttpClient }
-import api.connectors.httpParsers.StandardDownstreamHttpParser._
+import api.connectors.httpparsers.StandardDownstreamHttpParser._
 import v1.models.request.retrieve.RetrieveDisclosuresRequest
 import v1.models.response.retrieveDisclosures.RetrieveDisclosuresResponse
 
@@ -37,7 +37,7 @@ class RetrieveDisclosuresConnector @Inject()(val http: HttpClient, val appConfig
 
     import request._
 
-    val downstreamUri = Ifs1Uri[RetrieveDisclosuresResponse](s"income-tax/disclosures/${nino.nino}/$taxYear")
+    val downstreamUri = Ifs1Uri[RetrieveDisclosuresResponse](s"income-tax/disclosures/$nino/$taxYear")
 
     get(uri = downstreamUri)
   }

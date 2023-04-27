@@ -17,8 +17,8 @@
 package v1.controllers.requestParsers
 
 import api.controllers.requestParsers.RequestParser
+import api.models.domain.Nino
 import v1.controllers.requestParsers.validators.DeleteDisclosuresValidator
-import v1.models.domain.Nino
 import v1.models.request.delete.{ DeleteDisclosuresRawData, DeleteDisclosuresRequest }
 
 import javax.inject.Inject

@@ -18,6 +18,7 @@ package v1.controllers
 
 import api.controllers.{ ControllerBaseSpec, ControllerTestRunner }
 import api.mocks.MockIdGenerator
+import api.models.domain.Nino
 import api.mocks.services.{ MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService }
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
@@ -26,7 +27,6 @@ import v1.mocks.requestParsers.MockDeleteDisclosuresRequestParser
 import v1.mocks.services.MockDeleteDisclosuresService
 import v1.models.request.delete.{ DeleteDisclosuresRawData, DeleteDisclosuresRequest }
 import api.models.audit.{ AuditEvent, AuditResponse, GenericAuditDetail }
-import v1.models.domain.Nino
 import play.api.libs.json.JsValue
 
 import scala.concurrent.ExecutionContext.Implicits.global

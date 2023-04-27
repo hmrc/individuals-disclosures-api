@@ -19,19 +19,21 @@ package v1.services
 import api.controllers.RequestContext
 import api.models.errors
 import api.models.errors._
-import api.services.BaseService
+import api.services.{ BaseService, ServiceOutcome }
 import cats.implicits._
 
 import javax.inject.{ Inject, Singleton }
 import v1.connectors.RetrieveDisclosuresConnector
 import v1.models.request.retrieve.RetrieveDisclosuresRequest
+import v1.models.response.retrieveDisclosures.RetrieveDisclosuresResponse
 
 import scala.concurrent.{ ExecutionContext, Future }
 
 @Singleton
 class RetrieveDisclosuresService @Inject()(connector: RetrieveDisclosuresConnector) extends BaseService {
 
-  def retrieve(request: RetrieveDisclosuresRequest)(implicit ctx: RequestContext, ec: ExecutionContext): Future[RetrieveDisclosuresOutcome] = {
+  def retrieve(request: RetrieveDisclosuresRequest)(implicit ctx: RequestContext,
+                                                    ec: ExecutionContext): Future[ServiceOutcome[RetrieveDisclosuresResponse]] = {
 
     connector
       .retrieve(request)

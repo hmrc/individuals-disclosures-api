@@ -22,12 +22,12 @@ import api.mocks.services.{ MockAuditService, MockEnrolmentsAuthService, MockMtd
 import api.models.audit.{ AuditEvent, AuditResponse, GenericAuditDetail }
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
+import api.models.domain.Nino
 import mocks.MockAppConfig
 import play.api.libs.json.{ JsValue, Json }
 import play.api.mvc.{ AnyContentAsJson, Result }
 import v1.mocks.requestParsers.MockCreateMarriageAllowanceRequestParser
 import v1.mocks.services.MockCreateMarriageAllowanceService
-import v1.models.domain.Nino
 import v1.models.request.create.{ CreateMarriageAllowanceBody, CreateMarriageAllowanceRawData, CreateMarriageAllowanceRequest }
 
 import scala.concurrent.ExecutionContext.Implicits.global

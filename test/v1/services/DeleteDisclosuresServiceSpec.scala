@@ -19,10 +19,10 @@ package v1.services
 import api.controllers.EndpointLogContext
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
+import api.models.domain.Nino
 import api.services.ServiceSpec
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.mocks.connectors.MockDeleteDisclosuresConnector
-import v1.models.domain.Nino
 import v1.models.request.delete.DeleteDisclosuresRequest
 
 import scala.concurrent.Future

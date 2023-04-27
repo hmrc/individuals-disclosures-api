@@ -24,9 +24,9 @@ import api.mocks.services.{ MockEnrolmentsAuthService, MockMtdIdLookupService }
 import api.models.errors.{ ErrorWrapper, NinoFormatError, TaxYearFormatError }
 import api.models.hateoas.Method._
 import api.models.hateoas.{ HateoasWrapper, Link }
+import api.models.domain.Nino
 import api.models.outcomes.ResponseWrapper
 import play.api.mvc.Result
-import v1.models.domain.Nino
 import v1.mocks.requestParsers.MockRetrieveDisclosuresRequestParser
 import v1.mocks.services.MockRetrieveDisclosuresService
 import api.models.hateoas.RelType._

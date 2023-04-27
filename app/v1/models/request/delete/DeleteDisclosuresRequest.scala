@@ -16,6 +16,6 @@
 
 package v1.models.request.delete
 
-import v1.models.domain.Nino
+import api.models.domain.Nino
 
 case class DeleteDisclosuresRequest(nino: Nino, taxYear: String)
