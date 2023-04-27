@@ -1,5 +1,6 @@
 description: |
-  This endpoint allows a developer to retrieve data related to disclosures, for a given tax year. A National Insurance number and tax year must be provided.
+  This endpoint allows a developer to retrieve data related to disclosures, for a given tax year. A National Insurance 
+  number and tax year must be provided.
   
   ### Test data
   <p>Scenario simulations using <code>Gov-Test-Scenario</code> headers is only available in the sandbox environment.</p>
@@ -63,6 +64,8 @@ responses:
             $ref: './common/errors.yaml#/components/examples/ruleTaxYearNotSupported'
           RULE_TAX_YEAR_RANGE_INVALID:
             $ref: './common/errors.yaml#/components/examples/ruleTaxYearRangeInvalid'
+          RULE_INCORRECT_GOV_TEST_SCENARIO:
+            $ref: './common/errors.yaml#/components/examples/ruleIncorrectGovTestScenario'
 
   "403":
     description: Forbidden
