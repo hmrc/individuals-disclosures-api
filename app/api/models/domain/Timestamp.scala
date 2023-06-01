@@ -28,6 +28,9 @@ object Timestamp {
 
   private val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
 
+  /**
+   * Adds milliseconds to the timestamp string if not already present.
+   */
   def apply(value: String): Timestamp = {
     val ts  = ISO_DATE_TIME.parse(value)
     val dt  = ZonedDateTime.from(ts)
