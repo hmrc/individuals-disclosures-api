@@ -16,23 +16,23 @@
 
 package v1.controllers
 
-import api.controllers.{ ControllerBaseSpec, ControllerTestRunner }
+import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import api.hateoas.HateoasLinks
 import api.mocks.MockIdGenerator
 import api.mocks.hateoas.MockHateoasFactory
-import api.mocks.services.{ MockEnrolmentsAuthService, MockMtdIdLookupService }
-import api.models.errors.{ ErrorWrapper, NinoFormatError, TaxYearFormatError }
+import api.mocks.services.{MockEnrolmentsAuthService, MockMtdIdLookupService}
+import api.models.errors.{ErrorWrapper, NinoFormatError, TaxYearFormatError}
 import api.models.hateoas.Method._
-import api.models.hateoas.{ HateoasWrapper, Link }
-import api.models.domain.Nino
+import api.models.hateoas.{HateoasWrapper, Link}
+import api.models.domain.{Nino, Timestamp}
 import api.models.outcomes.ResponseWrapper
 import play.api.mvc.Result
 import v1.mocks.requestParsers.MockRetrieveDisclosuresRequestParser
 import v1.mocks.services.MockRetrieveDisclosuresService
 import api.models.hateoas.RelType._
 import v1.fixtures.RetrieveDisclosuresControllerFixture.mtdResponseWithHateoas
-import v1.models.request.retrieve.{ RetrieveDisclosuresRawData, RetrieveDisclosuresRequest }
-import v1.models.response.retrieveDisclosures.{ Class2Nics, RetrieveDisclosuresHateoasData, RetrieveDisclosuresResponse, TaxAvoidanceItem }
+import v1.models.request.retrieve.{RetrieveDisclosuresRawData, RetrieveDisclosuresRequest}
+import v1.models.response.retrieveDisclosures.{Class2Nics, RetrieveDisclosuresHateoasData, RetrieveDisclosuresResponse, TaxAvoidanceItem}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -97,7 +97,7 @@ class RetrieveDisclosuresControllerSpec
   val retrieveDisclosuresResponseModel: RetrieveDisclosuresResponse = RetrieveDisclosuresResponse(
     taxAvoidance = Some(taxAvoidanceModel),
     class2Nics = Some(class2NicsModel),
-    submittedOn = "2020-07-06T09:37:17Z"
+    submittedOn = Timestamp("2020-07-06T09:37:17Z")
   )
 
   private val downstreamResponse = mtdResponseWithHateoas(nino, taxYear)
@@ -121,7 +121,6 @@ class RetrieveDisclosuresControllerSpec
   "RetrieveDisclosuresController" should {
     "return a successful response with header X-CorrelationId and body" when {
       "the request received is valid" in new Test {
-
         MockRetrieveDisclosuresRequestParser
           .parse(rawData)
           .returns(Right(requestData))

@@ -17,10 +17,10 @@
 package v1.services
 
 import api.controllers.EndpointLogContext
+import api.models.domain.{ Nino, Timestamp }
 import api.models.errors
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
-import api.models.domain.Nino
 import api.services.ServiceSpec
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.mocks.connectors.MockRetrieveDisclosuresConnector
@@ -42,7 +42,7 @@ class RetrieveDisclosuresServiceSpec extends ServiceSpec {
   }
 
   lazy val request: RetrieveDisclosuresRequest   = RetrieveDisclosuresRequest(nino, taxYear)
-  lazy val response: RetrieveDisclosuresResponse = RetrieveDisclosuresResponse(None, None, "2020-07-06T09:37:17Z")
+  lazy val response: RetrieveDisclosuresResponse = RetrieveDisclosuresResponse(None, None, Timestamp("2020-07-06T09:37:17Z"))
 
   "retrieve" must {
     "return correct result for a success" in new Test {

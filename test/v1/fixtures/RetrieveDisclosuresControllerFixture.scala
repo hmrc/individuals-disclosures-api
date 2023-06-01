@@ -36,7 +36,7 @@ object RetrieveDisclosuresControllerFixture {
       |  "class2Nics": {
       |     "class2VoluntaryContributions": true
       |  },
-      |  "submittedOn": "2020-07-06T09:37:17Z"
+      |  "submittedOn": "2020-07-06T09:37:17.000Z"
       |}
     """.stripMargin
   )
