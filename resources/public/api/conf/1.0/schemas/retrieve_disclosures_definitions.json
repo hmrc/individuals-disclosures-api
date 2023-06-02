@@ -2,8 +2,8 @@
   "definitions": {
     "submittedOn": {
       "type": "string",
-      "description": "The date the disclosures information was added. It must be provided in the format YYYY-MM-DDThh:mm:ssZ",
-      "example": "2020-07-06T09:37:17Z"
+      "description": "The date the disclosures information was added. It must be provided in the format YYYY-MM-DD'T'hh:mm:ss.SSS'Z'",
+      "example": "2020-07-06T09:37:17.000Z"
     },
     "taxAvoidance": {
       "type": "array",
