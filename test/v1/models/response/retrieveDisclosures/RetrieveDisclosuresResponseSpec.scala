@@ -16,7 +16,8 @@
 
 package v1.models.response.retrieveDisclosures
 
-import play.api.libs.json.{JsError, Json}
+import api.models.domain.Timestamp
+import play.api.libs.json.{ JsError, Json }
 import support.UnitSpec
 
 class RetrieveDisclosuresResponseSpec extends UnitSpec {
@@ -33,12 +34,12 @@ class RetrieveDisclosuresResponseSpec extends UnitSpec {
       |   "class2Nics": {
       |      "class2VoluntaryContributions": true
       |   },
-      |   "submittedOn": "2020-07-06T09:37:17Z"
+      |   "submittedOn": "2020-07-06T09:37:17.000Z"
       |}
     """.stripMargin
   )
 
-  private val taxAvoidanceModel = Seq(
+  private val taxAvoidanceItem = List(
     TaxAvoidanceItem(
       srn = "14211123",
       taxYear = "2020-21"
@@ -47,16 +48,16 @@ class RetrieveDisclosuresResponseSpec extends UnitSpec {
 
   private val class2NicsModel = Class2Nics(class2VoluntaryContributions = Some(true))
 
-  private val responseModel = RetrieveDisclosuresResponse(
-    taxAvoidance = Some(taxAvoidanceModel),
+  private val parsedResponse = RetrieveDisclosuresResponse(
+    taxAvoidance = Some(taxAvoidanceItem),
     class2Nics = Some(class2NicsModel),
-    submittedOn = "2020-07-06T09:37:17Z"
+    submittedOn = Timestamp("2020-07-06T09:37:17Z")
   )
 
   "RetrieveDisclosuresResponse" when {
     "read from valid JSON" should {
       "produce the expected RetrieveDisclosuresResponse object" in {
-        json.as[RetrieveDisclosuresResponse] shouldBe responseModel
+        json.as[RetrieveDisclosuresResponse] shouldBe parsedResponse
       }
     }
 
@@ -72,7 +73,9 @@ class RetrieveDisclosuresResponseSpec extends UnitSpec {
           """.stripMargin
         )
 
-        json.as[RetrieveDisclosuresResponse] shouldBe responseModel.copy(taxAvoidance = None, class2Nics = None,  submittedOn = "2020-07-06T09:37:17Z")
+        json.as[RetrieveDisclosuresResponse] shouldBe parsedResponse.copy(taxAvoidance = None,
+                                                                          class2Nics = None,
+                                                                          submittedOn = Timestamp("2020-07-06T09:37:17Z"))
       }
     }
 
@@ -100,7 +103,7 @@ class RetrieveDisclosuresResponseSpec extends UnitSpec {
 
     "written to JSON" should {
       "produce the expected JsObject" in {
-        Json.toJson(responseModel) shouldBe json
+        Json.toJson(parsedResponse) shouldBe json
       }
     }
   }
