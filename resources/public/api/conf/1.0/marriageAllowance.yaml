@@ -1,7 +1,8 @@
 post:
   summary: Create Marriage Allowance
   description: |
-    This endpoint allows the customer to transfer up to £1,260 of their personal allowance to their spouse or civil partner. A National Insurance Number must be provided.
+    This endpoint allows the customer to transfer up to £1,260 of their personal allowance to their spouse or civil 
+    partner. A National Insurance Number must be provided.
     
     ### Test data
     <p>Scenario simulations using <code>Gov-Test-Scenario</code> headers is only available in the sandbox environment.</p>
@@ -89,6 +90,8 @@ post:
               $ref: './common/errors.yaml#/components/examples/ruleIncorrectOrEmptyBody'
             RULE_INVALID_REQUEST:
               $ref: './common/errors.yaml#/components/examples/ruleInvalidRequest'
+            RULE_INCORRECT_GOV_TEST_SCENARIO:
+              $ref: './common/errors.yaml#/components/examples/ruleIncorrectGovTestScenario'
 
     "403":
       description: Forbidden
