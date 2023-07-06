@@ -17,17 +17,17 @@
 package api.services
 
 import api.models.auth.UserDetails
-import api.models.errors.{ InternalError, ClientNotAuthorisedError }
+import api.models.errors.{ClientNotAuthorisedError, InternalError}
 import config.ConfidenceLevelConfig
 import mocks.MockAppConfig
 import org.scalamock.handlers.CallHandler
 import uk.gov.hmrc.auth.core._
-import uk.gov.hmrc.auth.core.authorise.{ AlternatePredicate, CompositePredicate, EmptyPredicate, Predicate }
+import uk.gov.hmrc.auth.core.authorise.{AlternatePredicate, CompositePredicate, EmptyPredicate, Predicate}
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals._
-import uk.gov.hmrc.auth.core.retrieve.{ Retrieval, ~ }
+import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
 import uk.gov.hmrc.http.HeaderCarrier
 
-import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent.{ExecutionContext, Future}
 
 class EnrolmentsAuthServiceSpec extends ServiceSpec with MockAppConfig {
 
@@ -238,6 +238,7 @@ class EnrolmentsAuthServiceSpec extends ServiceSpec with MockAppConfig {
           .authorise[A](_: Predicate, _: Retrieval[A])(_: HeaderCarrier, _: ExecutionContext))
           .expects(predicate, retrievals, *, *)
       }
+
     }
 
     lazy val target = new EnrolmentsAuthService(mockAuthConnector, mockAppConfig)
@@ -251,5 +252,7 @@ class EnrolmentsAuthServiceSpec extends ServiceSpec with MockAppConfig {
         )
       )
     }
+
   }
+
 }

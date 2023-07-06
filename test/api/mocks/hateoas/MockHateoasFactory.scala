@@ -16,8 +16,8 @@
 
 package api.mocks.hateoas
 
-import api.hateoas.{ HateoasFactory, HateoasLinksFactory, HateoasListLinksFactory }
-import api.models.hateoas.{ HateoasData, HateoasWrapper }
+import api.hateoas.{HateoasFactory, HateoasLinksFactory, HateoasListLinksFactory}
+import api.models.hateoas.{HateoasData, HateoasWrapper}
 import cats.Functor
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
@@ -39,5 +39,7 @@ trait MockHateoasFactory extends MockFactory {
         .wrapList(_: A[I], _: D)(_: Functor[A], _: HateoasListLinksFactory[A, I, D]))
         .expects(a, data, *, *)
     }
+
   }
+
 }

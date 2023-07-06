@@ -67,4 +67,5 @@ class SurnameValidationSpec extends UnitSpec with Inspectors {
       }
     }
   }
+
 }

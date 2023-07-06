@@ -16,11 +16,11 @@
 
 package v1.controllers.requestParsers
 
+import api.models.domain.Nino
 import api.models.errors._
-import play.api.libs.json.{ JsValue, Json }
+import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.AnyContentAsJson
 import support.UnitSpec
-import api.models.domain.Nino
 import v1.mocks.validators.MockAmendDisclosuresValidator
 import v1.models.request.amend._
 
@@ -77,9 +77,11 @@ class AmendDisclosuresRequestParserSpec extends UnitSpec {
   )
 
   trait Test extends MockAmendDisclosuresValidator {
+
     lazy val parser: AmendDisclosuresRequestParser = new AmendDisclosuresRequestParser(
       validator = mockAmendDisclosuresValidator
     )
+
   }
 
   "parse" should {
@@ -181,4 +183,5 @@ class AmendDisclosuresRequestParserSpec extends UnitSpec {
       }
     }
   }
+
 }

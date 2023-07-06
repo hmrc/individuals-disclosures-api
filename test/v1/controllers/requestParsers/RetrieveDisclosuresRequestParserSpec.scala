@@ -16,11 +16,11 @@
 
 package v1.controllers.requestParsers
 
-import api.models.errors._
 import api.models.domain.Nino
+import api.models.errors._
 import support.UnitSpec
 import v1.mocks.validators.MockRetrieveDisclosuresValidator
-import v1.models.request.retrieve.{ RetrieveDisclosuresRawData, RetrieveDisclosuresRequest }
+import v1.models.request.retrieve.{RetrieveDisclosuresRawData, RetrieveDisclosuresRequest}
 
 class RetrieveDisclosuresRequestParserSpec extends UnitSpec {
 
@@ -34,9 +34,11 @@ class RetrieveDisclosuresRequestParserSpec extends UnitSpec {
   )
 
   trait Test extends MockRetrieveDisclosuresValidator {
+
     lazy val parser: RetrieveDisclosuresRequestParser = new RetrieveDisclosuresRequestParser(
       validator = mockRetrieveDisclosuresValidator
     )
+
   }
 
   "parse" should {
@@ -78,4 +80,5 @@ class RetrieveDisclosuresRequestParserSpec extends UnitSpec {
       }
     }
   }
+
 }

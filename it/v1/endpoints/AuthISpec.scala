@@ -29,7 +29,7 @@ class AuthISpec extends IntegrationBaseSpec {
 
   private trait Test {
 
-    val nino: String = "AA123456A"
+    val nino: String    = "AA123456A"
     val taxYear: String = "2021-22"
 
     def uri: String = s"/$nino/$taxYear"
@@ -44,8 +44,9 @@ class AuthISpec extends IntegrationBaseSpec {
         .withHttpHeaders(
           (ACCEPT, "application/vnd.hmrc.1.0+json"),
           (AUTHORIZATION, "Bearer 123") // some bearer token
-      )
+        )
     }
+
   }
 
   "Calling the 'delete disclosures' endpoint" when {
@@ -113,4 +114,5 @@ class AuthISpec extends IntegrationBaseSpec {
       }
     }
   }
+
 }

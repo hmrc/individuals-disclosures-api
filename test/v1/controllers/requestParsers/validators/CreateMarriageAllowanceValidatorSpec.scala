@@ -153,7 +153,7 @@ class CreateMarriageAllowanceValidatorSpec extends UnitSpec {
                 PartnerNinoFormatError,
                 PartnerFirstNameFormatError,
                 PartnerSurnameFormatError,
-                PartnerDoBFormatError,
+                PartnerDoBFormatError
               )
             )
           }
@@ -161,4 +161,5 @@ class CreateMarriageAllowanceValidatorSpec extends UnitSpec {
       }
     }
   }
+
 }

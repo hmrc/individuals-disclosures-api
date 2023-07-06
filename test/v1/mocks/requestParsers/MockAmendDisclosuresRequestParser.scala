@@ -20,7 +20,7 @@ import api.models.errors.ErrorWrapper
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import v1.controllers.requestParsers.AmendDisclosuresRequestParser
-import v1.models.request.amend.{ AmendDisclosuresRawData, AmendDisclosuresRequest }
+import v1.models.request.amend.{AmendDisclosuresRawData, AmendDisclosuresRequest}
 
 trait MockAmendDisclosuresRequestParser extends MockFactory {
 
@@ -31,6 +31,7 @@ trait MockAmendDisclosuresRequestParser extends MockFactory {
     def parse(data: AmendDisclosuresRawData): CallHandler[Either[ErrorWrapper, AmendDisclosuresRequest]] = {
       (mockAmendDisclosuresRequestParser.parseRequest(_: AmendDisclosuresRawData)(_: String)).expects(data, *)
     }
+
   }
 
 }

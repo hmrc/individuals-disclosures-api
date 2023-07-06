@@ -16,7 +16,7 @@
 
 package api.models.hateoas
 
-import play.api.libs.json.{ Json, Writes }
+import play.api.libs.json.{Json, Writes}
 
 case class Link(
     href: String,

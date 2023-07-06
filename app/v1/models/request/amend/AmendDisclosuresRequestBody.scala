@@ -17,7 +17,7 @@
 package v1.models.request.amend
 
 import play.api.libs.functional.syntax._
-import play.api.libs.json.{ JsPath, Json, OWrites, Reads }
+import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 import utils.JsonUtils
 
 case class AmendDisclosuresRequestBody(taxAvoidance: Option[Seq[AmendTaxAvoidanceItem]], class2Nics: Option[AmendClass2Nics])

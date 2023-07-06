@@ -19,16 +19,16 @@ package v1.services
 import api.controllers.RequestContext
 import api.models
 import api.models.errors._
-import api.services.{ BaseService, ServiceOutcome }
+import api.services.{BaseService, ServiceOutcome}
 import cats.implicits._
 import v1.connectors.CreateMarriageAllowanceConnector
 import v1.models.request.create.CreateMarriageAllowanceRequest
 
-import javax.inject.{ Inject, Singleton }
-import scala.concurrent.{ ExecutionContext, Future }
+import javax.inject.{Inject, Singleton}
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class CreateMarriageAllowanceService @Inject()(connector: CreateMarriageAllowanceConnector) extends BaseService {
+class CreateMarriageAllowanceService @Inject() (connector: CreateMarriageAllowanceConnector) extends BaseService {
 
   def create(request: CreateMarriageAllowanceRequest)(implicit ctx: RequestContext, ec: ExecutionContext): Future[ServiceOutcome[Unit]] = {
 
@@ -65,4 +65,5 @@ class CreateMarriageAllowanceService @Inject()(connector: CreateMarriageAllowanc
     )
     errors ++ extra_errors
   }
+
 }

@@ -20,10 +20,10 @@ import api.models.errors.NotFoundError
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status._
-import play.api.libs.json.{ JsValue, Json }
-import play.api.libs.ws.{ WSRequest, WSResponse }
+import play.api.libs.json.{JsValue, Json}
+import play.api.libs.ws.{WSRequest, WSResponse}
 import support.IntegrationBaseSpec
-import v1.stubs.{ AuditStub, AuthStub, MtdIdLookupStub }
+import v1.stubs.{AuditStub, AuthStub, MtdIdLookupStub}
 
 class LiveRoutesISpec extends IntegrationBaseSpec {
 
@@ -38,7 +38,7 @@ class LiveRoutesISpec extends IntegrationBaseSpec {
     "microservice.services.auth.port"           -> mockPort,
     "auditing.consumer.baseUri.port"            -> mockPort,
     "minimumPermittedTaxYear"                   -> 2020,
-    "feature-switch.marriage-allowance.enabled" -> false,
+    "feature-switch.marriage-allowance.enabled" -> false
   )
 
   private trait Test {
@@ -64,6 +64,7 @@ class LiveRoutesISpec extends IntegrationBaseSpec {
       buildRequest(uri)
         .withHttpHeaders((ACCEPT, "application/vnd.hmrc.1.0+json"))
     }
+
   }
 
   "Calling the 'create marriage allowance' endpoint (switched on in production)" should {
@@ -82,4 +83,5 @@ class LiveRoutesISpec extends IntegrationBaseSpec {
       }
     }
   }
+
 }

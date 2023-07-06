@@ -16,7 +16,7 @@
 
 package v1.models.request.amend
 
-import play.api.libs.json.{ Json, OFormat }
+import play.api.libs.json.{Json, OFormat}
 
 case class AmendTaxAvoidanceItem(srn: String, taxYear: String)
 

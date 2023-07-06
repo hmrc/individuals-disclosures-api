@@ -17,7 +17,6 @@
 package api.models.domain
 
 import support.UnitSpec
-import api.models.domain.Nino
 
 class NinoSpec extends UnitSpec {
 

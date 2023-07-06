@@ -34,4 +34,5 @@ class MtdErrorSpec extends UnitSpec {
       )
     }
   }
+
 }

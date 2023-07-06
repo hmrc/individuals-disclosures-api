@@ -21,25 +21,25 @@ import api.hateoas.HateoasLinksFactory
 import api.mocks.MockIdGenerator
 import api.mocks.hateoas.MockHateoasFactory
 import api.mocks.services.MockAuditService
-import api.models.audit.{ AuditError, AuditEvent, AuditResponse, GenericAuditDetail }
+import api.models.audit.{AuditError, AuditEvent, AuditResponse, GenericAuditDetail}
 import api.models.auth.UserDetails
-import api.models.errors.{ ErrorWrapper, NinoFormatError }
-import api.models.hateoas.{ HateoasData, HateoasWrapper, Link }
+import api.models.errors.{ErrorWrapper, NinoFormatError}
+import api.models.hateoas.{HateoasData, HateoasWrapper, Link}
 import api.models.outcomes.ResponseWrapper
 import api.models.request.RawData
 import api.services.ServiceOutcome
 import config.AppConfig
 import org.scalamock.handlers.CallHandler
-import play.api.http.{ HeaderNames, Status }
-import play.api.libs.json.{ JsString, Json, OWrites }
+import play.api.http.{HeaderNames, Status}
+import play.api.libs.json.{JsString, Json, OWrites}
 import play.api.mvc.AnyContent
-import play.api.test.{ FakeRequest, ResultExtractors }
+import play.api.test.{FakeRequest, ResultExtractors}
 import support.UnitSpec
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent.{ExecutionContext, Future}
 
 class RequestHandlerSpec
     extends UnitSpec

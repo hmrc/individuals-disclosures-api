@@ -16,7 +16,7 @@
 
 package v1.models.request.amend
 
-import play.api.libs.json.{ JsError, JsObject, Json }
+import play.api.libs.json.{JsError, JsObject, Json}
 import support.UnitSpec
 
 class AmendTaxAvoidanceItemSpec extends UnitSpec {
@@ -56,4 +56,5 @@ class AmendTaxAvoidanceItemSpec extends UnitSpec {
       }
     }
   }
+
 }

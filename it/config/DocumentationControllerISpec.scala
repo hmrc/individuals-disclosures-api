@@ -17,14 +17,14 @@
 package config
 
 import play.api.http.Status
-import play.api.libs.json.{Json, JsValue}
+import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.WSResponse
 import support.IntegrationBaseSpec
 import uk.gov.hmrc.auth.core.ConfidenceLevel
 
 class DocumentationControllerISpec extends IntegrationBaseSpec {
 
-  val config: AppConfig = app.injector.instanceOf[AppConfig]
+  val config: AppConfig                = app.injector.instanceOf[AppConfig]
   val confidenceLevel: ConfidenceLevel = config.confidenceLevelConfig.confidenceLevel
 
   val apiDefinitionJson: JsValue = Json.parse(

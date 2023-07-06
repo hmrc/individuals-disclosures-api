@@ -44,4 +44,5 @@ class RegexValidationSpec extends UnitSpec {
       }
     }
   }
+
 }

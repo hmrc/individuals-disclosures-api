@@ -16,7 +16,7 @@
 
 package api.models.hateoas
 
-import play.api.libs.json.{ JsObject, Json, OWrites, Writes }
+import play.api.libs.json.{JsObject, Json, OWrites, Writes}
 
 object HateoasWrapper {
 

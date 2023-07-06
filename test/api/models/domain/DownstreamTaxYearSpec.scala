@@ -20,6 +20,7 @@ import support.UnitSpec
 import v1.models.domain.DownstreamTaxYear
 
 class DownstreamTaxYearSpec extends UnitSpec {
+
   "toString" should {
     "return the value inside the model as a String instead of the standard case class toString" in {
       DownstreamTaxYear("value").toString shouldBe "value"
@@ -31,4 +32,5 @@ class DownstreamTaxYearSpec extends UnitSpec {
       DownstreamTaxYear.fromMtd("2018-19") shouldBe DownstreamTaxYear("2019")
     }
   }
+
 }

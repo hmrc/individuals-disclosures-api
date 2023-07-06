@@ -16,7 +16,7 @@
 
 package api.controllers.requestParsers.validators.validations
 
-import api.models.errors.{ MtdError, SRNFormatError }
+import api.models.errors.{MtdError, SRNFormatError}
 
 object SRNValidation {
   private val regex = "^[0-9]{8}$"
@@ -24,4 +24,5 @@ object SRNValidation {
   def validate(srn: String): List[MtdError] = {
     if (srn.matches(regex)) NoValidationErrors else List(SRNFormatError)
   }
+
 }

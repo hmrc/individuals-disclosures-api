@@ -24,7 +24,7 @@ import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.auth.core.authorise.Predicate
 import uk.gov.hmrc.http.HeaderCarrier
 
-import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent.{ExecutionContext, Future}
 
 trait MockEnrolmentsAuthService extends MockFactory {
 
@@ -44,6 +44,7 @@ trait MockEnrolmentsAuthService extends MockFactory {
         .authorised(_: Predicate)(_: HeaderCarrier, _: ExecutionContext))
         .expects(predicate, *, *)
     }
+
   }
 
 }

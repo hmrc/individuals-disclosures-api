@@ -16,7 +16,7 @@
 
 package api.controllers.requestParsers.validators.validations
 
-import api.models.errors.{ MtdError, RuleTaxYearRangeInvalidError, TaxYearFormatError }
+import api.models.errors.{MtdError, RuleTaxYearRangeInvalidError, TaxYearFormatError}
 
 object TaxYearValidation {
   val taxYearFormat = "20[1-9][0-9]\\-[1-9][0-9]"
@@ -35,4 +35,5 @@ object TaxYearValidation {
       List(TaxYearFormatError)
     }
   }
+
 }

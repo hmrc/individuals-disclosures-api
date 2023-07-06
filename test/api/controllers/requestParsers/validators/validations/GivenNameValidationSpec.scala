@@ -67,4 +67,5 @@ class GivenNameValidationSpec extends UnitSpec with Inspectors {
       }
     }
   }
+
 }

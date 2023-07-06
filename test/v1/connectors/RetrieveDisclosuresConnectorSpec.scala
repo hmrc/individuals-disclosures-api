@@ -17,9 +17,9 @@
 package v1.connectors
 
 import api.connectors.ConnectorSpec
+import api.models.domain.Nino
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
-import api.models.domain.Nino
 import v1.models.request.retrieve.RetrieveDisclosuresRequest
 
 import scala.concurrent.Future
@@ -88,12 +88,14 @@ class RetrieveDisclosuresConnectorSpec extends ConnectorSpec {
 
     protected val request: RetrieveDisclosuresRequest = RetrieveDisclosuresRequest(
       nino = Nino(nino),
-      taxYear = taxYear,
+      taxYear = taxYear
     )
 
     val connector: RetrieveDisclosuresConnector = new RetrieveDisclosuresConnector(
       http = mockHttpClient,
       appConfig = mockAppConfig
     )
+
   }
+
 }

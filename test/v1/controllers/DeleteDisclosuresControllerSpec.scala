@@ -16,18 +16,18 @@
 
 package v1.controllers
 
-import api.controllers.{ ControllerBaseSpec, ControllerTestRunner }
+import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import api.mocks.MockIdGenerator
+import api.mocks.services.{MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService}
+import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import api.models.domain.Nino
-import api.mocks.services.{ MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService }
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
+import play.api.libs.json.JsValue
 import play.api.mvc.Result
 import v1.mocks.requestParsers.MockDeleteDisclosuresRequestParser
 import v1.mocks.services.MockDeleteDisclosuresService
-import v1.models.request.delete.{ DeleteDisclosuresRawData, DeleteDisclosuresRequest }
-import api.models.audit.{ AuditEvent, AuditResponse, GenericAuditDetail }
-import play.api.libs.json.JsValue
+import v1.models.request.delete.{DeleteDisclosuresRawData, DeleteDisclosuresRequest}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -81,6 +81,7 @@ class DeleteDisclosuresControllerSpec
           response = auditResponse
         )
       )
+
   }
 
   "DeleteDisclosuresController" should {
@@ -119,4 +120,5 @@ class DeleteDisclosuresControllerSpec
       }
     }
   }
+
 }

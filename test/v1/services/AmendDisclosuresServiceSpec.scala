@@ -17,10 +17,10 @@
 package v1.services
 
 import api.controllers.EndpointLogContext
+import api.models.domain.Nino
 import api.models.errors
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
-import api.models.domain.Nino
 import api.services.ServiceSpec
 import v1.mocks.connectors.MockAmendDisclosuresConnector
 import v1.models.request.amend._
@@ -56,6 +56,7 @@ class AmendDisclosuresServiceSpec extends ServiceSpec {
     val service: AmendDisclosuresService = new AmendDisclosuresService(
       connector = mockAmendDisclosuresConnector
     )
+
   }
 
   "AmendDisclosuresService" when {
@@ -101,4 +102,5 @@ class AmendDisclosuresServiceSpec extends ServiceSpec {
       }
     }
   }
+
 }

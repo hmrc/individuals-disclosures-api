@@ -16,7 +16,7 @@
 
 package api.controllers.requestParsers.validators.validations
 
-import api.models.errors.{ MtdError, RuleTaxYearNotSupportedError }
+import api.models.errors.{MtdError, RuleTaxYearNotSupportedError}
 import config.AppConfig
 import v1.models.domain.DownstreamTaxYear
 
@@ -32,4 +32,5 @@ object TaxYearNotSupportedValidation {
       NoValidationErrors
     }
   }
+
 }

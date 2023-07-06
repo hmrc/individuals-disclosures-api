@@ -17,11 +17,11 @@
 package api.services
 
 import api.models.auth.UserDetails
-import api.models.errors.{ InternalError, ClientNotAuthorisedError }
+import api.models.errors.{ClientNotAuthorisedError, InternalError}
 import api.models.outcomes.AuthOutcome
 import config.AppConfig
 import play.api.Logger
-import uk.gov.hmrc.auth.core.AffinityGroup.{ Agent, Individual, Organisation }
+import uk.gov.hmrc.auth.core.AffinityGroup.{Agent, Individual, Organisation}
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.authorise.Predicate
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
@@ -29,11 +29,11 @@ import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals._
 import uk.gov.hmrc.auth.core.retrieve.~
 import uk.gov.hmrc.http.HeaderCarrier
 
-import javax.inject.{ Inject, Singleton }
-import scala.concurrent.{ ExecutionContext, Future }
+import javax.inject.{Inject, Singleton}
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class EnrolmentsAuthService @Inject()(val connector: AuthConnector, val appConfig: AppConfig) {
+class EnrolmentsAuthService @Inject() (val connector: AuthConnector, val appConfig: AppConfig) {
 
   private val logger: Logger = Logger(this.getClass)
 
@@ -91,4 +91,5 @@ class EnrolmentsAuthService @Inject()(val connector: AuthConnector, val appConfi
           Future.successful(getAgentReferenceFromEnrolments(enrolments))
         case _ => Future.successful(None)
       }
+
 }

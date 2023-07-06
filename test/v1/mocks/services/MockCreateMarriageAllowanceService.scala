@@ -24,7 +24,7 @@ import org.scalamock.scalatest.MockFactory
 import v1.models.request.create.CreateMarriageAllowanceRequest
 import v1.services.CreateMarriageAllowanceService
 
-import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent.{ExecutionContext, Future}
 
 trait MockCreateMarriageAllowanceService extends MockFactory {
 
@@ -37,6 +37,7 @@ trait MockCreateMarriageAllowanceService extends MockFactory {
         .create(_: CreateMarriageAllowanceRequest)(_: RequestContext, _: ExecutionContext))
         .expects(requestData, *, *)
     }
+
   }
 
 }

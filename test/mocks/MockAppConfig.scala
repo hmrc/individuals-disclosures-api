@@ -16,7 +16,7 @@
 
 package mocks
 
-import config.{ AppConfig, ConfidenceLevelConfig }
+import config.{AppConfig, ConfidenceLevelConfig}
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import play.api.Configuration
@@ -51,4 +51,5 @@ trait MockAppConfig extends MockFactory {
     def endpointsEnabled: CallHandler[Boolean]                          = (mockAppConfig.endpointsEnabled: String => Boolean).expects("1.0")
     def confidenceLevelCheckEnabled: CallHandler[ConfidenceLevelConfig] = (() => mockAppConfig.confidenceLevelConfig: ConfidenceLevelConfig).expects()
   }
+
 }

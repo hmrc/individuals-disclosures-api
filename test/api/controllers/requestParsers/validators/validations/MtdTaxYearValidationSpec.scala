@@ -51,4 +51,5 @@ class MtdTaxYearValidationSpec extends UnitSpec with JsonErrorValidators {
       }
     }
   }
+
 }

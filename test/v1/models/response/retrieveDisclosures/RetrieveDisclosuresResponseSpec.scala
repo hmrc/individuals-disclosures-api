@@ -17,7 +17,7 @@
 package v1.models.response.retrieveDisclosures
 
 import api.models.domain.Timestamp
-import play.api.libs.json.{ JsError, Json }
+import play.api.libs.json.{JsError, Json}
 import support.UnitSpec
 
 class RetrieveDisclosuresResponseSpec extends UnitSpec {
@@ -73,9 +73,10 @@ class RetrieveDisclosuresResponseSpec extends UnitSpec {
           """.stripMargin
         )
 
-        json.as[RetrieveDisclosuresResponse] shouldBe parsedResponse.copy(taxAvoidance = None,
-                                                                          class2Nics = None,
-                                                                          submittedOn = Timestamp("2020-07-06T09:37:17Z"))
+        json.as[RetrieveDisclosuresResponse] shouldBe parsedResponse.copy(
+          taxAvoidance = None,
+          class2Nics = None,
+          submittedOn = Timestamp("2020-07-06T09:37:17Z"))
       }
     }
 
@@ -107,4 +108,5 @@ class RetrieveDisclosuresResponseSpec extends UnitSpec {
       }
     }
   }
+
 }

@@ -16,7 +16,7 @@
 
 package v1.models.request.amend
 
-import play.api.libs.json.{ Json, OFormat }
+import play.api.libs.json.{Json, OFormat}
 
 case class AmendClass2Nics(class2VoluntaryContributions: Option[Boolean])
 
