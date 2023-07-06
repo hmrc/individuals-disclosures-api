@@ -17,24 +17,24 @@
 package v1.controllers
 
 import api.controllers._
-import play.api.mvc.{ Action, AnyContent, ControllerComponents }
+import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
+import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import utils.IdGenerator
 import v1.controllers.requestParsers.DeleteDisclosuresRequestParser
-import v1.services.DeleteDisclosuresService
-import api.services.{ AuditService, EnrolmentsAuthService, MtdIdLookupService }
 import v1.models.request.delete.DeleteDisclosuresRawData
+import v1.services.DeleteDisclosuresService
 
-import javax.inject.{ Inject, Singleton }
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class DeleteDisclosuresController @Inject()(val authService: EnrolmentsAuthService,
-                                            val lookupService: MtdIdLookupService,
-                                            parser: DeleteDisclosuresRequestParser,
-                                            service: DeleteDisclosuresService,
-                                            auditService: AuditService,
-                                            cc: ControllerComponents,
-                                            val idGenerator: IdGenerator)(implicit ec: ExecutionContext)
+class DeleteDisclosuresController @Inject() (val authService: EnrolmentsAuthService,
+                                             val lookupService: MtdIdLookupService,
+                                             parser: DeleteDisclosuresRequestParser,
+                                             service: DeleteDisclosuresService,
+                                             auditService: AuditService,
+                                             cc: ControllerComponents,
+                                             val idGenerator: IdGenerator)(implicit ec: ExecutionContext)
     extends AuthorisedController(cc) {
 
   implicit val endpointLogContext: EndpointLogContext =
@@ -58,12 +58,14 @@ class DeleteDisclosuresController @Inject()(val authService: EnrolmentsAuthServi
           .withService(service.delete)
           .withNoContentResult()
           .withAuditing(
-            AuditHandler(auditService,
-                         auditType = "DeleteDisclosures",
-                         transactionName = "delete-disclosures",
-                         params = Map("nino" -> nino, "taxYear" -> taxYear)))
+            AuditHandler(
+              auditService,
+              auditType = "DeleteDisclosures",
+              transactionName = "delete-disclosures",
+              params = Map("nino" -> nino, "taxYear" -> taxYear)))
 
       requestHandler.handleRequest(rawData)
 
     }
+
 }

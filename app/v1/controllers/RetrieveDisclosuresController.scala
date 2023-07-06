@@ -18,25 +18,25 @@ package v1.controllers
 
 import api.controllers._
 import api.hateoas.HateoasFactory
-import api.services.{ EnrolmentsAuthService, MtdIdLookupService }
-import play.api.mvc.{ Action, AnyContent, ControllerComponents }
+import api.services.{EnrolmentsAuthService, MtdIdLookupService}
+import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import utils.IdGenerator
 import v1.controllers.requestParsers.RetrieveDisclosuresRequestParser
 import v1.models.request.retrieve.RetrieveDisclosuresRawData
 import v1.models.response.retrieveDisclosures.RetrieveDisclosuresHateoasData
 import v1.services._
 
-import javax.inject.{ Inject, Singleton }
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class RetrieveDisclosuresController @Inject()(val authService: EnrolmentsAuthService,
-                                              val lookupService: MtdIdLookupService,
-                                              parser: RetrieveDisclosuresRequestParser,
-                                              service: RetrieveDisclosuresService,
-                                              hateoasFactory: HateoasFactory,
-                                              cc: ControllerComponents,
-                                              val idGenerator: IdGenerator)(implicit ec: ExecutionContext)
+class RetrieveDisclosuresController @Inject() (val authService: EnrolmentsAuthService,
+                                               val lookupService: MtdIdLookupService,
+                                               parser: RetrieveDisclosuresRequestParser,
+                                               service: RetrieveDisclosuresService,
+                                               hateoasFactory: HateoasFactory,
+                                               cc: ControllerComponents,
+                                               val idGenerator: IdGenerator)(implicit ec: ExecutionContext)
     extends AuthorisedController(cc) {
 
   implicit val endpointLogContext: EndpointLogContext =
@@ -63,4 +63,5 @@ class RetrieveDisclosuresController @Inject()(val authService: EnrolmentsAuthSer
       requestHandler.handleRequest(rawData)
 
     }
+
 }

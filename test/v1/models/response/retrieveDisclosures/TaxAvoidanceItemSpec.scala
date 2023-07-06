@@ -56,4 +56,5 @@ class TaxAvoidanceItemSpec extends UnitSpec {
       }
     }
   }
+
 }

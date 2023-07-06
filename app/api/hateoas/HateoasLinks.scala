@@ -23,11 +23,11 @@ import config.AppConfig
 
 trait HateoasLinks {
 
-  //Domain URIs
+  // Domain URIs
   private def disclosuresUri(appConfig: AppConfig, nino: String, taxYear: String) =
     s"/${appConfig.apiGatewayContext}/$nino/$taxYear"
 
-  //API resource links
+  // API resource links
   def amendDisclosures(appConfig: AppConfig, nino: String, taxYear: String): Link =
     Link(
       href = disclosuresUri(appConfig, nino, taxYear),
@@ -48,4 +48,5 @@ trait HateoasLinks {
       method = DELETE,
       rel = DELETE_DISCLOSURES
     )
+
 }

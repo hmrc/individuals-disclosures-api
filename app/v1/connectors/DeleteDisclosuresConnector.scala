@@ -16,23 +16,21 @@
 
 package v1.connectors
 
-import api.connectors.{ BaseDownstreamConnector, DownstreamOutcome }
 import api.connectors.DownstreamUri.Ifs1Uri
-import config.AppConfig
 import api.connectors.httpparsers.StandardDownstreamHttpParser._
-import javax.inject.{ Inject, Singleton }
-import uk.gov.hmrc.http.{ HeaderCarrier, HttpClient }
+import api.connectors.{BaseDownstreamConnector, DownstreamOutcome}
+import config.AppConfig
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import v1.models.request.delete.DeleteDisclosuresRequest
 
-import scala.concurrent.{ ExecutionContext, Future }
+import javax.inject.{Inject, Singleton}
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class DeleteDisclosuresConnector @Inject()(val http: HttpClient, val appConfig: AppConfig) extends BaseDownstreamConnector {
+class DeleteDisclosuresConnector @Inject() (val http: HttpClient, val appConfig: AppConfig) extends BaseDownstreamConnector {
 
-  def deleteDisclosures(request: DeleteDisclosuresRequest)(implicit
-                                                           hc: HeaderCarrier,
-                                                           ec: ExecutionContext,
-                                                           correlationId: String): Future[DownstreamOutcome[Unit]] = {
+  def deleteDisclosures(
+      request: DeleteDisclosuresRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext, correlationId: String): Future[DownstreamOutcome[Unit]] = {
 
     import request._
 

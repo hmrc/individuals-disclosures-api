@@ -49,6 +49,7 @@ trait JsonErrorValidators {
       case JsError(jsErrors) => jsErrors.map(item => (item._1, item._2.toList)).toList
       case JsSuccess(_, _)   => fail("A JSON error was expected")
     }
+
   }
 
   implicit class JsValueOps(json: JsValue) {
@@ -61,6 +62,7 @@ trait JsonErrorValidators {
           valid = x => x
         )
     }
+
   }
 
   def testMandatoryProperty[A: Reads](json: JsValue)(property: String): Unit = {
@@ -123,4 +125,5 @@ trait JsonErrorValidators {
     case (path, _ :: Nil)                           => fail(s"single error returned but path $path does not match $jsPath")
     case (path, errs)                               => fail(s"multiple errors returned for $path but only 1 required : $errs")
   }
+
 }

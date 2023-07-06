@@ -17,13 +17,13 @@
 package routing
 
 import akka.actor.ActorSystem
-import api.models.errors.{ InvalidAcceptHeaderError, UnsupportedVersionError }
+import api.models.errors.{InvalidAcceptHeaderError, UnsupportedVersionError}
 import mocks.MockAppConfig
 import org.scalatest.Inside
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Configuration
 import play.api.http.HeaderNames.ACCEPT
-import play.api.http.{ HttpConfiguration, HttpErrorHandler, HttpFilters }
+import play.api.http.{HttpConfiguration, HttpErrorHandler, HttpFilters}
 import play.api.libs.json.Json
 import play.api.mvc._
 import play.api.routing.Router
@@ -45,17 +45,20 @@ class VersionRoutingRequestHandlerSpec extends UnitSpec with Inside with MockApp
   object V2Handler      extends Handler
   object V3Handler      extends Handler
 
-  private val defaultRouter = Router.from {
-    case GET(p"") => DefaultHandler
+  private val defaultRouter = Router.from { case GET(p"") =>
+    DefaultHandler
   }
-  private val v1Router = Router.from {
-    case GET(p"/v1") => V1Handler
+
+  private val v1Router = Router.from { case GET(p"/v1") =>
+    V1Handler
   }
-  private val v2Router = Router.from {
-    case GET(p"/v2") => V2Handler
+
+  private val v2Router = Router.from { case GET(p"/v2") =>
+    V2Handler
   }
-  private val v3Router = Router.from {
-    case GET(p"/v3") => V3Handler
+
+  private val v3Router = Router.from { case GET(p"/v3") =>
+    V3Handler
   }
 
   private val routingMap = new VersionRoutingMap {
@@ -79,6 +82,7 @@ class VersionRoutingRequestHandlerSpec extends UnitSpec with Inside with MockApp
         .foldLeft(FakeRequest("GET", path)) { (req, accept) =>
           req.withHeaders((ACCEPT, accept))
         }
+
   }
 
   "Routing requests with no version" should {
@@ -145,12 +149,11 @@ class VersionRoutingRequestHandlerSpec extends UnitSpec with Inside with MockApp
     "return 406" in new Test {
 
       val request: RequestHeader = buildRequest("/v1")
-      inside(requestHandler.routeRequest(request)) {
-        case Some(a: EssentialAction) =>
-          val result = a.apply(request)
+      inside(requestHandler.routeRequest(request)) { case Some(a: EssentialAction) =>
+        val result = a.apply(request)
 
-          status(result) shouldBe NOT_ACCEPTABLE
-          contentAsJson(result) shouldBe Json.toJson(InvalidAcceptHeaderError)
+        status(result) shouldBe NOT_ACCEPTABLE
+        contentAsJson(result) shouldBe Json.toJson(InvalidAcceptHeaderError)
       }
     }
   }
@@ -161,12 +164,11 @@ class VersionRoutingRequestHandlerSpec extends UnitSpec with Inside with MockApp
     "return 404" in new Test {
       private val request = buildRequest("/v1")
 
-      inside(requestHandler.routeRequest(request)) {
-        case Some(a: EssentialAction) =>
-          val result = a.apply(request)
+      inside(requestHandler.routeRequest(request)) { case Some(a: EssentialAction) =>
+        val result = a.apply(request)
 
-          status(result) shouldBe NOT_FOUND
-          contentAsJson(result) shouldBe Json.toJson(UnsupportedVersionError)
+        status(result) shouldBe NOT_FOUND
+        contentAsJson(result) shouldBe Json.toJson(UnsupportedVersionError)
       }
     }
   }
@@ -178,12 +180,11 @@ class VersionRoutingRequestHandlerSpec extends UnitSpec with Inside with MockApp
       "return 404 Not Found" in new Test {
 
         private val request = buildRequest("/v1")
-        inside(requestHandler.routeRequest(request)) {
-          case Some(a: EssentialAction) =>
-            val result = a.apply(request)
+        inside(requestHandler.routeRequest(request)) { case Some(a: EssentialAction) =>
+          val result = a.apply(request)
 
-            status(result) shouldBe NOT_FOUND
-            contentAsJson(result) shouldBe Json.toJson(UnsupportedVersionError)
+          status(result) shouldBe NOT_FOUND
+          contentAsJson(result) shouldBe Json.toJson(UnsupportedVersionError)
 
         }
       }

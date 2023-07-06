@@ -43,7 +43,7 @@ object APIStatus extends Enumeration {
   case object RETIRED extends APIStatus
 
   implicit val formatApiVersion: Format[APIStatus] = Enums.format[APIStatus]
-  val parser: PartialFunction[String, APIStatus] = Enums.parser[APIStatus]
+  val parser: PartialFunction[String, APIStatus]   = Enums.parser[APIStatus]
 }
 
 case class APIVersion(version: String, status: APIStatus, endpointsEnabled: Boolean) {
@@ -73,6 +73,7 @@ case class APIDefinition(name: String,
     val foundVersions: Seq[String] = versions.map(_.version)
     foundVersions.distinct == foundVersions
   }
+
 }
 
 object APIDefinition {

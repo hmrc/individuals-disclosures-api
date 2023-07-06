@@ -16,11 +16,11 @@
 
 package v1.controllers.requestParsers
 
-import api.models.errors._
 import api.models.domain.Nino
+import api.models.errors._
 import support.UnitSpec
 import v1.mocks.validators.MockDeleteDisclosuresValidator
-import v1.models.request.delete.{ DeleteDisclosuresRawData, DeleteDisclosuresRequest }
+import v1.models.request.delete.{DeleteDisclosuresRawData, DeleteDisclosuresRequest}
 
 class DeleteDisclosuresRequestParserSpec extends UnitSpec {
 
@@ -34,9 +34,11 @@ class DeleteDisclosuresRequestParserSpec extends UnitSpec {
   )
 
   trait Test extends MockDeleteDisclosuresValidator {
+
     lazy val parser: DeleteDisclosuresRequestParser = new DeleteDisclosuresRequestParser(
       validator = mockDeleteDisclosuresValidator
     )
+
   }
 
   "parse" should {
@@ -78,4 +80,5 @@ class DeleteDisclosuresRequestParserSpec extends UnitSpec {
       }
     }
   }
+
 }

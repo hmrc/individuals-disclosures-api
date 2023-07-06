@@ -21,11 +21,11 @@ import api.models.errors._
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status._
-import play.api.libs.json.{ JsResult, JsSuccess, JsValue, Json }
-import play.api.libs.ws.{ WSRequest, WSResponse }
+import play.api.libs.json.{JsResult, JsSuccess, JsValue, Json}
+import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
 import support.IntegrationBaseSpec
-import v1.stubs.{ AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub }
+import v1.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 
 class CreateMarriageAllowanceControllerISpec extends IntegrationBaseSpec {
 
@@ -61,6 +61,7 @@ class CreateMarriageAllowanceControllerISpec extends IntegrationBaseSpec {
           (AUTHORIZATION, "Bearer 123") // some bearer token
         )
     }
+
   }
 
   "Calling the 'create marriage allowance' endpoint" should {
@@ -210,7 +211,7 @@ class CreateMarriageAllowanceControllerISpec extends IntegrationBaseSpec {
           ("AA123457A", invalidNinoBodyJson, BAD_REQUEST, PartnerNinoFormatError),
           ("AA123457A", invalidFirstNameBodyJson, BAD_REQUEST, PartnerFirstNameFormatError),
           ("AA123457A", invalidSurnameBodyJson, BAD_REQUEST, PartnerSurnameFormatError),
-          ("AA123459A", invalidDobBodyJson, BAD_REQUEST, PartnerDoBFormatError),
+          ("AA123459A", invalidDobBodyJson, BAD_REQUEST, PartnerDoBFormatError)
         )
         input.foreach(args => (validationErrorTest _).tupled(args))
 
@@ -296,4 +297,5 @@ class CreateMarriageAllowanceControllerISpec extends IntegrationBaseSpec {
       }
     }
   }
+
 }

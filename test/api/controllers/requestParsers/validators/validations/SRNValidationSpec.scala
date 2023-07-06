@@ -36,4 +36,5 @@ class SRNValidationSpec extends UnitSpec {
       }
     }
   }
+
 }

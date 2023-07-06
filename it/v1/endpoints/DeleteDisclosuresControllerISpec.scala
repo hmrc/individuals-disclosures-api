@@ -17,23 +17,15 @@
 package v1.endpoints
 
 import api.models.errors
-import api.models.errors.{
-  NinoFormatError,
-  NotFoundError,
-  RuleTaxYearNotSupportedError,
-  RuleTaxYearRangeInvalidError,
-  RuleVoluntaryClass2CannotBeChangedError,
-  TaxYearFormatError
-}
+import api.models.errors._
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status._
 import play.api.libs.json.Json
-import play.api.libs.ws.{ WSRequest, WSResponse }
+import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
 import support.IntegrationBaseSpec
-import api.models.errors._
-import v1.stubs.{ AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub }
+import v1.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 
 class DeleteDisclosuresControllerISpec extends IntegrationBaseSpec {
 
@@ -56,6 +48,7 @@ class DeleteDisclosuresControllerISpec extends IntegrationBaseSpec {
           (AUTHORIZATION, "Bearer 123") // some bearer token
         )
     }
+
   }
 
   "Calling the 'delete disclosures' endpoint" should {
@@ -145,4 +138,5 @@ class DeleteDisclosuresControllerISpec extends IntegrationBaseSpec {
       }
     }
   }
+
 }

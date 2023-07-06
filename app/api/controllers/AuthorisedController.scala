@@ -18,8 +18,8 @@ package api.controllers
 
 import api.models.auth.UserDetails
 import api.models.errors
-import api.models.errors.{ InvalidBearerTokenError, NinoFormatError, ClientNotAuthorisedError }
-import api.services.{ EnrolmentsAuthService, MtdIdLookupService }
+import api.models.errors.{ClientNotAuthorisedError, InvalidBearerTokenError, NinoFormatError}
+import api.services.{EnrolmentsAuthService, MtdIdLookupService}
 import play.api.libs.json.Json
 import play.api.mvc._
 import uk.gov.hmrc.auth.core.Enrolment
@@ -27,7 +27,7 @@ import uk.gov.hmrc.auth.core.authorise.Predicate
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
 
-import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent.{ExecutionContext, Future}
 
 case class UserRequest[A](userDetails: UserDetails, request: Request[A]) extends WrappedRequest[A](request)
 
@@ -47,8 +47,8 @@ abstract class AuthorisedController(cc: ControllerComponents)(implicit ec: Execu
         .withIdentifier("MTDITID", mtdId)
         .withDelegatedAuthRule("mtd-it-auth")
 
-    def invokeBlockWithAuthCheck[A](mtdId: String, request: Request[A], block: UserRequest[A] => Future[Result])(
-        implicit headerCarrier: HeaderCarrier): Future[Result] = {
+    def invokeBlockWithAuthCheck[A](mtdId: String, request: Request[A], block: UserRequest[A] => Future[Result])(implicit
+        headerCarrier: HeaderCarrier): Future[Result] = {
       authService.authorised(predicate(mtdId)).flatMap[Result] {
         case Right(userDetails)             => block(UserRequest(userDetails.copy(mtdId = mtdId), request))
         case Left(ClientNotAuthorisedError) => Future.successful(Forbidden(Json.toJson(ClientNotAuthorisedError)))
@@ -67,5 +67,7 @@ abstract class AuthorisedController(cc: ControllerComponents)(implicit ec: Execu
         case Left(_)                        => Future.successful(InternalServerError(Json.toJson(errors.InternalError)))
       }
     }
+
   }
+
 }

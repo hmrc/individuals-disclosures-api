@@ -23,7 +23,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import v1.connectors.CreateMarriageAllowanceConnector
 import v1.models.request.create.CreateMarriageAllowanceRequest
 
-import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent.{ExecutionContext, Future}
 
 trait MockCreateMarriageAllowanceConnector extends MockFactory {
 
@@ -36,6 +36,7 @@ trait MockCreateMarriageAllowanceConnector extends MockFactory {
         .create(_: CreateMarriageAllowanceRequest)(_: HeaderCarrier, _: ExecutionContext, _: String))
         .expects(request, *, *, *)
     }
+
   }
 
 }

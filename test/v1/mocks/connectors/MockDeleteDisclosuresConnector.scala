@@ -23,7 +23,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import v1.connectors.DeleteDisclosuresConnector
 import v1.models.request.delete.DeleteDisclosuresRequest
 
-import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent.{ExecutionContext, Future}
 
 trait MockDeleteDisclosuresConnector extends MockFactory {
 
@@ -36,6 +36,7 @@ trait MockDeleteDisclosuresConnector extends MockFactory {
         .deleteDisclosures(_: DeleteDisclosuresRequest)(_: HeaderCarrier, _: ExecutionContext, _: String))
         .expects(request, *, *, *)
     }
+
   }
 
 }

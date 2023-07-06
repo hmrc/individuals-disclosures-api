@@ -20,7 +20,7 @@ import api.models.errors.ErrorWrapper
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import v1.controllers.requestParsers.RetrieveDisclosuresRequestParser
-import v1.models.request.retrieve.{ RetrieveDisclosuresRawData, RetrieveDisclosuresRequest }
+import v1.models.request.retrieve.{RetrieveDisclosuresRawData, RetrieveDisclosuresRequest}
 
 trait MockRetrieveDisclosuresRequestParser extends MockFactory {
 
@@ -31,6 +31,7 @@ trait MockRetrieveDisclosuresRequestParser extends MockFactory {
     def parse(data: RetrieveDisclosuresRawData): CallHandler[Either[ErrorWrapper, RetrieveDisclosuresRequest]] = {
       (mockRetrieveDisclosuresRequestParser.parseRequest(_: RetrieveDisclosuresRawData)(_: String)).expects(data, *)
     }
+
   }
 
 }

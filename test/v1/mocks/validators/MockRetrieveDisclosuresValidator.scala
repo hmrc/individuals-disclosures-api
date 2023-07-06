@@ -32,6 +32,7 @@ class MockRetrieveDisclosuresValidator extends MockFactory {
         .validate(_: RetrieveDisclosuresRawData))
         .expects(data)
     }
+
   }
 
 }

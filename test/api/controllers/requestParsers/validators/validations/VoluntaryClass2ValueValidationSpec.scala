@@ -42,4 +42,5 @@ class VoluntaryClass2ValueValidationSpec extends UnitSpec {
       }
     }
   }
+
 }

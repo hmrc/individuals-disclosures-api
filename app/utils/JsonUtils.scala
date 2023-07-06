@@ -20,32 +20,32 @@ import play.api.libs.json.Reads
 
 trait JsonUtils {
 
-  /**
-   * Extension methods for reads of a optional sequence
-   */
+  /** Extension methods for reads of a optional sequence
+    */
   implicit class OptSeqReadsOps[A](reads: Reads[Option[Seq[A]]]) {
-    /**
-     * Returns a Reads that maps the sequence to itself unless it is empty
-     */
+
+    /** Returns a Reads that maps the sequence to itself unless it is empty
+      */
     def mapEmptySeqToNone: Reads[Option[Seq[A]]] =
       reads.map {
         case Some(Nil) => None
-        case other => other
+        case other     => other
       }
+
   }
 
-  /**
-   * Extension methods for reads of an optional model
-   */
+  /** Extension methods for reads of an optional model
+    */
   implicit class OptReadsOps[A](reads: Reads[Option[A]]) {
-    /**
-     * Returns a Reads that returns a model unless all nested fields are empty
-     */
+
+    /** Returns a Reads that returns a model unless all nested fields are empty
+      */
     def mapEmptyModelToNone(empty: A): Reads[Option[A]] =
       reads.map {
         case Some(model) if model == empty => None
-        case other => other
+        case other                         => other
       }
+
   }
 
 }

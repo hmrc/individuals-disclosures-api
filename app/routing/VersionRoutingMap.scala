@@ -17,7 +17,7 @@
 package routing
 
 import com.google.inject.ImplementedBy
-import config.{ AppConfig, FeatureSwitches }
+import config.{AppConfig, FeatureSwitches}
 import definition.Versions.VERSION_1
 import play.api.routing.Router
 import utils.Logging
@@ -37,10 +37,10 @@ trait VersionRoutingMap {
 }
 
 // Add routes corresponding to available versions...
-case class VersionRoutingMapImpl @Inject()(appConfig: AppConfig,
-                                           defaultRouter: Router,
-                                           v1Router: v1.Routes,
-                                           v1RouterWithMarriageAllowance: v1WithMarriageAllowance.Routes)
+case class VersionRoutingMapImpl @Inject() (appConfig: AppConfig,
+                                            defaultRouter: Router,
+                                            v1Router: v1.Routes,
+                                            v1RouterWithMarriageAllowance: v1WithMarriageAllowance.Routes)
     extends VersionRoutingMap
     with Logging {
 
@@ -51,4 +51,5 @@ case class VersionRoutingMapImpl @Inject()(appConfig: AppConfig,
       if (featureSwitch.isMarriageAllowanceRoutingEnabled) v1RouterWithMarriageAllowance else v1Router
     }
   )
+
 }

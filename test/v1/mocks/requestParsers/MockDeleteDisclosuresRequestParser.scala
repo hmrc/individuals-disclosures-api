@@ -20,7 +20,7 @@ import api.models.errors.ErrorWrapper
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import v1.controllers.requestParsers.DeleteDisclosuresRequestParser
-import v1.models.request.delete.{ DeleteDisclosuresRawData, DeleteDisclosuresRequest }
+import v1.models.request.delete.{DeleteDisclosuresRawData, DeleteDisclosuresRequest}
 
 trait MockDeleteDisclosuresRequestParser extends MockFactory {
 
@@ -31,6 +31,7 @@ trait MockDeleteDisclosuresRequestParser extends MockFactory {
     def parse(data: DeleteDisclosuresRawData): CallHandler[Either[ErrorWrapper, DeleteDisclosuresRequest]] = {
       (mockDeleteDisclosuresRequestParser.parseRequest(_: DeleteDisclosuresRawData)(_: String)).expects(data, *)
     }
+
   }
 
 }

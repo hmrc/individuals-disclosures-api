@@ -18,17 +18,16 @@ package v1.services
 
 import api.controllers.RequestContext
 import api.models.errors._
-import api.services.{ BaseService, ServiceOutcome }
+import api.services.{BaseService, ServiceOutcome}
 import cats.implicits.toBifunctorOps
 import v1.connectors.DeleteDisclosuresConnector
-
-import javax.inject.{ Inject, Singleton }
 import v1.models.request.delete.DeleteDisclosuresRequest
 
-import scala.concurrent.{ ExecutionContext, Future }
+import javax.inject.{Inject, Singleton}
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class DeleteDisclosuresService @Inject()(connector: DeleteDisclosuresConnector) extends BaseService {
+class DeleteDisclosuresService @Inject() (connector: DeleteDisclosuresConnector) extends BaseService {
 
   def delete(request: DeleteDisclosuresRequest)(implicit ctx: RequestContext, ec: ExecutionContext): Future[ServiceOutcome[Unit]] = {
     connector
@@ -45,4 +44,5 @@ class DeleteDisclosuresService @Inject()(connector: DeleteDisclosuresConnector) 
     "SERVER_ERROR"                       -> InternalError,
     "SERVICE_UNAVAILABLE"                -> InternalError
   )
+
 }

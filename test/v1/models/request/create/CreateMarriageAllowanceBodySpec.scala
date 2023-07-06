@@ -16,7 +16,7 @@
 
 package v1.models.request.create
 
-import play.api.libs.json.{ JsError, Json }
+import play.api.libs.json.{JsError, Json}
 import support.UnitSpec
 
 class CreateMarriageAllowanceBodySpec extends UnitSpec {

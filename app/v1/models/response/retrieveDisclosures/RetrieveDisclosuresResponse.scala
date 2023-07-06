@@ -37,6 +37,7 @@ object RetrieveDisclosuresResponse extends HateoasLinks with JsonUtils {
   implicit val writes: OWrites[RetrieveDisclosuresResponse] = Json.writes[RetrieveDisclosuresResponse]
 
   implicit object RetrieveDisclosuresLinksFactory extends HateoasLinksFactory[RetrieveDisclosuresResponse, RetrieveDisclosuresHateoasData] {
+
     override def links(appConfig: AppConfig, data: RetrieveDisclosuresHateoasData): Seq[Link] = {
       import data._
       Seq(
@@ -45,7 +46,9 @@ object RetrieveDisclosuresResponse extends HateoasLinks with JsonUtils {
         deleteDisclosures(appConfig, nino, taxYear)
       )
     }
+
   }
+
 }
 
 case class RetrieveDisclosuresHateoasData(nino: String, taxYear: String) extends HateoasData

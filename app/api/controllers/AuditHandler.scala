@@ -16,12 +16,12 @@
 
 package api.controllers
 
-import api.models.audit.{ AuditEvent, AuditResponse, GenericAuditDetail }
+import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import api.models.auth.UserDetails
 import api.models.errors.ErrorWrapper
 import api.services.AuditService
 import cats.syntax.either._
-import play.api.libs.json.{ JsValue, Writes }
+import play.api.libs.json.{JsValue, Writes}
 
 import scala.Function.const
 import scala.concurrent.ExecutionContext
@@ -29,8 +29,8 @@ import scala.concurrent.ExecutionContext
 trait AuditHandler extends RequestContextImplicits {
 
   def performAudit(userDetails: UserDetails, httpStatus: Int, response: Either[ErrorWrapper, Option[JsValue]])(implicit
-                                                                                                               ctx: RequestContext,
-                                                                                                               ec: ExecutionContext): Unit
+      ctx: RequestContext,
+      ec: ExecutionContext): Unit
 
 }
 
@@ -79,8 +79,8 @@ object AuditHandler {
       extends AuditHandler {
 
     def performAudit(userDetails: UserDetails, httpStatus: Int, response: Either[ErrorWrapper, Option[JsValue]])(implicit
-                                                                                                                 ctx: RequestContext,
-                                                                                                                 ec: ExecutionContext): Unit = {
+        ctx: RequestContext,
+        ec: ExecutionContext): Unit = {
 
       val auditEvent = {
         val auditResponse = AuditResponse(httpStatus, response.map(responseBodyMap).leftMap(ew => ew.auditErrors))

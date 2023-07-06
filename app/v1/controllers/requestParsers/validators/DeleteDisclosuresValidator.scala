@@ -17,14 +17,14 @@
 package v1.controllers.requestParsers.validators
 
 import api.controllers.requestParsers.validators.Validator
-import api.controllers.requestParsers.validators.validations.{ NinoValidation, TaxYearNotSupportedValidation, TaxYearValidation }
+import api.controllers.requestParsers.validators.validations.{NinoValidation, TaxYearNotSupportedValidation, TaxYearValidation}
 import api.models.errors.MtdError
 import config.AppConfig
 import v1.models.request.delete.DeleteDisclosuresRawData
 
 import javax.inject.Inject
 
-class DeleteDisclosuresValidator @Inject()(implicit appConfig: AppConfig) extends Validator[DeleteDisclosuresRawData] {
+class DeleteDisclosuresValidator @Inject() (implicit appConfig: AppConfig) extends Validator[DeleteDisclosuresRawData] {
   private val validationSet = List(parameterFormatValidation, parameterValueValidation)
 
   override def validate(data: DeleteDisclosuresRawData): List[MtdError] = run(validationSet, data)
@@ -34,11 +34,12 @@ class DeleteDisclosuresValidator @Inject()(implicit appConfig: AppConfig) extend
       List(
         NinoValidation.validate(data.nino),
         TaxYearValidation.validate(data.taxYear)
-    )
+      )
 
   private def parameterValueValidation: DeleteDisclosuresRawData => List[List[MtdError]] =
     data =>
       List(
         TaxYearNotSupportedValidation.validate(data.taxYear)
-    )
+      )
+
 }

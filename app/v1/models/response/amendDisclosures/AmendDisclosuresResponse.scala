@@ -16,9 +16,9 @@
 
 package v1.models.response.amendDisclosures
 
+import api.hateoas.{HateoasLinks, HateoasLinksFactory}
+import api.models.hateoas.{HateoasData, Link}
 import config.AppConfig
-import api.hateoas.{ HateoasLinks, HateoasLinksFactory }
-import api.models.hateoas.{ HateoasData, Link }
 
 object AmendDisclosuresResponse extends HateoasLinks {
 

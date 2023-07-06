@@ -19,7 +19,7 @@ package v1.controllers.requestParsers.validators
 import api.models.errors._
 import config.AppConfig
 import mocks.MockAppConfig
-import play.api.libs.json.{ JsValue, Json }
+import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.AnyContentAsJson
 import support.UnitSpec
 import v1.models.request.amend.AmendDisclosuresRawData
@@ -160,6 +160,7 @@ class AmendDisclosuresValidatorSpec extends UnitSpec with MockAppConfig {
     MockAppConfig.minimumPermittedTaxYear
       .returns(2022)
       .anyNumberOfTimes()
+
   }
 
   "running a validation" should {
@@ -261,9 +262,10 @@ class AmendDisclosuresValidatorSpec extends UnitSpec with MockAppConfig {
             TaxYearFormatError.copy(paths = Some(List("/taxAvoidance/0/taxYear"))),
             SRNFormatError.copy(paths = Some(List("/taxAvoidance/0/srn", "/taxAvoidance/1/srn"))),
             RuleTaxYearRangeInvalidError.copy(paths = Some(List("/taxAvoidance/1/taxYear"))),
-            RuleVoluntaryClass2ValueInvalidError.copy(paths = Some(List("/class2Nics/class2VoluntaryContributions"))),
+            RuleVoluntaryClass2ValueInvalidError.copy(paths = Some(List("/class2Nics/class2VoluntaryContributions")))
           )
       }
     }
   }
+
 }

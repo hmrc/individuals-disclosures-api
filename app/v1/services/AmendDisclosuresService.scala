@@ -18,16 +18,16 @@ package v1.services
 
 import api.controllers.RequestContext
 import api.models.errors._
-import api.services.{ BaseService, ServiceOutcome }
+import api.services.{BaseService, ServiceOutcome}
 import cats.implicits._
 import v1.connectors.AmendDisclosuresConnector
 import v1.models.request.amend.AmendDisclosuresRequest
 
-import javax.inject.{ Inject, Singleton }
-import scala.concurrent.{ ExecutionContext, Future }
+import javax.inject.{Inject, Singleton}
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class AmendDisclosuresService @Inject()(connector: AmendDisclosuresConnector) extends BaseService {
+class AmendDisclosuresService @Inject() (connector: AmendDisclosuresConnector) extends BaseService {
 
   def amendDisclosures(request: AmendDisclosuresRequest)(implicit ctx: RequestContext, ec: ExecutionContext): Future[ServiceOutcome[Unit]] = {
 
@@ -54,4 +54,5 @@ class AmendDisclosuresService @Inject()(connector: AmendDisclosuresConnector) ex
 
     error ++ extra_error
   }
+
 }

@@ -28,4 +28,5 @@ class ResponseWrapperSpec extends UnitSpec {
       }
     }
   }
+
 }

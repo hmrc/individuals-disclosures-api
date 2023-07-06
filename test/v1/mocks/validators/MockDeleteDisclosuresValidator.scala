@@ -32,6 +32,7 @@ class MockDeleteDisclosuresValidator extends MockFactory {
         .validate(_: DeleteDisclosuresRawData))
         .expects(data)
     }
+
   }
 
 }

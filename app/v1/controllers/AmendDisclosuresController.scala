@@ -18,10 +18,10 @@ package v1.controllers
 
 import api.controllers._
 import api.hateoas.HateoasFactory
-import api.services.{ AuditService, EnrolmentsAuthService, MtdIdLookupService }
+import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
 import config.AppConfig
 import play.api.libs.json.JsValue
-import play.api.mvc.{ Action, AnyContentAsJson, ControllerComponents }
+import play.api.mvc.{Action, AnyContentAsJson, ControllerComponents}
 import utils.IdGenerator
 import v1.controllers.requestParsers.AmendDisclosuresRequestParser
 import v1.models.request.amend.AmendDisclosuresRawData
@@ -32,15 +32,15 @@ import v1.services._
 import javax.inject._
 import scala.concurrent.ExecutionContext
 
-class AmendDisclosuresController @Inject()(val authService: EnrolmentsAuthService,
-                                           val lookupService: MtdIdLookupService,
-                                           service: AmendDisclosuresService,
-                                           parser: AmendDisclosuresRequestParser,
-                                           hateoasFactory: HateoasFactory,
-                                           auditService: AuditService,
-                                           appConfig: AppConfig,
-                                           cc: ControllerComponents,
-                                           val idGenerator: IdGenerator)(implicit ec: ExecutionContext)
+class AmendDisclosuresController @Inject() (val authService: EnrolmentsAuthService,
+                                            val lookupService: MtdIdLookupService,
+                                            service: AmendDisclosuresService,
+                                            parser: AmendDisclosuresRequestParser,
+                                            hateoasFactory: HateoasFactory,
+                                            auditService: AuditService,
+                                            appConfig: AppConfig,
+                                            cc: ControllerComponents,
+                                            val idGenerator: IdGenerator)(implicit ec: ExecutionContext)
     extends AuthorisedController(cc) {
 
   implicit val endpointLogContext: EndpointLogContext =
@@ -72,4 +72,5 @@ class AmendDisclosuresController @Inject()(val authService: EnrolmentsAuthServic
 
       requestHandler.handleRequest(rawData)
     }
+
 }

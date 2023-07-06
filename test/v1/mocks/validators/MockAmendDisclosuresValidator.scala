@@ -32,5 +32,7 @@ class MockAmendDisclosuresValidator extends MockFactory {
         .validate(_: AmendDisclosuresRawData))
         .expects(data)
     }
+
   }
+
 }

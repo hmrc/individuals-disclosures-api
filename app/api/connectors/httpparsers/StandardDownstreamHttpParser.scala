@@ -23,7 +23,7 @@ import api.models.outcomes.ResponseWrapper
 import play.api.Logger
 import play.api.http.Status._
 import play.api.libs.json.Reads
-import uk.gov.hmrc.http.{ HttpReads, HttpResponse }
+import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 
 object StandardDownstreamHttpParser extends HttpParser {
 
@@ -36,7 +36,7 @@ object StandardDownstreamHttpParser extends HttpParser {
     (_: String, url: String, response: HttpResponse) =>
       doRead(url, response) { correlationId =>
         Right(ResponseWrapper(correlationId, ()))
-    }
+      }
 
   implicit def reads[A: Reads](implicit successCode: SuccessCode = SuccessCode(OK)): HttpReads[DownstreamOutcome[A]] =
     (_: String, url: String, response: HttpResponse) =>
@@ -45,10 +45,10 @@ object StandardDownstreamHttpParser extends HttpParser {
           case Some(ref) => Right(ResponseWrapper(correlationId, ref))
           case None      => Left(ResponseWrapper(correlationId, errors.OutboundError(InternalError)))
         }
-    }
+      }
 
-  private def doRead[A](url: String, response: HttpResponse)(successOutcomeFactory: String => DownstreamOutcome[A])(
-      implicit successCode: SuccessCode): DownstreamOutcome[A] = {
+  private def doRead[A](url: String, response: HttpResponse)(successOutcomeFactory: String => DownstreamOutcome[A])(implicit
+      successCode: SuccessCode): DownstreamOutcome[A] = {
 
     val correlationId = retrieveCorrelationId(response)
 
@@ -66,7 +66,8 @@ object StandardDownstreamHttpParser extends HttpParser {
             s"Success response received from Downstream with correlationId: $correlationId when calling $url")
         successOutcomeFactory(correlationId)
       case BAD_REQUEST | NOT_FOUND | FORBIDDEN | CONFLICT | UNPROCESSABLE_ENTITY => Left(ResponseWrapper(correlationId, parseErrors(response)))
-      case _                                                                     => Left(ResponseWrapper(correlationId, errors.OutboundError(InternalError)))
+      case _ => Left(ResponseWrapper(correlationId, errors.OutboundError(InternalError)))
     }
   }
+
 }

@@ -17,7 +17,7 @@
 package v1.models.request.create
 
 import play.api.libs.functional.syntax._
-import play.api.libs.json.{ JsPath, Json, OWrites, Reads }
+import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 import utils.JsonUtils
 
 case class CreateMarriageAllowanceBody(spouseOrCivilPartnerNino: String,
@@ -35,4 +35,5 @@ object CreateMarriageAllowanceBody extends JsonUtils {
       (JsPath \ "participant1Details" \ "surname").write[String] and
       (JsPath \ "participant1Details" \ "dateOfBirth").writeNullable[String]
   )(unlift(CreateMarriageAllowanceBody.unapply))
+
 }

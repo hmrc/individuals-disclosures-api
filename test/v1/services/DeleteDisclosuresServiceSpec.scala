@@ -17,9 +17,9 @@
 package v1.services
 
 import api.controllers.EndpointLogContext
+import api.models.domain.Nino
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
-import api.models.domain.Nino
 import api.services.ServiceSpec
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.mocks.connectors.MockDeleteDisclosuresConnector
@@ -77,4 +77,5 @@ class DeleteDisclosuresServiceSpec extends ServiceSpec {
       input.foreach(args => (serviceError _).tupled(args))
     }
   }
+
 }
