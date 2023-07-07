@@ -73,7 +73,7 @@ class ApiDefinitionFactory @Inject()(appConfig: AppConfig) {
       .lift(appConfig.apiStatus(version))
       .getOrElse {
         logger.error(s"[ApiDefinition][buildApiStatus] no API Status found in config.  Reverting to Alpha")
-        APIStatus.BETA
+        APIStatus.ALPHA
       }
   }
 }

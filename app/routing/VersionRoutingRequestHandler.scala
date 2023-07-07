@@ -50,7 +50,7 @@ class VersionRoutingRequestHandler @Inject()(versionRoutingMap: VersionRoutingMa
 
   override def routeRequest(request: RequestHeader): Option[Handler] = {
 
-    def documentHandler = routeWith(versionRoutingMap.defaultRouter, request)
+    def documentHandler: Option[Handler] = routeWith(versionRoutingMap.defaultRouter, request)
 
     def apiHandler: Option[Handler] = Some(
       Versions.getFromRequest(request) match {
