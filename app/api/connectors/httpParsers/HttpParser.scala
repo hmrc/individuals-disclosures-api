@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package api.connectors.httpparsers
+package api.connectors.httpParsers
 
 import api.models.errors.{ BVRError, DownstreamError, DownstreamErrorCode, DownstreamErrors, InternalError, OutboundError }
 import play.api.Logger

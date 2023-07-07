@@ -26,7 +26,7 @@ import scala.concurrent.{ ExecutionContext, Future }
 class MtdIdLookupConnector @Inject()(http: HttpClient, appConfig: AppConfig) {
 
   def getMtdId(nino: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[MtdIdLookupOutcome] = {
-    import api.connectors.httpparsers.MtdIdLookupHttpParser.mtdIdLookupHttpReads
+    import api.connectors.httpParsers.MtdIdLookupHttpParser.mtdIdLookupHttpReads
 
     http.GET[MtdIdLookupOutcome](s"${appConfig.mtdIdBaseUrl}/mtd-identifier-lookup/nino/$nino")
   }

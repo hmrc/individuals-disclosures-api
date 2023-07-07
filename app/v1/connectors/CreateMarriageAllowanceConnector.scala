@@ -23,7 +23,7 @@ import config.AppConfig
 import javax.inject.{ Inject, Singleton }
 import uk.gov.hmrc.http.{ HeaderCarrier, HttpClient }
 import v1.models.request.create.CreateMarriageAllowanceRequest
-import api.connectors.httpparsers.StandardDownstreamHttpParser._
+import api.connectors.httpParsers.StandardDownstreamHttpParser._
 
 import scala.concurrent.{ ExecutionContext, Future }
 

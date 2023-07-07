@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package api.connectors.httpparsers
+package api.connectors.httpParsers
 
 import api.connectors.MtdIdLookupOutcome
 import api.models.errors.{ InternalError, InvalidBearerTokenError, NinoFormatError }

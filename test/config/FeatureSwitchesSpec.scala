@@ -20,66 +20,21 @@ import play.api.Configuration
 import support.UnitSpec
 
 class FeatureSwitchesSpec extends UnitSpec {
+  private val configuration = Configuration(
+    "feature-switch.enabled" -> true
+  )
 
-  "a feature switch" should {
-    "be true" when {
+  private val featureSwitches = FeatureSwitches(configuration)
 
-      "absent from the config" in {
-        val configuration   = Configuration.empty
-        val featureSwitches = FeatureSwitches(configuration)
-
-        featureSwitches.isMarriageAllowanceRoutingEnabled shouldBe true
-      }
-
-      "enabled" in {
-        val configuration   = Configuration("marriage-allowance.enabled" -> true)
-        val featureSwitches = FeatureSwitches(configuration)
-
-        featureSwitches.isMarriageAllowanceRoutingEnabled shouldBe true
-
-      }
-    }
-
-    "be false" when {
-      "disabled" in {
-        val configuration   = Configuration("marriage-allowance.enabled" -> false)
-        val featureSwitches = FeatureSwitches(configuration)
-
-        featureSwitches.isMarriageAllowanceRoutingEnabled shouldBe false
-      }
-    }
-  }
-
-  "isVersionEnabled()" should {
-    val configuration = Configuration(
-      "version-1.enabled" -> true,
-      "version-2.enabled" -> false
-    )
-    val featureSwitches = FeatureSwitches(configuration)
-
-    "return false" when {
-      "the version is blank" in {
-        featureSwitches.isVersionEnabled("") shouldBe false
-      }
-
-      "the version is an invalid format" in {
-        featureSwitches.isVersionEnabled("ABCDE-1") shouldBe false
-        featureSwitches.isVersionEnabled("1.") shouldBe false
-        featureSwitches.isVersionEnabled("1.ABC") shouldBe false
-      }
-
-      "the version isn't in the config" in {
-        featureSwitches.isVersionEnabled("3.0") shouldBe false
-      }
-
-      "the version is disabled in the config" in {
-        featureSwitches.isVersionEnabled("2.0") shouldBe false
-      }
-    }
-
+  "FeatureSwitches" should {
     "return true" when {
-      "the version is enabled in the config" in {
-        featureSwitches.isVersionEnabled("1.0") shouldBe true
+      "the feature switch is set to true" in {
+        featureSwitches.featureSwitchConfig.getOptional[Boolean]("feature-switch.enabled") shouldBe Some(true)
+      }
+    }
+    "return false" when {
+      "the feature switch is not present in the config" in {
+        featureSwitches.featureSwitchConfig.getOptional[Boolean]("invalid") shouldBe None
       }
     }
   }
