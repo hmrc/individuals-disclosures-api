@@ -16,7 +16,7 @@
 
 package api.controllers.requestParsers.validators.validations
 
-import api.models.errors.{ MtdError, RuleVoluntaryClass2ValueInvalidError }
+import api.models.errors.{MtdError, RuleVoluntaryClass2ValueInvalidError}
 
 object VoluntaryClass2ValueValidation {
 
@@ -24,4 +24,5 @@ object VoluntaryClass2ValueValidation {
     class2VoluntaryContributions.fold(NoValidationErrors: List[MtdError]) { value =>
       if (value) NoValidationErrors else List(RuleVoluntaryClass2ValueInvalidError)
     }
+
 }

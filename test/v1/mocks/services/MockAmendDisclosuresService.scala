@@ -24,7 +24,7 @@ import org.scalamock.scalatest.MockFactory
 import v1.models.request.amend.AmendDisclosuresRequest
 import v1.services.AmendDisclosuresService
 
-import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent.{ExecutionContext, Future}
 
 trait MockAmendDisclosuresService extends MockFactory {
 
@@ -37,6 +37,7 @@ trait MockAmendDisclosuresService extends MockFactory {
         .amendDisclosures(_: AmendDisclosuresRequest)(_: RequestContext, _: ExecutionContext))
         .expects(requestData, *, *)
     }
+
   }
 
 }

@@ -95,4 +95,5 @@ class ErrorWrapperSpec extends UnitSpec {
       singleWrappedError.auditErrors shouldBe List(AuditError(NinoFormatError.code), AuditError(TaxYearFormatError.code))
     }
   }
+
 }

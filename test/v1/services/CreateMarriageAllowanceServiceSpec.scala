@@ -17,13 +17,13 @@
 package v1.services
 
 import api.controllers.EndpointLogContext
+import api.models.domain.Nino
 import api.models.errors
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
-import api.models.domain.Nino
 import api.services.ServiceSpec
 import v1.mocks.connectors.MockCreateMarriageAllowanceConnector
-import v1.models.request.create.{ CreateMarriageAllowanceBody, CreateMarriageAllowanceRequest }
+import v1.models.request.create.{CreateMarriageAllowanceBody, CreateMarriageAllowanceRequest}
 
 import scala.concurrent.Future
 
@@ -43,6 +43,7 @@ class CreateMarriageAllowanceServiceSpec extends ServiceSpec {
     val service: CreateMarriageAllowanceService = new CreateMarriageAllowanceService(
       connector = mockCreateMarriageAllowanceConnector
     )
+
   }
 
   "CreateMarriageAllowanceService.create" should {
@@ -99,4 +100,5 @@ class CreateMarriageAllowanceServiceSpec extends ServiceSpec {
       }
     }
   }
+
 }

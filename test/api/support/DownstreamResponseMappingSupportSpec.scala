@@ -18,7 +18,7 @@ package api.support
 
 import api.controllers.EndpointLogContext
 import api.models.errors
-import api.models.errors.{BadRequestError, DownstreamErrorCode, DownstreamErrors, ErrorWrapper, MtdError, OutboundError, RuleIncorrectGovTestScenarioError}
+import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import play.api.http.Status.BAD_REQUEST
 import play.api.libs.json.{Format, Json}
@@ -26,15 +26,15 @@ import support.UnitSpec
 import utils.Logging
 
 class DownstreamResponseMappingSupportSpec extends UnitSpec {
-  implicit val logContext: EndpointLogContext = EndpointLogContext("ctrl", "ep")
+  implicit val logContext: EndpointLogContext                = EndpointLogContext("ctrl", "ep")
   val mapping: DownstreamResponseMappingSupport with Logging = new DownstreamResponseMappingSupport with Logging {}
 
   val correlationId: String = "someCorrelationId"
 
   val errorCodeMap: PartialFunction[String, MtdError] = {
-    case "ERR1" => Error1
-    case "ERR2" => Error2
-    case "DS" => errors.InternalError
+    case "ERR1"                 => Error1
+    case "ERR2"                 => Error2
+    case "DS"                   => errors.InternalError
     case "UNMATCHED_STUB_ERROR" => RuleIncorrectGovTestScenarioError
   }
 

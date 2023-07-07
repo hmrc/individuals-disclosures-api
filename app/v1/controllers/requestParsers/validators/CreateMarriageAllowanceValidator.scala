@@ -18,8 +18,8 @@ package v1.controllers.requestParsers.validators
 
 import api.controllers.requestParsers.validators.Validator
 import api.controllers.requestParsers.validators.validations._
-import api.models.errors.{ MtdError, PartnerDoBFormatError, PartnerFirstNameFormatError, PartnerNinoFormatError, PartnerSurnameFormatError }
-import v1.models.request.create.{ CreateMarriageAllowanceBody, CreateMarriageAllowanceRawData }
+import api.models.errors._
+import v1.models.request.create.{CreateMarriageAllowanceBody, CreateMarriageAllowanceRawData}
 
 class CreateMarriageAllowanceValidator extends Validator[CreateMarriageAllowanceRawData] {
   private val validationSet = List(parameterFormatValidation, bodyFormatValidation, bodyValueValidation)
@@ -30,13 +30,13 @@ class CreateMarriageAllowanceValidator extends Validator[CreateMarriageAllowance
     data =>
       List(
         NinoValidation.validate(data.nino)
-    )
+      )
 
   private def bodyFormatValidation: CreateMarriageAllowanceRawData => List[List[MtdError]] =
     data =>
       List(
         JsonFormatValidation.validate[CreateMarriageAllowanceBody](data.body.json)
-    )
+      )
 
   private def bodyValueValidation: CreateMarriageAllowanceRawData => List[List[MtdError]] = data => {
     val body = data.body.json.as[CreateMarriageAllowanceBody]
@@ -48,8 +48,9 @@ class CreateMarriageAllowanceValidator extends Validator[CreateMarriageAllowance
           NinoValidation.validate(spouseOrCivilPartnerNino, PartnerNinoFormatError),
           SurnameValidation.validate(spouseOrCivilPartnerSurname, PartnerSurnameFormatError),
           Validator.validateOptional(spouseOrCivilPartnerFirstName)(GivenNameValidation.validate(_, PartnerFirstNameFormatError)),
-          Validator.validateOptional(spouseOrCivilPartnerDateOfBirth)(DateFormatValidation.validate(_, PartnerDoBFormatError)),
+          Validator.validateOptional(spouseOrCivilPartnerDateOfBirth)(DateFormatValidation.validate(_, PartnerDoBFormatError))
         )
       ))
   }
+
 }

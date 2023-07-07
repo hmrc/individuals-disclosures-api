@@ -17,7 +17,7 @@
 package config
 
 import play.api.http.Status
-import play.api.libs.json.{ JsValue, Json }
+import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.WSResponse
 import support.IntegrationBaseSpec
 import uk.gov.hmrc.auth.core.ConfidenceLevel

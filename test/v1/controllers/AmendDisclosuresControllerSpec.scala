@@ -16,19 +16,19 @@
 
 package v1.controllers
 
-import api.controllers.{ ControllerBaseSpec, ControllerTestRunner }
+import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import api.mocks.MockIdGenerator
 import api.mocks.hateoas.MockHateoasFactory
-import api.mocks.services.{ MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService }
-import api.models.audit.{ AuditEvent, AuditResponse, GenericAuditDetail }
+import api.mocks.services.{MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService}
+import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import api.models.domain.Nino
 import api.models.errors
 import api.models.errors._
 import api.models.hateoas.HateoasWrapper
 import api.models.outcomes.ResponseWrapper
 import mocks.MockAppConfig
-import play.api.libs.json.{ JsValue, Json }
-import play.api.mvc.{ AnyContentAsJson, Result }
+import play.api.libs.json.{JsValue, Json}
+import play.api.mvc.{AnyContentAsJson, Result}
 import v1.mocks.requestParsers.MockAmendDisclosuresRequestParser
 import v1.mocks.services.MockAmendDisclosuresService
 import v1.models.request.amend._
@@ -136,7 +136,7 @@ class AmendDisclosuresControllerSpec
       auditService = mockAuditService,
       cc = cc,
       idGenerator = mockIdGenerator,
-      hateoasFactory = mockHateoasFactory,
+      hateoasFactory = mockHateoasFactory
     )
 
     override protected def callController(): Future[Result] = controller.amendDisclosures(nino, taxYear)(fakePostRequest(requestBodyJson))
@@ -206,4 +206,5 @@ class AmendDisclosuresControllerSpec
       }
     }
   }
+
 }

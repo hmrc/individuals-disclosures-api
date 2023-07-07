@@ -71,6 +71,7 @@ case class APIDefinition(name: String,
     val foundVersions: Seq[Version] = versions.map(_.version)
     foundVersions.distinct == foundVersions
   }
+
 }
 
 object APIDefinition {

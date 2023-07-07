@@ -97,8 +97,8 @@ class ApiDefinitionFactorySpec extends UnitSpec {
         s"confidence-level-check.definition.enabled is $definitionEnabled and confidence-level = $configCL" should {
           s"return confidence level $expectedDefinitionCL" in new Test {
             MockAppConfig.confidenceLevelCheckEnabled returns ConfidenceLevelConfig(confidenceLevel = configCL,
-                                                                                    definitionEnabled = definitionEnabled,
-                                                                                    authValidationEnabled = true)
+              definitionEnabled = definitionEnabled,
+              authValidationEnabled = true)
             apiDefinitionFactory.confidenceLevel shouldBe expectedDefinitionCL
           }
         }

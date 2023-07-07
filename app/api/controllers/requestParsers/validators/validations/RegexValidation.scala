@@ -30,4 +30,5 @@ trait RegexValidation {
 
   def validate(value: String, error: => MtdError): List[MtdError] =
     if (isValid(value)) NoValidationErrors else List(error)
+
 }

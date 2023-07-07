@@ -78,5 +78,7 @@ class AmendDisclosuresConnectorSpec extends ConnectorSpec {
       http = mockHttpClient,
       appConfig = mockAppConfig
     )
+
   }
+
 }

@@ -33,6 +33,7 @@ class RetrieveDisclosuresValidatorSpec extends UnitSpec with MockAppConfig {
     MockAppConfig.minimumPermittedTaxYear
       .returns(2022)
       .anyNumberOfTimes()
+
   }
 
   "running a validation" should {
@@ -75,4 +76,5 @@ class RetrieveDisclosuresValidatorSpec extends UnitSpec with MockAppConfig {
       }
     }
   }
+
 }

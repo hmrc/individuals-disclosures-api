@@ -25,7 +25,7 @@ trait DownstreamResponseMappingSupport {
   self: Logging =>
 
   final def mapDownstreamErrors[D](errorCodeMap: PartialFunction[String, MtdError])(downstreamResponseWrapper: ResponseWrapper[DownstreamError])(
-    implicit logContext: EndpointLogContext): ErrorWrapper = {
+      implicit logContext: EndpointLogContext): ErrorWrapper = {
 
     lazy val defaultErrorCodeMapping: String => MtdError = {
       case "UNMATCHED_STUB_ERROR" =>

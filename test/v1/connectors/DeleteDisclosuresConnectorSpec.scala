@@ -88,12 +88,14 @@ class DeleteDisclosuresConnectorSpec extends ConnectorSpec {
 
     protected val request: DeleteDisclosuresRequest = DeleteDisclosuresRequest(
       nino = Nino(nino),
-      taxYear = taxYear,
+      taxYear = taxYear
     )
 
     val connector: DeleteDisclosuresConnector = new DeleteDisclosuresConnector(
       http = mockHttpClient,
       appConfig = mockAppConfig
     )
+
   }
+
 }

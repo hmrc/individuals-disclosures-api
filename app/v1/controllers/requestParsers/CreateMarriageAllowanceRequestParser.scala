@@ -19,13 +19,14 @@ package v1.controllers.requestParsers
 import api.controllers.requestParsers.RequestParser
 import api.models.domain.Nino
 import v1.controllers.requestParsers.validators.CreateMarriageAllowanceValidator
-import v1.models.request.create.{ CreateMarriageAllowanceBody, CreateMarriageAllowanceRawData, CreateMarriageAllowanceRequest }
+import v1.models.request.create.{CreateMarriageAllowanceBody, CreateMarriageAllowanceRawData, CreateMarriageAllowanceRequest}
 
 import javax.inject.Inject
 
-class CreateMarriageAllowanceRequestParser @Inject()(val validator: CreateMarriageAllowanceValidator)
+class CreateMarriageAllowanceRequestParser @Inject() (val validator: CreateMarriageAllowanceValidator)
     extends RequestParser[CreateMarriageAllowanceRawData, CreateMarriageAllowanceRequest] {
 
   override protected def requestFor(data: CreateMarriageAllowanceRawData): CreateMarriageAllowanceRequest =
     CreateMarriageAllowanceRequest(Nino(data.nino), data.body.json.as[CreateMarriageAllowanceBody])
+
 }

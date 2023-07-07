@@ -18,7 +18,7 @@ package api.controllers.requestParsers.validators.validations
 
 import api.models.errors.RuleIncorrectOrEmptyBodyError
 import api.utils.JsonErrorValidators
-import play.api.libs.json.{ Json, OFormat }
+import play.api.libs.json.{Json, OFormat}
 import support.UnitSpec
 
 class JsonFormatValidationSpec extends UnitSpec with JsonErrorValidators {
@@ -93,7 +93,7 @@ class JsonFormatValidationSpec extends UnitSpec with JsonErrorValidators {
         error.paths.get should contain.allElementsOf(
           List(
             "/fieldOne",
-            "/fieldTwo",
+            "/fieldTwo"
           ))
       }
 
@@ -105,4 +105,5 @@ class JsonFormatValidationSpec extends UnitSpec with JsonErrorValidators {
       }
     }
   }
+
 }

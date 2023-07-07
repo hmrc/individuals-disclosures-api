@@ -19,13 +19,14 @@ package v1.controllers.requestParsers
 import api.controllers.requestParsers.RequestParser
 import api.models.domain.Nino
 import v1.controllers.requestParsers.validators.DeleteDisclosuresValidator
-import v1.models.request.delete.{ DeleteDisclosuresRawData, DeleteDisclosuresRequest }
+import v1.models.request.delete.{DeleteDisclosuresRawData, DeleteDisclosuresRequest}
 
 import javax.inject.Inject
 
-class DeleteDisclosuresRequestParser @Inject()(val validator: DeleteDisclosuresValidator)
+class DeleteDisclosuresRequestParser @Inject() (val validator: DeleteDisclosuresValidator)
     extends RequestParser[DeleteDisclosuresRawData, DeleteDisclosuresRequest] {
 
   override protected def requestFor(data: DeleteDisclosuresRawData): DeleteDisclosuresRequest =
     DeleteDisclosuresRequest(Nino(data.nino), data.taxYear)
+
 }

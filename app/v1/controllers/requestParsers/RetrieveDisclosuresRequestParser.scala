@@ -19,13 +19,14 @@ package v1.controllers.requestParsers
 import api.controllers.requestParsers.RequestParser
 import api.models.domain.Nino
 import v1.controllers.requestParsers.validators.RetrieveDisclosuresValidator
-import v1.models.request.retrieve.{ RetrieveDisclosuresRawData, RetrieveDisclosuresRequest }
+import v1.models.request.retrieve.{RetrieveDisclosuresRawData, RetrieveDisclosuresRequest}
 
 import javax.inject.Inject
 
-class RetrieveDisclosuresRequestParser @Inject()(val validator: RetrieveDisclosuresValidator)
+class RetrieveDisclosuresRequestParser @Inject() (val validator: RetrieveDisclosuresValidator)
     extends RequestParser[RetrieveDisclosuresRawData, RetrieveDisclosuresRequest] {
 
   override protected def requestFor(data: RetrieveDisclosuresRawData): RetrieveDisclosuresRequest =
     RetrieveDisclosuresRequest(Nino(data.nino), data.taxYear)
+
 }

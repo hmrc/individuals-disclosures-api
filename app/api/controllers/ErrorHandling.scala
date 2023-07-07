@@ -25,9 +25,8 @@ case class ErrorHandling(errorHandler: PartialFunction[ErrorWrapper, Result])
 
 object ErrorHandling {
 
-  val Default: ErrorHandling = ErrorHandling {
-    case errorWrapper: ErrorWrapper =>
-      Status(errorWrapper.error.httpStatus)(Json.toJson(errorWrapper))
+  val Default: ErrorHandling = ErrorHandling { case errorWrapper: ErrorWrapper =>
+    Status(errorWrapper.error.httpStatus)(Json.toJson(errorWrapper))
   }
 
 }

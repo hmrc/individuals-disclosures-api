@@ -24,7 +24,7 @@ import org.scalamock.scalatest.MockFactory
 import v1.models.request.delete.DeleteDisclosuresRequest
 import v1.services.DeleteDisclosuresService
 
-import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent.{ExecutionContext, Future}
 
 trait MockDeleteDisclosuresService extends MockFactory {
 
@@ -37,6 +37,7 @@ trait MockDeleteDisclosuresService extends MockFactory {
         .delete(_: DeleteDisclosuresRequest)(_: RequestContext, _: ExecutionContext))
         .expects(requestData, *, *)
     }
+
   }
 
 }

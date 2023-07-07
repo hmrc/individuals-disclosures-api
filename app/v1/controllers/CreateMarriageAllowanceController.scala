@@ -16,11 +16,10 @@
 
 package v1.controllers
 
-import api.controllers.{ AuditHandler, AuthorisedController, EndpointLogContext, RequestContext, RequestHandler }
-import api.services.{ AuditService, EnrolmentsAuthService, MtdIdLookupService }
-
+import api.controllers._
+import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
 import play.api.libs.json.JsValue
-import play.api.mvc.{ Action, AnyContentAsJson, ControllerComponents }
+import play.api.mvc.{Action, AnyContentAsJson, ControllerComponents}
 import utils.IdGenerator
 import v1.controllers.requestParsers.CreateMarriageAllowanceRequestParser
 import v1.models.request.create.CreateMarriageAllowanceRawData
@@ -29,13 +28,13 @@ import v1.services.CreateMarriageAllowanceService
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class CreateMarriageAllowanceController @Inject()(val authService: EnrolmentsAuthService,
-                                                  val lookupService: MtdIdLookupService,
-                                                  parser: CreateMarriageAllowanceRequestParser,
-                                                  service: CreateMarriageAllowanceService,
-                                                  auditService: AuditService,
-                                                  cc: ControllerComponents,
-                                                  val idGenerator: IdGenerator)(implicit ec: ExecutionContext)
+class CreateMarriageAllowanceController @Inject() (val authService: EnrolmentsAuthService,
+                                                   val lookupService: MtdIdLookupService,
+                                                   parser: CreateMarriageAllowanceRequestParser,
+                                                   service: CreateMarriageAllowanceService,
+                                                   auditService: AuditService,
+                                                   cc: ControllerComponents,
+                                                   val idGenerator: IdGenerator)(implicit ec: ExecutionContext)
     extends AuthorisedController(cc) {
 
   implicit val endpointLogContext: EndpointLogContext =

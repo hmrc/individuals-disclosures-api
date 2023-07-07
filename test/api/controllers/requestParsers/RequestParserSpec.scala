@@ -17,10 +17,10 @@
 package api.controllers.requestParsers
 
 import api.controllers.requestParsers.validators.Validator
+import api.models.domain.Nino
 import api.models.errors._
 import api.models.request.RawData
 import support.UnitSpec
-import api.models.domain.Nino
 
 class RequestParserSpec extends UnitSpec {
   private val nino                   = "AA123456A"
@@ -39,6 +39,7 @@ class RequestParserSpec extends UnitSpec {
 
       protected def requestFor(data: Raw): Request = Request(Nino(data.nino))
     }
+
   }
 
   "parse" should {
@@ -67,4 +68,5 @@ class RequestParserSpec extends UnitSpec {
       }
     }
   }
+
 }

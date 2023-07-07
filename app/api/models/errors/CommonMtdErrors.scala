@@ -26,49 +26,53 @@ object TaxYearFormatError extends MtdError("FORMAT_TAX_YEAR", "The provided tax 
 object SRNFormatError extends MtdError("FORMAT_SRN_INVALID", "The provided scheme reference number is invalid", BAD_REQUEST)
 
 object PartnerFirstNameFormatError
-  extends MtdError("FORMAT_SPOUSE_OR_CIVIL_PARTNERS_FIRST_NAME", "The provided spouse or civil partner's first name is invalid", BAD_REQUEST)
+    extends MtdError("FORMAT_SPOUSE_OR_CIVIL_PARTNERS_FIRST_NAME", "The provided spouse or civil partner's first name is invalid", BAD_REQUEST)
 
 object PartnerSurnameFormatError
-  extends MtdError("FORMAT_SPOUSE_OR_CIVIL_PARTNERS_SURNAME", "The provided spouse or civil partner's surname is invalid", BAD_REQUEST)
+    extends MtdError("FORMAT_SPOUSE_OR_CIVIL_PARTNERS_SURNAME", "The provided spouse or civil partner's surname is invalid", BAD_REQUEST)
 
 object PartnerNinoFormatError
-  extends MtdError("FORMAT_SPOUSE_OR_CIVIL_PARTNERS_NINO",
-    "The provided spouse or civil partner's National Insurance Number is invalid",
-    BAD_REQUEST)
+    extends MtdError(
+      "FORMAT_SPOUSE_OR_CIVIL_PARTNERS_NINO",
+      "The provided spouse or civil partner's National Insurance Number is invalid",
+      BAD_REQUEST)
 
 object PartnerDoBFormatError
-  extends MtdError("FORMAT_SPOUSE_OR_CIVIL_PARTNERS_DATE_OF_BIRTH",
-    "The provided spouse or civil partner's date of birth date is invalid",
-    BAD_REQUEST)
+    extends MtdError(
+      "FORMAT_SPOUSE_OR_CIVIL_PARTNERS_DATE_OF_BIRTH",
+      "The provided spouse or civil partner's date of birth date is invalid",
+      BAD_REQUEST)
 
 // Rule Errors
 object RuleTaxYearNotSupportedError
-  extends MtdError(
-    "RULE_TAX_YEAR_NOT_SUPPORTED",
-    "The specified tax year is not supported. That is, the tax year specified is before the minimum tax year value",
-    BAD_REQUEST
-  )
+    extends MtdError(
+      "RULE_TAX_YEAR_NOT_SUPPORTED",
+      "The specified tax year is not supported. That is, the tax year specified is before the minimum tax year value",
+      BAD_REQUEST
+    )
 
 object RuleVoluntaryClass2CannotBeChangedError
-  extends MtdError("RULE_VOLUNTARY_CLASS2_CANNOT_BE_CHANGED",
-    "Voluntary Class 2 NICs cannot be changed after 31st Jan following the year of submission",
-    BAD_REQUEST)
+    extends MtdError(
+      "RULE_VOLUNTARY_CLASS2_CANNOT_BE_CHANGED",
+      "Voluntary Class 2 NICs cannot be changed after 31st Jan following the year of submission",
+      BAD_REQUEST)
 
 object RuleIncorrectOrEmptyBodyError
-  extends MtdError("RULE_INCORRECT_OR_EMPTY_BODY_SUBMITTED", "An empty or non-matching body was submitted", BAD_REQUEST)
+    extends MtdError("RULE_INCORRECT_OR_EMPTY_BODY_SUBMITTED", "An empty or non-matching body was submitted", BAD_REQUEST)
 
 object RuleTaxYearRangeInvalidError
-  extends MtdError("RULE_TAX_YEAR_RANGE_INVALID", "Tax year range invalid. A tax year range of one year is required", BAD_REQUEST)
+    extends MtdError("RULE_TAX_YEAR_RANGE_INVALID", "Tax year range invalid. A tax year range of one year is required", BAD_REQUEST)
 
 object RuleVoluntaryClass2ValueInvalidError
-  extends MtdError("RULE_VOLUNTARY_CLASS2_VALUE_INVALID", "Voluntary Class 2 Contributions can only be set to true", BAD_REQUEST)
+    extends MtdError("RULE_VOLUNTARY_CLASS2_VALUE_INVALID", "Voluntary Class 2 Contributions can only be set to true", BAD_REQUEST)
 
 object RuleDeceasedRecipientError extends MtdError("RULE_DECEASED_RECIPIENT", "The provided spouse or civil partner is deceased", BAD_REQUEST)
 
 object RuleActiveMarriageAllowanceClaimError
-  extends MtdError("RULE_ACTIVE_MARRIAGE_ALLOWANCE_CLAIM",
-    "Marriage Allowance has already been transferred to a spouse or civil partner",
-    BAD_REQUEST)
+    extends MtdError(
+      "RULE_ACTIVE_MARRIAGE_ALLOWANCE_CLAIM",
+      "Marriage Allowance has already been transferred to a spouse or civil partner",
+      BAD_REQUEST)
 
 object RuleInvalidRequestError extends MtdError("RULE_INVALID_REQUEST", "The NINO supplied is invalid", BAD_REQUEST)
 

@@ -18,13 +18,13 @@ package definition
 
 import config.AppConfig
 import play.api.Logger
-import routing.{ Version, Version1 }
+import routing.{Version, Version1}
 import uk.gov.hmrc.auth.core.ConfidenceLevel
 
-import javax.inject.{ Inject, Singleton }
+import javax.inject.{Inject, Singleton}
 
 @Singleton
-class ApiDefinitionFactory @Inject()(appConfig: AppConfig) {
+class ApiDefinitionFactory @Inject() (appConfig: AppConfig) {
 
   private val readScope      = "read:self-assessment"
   private val writeScope     = "write:self-assessment"
@@ -76,4 +76,5 @@ class ApiDefinitionFactory @Inject()(appConfig: AppConfig) {
         APIStatus.ALPHA
       }
   }
+
 }

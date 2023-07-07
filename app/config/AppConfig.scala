@@ -58,7 +58,7 @@ trait AppConfig {
 }
 
 @Singleton
-class AppConfigImpl @Inject()(config: ServicesConfig, configuration: Configuration) extends AppConfig {
+class AppConfigImpl @Inject() (config: ServicesConfig, configuration: Configuration) extends AppConfig {
   // MTD ID Lookup Config
   val mtdIdBaseUrl: String = config.baseUrl(serviceName = "mtd-id-lookup")
 
@@ -80,9 +80,9 @@ class AppConfigImpl @Inject()(config: ServicesConfig, configuration: Configurati
   // API Config
   val apiGatewayContext: String                    = config.getString("api.gateway.context")
   val confidenceLevelConfig: ConfidenceLevelConfig = configuration.get[ConfidenceLevelConfig](s"api.confidence-level-check")
-  def apiStatus(version: Version): String           = config.getString(s"api.${version.name}.status")
+  def apiStatus(version: Version): String          = config.getString(s"api.${version.name}.status")
   def featureSwitches: Configuration               = configuration.getOptional[Configuration](s"feature-switch").getOrElse(Configuration.empty)
-  def endpointsEnabled(version: Version): Boolean   = config.getBoolean(s"api.${version.name}.endpoints.enabled")
+  def endpointsEnabled(version: Version): Boolean  = config.getBoolean(s"api.${version.name}.endpoints.enabled")
 }
 
 trait FixedConfig {
@@ -91,7 +91,9 @@ trait FixedConfig {
 }
 
 case class ConfidenceLevelConfig(confidenceLevel: ConfidenceLevel, definitionEnabled: Boolean, authValidationEnabled: Boolean)
+
 object ConfidenceLevelConfig {
+
   implicit val configLoader: ConfigLoader[ConfidenceLevelConfig] = (rootConfig: Config, path: String) => {
     val config = rootConfig.getConfig(path)
     ConfidenceLevelConfig(
@@ -100,4 +102,5 @@ object ConfidenceLevelConfig {
       authValidationEnabled = config.getBoolean("auth-validation.enabled")
     )
   }
+
 }

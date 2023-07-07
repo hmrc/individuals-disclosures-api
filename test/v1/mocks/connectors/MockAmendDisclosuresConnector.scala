@@ -23,7 +23,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import v1.connectors.AmendDisclosuresConnector
 import v1.models.request.amend.AmendDisclosuresRequest
 
-import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent.{ExecutionContext, Future}
 
 trait MockAmendDisclosuresConnector extends MockFactory {
 
@@ -36,6 +36,7 @@ trait MockAmendDisclosuresConnector extends MockFactory {
         .amendDisclosures(_: AmendDisclosuresRequest)(_: HeaderCarrier, _: ExecutionContext, _: String))
         .expects(request, *, *, *)
     }
+
   }
 
 }

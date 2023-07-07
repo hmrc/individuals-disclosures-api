@@ -17,7 +17,7 @@
 package v1.services
 
 import api.controllers.EndpointLogContext
-import api.models.domain.{ Nino, Timestamp }
+import api.models.domain.{Nino, Timestamp}
 import api.models.errors
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
@@ -83,4 +83,5 @@ class RetrieveDisclosuresServiceSpec extends ServiceSpec {
       (input ++ extra_error).foreach(args => (serviceError _).tupled(args))
     }
   }
+
 }

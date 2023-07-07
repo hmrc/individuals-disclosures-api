@@ -18,13 +18,14 @@ package v1.controllers.requestParsers.validators
 
 import api.controllers.requestParsers.validators.Validator
 import api.controllers.requestParsers.validators.validations._
-import config.AppConfig
 import api.models.errors.MtdError
+import config.AppConfig
 import v1.models.request.amend._
 
 import javax.inject.Inject
 
-class AmendDisclosuresValidator @Inject()(implicit appConfig: AppConfig) extends Validator[AmendDisclosuresRawData] {
+class AmendDisclosuresValidator @Inject() (implicit appConfig: AppConfig) extends Validator[AmendDisclosuresRawData] {
+
   private val validationSet = List(
     parameterFormatValidation,
     parameterRuleValidation,
@@ -39,19 +40,19 @@ class AmendDisclosuresValidator @Inject()(implicit appConfig: AppConfig) extends
       List(
         NinoValidation.validate(data.nino),
         TaxYearValidation.validate(data.taxYear)
-    )
+      )
 
   private def parameterRuleValidation: AmendDisclosuresRawData => List[List[MtdError]] =
     data =>
       List(
         TaxYearNotSupportedValidation.validate(data.taxYear)
-    )
+      )
 
   private def bodyFormatValidator: AmendDisclosuresRawData => List[List[MtdError]] =
     data =>
       List(
         JsonFormatValidation.validate[AmendDisclosuresRequestBody](data.body.json)
-    )
+      )
 
   private def bodyValueValidator: AmendDisclosuresRawData => List[List[MtdError]] = data => {
     val requestBodyData = data.body.json.as[AmendDisclosuresRequestBody]
@@ -92,4 +93,5 @@ class AmendDisclosuresValidator @Inject()(implicit appConfig: AppConfig) extends
           _.copy(paths = Some(List("/class2Nics/class2VoluntaryContributions")))
         )
     ).flatten
+
 }

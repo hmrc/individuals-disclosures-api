@@ -16,10 +16,10 @@
 
 package v1.mocks.validators
 
+import api.models.errors.MtdError
 import org.scalamock.handlers.CallHandler1
 import org.scalamock.scalatest.MockFactory
 import v1.controllers.requestParsers.validators.CreateMarriageAllowanceValidator
-import api.models.errors.MtdError
 import v1.models.request.create.CreateMarriageAllowanceRawData
 
 class MockCreateMarriageAllowanceValidator extends MockFactory {
@@ -31,5 +31,7 @@ class MockCreateMarriageAllowanceValidator extends MockFactory {
       (mockCreateMarriageAllowanceValidator
         .validate(_: CreateMarriageAllowanceRawData))
         .expects(data)
+
   }
+
 }

@@ -16,7 +16,7 @@
 
 package api.models.domain
 
-import play.api.libs.json.{ JsString, Reads, Writes }
+import play.api.libs.json.{JsString, Reads, Writes}
 
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
@@ -30,8 +30,7 @@ object Timestamp {
 
   private val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
 
-  /**
-    * Adds milliseconds to the timestamp string if not already present.
+  /** Adds milliseconds to the timestamp string if not already present.
     */
   def apply(value: String): Timestamp = {
     val ts  = ISO_DATE_TIME.parse(value)

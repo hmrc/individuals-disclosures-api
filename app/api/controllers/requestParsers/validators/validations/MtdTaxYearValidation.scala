@@ -27,4 +27,5 @@ object MtdTaxYearValidation extends FixedConfig {
     val downstreamTaxYear = Integer.parseInt(DownstreamTaxYear.fromMtd(taxYear).value)
     if (downstreamTaxYear >= minimumTaxYear) NoValidationErrors else List(error)
   }
+
 }

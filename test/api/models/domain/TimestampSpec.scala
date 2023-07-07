@@ -16,7 +16,7 @@
 
 package api.models.domain
 
-import play.api.libs.json.{ Json, OWrites, Reads }
+import play.api.libs.json.{Json, OWrites, Reads}
 import support.UnitSpec
 
 class TimestampSpec extends UnitSpec {

@@ -58,4 +58,5 @@ class JsonUtilsSpec extends UnitSpec with JsonUtils {
       JsNull.as(reads) shouldBe None
     }
   }
+
 }

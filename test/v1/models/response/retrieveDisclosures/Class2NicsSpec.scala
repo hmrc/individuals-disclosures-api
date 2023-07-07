@@ -66,4 +66,5 @@ class Class2NicsSpec extends UnitSpec {
       }
     }
   }
+
 }

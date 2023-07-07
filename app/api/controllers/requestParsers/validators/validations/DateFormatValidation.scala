@@ -20,7 +20,7 @@ import api.models.errors.MtdError
 
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-import scala.util.{ Failure, Success, Try }
+import scala.util.{Failure, Success, Try}
 
 object DateFormatValidation {
   val datePattern                   = "yyyy-MM-dd"
@@ -34,4 +34,5 @@ object DateFormatValidation {
       case Failure(_) => List(error)
     }
   }
+
 }

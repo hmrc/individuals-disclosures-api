@@ -20,7 +20,7 @@ import api.models.errors._
 import play.api.Configuration
 import play.api.http.Status._
 import play.api.mvc.Results._
-import play.api.mvc.{ RequestHeader, Result }
+import play.api.mvc.{RequestHeader, Result}
 import routing.Versions
 import uk.gov.hmrc.auth.core.AuthorisationException
 import uk.gov.hmrc.http._
@@ -29,11 +29,11 @@ import uk.gov.hmrc.play.bootstrap.backend.http.JsonErrorHandler
 import uk.gov.hmrc.play.bootstrap.config.HttpAuditEvent
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
-import javax.inject.{ Inject, Singleton }
+import javax.inject.{Inject, Singleton}
 import scala.concurrent._
 
 @Singleton
-class ErrorHandler @Inject()(config: Configuration, auditConnector: AuditConnector, httpAuditEvent: HttpAuditEvent)(implicit ec: ExecutionContext)
+class ErrorHandler @Inject() (config: Configuration, auditConnector: AuditConnector, httpAuditEvent: HttpAuditEvent)(implicit ec: ExecutionContext)
     extends JsonErrorHandler(auditConnector, httpAuditEvent, config)
     with Logging {
 
@@ -117,4 +117,5 @@ class ErrorHandler @Inject()(config: Configuration, auditConnector: AuditConnect
     case Right(version) => version.name
     case _              => "<unspecified>"
   }
+
 }

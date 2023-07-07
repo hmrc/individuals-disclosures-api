@@ -22,7 +22,7 @@ import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
 
-import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent.{ExecutionContext, Future}
 
 trait MockMtdIdLookupService extends MockFactory {
 
@@ -35,6 +35,7 @@ trait MockMtdIdLookupService extends MockFactory {
         .lookup(_: String)(_: HeaderCarrier, _: ExecutionContext))
         .expects(nino, *, *)
     }
+
   }
 
 }

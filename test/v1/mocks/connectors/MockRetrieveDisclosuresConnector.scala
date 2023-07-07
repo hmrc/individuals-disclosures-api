@@ -24,7 +24,7 @@ import v1.connectors.RetrieveDisclosuresConnector
 import v1.models.request.retrieve.RetrieveDisclosuresRequest
 import v1.models.response.retrieveDisclosures.RetrieveDisclosuresResponse
 
-import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent.{ExecutionContext, Future}
 
 trait MockRetrieveDisclosuresConnector extends MockFactory {
 
@@ -37,6 +37,7 @@ trait MockRetrieveDisclosuresConnector extends MockFactory {
         .retrieve(_: RetrieveDisclosuresRequest)(_: HeaderCarrier, _: ExecutionContext, _: String))
         .expects(request, *, *, *)
     }
+
   }
 
 }
