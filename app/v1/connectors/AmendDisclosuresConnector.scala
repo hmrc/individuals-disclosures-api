@@ -23,7 +23,7 @@ import config.AppConfig
 import javax.inject.{ Inject, Singleton }
 import uk.gov.hmrc.http.{ HeaderCarrier, HttpClient }
 import v1.models.request.amend.AmendDisclosuresRequest
-import api.connectors.httpParsers.StandardDownstreamHttpParser._
+import api.connectors.httpparsers.StandardDownstreamHttpParser._
 
 import scala.concurrent.{ ExecutionContext, Future }
 
