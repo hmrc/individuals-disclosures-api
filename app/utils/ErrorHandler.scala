@@ -17,11 +17,11 @@
 package utils
 
 import api.models.errors._
-import definition.Versions
 import play.api.Configuration
 import play.api.http.Status._
 import play.api.mvc.Results._
 import play.api.mvc.{RequestHeader, Result}
+import routing.Versions
 import uk.gov.hmrc.auth.core.AuthorisationException
 import uk.gov.hmrc.http._
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
@@ -93,7 +93,7 @@ class ErrorHandler @Inject() (config: Configuration, auditConnector: AuditConnec
       case _: NotFoundException      => (NotFoundError, "ResourceNotFound")
       case _: AuthorisationException => (ClientNotAuthenticatedError, "ClientError")
       case _: JsValidationException  => (BadRequestError, "ServerValidationError")
-      case e: HttpException          => (BadRequestError, "ServerValidationError")
+      case _: HttpException          => (BadRequestError, "ServerValidationError")
       case e: UpstreamErrorResponse if UpstreamErrorResponse.Upstream4xxResponse.unapply(e).isDefined =>
         (BadRequestError, "ServerValidationError")
       case e: UpstreamErrorResponse if UpstreamErrorResponse.Upstream5xxResponse.unapply(e).isDefined =>
@@ -113,5 +113,6 @@ class ErrorHandler @Inject() (config: Configuration, auditConnector: AuditConnec
     Future.successful(Status(errorCode.httpStatus)(errorCode.asJson))
   }
 
-  private def versionIfSpecified(request: RequestHeader): String = Versions.getFromRequest(request).getOrElse("<unspecified>")
+  private def versionIfSpecified(request: RequestHeader): String = Versions.getFromRequest(request).map(_.name).getOrElse("<unspecified>")
+
 }

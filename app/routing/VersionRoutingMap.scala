@@ -17,10 +17,8 @@
 package routing
 
 import com.google.inject.ImplementedBy
-import config.{AppConfig, FeatureSwitches}
-import definition.Versions.VERSION_1
+import config.AppConfig
 import play.api.routing.Router
-import utils.Logging
 
 import javax.inject.Inject
 
@@ -31,25 +29,16 @@ import javax.inject.Inject
 trait VersionRoutingMap {
   val defaultRouter: Router
 
-  val map: Map[String, Router]
+  val map: Map[Version, Router]
 
-  final def versionRouter(version: String): Option[Router] = map.get(version)
+  final def versionRouter(version: Version): Option[Router] = map.get(version)
 }
 
 // Add routes corresponding to available versions...
-case class VersionRoutingMapImpl @Inject() (appConfig: AppConfig,
-                                            defaultRouter: Router,
-                                            v1Router: v1.Routes,
-                                            v1RouterWithMarriageAllowance: v1WithMarriageAllowance.Routes)
-    extends VersionRoutingMap
-    with Logging {
+case class VersionRoutingMapImpl @Inject() (appConfig: AppConfig, defaultRouter: Router, v1Router: v1.Routes) extends VersionRoutingMap {
 
-  val featureSwitch: FeatureSwitches = FeatureSwitches(appConfig.featureSwitches)
-
-  val map: Map[String, Router] = Map(
-    VERSION_1 -> {
-      if (featureSwitch.isMarriageAllowanceRoutingEnabled) v1RouterWithMarriageAllowance else v1Router
-    }
+  val map: Map[Version, Router] = Map(
+    Version1 -> v1Router
   )
 
 }

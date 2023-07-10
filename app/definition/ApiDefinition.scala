@@ -17,6 +17,7 @@
 package definition
 
 import play.api.libs.json.{Format, Json, OFormat}
+import routing.Version
 import uk.gov.hmrc.auth.core.ConfidenceLevel
 import utils.enums.Enums
 
@@ -46,10 +47,7 @@ object APIStatus extends Enumeration {
   val parser: PartialFunction[String, APIStatus]   = Enums.parser[APIStatus]
 }
 
-case class APIVersion(version: String, status: APIStatus, endpointsEnabled: Boolean) {
-
-  require(version.nonEmpty, "version is required")
-}
+case class APIVersion(version: Version, status: APIStatus, endpointsEnabled: Boolean)
 
 object APIVersion {
   implicit val formatAPIVersion: OFormat[APIVersion] = Json.format[APIVersion]
@@ -70,8 +68,7 @@ case class APIDefinition(name: String,
   require(uniqueVersions, "version numbers must be unique")
 
   private def uniqueVersions: Boolean = {
-    val foundVersions: Seq[String] = versions.map(_.version)
-    foundVersions.distinct == foundVersions
+    !versions.map(_.version).groupBy(identity).view.mapValues(_.size).exists(_._2 > 1)
   }
 
 }
