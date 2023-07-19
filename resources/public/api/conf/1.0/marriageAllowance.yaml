@@ -5,33 +5,14 @@ post:
     partner. A National Insurance Number must be provided.
     
     ### Test data
-    <p>Scenario simulations using <code>Gov-Test-Scenario</code> headers is only available in the sandbox environment.</p>
-    <table>
-        <thead>
-            <tr>
-                <th>Header Value (Gov-Test-Scenario)</th>
-                <th>Scenario</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td><p>N/A - DEFAULT</p></td>
-                <td><p>Simulates success response.</p></td>
-            </tr>   
-            <tr>
-                <td><p>DECEASED_RECIPIENT</p></td>
-                <td><p>Simulates the scenario in which the supplied spouse or civil partner has been flagged as deceased.</p></td>
-            </tr>
-            <tr>
-                <td><p>CLAIM_ALREADY_EXISTS</p></td>
-                <td><p>Simulates the scenario in which a Marriage Allowance claim already exists for the supplied NINO. </p></td>
-            </tr>
-            <tr>
-                <td><p>INVALID_REQUEST</p></td>
-                <td><p>Simulates the scenario in which a request cannot be made as the current NINO supplied is invalid.</p></td>
-            </tr>
-        </tbody>
-    </table>
+    Scenario simulations using <code>Gov-Test-Scenario</code> headers is only available in the sandbox environment.
+    
+    | Header Value (Gov-Test-Scenario)      | Scenario                                                                                           |
+    |---------------------------------------|----------------------------------------------------------------------------------------------------|
+    | N/A - DEFAULT                         | Simulates success response.                                                                        |
+    | DECEASED_RECIPIENT                    | Simulates the scenario in which the supplied spouse or civil partner has been flagged as deceased. |
+    | CLAIM_ALREADY_EXISTS                  | Simulates the scenario in which a Marriage Allowance claim already exists for the supplied NINO.   |
+    | INVALID_REQUEST                       | Simulates the scenario in which a request cannot be made as the current NINO supplied is invalid.  |
 
   tags:
     - Marriage Allowance
