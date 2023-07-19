@@ -3,14 +3,14 @@ description: |
   number and tax year must be provided.
   
   ### Test data
-  Scenario simulations using <code>Gov-Test-Scenario</code> headers is only available in the sandbox environment.
+  Scenario simulation using Gov-Test-Scenario headers is only available in the sandbox environment.
   
   | Header Value (Gov-Test-Scenario)      | Scenario                                                                                                                               |
   |---------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------|
   | N/A - DEFAULT                         | Simulates success response.                                                                                                            |
   | NOT_FOUND                             | Simulates the scenario where no data is found.                                                                                         |                                                 
   | STATEFUL                              | Performs a stateful retrieve.                                                                                                          |
-  | DYNAMIC                               | The following response values will change to correspond to the values submitted in the request: <br> <br> • submittedOn <br> • taxYear |
+  | DYNAMIC                               | The following response values will change to correspond to the values submitted in the request: <br> • submittedOn <br> • taxYear |
 
 tags:
   - Disclosures

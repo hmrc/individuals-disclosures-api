@@ -5,7 +5,7 @@ post:
     partner. A National Insurance Number must be provided.
     
     ### Test data
-    Scenario simulations using <code>Gov-Test-Scenario</code> headers is only available in the sandbox environment.
+    Scenario simulation using Gov-Test-Scenario headers is only available in the sandbox environment.
     
     | Header Value (Gov-Test-Scenario)      | Scenario                                                                                           |
     |---------------------------------------|----------------------------------------------------------------------------------------------------|
