@@ -16,20 +16,17 @@
 
 package api.models.domain
 
+import play.api.libs.json.Json
 import support.UnitSpec
-import v1.models.domain.DownstreamTaxYear
 
-class DownstreamTaxYearSpec extends UnitSpec {
+class EmptyJsonBodySpec extends UnitSpec {
 
-  "toString" should {
-    "return the value inside the model as a String instead of the standard case class toString" in {
-      DownstreamTaxYear("value").toString shouldBe "value"
-    }
-  }
-
-  "fromMtd" should {
-    "return the downstream representation of an MTD tax year (XXYY-ZZ -> XXZZ)" in {
-      DownstreamTaxYear.fromMtd("2018-19") shouldBe DownstreamTaxYear("2019")
+  "EmptyJsonBody.writes" should {
+    "return an empty JSON body" when {
+      "called" in {
+        val json = EmptyJsonBody
+        Json.toJson(json)(EmptyJsonBody.writes) shouldBe Json.obj()
+      }
     }
   }
 

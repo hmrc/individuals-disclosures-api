@@ -14,21 +14,8 @@
  * limitations under the License.
  */
 
-package v1.models.domain
+package api.models.domain
 
-/** Represents a tax year in the format required by downstream services
-  *
-  * @param value
-  *   the tax year string (where 2018 represents 2017-18)
-  */
-case class DownstreamTaxYear(value: String) extends AnyVal {
-  override def toString: String = value
-}
-
-object DownstreamTaxYear {
-
-  /** @param taxYear
-    *   tax year in MTD format (e.g. 2017-18)
-    */
-  def fromMtd(taxYear: String): DownstreamTaxYear = DownstreamTaxYear(taxYear.take(2) + taxYear.drop(5))
+case class CalculationId(calculationId: String) {
+  override def toString: String = calculationId
 }

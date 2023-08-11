@@ -14,23 +14,8 @@
  * limitations under the License.
  */
 
-package api.controllers.requestParsers.validators.validations
+package api.models.domain
 
-import api.models.domain.TaxYear
-import api.models.errors.{MtdError, RuleTaxYearNotSupportedError}
-import config.AppConfig
-
-object TaxYearNotSupportedValidation {
-
-  // @param taxYear In format YYYY-YY
-  def validate(taxYear: String)(implicit appConfig: AppConfig): List[MtdError] = {
-    val downstreamTaxYear = Integer.parseInt(TaxYear.fromMtd(taxYear).asDownstream)
-
-    if (downstreamTaxYear < appConfig.minimumPermittedTaxYear) {
-      List(RuleTaxYearNotSupportedError)
-    } else {
-      NoValidationErrors
-    }
-  }
-
+case class BusinessId(businessId: String) {
+  override def toString: String = businessId
 }

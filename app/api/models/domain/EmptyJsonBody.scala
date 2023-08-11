@@ -14,23 +14,14 @@
  * limitations under the License.
  */
 
-package api.controllers.requestParsers.validators.validations
+package api.models.domain
 
-import api.models.domain.TaxYear
-import api.models.errors.{MtdError, RuleTaxYearNotSupportedError}
-import config.AppConfig
+import play.api.libs.json.{JsObject, JsValue, Writes}
 
-object TaxYearNotSupportedValidation {
+object EmptyJsonBody {
 
-  // @param taxYear In format YYYY-YY
-  def validate(taxYear: String)(implicit appConfig: AppConfig): List[MtdError] = {
-    val downstreamTaxYear = Integer.parseInt(TaxYear.fromMtd(taxYear).asDownstream)
-
-    if (downstreamTaxYear < appConfig.minimumPermittedTaxYear) {
-      List(RuleTaxYearNotSupportedError)
-    } else {
-      NoValidationErrors
-    }
+  implicit val writes: Writes[EmptyJsonBody.type] = new Writes[EmptyJsonBody.type] {
+    override def writes(o: EmptyJsonBody.type): JsValue = JsObject.empty
   }
 
 }
