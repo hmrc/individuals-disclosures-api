@@ -17,6 +17,7 @@
 package v1.controllers
 
 import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
+import api.hateoas.HateoasWrapper
 import api.mocks.MockIdGenerator
 import api.mocks.hateoas.MockHateoasFactory
 import api.mocks.services.{MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService}
@@ -24,15 +25,14 @@ import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import api.models.domain.Nino
 import api.models.errors
 import api.models.errors._
-import api.models.hateoas.HateoasWrapper
 import api.models.outcomes.ResponseWrapper
 import mocks.MockAppConfig
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{AnyContentAsJson, Result}
-import v1.mocks.requestParsers.MockAmendDisclosuresRequestParser
-import v1.mocks.services.MockAmendDisclosuresService
+import v1.controllers.requestParsers.MockAmendDisclosuresRequestParser
 import v1.models.request.amend._
 import v1.models.response.amendDisclosures.AmendDisclosuresHateoasData
+import v1.services.MockAmendDisclosuresService
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

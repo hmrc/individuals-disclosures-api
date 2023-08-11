@@ -21,7 +21,7 @@ import api.models.errors._
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.AnyContentAsJson
 import support.UnitSpec
-import v1.mocks.validators.MockAmendDisclosuresValidator
+import v1.controllers.requestParsers.validators.MockAmendDisclosuresValidator
 import v1.models.request.amend._
 
 class AmendDisclosuresRequestParserSpec extends UnitSpec {

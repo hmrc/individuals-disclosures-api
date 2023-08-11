@@ -19,7 +19,7 @@ package v1.controllers.requestParsers
 import api.models.domain.Nino
 import api.models.errors._
 import support.UnitSpec
-import v1.mocks.validators.MockDeleteDisclosuresValidator
+import v1.controllers.requestParsers.validators.MockDeleteDisclosuresValidator
 import v1.models.request.delete.{DeleteDisclosuresRawData, DeleteDisclosuresRequest}
 
 class DeleteDisclosuresRequestParserSpec extends UnitSpec {

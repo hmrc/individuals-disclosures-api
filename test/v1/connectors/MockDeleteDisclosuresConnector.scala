@@ -14,22 +14,26 @@
  * limitations under the License.
  */
 
-package v1.mocks.requestParsers
+package v1.connectors
 
-import api.models.errors.ErrorWrapper
+import api.connectors.DownstreamOutcome
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
-import v1.controllers.requestParsers.AmendDisclosuresRequestParser
-import v1.models.request.amend.{AmendDisclosuresRawData, AmendDisclosuresRequest}
+import uk.gov.hmrc.http.HeaderCarrier
+import v1.models.request.delete.DeleteDisclosuresRequest
 
-trait MockAmendDisclosuresRequestParser extends MockFactory {
+import scala.concurrent.{ExecutionContext, Future}
 
-  val mockAmendDisclosuresRequestParser: AmendDisclosuresRequestParser = mock[AmendDisclosuresRequestParser]
+trait MockDeleteDisclosuresConnector extends MockFactory {
 
-  object MockAmendDisclosuresRequestParser {
+  val mockDeleteDisclosuresConnector: DeleteDisclosuresConnector = mock[DeleteDisclosuresConnector]
 
-    def parse(data: AmendDisclosuresRawData): CallHandler[Either[ErrorWrapper, AmendDisclosuresRequest]] = {
-      (mockAmendDisclosuresRequestParser.parseRequest(_: AmendDisclosuresRawData)(_: String)).expects(data, *)
+  object MockDeleteDisclosuresConnector {
+
+    def delete(request: DeleteDisclosuresRequest): CallHandler[Future[DownstreamOutcome[Unit]]] = {
+      (mockDeleteDisclosuresConnector
+        .deleteDisclosures(_: DeleteDisclosuresRequest)(_: HeaderCarrier, _: ExecutionContext, _: String))
+        .expects(request, *, *, *)
     }
 
   }

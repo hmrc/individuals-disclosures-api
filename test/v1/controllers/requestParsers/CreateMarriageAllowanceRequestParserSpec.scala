@@ -21,7 +21,7 @@ import api.models.errors._
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.AnyContentAsJson
 import support.UnitSpec
-import v1.mocks.validators.MockCreateMarriageAllowanceValidator
+import v1.controllers.requestParsers.validators.MockCreateMarriageAllowanceValidator
 import v1.models.request.create.{CreateMarriageAllowanceBody, CreateMarriageAllowanceRawData, CreateMarriageAllowanceRequest}
 
 class CreateMarriageAllowanceRequestParserSpec extends UnitSpec {

@@ -23,7 +23,7 @@ import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import api.services.ServiceSpec
 import uk.gov.hmrc.http.HeaderCarrier
-import v1.mocks.connectors.MockRetrieveDisclosuresConnector
+import v1.connectors.MockRetrieveDisclosuresConnector
 import v1.models.request.retrieve.RetrieveDisclosuresRequest
 import v1.models.response.retrieveDisclosures.RetrieveDisclosuresResponse
 

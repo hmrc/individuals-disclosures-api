@@ -14,27 +14,26 @@
  * limitations under the License.
  */
 
-package v1.mocks.services
+package v1.services
 
 import api.controllers.RequestContext
 import api.models.errors.ErrorWrapper
 import api.models.outcomes.ResponseWrapper
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
-import v1.models.request.delete.DeleteDisclosuresRequest
-import v1.services.DeleteDisclosuresService
+import v1.models.request.create.CreateMarriageAllowanceRequest
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait MockDeleteDisclosuresService extends MockFactory {
+trait MockCreateMarriageAllowanceService extends MockFactory {
 
-  val mockDeleteDisclosuresService: DeleteDisclosuresService = mock[DeleteDisclosuresService]
+  val mockCreateMarriageAllowanceService: CreateMarriageAllowanceService = mock[CreateMarriageAllowanceService]
 
-  object MockDeleteDisclosuresService {
+  object MockCreateMarriageAllowanceService {
 
-    def delete(requestData: DeleteDisclosuresRequest): CallHandler[Future[Either[ErrorWrapper, ResponseWrapper[Unit]]]] = {
-      (mockDeleteDisclosuresService
-        .delete(_: DeleteDisclosuresRequest)(_: RequestContext, _: ExecutionContext))
+    def createMarriageAllowance(requestData: CreateMarriageAllowanceRequest): CallHandler[Future[Either[ErrorWrapper, ResponseWrapper[Unit]]]] = {
+      (mockCreateMarriageAllowanceService
+        .create(_: CreateMarriageAllowanceRequest)(_: RequestContext, _: ExecutionContext))
         .expects(requestData, *, *)
     }
 

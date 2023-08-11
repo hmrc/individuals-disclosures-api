@@ -14,28 +14,21 @@
  * limitations under the License.
  */
 
-package v1.mocks.services
+package v1.controllers.requestParsers
 
-import api.controllers.RequestContext
 import api.models.errors.ErrorWrapper
-import api.models.outcomes.ResponseWrapper
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
-import v1.models.request.amend.AmendDisclosuresRequest
-import v1.services.AmendDisclosuresService
+import v1.models.request.retrieve.{RetrieveDisclosuresRawData, RetrieveDisclosuresRequest}
 
-import scala.concurrent.{ExecutionContext, Future}
+trait MockRetrieveDisclosuresRequestParser extends MockFactory {
 
-trait MockAmendDisclosuresService extends MockFactory {
+  val mockRetrieveDisclosuresRequestParser: RetrieveDisclosuresRequestParser = mock[RetrieveDisclosuresRequestParser]
 
-  val mockAmendDisclosuresService: AmendDisclosuresService = mock[AmendDisclosuresService]
+  object MockRetrieveDisclosuresRequestParser {
 
-  object MockAmendDisclosuresService {
-
-    def amendDisclosures(requestData: AmendDisclosuresRequest): CallHandler[Future[Either[ErrorWrapper, ResponseWrapper[Unit]]]] = {
-      (mockAmendDisclosuresService
-        .amendDisclosures(_: AmendDisclosuresRequest)(_: RequestContext, _: ExecutionContext))
-        .expects(requestData, *, *)
+    def parse(data: RetrieveDisclosuresRawData): CallHandler[Either[ErrorWrapper, RetrieveDisclosuresRequest]] = {
+      (mockRetrieveDisclosuresRequestParser.parseRequest(_: RetrieveDisclosuresRawData)(_: String)).expects(data, *)
     }
 
   }

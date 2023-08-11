@@ -26,9 +26,9 @@ import api.models.outcomes.ResponseWrapper
 import mocks.MockAppConfig
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{AnyContentAsJson, Result}
-import v1.mocks.requestParsers.MockCreateMarriageAllowanceRequestParser
-import v1.mocks.services.MockCreateMarriageAllowanceService
+import v1.controllers.requestParsers.MockCreateMarriageAllowanceRequestParser
 import v1.models.request.create.{CreateMarriageAllowanceBody, CreateMarriageAllowanceRawData, CreateMarriageAllowanceRequest}
+import v1.services.MockCreateMarriageAllowanceService
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

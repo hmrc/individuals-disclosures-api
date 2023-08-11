@@ -22,7 +22,7 @@ import api.models.errors
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import api.services.ServiceSpec
-import v1.mocks.connectors.MockCreateMarriageAllowanceConnector
+import v1.connectors.MockCreateMarriageAllowanceConnector
 import v1.models.request.create.{CreateMarriageAllowanceBody, CreateMarriageAllowanceRequest}
 
 import scala.concurrent.Future

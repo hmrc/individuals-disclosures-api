@@ -14,24 +14,22 @@
  * limitations under the License.
  */
 
-package v1.mocks.validators
+package v1.controllers.requestParsers.validators
 
 import api.models.errors.MtdError
 import org.scalamock.handlers.CallHandler1
 import org.scalamock.scalatest.MockFactory
-import v1.controllers.requestParsers.validators.DeleteDisclosuresValidator
-import v1.models.request.delete.DeleteDisclosuresRawData
+import v1.models.request.create.CreateMarriageAllowanceRawData
 
-class MockDeleteDisclosuresValidator extends MockFactory {
-  val mockDeleteDisclosuresValidator: DeleteDisclosuresValidator = mock[DeleteDisclosuresValidator]
+class MockCreateMarriageAllowanceValidator extends MockFactory {
+  val mockCreateMarriageAllowanceValidator: CreateMarriageAllowanceValidator = mock[CreateMarriageAllowanceValidator]
 
-  object MockDeleteDisclosuresValidator {
+  object MockCreateMarriageAllowanceValidator {
 
-    def validate(data: DeleteDisclosuresRawData): CallHandler1[DeleteDisclosuresRawData, List[MtdError]] = {
-      (mockDeleteDisclosuresValidator
-        .validate(_: DeleteDisclosuresRawData))
+    def validate(data: CreateMarriageAllowanceRawData): CallHandler1[CreateMarriageAllowanceRawData, List[MtdError]] =
+      (mockCreateMarriageAllowanceValidator
+        .validate(_: CreateMarriageAllowanceRawData))
         .expects(data)
-    }
 
   }
 

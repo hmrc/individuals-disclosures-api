@@ -19,7 +19,7 @@ package v1.controllers.requestParsers
 import api.models.domain.Nino
 import api.models.errors._
 import support.UnitSpec
-import v1.mocks.validators.MockRetrieveDisclosuresValidator
+import v1.controllers.requestParsers.validators.MockRetrieveDisclosuresValidator
 import v1.models.request.retrieve.{RetrieveDisclosuresRawData, RetrieveDisclosuresRequest}
 
 class RetrieveDisclosuresRequestParserSpec extends UnitSpec {

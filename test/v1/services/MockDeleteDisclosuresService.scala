@@ -14,22 +14,27 @@
  * limitations under the License.
  */
 
-package v1.mocks.requestParsers
+package v1.services
 
+import api.controllers.RequestContext
 import api.models.errors.ErrorWrapper
+import api.models.outcomes.ResponseWrapper
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
-import v1.controllers.requestParsers.CreateMarriageAllowanceRequestParser
-import v1.models.request.create.{CreateMarriageAllowanceRawData, CreateMarriageAllowanceRequest}
+import v1.models.request.delete.DeleteDisclosuresRequest
 
-trait MockCreateMarriageAllowanceRequestParser extends MockFactory {
+import scala.concurrent.{ExecutionContext, Future}
 
-  val mockCreateMarriageAllowanceRequestParser: CreateMarriageAllowanceRequestParser = mock[CreateMarriageAllowanceRequestParser]
+trait MockDeleteDisclosuresService extends MockFactory {
 
-  object MockCreateMarriageAllowanceRequestParser {
+  val mockDeleteDisclosuresService: DeleteDisclosuresService = mock[DeleteDisclosuresService]
 
-    def parse(data: CreateMarriageAllowanceRawData): CallHandler[Either[ErrorWrapper, CreateMarriageAllowanceRequest]] = {
-      (mockCreateMarriageAllowanceRequestParser.parseRequest(_: CreateMarriageAllowanceRawData)(_: String)).expects(data, *)
+  object MockDeleteDisclosuresService {
+
+    def delete(requestData: DeleteDisclosuresRequest): CallHandler[Future[Either[ErrorWrapper, ResponseWrapper[Unit]]]] = {
+      (mockDeleteDisclosuresService
+        .delete(_: DeleteDisclosuresRequest)(_: RequestContext, _: ExecutionContext))
+        .expects(requestData, *, *)
     }
 
   }

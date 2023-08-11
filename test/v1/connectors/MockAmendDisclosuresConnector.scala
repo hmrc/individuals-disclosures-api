@@ -14,27 +14,25 @@
  * limitations under the License.
  */
 
-package v1.mocks.connectors
+package v1.connectors
 
 import api.connectors.DownstreamOutcome
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
-import v1.connectors.RetrieveDisclosuresConnector
-import v1.models.request.retrieve.RetrieveDisclosuresRequest
-import v1.models.response.retrieveDisclosures.RetrieveDisclosuresResponse
+import v1.models.request.amend.AmendDisclosuresRequest
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait MockRetrieveDisclosuresConnector extends MockFactory {
+trait MockAmendDisclosuresConnector extends MockFactory {
 
-  val mockRetrieveDisclosuresConnector: RetrieveDisclosuresConnector = mock[RetrieveDisclosuresConnector]
+  val mockAmendDisclosuresConnector: AmendDisclosuresConnector = mock[AmendDisclosuresConnector]
 
-  object MockRetrieveDisclosuresConnector {
+  object MockAmendDisclosuresConnector {
 
-    def retrieve(request: RetrieveDisclosuresRequest): CallHandler[Future[DownstreamOutcome[RetrieveDisclosuresResponse]]] = {
-      (mockRetrieveDisclosuresConnector
-        .retrieve(_: RetrieveDisclosuresRequest)(_: HeaderCarrier, _: ExecutionContext, _: String))
+    def amendDisclosures(request: AmendDisclosuresRequest): CallHandler[Future[DownstreamOutcome[Unit]]] = {
+      (mockAmendDisclosuresConnector
+        .amendDisclosures(_: AmendDisclosuresRequest)(_: HeaderCarrier, _: ExecutionContext, _: String))
         .expects(request, *, *, *)
     }
 

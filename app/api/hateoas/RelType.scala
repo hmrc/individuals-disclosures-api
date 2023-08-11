@@ -14,18 +14,11 @@
  * limitations under the License.
  */
 
-package api.models.hateoas
+package api.hateoas
 
-import play.api.libs.json.Format
-import utils.enums.Enums
+object RelType {
+  val AMEND_DISCLOSURES  = "create-and-amend-disclosures"
+  val DELETE_DISCLOSURES = "delete-disclosures"
 
-sealed trait Method
-
-object Method {
-  case object GET    extends Method
-  case object PUT    extends Method
-  case object POST   extends Method
-  case object DELETE extends Method
-
-  implicit val formats: Format[Method] = Enums.format[Method]
+  val SELF = "self"
 }

@@ -14,22 +14,21 @@
  * limitations under the License.
  */
 
-package v1.mocks.requestParsers
+package v1.controllers.requestParsers
 
 import api.models.errors.ErrorWrapper
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
-import v1.controllers.requestParsers.RetrieveDisclosuresRequestParser
-import v1.models.request.retrieve.{RetrieveDisclosuresRawData, RetrieveDisclosuresRequest}
+import v1.models.request.create.{CreateMarriageAllowanceRawData, CreateMarriageAllowanceRequest}
 
-trait MockRetrieveDisclosuresRequestParser extends MockFactory {
+trait MockCreateMarriageAllowanceRequestParser extends MockFactory {
 
-  val mockRetrieveDisclosuresRequestParser: RetrieveDisclosuresRequestParser = mock[RetrieveDisclosuresRequestParser]
+  val mockCreateMarriageAllowanceRequestParser: CreateMarriageAllowanceRequestParser = mock[CreateMarriageAllowanceRequestParser]
 
-  object MockRetrieveDisclosuresRequestParser {
+  object MockCreateMarriageAllowanceRequestParser {
 
-    def parse(data: RetrieveDisclosuresRawData): CallHandler[Either[ErrorWrapper, RetrieveDisclosuresRequest]] = {
-      (mockRetrieveDisclosuresRequestParser.parseRequest(_: RetrieveDisclosuresRawData)(_: String)).expects(data, *)
+    def parse(data: CreateMarriageAllowanceRawData): CallHandler[Either[ErrorWrapper, CreateMarriageAllowanceRequest]] = {
+      (mockCreateMarriageAllowanceRequestParser.parseRequest(_: CreateMarriageAllowanceRawData)(_: String)).expects(data, *)
     }
 
   }

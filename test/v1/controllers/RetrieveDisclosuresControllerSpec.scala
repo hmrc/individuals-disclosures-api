@@ -17,22 +17,21 @@
 package v1.controllers
 
 import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import api.hateoas.HateoasLinks
+import api.hateoas.{HateoasLinks, HateoasWrapper, Link}
 import api.mocks.MockIdGenerator
 import api.mocks.hateoas.MockHateoasFactory
 import api.mocks.services.{MockEnrolmentsAuthService, MockMtdIdLookupService}
 import api.models.domain.{Nino, Timestamp}
 import api.models.errors.{ErrorWrapper, NinoFormatError, TaxYearFormatError}
-import api.models.hateoas.Method._
-import api.models.hateoas.RelType._
-import api.models.hateoas.{HateoasWrapper, Link}
+import api.hateoas.Method._
+import api.hateoas.RelType._
 import api.models.outcomes.ResponseWrapper
 import play.api.mvc.Result
+import v1.controllers.requestParsers.MockRetrieveDisclosuresRequestParser
 import v1.fixtures.RetrieveDisclosuresControllerFixture.mtdResponseWithHateoas
-import v1.mocks.requestParsers.MockRetrieveDisclosuresRequestParser
-import v1.mocks.services.MockRetrieveDisclosuresService
 import v1.models.request.retrieve.{RetrieveDisclosuresRawData, RetrieveDisclosuresRequest}
 import v1.models.response.retrieveDisclosures.{Class2Nics, RetrieveDisclosuresHateoasData, RetrieveDisclosuresResponse, TaxAvoidanceItem}
+import v1.services.MockRetrieveDisclosuresService
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

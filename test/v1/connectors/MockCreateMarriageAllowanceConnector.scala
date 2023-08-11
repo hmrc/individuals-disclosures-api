@@ -14,26 +14,25 @@
  * limitations under the License.
  */
 
-package v1.mocks.connectors
+package v1.connectors
 
 import api.connectors.DownstreamOutcome
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
-import v1.connectors.AmendDisclosuresConnector
-import v1.models.request.amend.AmendDisclosuresRequest
+import v1.models.request.create.CreateMarriageAllowanceRequest
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait MockAmendDisclosuresConnector extends MockFactory {
+trait MockCreateMarriageAllowanceConnector extends MockFactory {
 
-  val mockAmendDisclosuresConnector: AmendDisclosuresConnector = mock[AmendDisclosuresConnector]
+  val mockCreateMarriageAllowanceConnector: CreateMarriageAllowanceConnector = mock[CreateMarriageAllowanceConnector]
 
-  object MockAmendDisclosuresConnector {
+  object MockCreateMarriageAllowanceConnector {
 
-    def amendDisclosures(request: AmendDisclosuresRequest): CallHandler[Future[DownstreamOutcome[Unit]]] = {
-      (mockAmendDisclosuresConnector
-        .amendDisclosures(_: AmendDisclosuresRequest)(_: HeaderCarrier, _: ExecutionContext, _: String))
+    def create(request: CreateMarriageAllowanceRequest): CallHandler[Future[DownstreamOutcome[Unit]]] = {
+      (mockCreateMarriageAllowanceConnector
+        .create(_: CreateMarriageAllowanceRequest)(_: HeaderCarrier, _: ExecutionContext, _: String))
         .expects(request, *, *, *)
     }
 

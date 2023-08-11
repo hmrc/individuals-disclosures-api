@@ -14,22 +14,21 @@
  * limitations under the License.
  */
 
-package v1.mocks.validators
+package v1.controllers.requestParsers.validators
 
 import api.models.errors.MtdError
 import org.scalamock.handlers.CallHandler1
 import org.scalamock.scalatest.MockFactory
-import v1.controllers.requestParsers.validators.RetrieveDisclosuresValidator
-import v1.models.request.retrieve.RetrieveDisclosuresRawData
+import v1.models.request.amend.AmendDisclosuresRawData
 
-class MockRetrieveDisclosuresValidator extends MockFactory {
-  val mockRetrieveDisclosuresValidator: RetrieveDisclosuresValidator = mock[RetrieveDisclosuresValidator]
+class MockAmendDisclosuresValidator extends MockFactory {
+  val mockAmendDisclosuresValidator: AmendDisclosuresValidator = mock[AmendDisclosuresValidator]
 
-  object MockRetrieveDisclosuresValidator {
+  object MockAmendDisclosuresValidator {
 
-    def validate(data: RetrieveDisclosuresRawData): CallHandler1[RetrieveDisclosuresRawData, List[MtdError]] = {
-      (mockRetrieveDisclosuresValidator
-        .validate(_: RetrieveDisclosuresRawData))
+    def validate(data: AmendDisclosuresRawData): CallHandler1[AmendDisclosuresRawData, List[MtdError]] = {
+      (mockAmendDisclosuresValidator
+        .validate(_: AmendDisclosuresRawData))
         .expects(data)
     }
 

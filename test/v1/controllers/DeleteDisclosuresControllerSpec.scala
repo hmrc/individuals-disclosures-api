@@ -25,9 +25,9 @@ import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import play.api.libs.json.JsValue
 import play.api.mvc.Result
-import v1.mocks.requestParsers.MockDeleteDisclosuresRequestParser
-import v1.mocks.services.MockDeleteDisclosuresService
+import v1.controllers.requestParsers.MockDeleteDisclosuresRequestParser
 import v1.models.request.delete.{DeleteDisclosuresRawData, DeleteDisclosuresRequest}
+import v1.services.MockDeleteDisclosuresService
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

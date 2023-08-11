@@ -14,27 +14,27 @@
  * limitations under the License.
  */
 
-package v1.mocks.connectors
+package v1.services
 
-import api.connectors.DownstreamOutcome
+import api.controllers.RequestContext
+import api.models.errors.ErrorWrapper
+import api.models.outcomes.ResponseWrapper
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
-import uk.gov.hmrc.http.HeaderCarrier
-import v1.connectors.DeleteDisclosuresConnector
-import v1.models.request.delete.DeleteDisclosuresRequest
+import v1.models.request.amend.AmendDisclosuresRequest
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait MockDeleteDisclosuresConnector extends MockFactory {
+trait MockAmendDisclosuresService extends MockFactory {
 
-  val mockDeleteDisclosuresConnector: DeleteDisclosuresConnector = mock[DeleteDisclosuresConnector]
+  val mockAmendDisclosuresService: AmendDisclosuresService = mock[AmendDisclosuresService]
 
-  object MockDeleteDisclosuresConnector {
+  object MockAmendDisclosuresService {
 
-    def delete(request: DeleteDisclosuresRequest): CallHandler[Future[DownstreamOutcome[Unit]]] = {
-      (mockDeleteDisclosuresConnector
-        .deleteDisclosures(_: DeleteDisclosuresRequest)(_: HeaderCarrier, _: ExecutionContext, _: String))
-        .expects(request, *, *, *)
+    def amendDisclosures(requestData: AmendDisclosuresRequest): CallHandler[Future[Either[ErrorWrapper, ResponseWrapper[Unit]]]] = {
+      (mockAmendDisclosuresService
+        .amendDisclosures(_: AmendDisclosuresRequest)(_: RequestContext, _: ExecutionContext))
+        .expects(requestData, *, *)
     }
 
   }
