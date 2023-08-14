@@ -20,8 +20,7 @@ import api.controllers._
 import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import utils.IdGenerator
-import v1.controllers.requestParsers.DeleteDisclosuresRequestParser
-import v1.models.request.delete.DeleteDisclosuresRawData
+import v1.controllers.validators.DeleteDisclosuresValidatorFactory
 import v1.services.DeleteDisclosuresService
 
 import javax.inject.{Inject, Singleton}
@@ -30,7 +29,7 @@ import scala.concurrent.ExecutionContext
 @Singleton
 class DeleteDisclosuresController @Inject() (val authService: EnrolmentsAuthService,
                                              val lookupService: MtdIdLookupService,
-                                             parser: DeleteDisclosuresRequestParser,
+                                             validatorFactory: DeleteDisclosuresValidatorFactory,
                                              service: DeleteDisclosuresService,
                                              auditService: AuditService,
                                              cc: ControllerComponents,
@@ -47,14 +46,11 @@ class DeleteDisclosuresController @Inject() (val authService: EnrolmentsAuthServ
     authorisedAction(nino).async { implicit request =>
       implicit val ctx: RequestContext = RequestContext.from(idGenerator, endpointLogContext)
 
-      val rawData: DeleteDisclosuresRawData = DeleteDisclosuresRawData(
-        nino = nino,
-        taxYear = taxYear
-      )
+      val validator = validatorFactory.validator(nino, taxYear)
 
       val requestHandler =
         RequestHandler
-          .withParser(parser)
+          .withValidator(validator)
           .withService(service.delete)
           .withNoContentResult()
           .withAuditing(
@@ -64,7 +60,7 @@ class DeleteDisclosuresController @Inject() (val authService: EnrolmentsAuthServ
               transactionName = "delete-disclosures",
               params = Map("nino" -> nino, "taxYear" -> taxYear)))
 
-      requestHandler.handleRequest(rawData)
+      requestHandler.handleRequest()
 
     }
 

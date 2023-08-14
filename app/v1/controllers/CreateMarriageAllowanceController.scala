@@ -19,10 +19,9 @@ package v1.controllers
 import api.controllers._
 import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
 import play.api.libs.json.JsValue
-import play.api.mvc.{Action, AnyContentAsJson, ControllerComponents}
+import play.api.mvc.{Action, ControllerComponents}
 import utils.IdGenerator
-import v1.controllers.requestParsers.CreateMarriageAllowanceRequestParser
-import v1.models.request.create.CreateMarriageAllowanceRawData
+import v1.controllers.validators.CreateMarriageAllowanceValidatorFactory
 import v1.services.CreateMarriageAllowanceService
 
 import javax.inject.Inject
@@ -30,7 +29,7 @@ import scala.concurrent.ExecutionContext
 
 class CreateMarriageAllowanceController @Inject() (val authService: EnrolmentsAuthService,
                                                    val lookupService: MtdIdLookupService,
-                                                   parser: CreateMarriageAllowanceRequestParser,
+                                                   validatorFactory: CreateMarriageAllowanceValidatorFactory,
                                                    service: CreateMarriageAllowanceService,
                                                    auditService: AuditService,
                                                    cc: ControllerComponents,
@@ -44,14 +43,11 @@ class CreateMarriageAllowanceController @Inject() (val authService: EnrolmentsAu
     authorisedAction(nino).async(parse.json) { implicit request =>
       implicit val ctx: RequestContext = RequestContext.from(idGenerator, endpointLogContext)
 
-      val rawData: CreateMarriageAllowanceRawData = CreateMarriageAllowanceRawData(
-        nino = nino,
-        body = AnyContentAsJson(request.body)
-      )
+      val validator = validatorFactory.validator(nino, request.body)
 
       val requestHandler =
         RequestHandler
-          .withParser(parser)
+          .withValidator(validator)
           .withService(service.create)
           .withNoContentResult(CREATED)
           .withAuditing(AuditHandler(
@@ -63,7 +59,7 @@ class CreateMarriageAllowanceController @Inject() (val authService: EnrolmentsAu
             includeResponse = true
           ))
 
-      requestHandler.handleRequest(rawData)
+      requestHandler.handleRequest()
     }
 
 }

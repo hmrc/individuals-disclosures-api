@@ -23,16 +23,16 @@ import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import api.services.ServiceSpec
 import v1.connectors.MockCreateMarriageAllowanceConnector
-import v1.models.request.create.{CreateMarriageAllowanceBody, CreateMarriageAllowanceRequest}
+import v1.models.request.create.{CreateMarriageAllowanceRequestBody, CreateMarriageAllowanceRequestData}
 
 import scala.concurrent.Future
 
 class CreateMarriageAllowanceServiceSpec extends ServiceSpec {
 
   private val nino             = "AA112233A"
-  private val requestBodyModel = CreateMarriageAllowanceBody("TC663795B", Some("John"), "Smith", Some("1987-10-18"))
+  private val requestBodyModel = CreateMarriageAllowanceRequestBody("TC663795B", Some("John"), "Smith", Some("1987-10-18"))
 
-  val createMarriageAllowanceRequest: CreateMarriageAllowanceRequest = CreateMarriageAllowanceRequest(
+  val createMarriageAllowanceRequest: CreateMarriageAllowanceRequestData = CreateMarriageAllowanceRequestData(
     nino = Nino(nino),
     body = requestBodyModel
   )

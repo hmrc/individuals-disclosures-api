@@ -21,7 +21,7 @@ import api.models.errors.ErrorWrapper
 import api.models.outcomes.ResponseWrapper
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
-import v1.models.request.create.CreateMarriageAllowanceRequest
+import v1.models.request.create.CreateMarriageAllowanceRequestData
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -31,9 +31,9 @@ trait MockCreateMarriageAllowanceService extends MockFactory {
 
   object MockCreateMarriageAllowanceService {
 
-    def createMarriageAllowance(requestData: CreateMarriageAllowanceRequest): CallHandler[Future[Either[ErrorWrapper, ResponseWrapper[Unit]]]] = {
+    def createMarriageAllowance(requestData: CreateMarriageAllowanceRequestData): CallHandler[Future[Either[ErrorWrapper, ResponseWrapper[Unit]]]] = {
       (mockCreateMarriageAllowanceService
-        .create(_: CreateMarriageAllowanceRequest)(_: RequestContext, _: ExecutionContext))
+        .create(_: CreateMarriageAllowanceRequestData)(_: RequestContext, _: ExecutionContext))
         .expects(requestData, *, *)
     }
 

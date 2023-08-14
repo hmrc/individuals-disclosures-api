@@ -21,7 +21,7 @@ import api.models.errors.ErrorWrapper
 import api.models.outcomes.ResponseWrapper
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
-import v1.models.request.amend.AmendDisclosuresRequest
+import v1.models.request.amend.AmendDisclosuresRequestData
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -31,9 +31,9 @@ trait MockAmendDisclosuresService extends MockFactory {
 
   object MockAmendDisclosuresService {
 
-    def amendDisclosures(requestData: AmendDisclosuresRequest): CallHandler[Future[Either[ErrorWrapper, ResponseWrapper[Unit]]]] = {
+    def amendDisclosures(requestData: AmendDisclosuresRequestData): CallHandler[Future[Either[ErrorWrapper, ResponseWrapper[Unit]]]] = {
       (mockAmendDisclosuresService
-        .amendDisclosures(_: AmendDisclosuresRequest)(_: RequestContext, _: ExecutionContext))
+        .amendDisclosures(_: AmendDisclosuresRequestData)(_: RequestContext, _: ExecutionContext))
         .expects(requestData, *, *)
     }
 

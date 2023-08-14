@@ -53,6 +53,7 @@ trait AppConfig {
   def apiGatewayContext: String
   def confidenceLevelConfig: ConfidenceLevelConfig
   def apiStatus(version: Version): String
+  def isApiDeprecated(version: Version): Boolean
   def featureSwitches: Configuration
   def endpointsEnabled(version: Version): Boolean
 }
@@ -81,6 +82,7 @@ class AppConfigImpl @Inject() (config: ServicesConfig, configuration: Configurat
   val apiGatewayContext: String                    = config.getString("api.gateway.context")
   val confidenceLevelConfig: ConfidenceLevelConfig = configuration.get[ConfidenceLevelConfig](s"api.confidence-level-check")
   def apiStatus(version: Version): String          = config.getString(s"api.${version.name}.status")
+  def isApiDeprecated(version: Version): Boolean   = apiStatus(version) == "DEPRECATED"
   def featureSwitches: Configuration               = configuration.getOptional[Configuration](s"feature-switch").getOrElse(Configuration.empty)
   def endpointsEnabled(version: Version): Boolean  = config.getBoolean(s"api.${version.name}.endpoints.enabled")
 }

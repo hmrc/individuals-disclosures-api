@@ -17,19 +17,19 @@
 package v1.controllers
 
 import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import api.hateoas.{HateoasLinks, HateoasWrapper, Link}
+import api.hateoas.{HateoasLinks, HateoasWrapper, Link, MockHateoasFactory}
 import api.mocks.MockIdGenerator
-import api.mocks.hateoas.MockHateoasFactory
-import api.mocks.services.{MockEnrolmentsAuthService, MockMtdIdLookupService}
-import api.models.domain.{Nino, Timestamp}
+import api.models.domain.{Nino, TaxYear, Timestamp}
 import api.models.errors.{ErrorWrapper, NinoFormatError, TaxYearFormatError}
 import api.hateoas.Method._
 import api.hateoas.RelType._
+import api.mocks.services.{MockEnrolmentsAuthService, MockMtdIdLookupService}
 import api.models.outcomes.ResponseWrapper
+import mocks.MockAppConfig
 import play.api.mvc.Result
-import v1.controllers.requestParsers.MockRetrieveDisclosuresRequestParser
+import v1.controllers.validators.MockRetrieveDisclosuresValidatorFactory
 import v1.fixtures.RetrieveDisclosuresControllerFixture.mtdResponseWithHateoas
-import v1.models.request.retrieve.{RetrieveDisclosuresRawData, RetrieveDisclosuresRequest}
+import v1.models.request.retrieve.RetrieveDisclosuresRequestData
 import v1.models.response.retrieveDisclosures.{Class2Nics, RetrieveDisclosuresHateoasData, RetrieveDisclosuresResponse, TaxAvoidanceItem}
 import v1.services.MockRetrieveDisclosuresService
 
@@ -43,20 +43,16 @@ class RetrieveDisclosuresControllerSpec
     with MockMtdIdLookupService
     with MockRetrieveDisclosuresService
     with MockHateoasFactory
-    with MockRetrieveDisclosuresRequestParser
+    with MockRetrieveDisclosuresValidatorFactory
     with HateoasLinks
-    with MockIdGenerator {
+    with MockIdGenerator
+    with MockAppConfig {
 
   val taxYear: String = "2021-22"
 
-  val rawData: RetrieveDisclosuresRawData = RetrieveDisclosuresRawData(
-    nino = nino,
-    taxYear = taxYear
-  )
-
-  val requestData: RetrieveDisclosuresRequest = RetrieveDisclosuresRequest(
+  val requestData: RetrieveDisclosuresRequestData = RetrieveDisclosuresRequestData(
     nino = Nino(nino),
-    taxYear = taxYear
+    taxYear = TaxYear.fromMtd(taxYear)
   )
 
   val amendDisclosuresLink: Link =
@@ -99,30 +95,12 @@ class RetrieveDisclosuresControllerSpec
     submittedOn = Timestamp("2020-07-06T09:37:17Z")
   )
 
-  private val downstreamResponse = mtdResponseWithHateoas(nino, taxYear)
-
-  trait Test extends ControllerTest {
-
-    val controller = new RetrieveDisclosuresController(
-      authService = mockEnrolmentsAuthService,
-      lookupService = mockMtdIdLookupService,
-      parser = mockRetrieveDisclosuresRequestParser,
-      service = mockRetrieveDisclosuresService,
-      hateoasFactory = mockHateoasFactory,
-      cc = cc,
-      idGenerator = mockIdGenerator
-    )
-
-    override protected def callController(): Future[Result] = controller.retrieveDisclosures(nino, taxYear)(fakeGetRequest)
-
-  }
+  private val response = mtdResponseWithHateoas(nino, taxYear)
 
   "RetrieveDisclosuresController" should {
     "return a successful response with header X-CorrelationId and body" when {
       "the request received is valid" in new Test {
-        MockRetrieveDisclosuresRequestParser
-          .parse(rawData)
-          .returns(Right(requestData))
+        willUseValidator(returningSuccess(requestData))
 
         MockRetrieveDisclosuresService
           .retrieve(requestData)
@@ -139,24 +117,20 @@ class RetrieveDisclosuresControllerSpec
                 deleteDisclosuresLink
               )))
 
-        runOkTest(OK, Some(downstreamResponse))
+        runOkTest(OK, Some(response))
 
       }
     }
 
     "return the error as per spec" when {
       "the parser validation fails" in new Test {
-        MockRetrieveDisclosuresRequestParser
-          .parse(rawData)
-          .returns(Left(ErrorWrapper(correlationId, NinoFormatError, None)))
+        willUseValidator(returning(NinoFormatError))
 
         runErrorTest(NinoFormatError)
       }
 
       "the service returns an error" in new Test {
-        MockRetrieveDisclosuresRequestParser
-          .parse(rawData)
-          .returns(Right(requestData))
+        willUseValidator(returningSuccess(requestData))
 
         MockRetrieveDisclosuresService
           .retrieve(requestData)
@@ -165,6 +139,26 @@ class RetrieveDisclosuresControllerSpec
         runErrorTest(TaxYearFormatError)
       }
     }
+
+  }
+
+  trait Test extends ControllerTest {
+
+    MockAppConfig.minimumPermittedTaxYear
+      .returns(2022)
+      .anyNumberOfTimes()
+
+    val controller = new RetrieveDisclosuresController(
+      authService = mockEnrolmentsAuthService,
+      lookupService = mockMtdIdLookupService,
+      validatorFactory = mockRetrieveDisclosuresValidatorFactory,
+      service = mockRetrieveDisclosuresService,
+      hateoasFactory = mockHateoasFactory,
+      cc = cc,
+      idGenerator = mockIdGenerator
+    )
+
+    override protected def callController(): Future[Result] = controller.retrieveDisclosures(nino, taxYear)(fakeGetRequest)
 
   }
 

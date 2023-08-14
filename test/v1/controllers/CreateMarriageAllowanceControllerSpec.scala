@@ -18,16 +18,17 @@ package v1.controllers
 
 import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import api.mocks.MockIdGenerator
-import api.mocks.services.{MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService}
+import api.mocks.services.{MockEnrolmentsAuthService, MockMtdIdLookupService}
 import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import api.models.domain.Nino
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
+import api.services.MockAuditService
 import mocks.MockAppConfig
 import play.api.libs.json.{JsValue, Json}
-import play.api.mvc.{AnyContentAsJson, Result}
-import v1.controllers.requestParsers.MockCreateMarriageAllowanceRequestParser
-import v1.models.request.create.{CreateMarriageAllowanceBody, CreateMarriageAllowanceRawData, CreateMarriageAllowanceRequest}
+import play.api.mvc.Result
+import v1.controllers.validators.MockCreateMarriageAllowanceValidatorFactory
+import v1.models.request.create.{CreateMarriageAllowanceRequestBody, CreateMarriageAllowanceRequestData}
 import v1.services.MockCreateMarriageAllowanceService
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -40,16 +41,74 @@ class CreateMarriageAllowanceControllerSpec
     with MockMtdIdLookupService
     with MockAppConfig
     with MockCreateMarriageAllowanceService
-    with MockCreateMarriageAllowanceRequestParser
+    with MockCreateMarriageAllowanceValidatorFactory
     with MockAuditService
     with MockIdGenerator {
+
+  val requestBodyJson: JsValue = Json.parse(
+    s"""
+      |{
+      |  "spouseOrCivilPartnerNino": "BB123456B",
+      |  "spouseOrCivilPartnerFirstName": "John",
+      |  "spouseOrCivilPartnerSurname": "Smith",
+      |  "spouseOrCivilPartnerDateOfBirth": "1986-04-06"
+      |}
+    """.stripMargin
+  )
+
+  val createMarriageAllowanceRequestBody: CreateMarriageAllowanceRequestBody = CreateMarriageAllowanceRequestBody(
+    "BB123456B",
+    Some("John"),
+    "Smith",
+    Some("1986-04-06")
+  )
+
+  val requestData: CreateMarriageAllowanceRequestData = CreateMarriageAllowanceRequestData(
+    nino = Nino(nino),
+    body = createMarriageAllowanceRequestBody
+  )
+
+  "CreateMarriageAllowanceController" should {
+    "return a successful response with status 201 (OK)" when {
+      "the request received is valid" in new Test {
+        willUseValidator(returningSuccess(requestData))
+
+        MockCreateMarriageAllowanceService
+          .createMarriageAllowance(requestData)
+          .returns(Future.successful(Right(ResponseWrapper(correlationId, ()))))
+
+        runOkTestWithAudit(
+          expectedStatus = CREATED,
+          maybeAuditRequestBody = Some(requestBodyJson)
+        )
+      }
+    }
+
+    "return the error as per spec" when {
+      "the parser validation fails" in new Test {
+        willUseValidator(returning(NinoFormatError))
+
+        runErrorTestWithAudit(NinoFormatError, Some(requestBodyJson))
+      }
+
+      "the service returns an error" in new Test {
+        willUseValidator(returningSuccess(requestData))
+
+        MockCreateMarriageAllowanceService
+          .createMarriageAllowance(requestData)
+          .returns(Future.successful(Left(ErrorWrapper(correlationId, RuleTaxYearNotSupportedError))))
+
+        runErrorTestWithAudit(RuleTaxYearNotSupportedError, maybeAuditRequestBody = Some(requestBodyJson))
+      }
+    }
+  }
 
   trait Test extends ControllerTest with AuditEventChecking {
 
     val controller = new CreateMarriageAllowanceController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
-      parser = mockCreateMarriageAllowanceRequestParser,
+      validatorFactory = mockCreateMarriageAllowanceValidatorFactory,
       service = mockCreateMarriageAllowanceService,
       auditService = mockAuditService,
       cc = cc,
@@ -72,79 +131,6 @@ class CreateMarriageAllowanceControllerSpec
         )
       )
 
-  }
-
-  val requestBodyJson: JsValue = Json.parse(
-    s"""
-      |{
-      |  "spouseOrCivilPartnerNino": "BB123456B",
-      |  "spouseOrCivilPartnerFirstName": "John",
-      |  "spouseOrCivilPartnerSurname": "Smith",
-      |  "spouseOrCivilPartnerDateOfBirth": "1986-04-06"
-      |}
-    """.stripMargin
-  )
-
-  val rawData: CreateMarriageAllowanceRawData = CreateMarriageAllowanceRawData(
-    nino = nino,
-    body = AnyContentAsJson(requestBodyJson)
-  )
-
-  val createMarriageAllowanceRequestBody: CreateMarriageAllowanceBody = CreateMarriageAllowanceBody(
-    "BB123456B",
-    Some("John"),
-    "Smith",
-    Some("1986-04-06")
-  )
-
-  val requestData: CreateMarriageAllowanceRequest = CreateMarriageAllowanceRequest(
-    nino = Nino(nino),
-    body = createMarriageAllowanceRequestBody
-  )
-
-  "CreateMarriageAllowanceController" should {
-    "return a successful response with status 201 (OK)" when {
-      "the request received is valid" in new Test {
-
-        MockCreateMarriageAllowanceRequestParser
-          .parse(rawData)
-          .returns(Right(requestData))
-
-        MockCreateMarriageAllowanceService
-          .createMarriageAllowance(requestData)
-          .returns(Future.successful(Right(ResponseWrapper(correlationId, ()))))
-
-        runOkTestWithAudit(
-          expectedStatus = CREATED,
-          maybeAuditRequestBody = Some(requestBodyJson)
-        )
-      }
-    }
-
-    "return the error as per spec" when {
-      "the parser validation fails" in new Test {
-
-        MockCreateMarriageAllowanceRequestParser
-          .parse(rawData)
-          .returns(Left(ErrorWrapper(correlationId, NinoFormatError)))
-
-        runErrorTestWithAudit(NinoFormatError, Some(requestBodyJson))
-
-      }
-
-      "the service returns an error" in new Test {
-
-        MockCreateMarriageAllowanceRequestParser
-          .parse(rawData)
-          .returns(Right(requestData))
-
-        MockCreateMarriageAllowanceService
-          .createMarriageAllowance(requestData)
-          .returns(Future.successful(Left(ErrorWrapper(correlationId, RuleTaxYearNotSupportedError))))
-
-        runErrorTestWithAudit(RuleTaxYearNotSupportedError, maybeAuditRequestBody = Some(requestBodyJson))
-      }
-    }
   }
 
 }

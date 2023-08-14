@@ -17,7 +17,7 @@
 package v1.connectors
 
 import api.connectors.ConnectorSpec
-import api.models.domain.Nino
+import api.models.domain.{Nino, TaxYear}
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import v1.models.request.amend._
@@ -68,9 +68,9 @@ class AmendDisclosuresConnectorSpec extends ConnectorSpec {
     val requestBody: AmendDisclosuresRequestBody =
       AmendDisclosuresRequestBody(None, None)
 
-    protected val request: AmendDisclosuresRequest = AmendDisclosuresRequest(
+    protected val request: AmendDisclosuresRequestData = AmendDisclosuresRequestData(
       nino = Nino(nino),
-      taxYear = taxYear,
+      taxYear = TaxYear.fromMtd(taxYear),
       body = requestBody
     )
 

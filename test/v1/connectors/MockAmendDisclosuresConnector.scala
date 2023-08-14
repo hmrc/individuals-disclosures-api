@@ -20,7 +20,7 @@ import api.connectors.DownstreamOutcome
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
-import v1.models.request.amend.AmendDisclosuresRequest
+import v1.models.request.amend.AmendDisclosuresRequestData
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -30,9 +30,9 @@ trait MockAmendDisclosuresConnector extends MockFactory {
 
   object MockAmendDisclosuresConnector {
 
-    def amendDisclosures(request: AmendDisclosuresRequest): CallHandler[Future[DownstreamOutcome[Unit]]] = {
+    def amendDisclosures(request: AmendDisclosuresRequestData): CallHandler[Future[DownstreamOutcome[Unit]]] = {
       (mockAmendDisclosuresConnector
-        .amendDisclosures(_: AmendDisclosuresRequest)(_: HeaderCarrier, _: ExecutionContext, _: String))
+        .amendDisclosures(_: AmendDisclosuresRequestData)(_: HeaderCarrier, _: ExecutionContext, _: String))
         .expects(request, *, *, *)
     }
 

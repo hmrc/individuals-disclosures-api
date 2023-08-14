@@ -20,7 +20,7 @@ import api.connectors.DownstreamOutcome
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
-import v1.models.request.retrieve.RetrieveDisclosuresRequest
+import v1.models.request.retrieve.RetrieveDisclosuresRequestData
 import v1.models.response.retrieveDisclosures.RetrieveDisclosuresResponse
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -31,9 +31,9 @@ trait MockRetrieveDisclosuresConnector extends MockFactory {
 
   object MockRetrieveDisclosuresConnector {
 
-    def retrieve(request: RetrieveDisclosuresRequest): CallHandler[Future[DownstreamOutcome[RetrieveDisclosuresResponse]]] = {
+    def retrieve(request: RetrieveDisclosuresRequestData): CallHandler[Future[DownstreamOutcome[RetrieveDisclosuresResponse]]] = {
       (mockRetrieveDisclosuresConnector
-        .retrieve(_: RetrieveDisclosuresRequest)(_: HeaderCarrier, _: ExecutionContext, _: String))
+        .retrieve(_: RetrieveDisclosuresRequestData)(_: HeaderCarrier, _: ExecutionContext, _: String))
         .expects(request, *, *, *)
     }
 

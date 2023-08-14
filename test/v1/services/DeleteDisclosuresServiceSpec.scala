@@ -17,20 +17,20 @@
 package v1.services
 
 import api.controllers.EndpointLogContext
-import api.models.domain.Nino
+import api.models.domain.{Nino, TaxYear}
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import api.services.ServiceSpec
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.connectors.MockDeleteDisclosuresConnector
-import v1.models.request.delete.DeleteDisclosuresRequest
+import v1.models.request.delete.DeleteDisclosuresRequestData
 
 import scala.concurrent.Future
 
 class DeleteDisclosuresServiceSpec extends ServiceSpec {
 
   private val nino    = Nino("AA112233A")
-  private val taxYear = "2021-22"
+  private val taxYear = TaxYear.fromMtd("2021-22")
 
   trait Test extends MockDeleteDisclosuresConnector {
     implicit val hc: HeaderCarrier              = HeaderCarrier()
@@ -39,7 +39,7 @@ class DeleteDisclosuresServiceSpec extends ServiceSpec {
     lazy val service = new DeleteDisclosuresService(mockDeleteDisclosuresConnector)
   }
 
-  lazy val request: DeleteDisclosuresRequest = DeleteDisclosuresRequest(nino, taxYear)
+  lazy val request: DeleteDisclosuresRequestData = DeleteDisclosuresRequestData(nino, taxYear)
 
   "DeleteDisclosuresService" when {
     "return correct result for a success" in new Test {

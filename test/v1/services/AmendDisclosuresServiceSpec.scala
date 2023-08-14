@@ -17,7 +17,7 @@
 package v1.services
 
 import api.controllers.EndpointLogContext
-import api.models.domain.Nino
+import api.models.domain.{Nino, TaxYear}
 import api.models.errors
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
@@ -41,9 +41,9 @@ class AmendDisclosuresServiceSpec extends ServiceSpec {
 
   val class2NicsModel: AmendClass2Nics = AmendClass2Nics(class2VoluntaryContributions = Some(true))
 
-  val amendDisclosuresRequest: AmendDisclosuresRequest = AmendDisclosuresRequest(
+  val amendDisclosuresRequest: AmendDisclosuresRequestData = AmendDisclosuresRequestData(
     nino = Nino(nino),
-    taxYear = taxYear,
+    taxYear = TaxYear.fromMtd(taxYear),
     body = AmendDisclosuresRequestBody(
       taxAvoidance = Some(taxAvoidanceModel),
       class2Nics = Some(class2NicsModel)

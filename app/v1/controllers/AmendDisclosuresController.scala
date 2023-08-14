@@ -19,12 +19,10 @@ package v1.controllers
 import api.controllers._
 import api.hateoas.HateoasFactory
 import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
-import config.AppConfig
 import play.api.libs.json.JsValue
-import play.api.mvc.{Action, AnyContentAsJson, ControllerComponents}
+import play.api.mvc.{Action, ControllerComponents}
 import utils.IdGenerator
-import v1.controllers.requestParsers.AmendDisclosuresRequestParser
-import v1.models.request.amend.AmendDisclosuresRawData
+import v1.controllers.validators.AmendDisclosuresValidatorFactory
 import v1.models.response.amendDisclosures.AmendDisclosuresHateoasData
 import v1.models.response.amendDisclosures.AmendDisclosuresResponse.AmendLinksFactory
 import v1.services._
@@ -35,10 +33,9 @@ import scala.concurrent.ExecutionContext
 class AmendDisclosuresController @Inject() (val authService: EnrolmentsAuthService,
                                             val lookupService: MtdIdLookupService,
                                             service: AmendDisclosuresService,
-                                            parser: AmendDisclosuresRequestParser,
+                                            validatorFactory: AmendDisclosuresValidatorFactory,
                                             hateoasFactory: HateoasFactory,
                                             auditService: AuditService,
-                                            appConfig: AppConfig,
                                             cc: ControllerComponents,
                                             val idGenerator: IdGenerator)(implicit ec: ExecutionContext)
     extends AuthorisedController(cc) {
@@ -50,15 +47,11 @@ class AmendDisclosuresController @Inject() (val authService: EnrolmentsAuthServi
     authorisedAction(nino).async(parse.json) { implicit request =>
       implicit val ctx: RequestContext = RequestContext.from(idGenerator, endpointLogContext)
 
-      val rawData: AmendDisclosuresRawData = AmendDisclosuresRawData(
-        nino = nino,
-        taxYear = taxYear,
-        body = AnyContentAsJson(request.body)
-      )
+      val validator = validatorFactory.validator(nino, taxYear, request.body)
 
       val requestHandler =
         RequestHandler
-          .withParser(parser)
+          .withValidator(validator)
           .withService(service.amendDisclosures)
           .withHateoasResult(hateoasFactory)(AmendDisclosuresHateoasData(nino, taxYear))
           .withAuditing(AuditHandler(
@@ -70,7 +63,7 @@ class AmendDisclosuresController @Inject() (val authService: EnrolmentsAuthServi
             includeResponse = true
           ))
 
-      requestHandler.handleRequest(rawData)
+      requestHandler.handleRequest()
     }
 
 }

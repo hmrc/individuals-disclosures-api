@@ -20,7 +20,7 @@ import api.controllers.RequestContext
 import api.services.ServiceOutcome
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
-import v1.models.request.retrieve.RetrieveDisclosuresRequest
+import v1.models.request.retrieve.RetrieveDisclosuresRequestData
 import v1.models.response.retrieveDisclosures.RetrieveDisclosuresResponse
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -31,9 +31,9 @@ trait MockRetrieveDisclosuresService extends MockFactory {
 
   object MockRetrieveDisclosuresService {
 
-    def retrieve(requestData: RetrieveDisclosuresRequest): CallHandler[Future[ServiceOutcome[RetrieveDisclosuresResponse]]] = {
+    def retrieve(requestData: RetrieveDisclosuresRequestData): CallHandler[Future[ServiceOutcome[RetrieveDisclosuresResponse]]] = {
       (mockRetrieveDisclosuresService
-        .retrieve(_: RetrieveDisclosuresRequest)(_: RequestContext, _: ExecutionContext))
+        .retrieve(_: RetrieveDisclosuresRequestData)(_: RequestContext, _: ExecutionContext))
         .expects(requestData, *, *)
     }
 

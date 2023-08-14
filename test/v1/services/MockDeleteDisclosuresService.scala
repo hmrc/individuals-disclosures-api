@@ -21,7 +21,7 @@ import api.models.errors.ErrorWrapper
 import api.models.outcomes.ResponseWrapper
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
-import v1.models.request.delete.DeleteDisclosuresRequest
+import v1.models.request.delete.DeleteDisclosuresRequestData
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -31,9 +31,9 @@ trait MockDeleteDisclosuresService extends MockFactory {
 
   object MockDeleteDisclosuresService {
 
-    def delete(requestData: DeleteDisclosuresRequest): CallHandler[Future[Either[ErrorWrapper, ResponseWrapper[Unit]]]] = {
+    def delete(requestData: DeleteDisclosuresRequestData): CallHandler[Future[Either[ErrorWrapper, ResponseWrapper[Unit]]]] = {
       (mockDeleteDisclosuresService
-        .delete(_: DeleteDisclosuresRequest)(_: RequestContext, _: ExecutionContext))
+        .delete(_: DeleteDisclosuresRequestData)(_: RequestContext, _: ExecutionContext))
         .expects(requestData, *, *)
     }
 

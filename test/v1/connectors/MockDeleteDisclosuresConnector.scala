@@ -20,7 +20,7 @@ import api.connectors.DownstreamOutcome
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
-import v1.models.request.delete.DeleteDisclosuresRequest
+import v1.models.request.delete.DeleteDisclosuresRequestData
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -30,9 +30,9 @@ trait MockDeleteDisclosuresConnector extends MockFactory {
 
   object MockDeleteDisclosuresConnector {
 
-    def delete(request: DeleteDisclosuresRequest): CallHandler[Future[DownstreamOutcome[Unit]]] = {
+    def delete(request: DeleteDisclosuresRequestData): CallHandler[Future[DownstreamOutcome[Unit]]] = {
       (mockDeleteDisclosuresConnector
-        .deleteDisclosures(_: DeleteDisclosuresRequest)(_: HeaderCarrier, _: ExecutionContext, _: String))
+        .deleteDisclosures(_: DeleteDisclosuresRequestData)(_: HeaderCarrier, _: ExecutionContext, _: String))
         .expects(request, *, *, *)
     }
 

@@ -20,7 +20,7 @@ import api.connectors.ConnectorSpec
 import api.models.domain.Nino
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
-import v1.models.request.create.{CreateMarriageAllowanceBody, CreateMarriageAllowanceRequest}
+import v1.models.request.create.{CreateMarriageAllowanceRequestBody, CreateMarriageAllowanceRequestData}
 
 import scala.concurrent.Future
 
@@ -69,10 +69,10 @@ class CreateMarriageAllowanceConnectorSpec extends ConnectorSpec {
   trait Test {
     _: ConnectorTest =>
 
-    protected val requestBody: CreateMarriageAllowanceBody =
-      CreateMarriageAllowanceBody("TC663795B", None, "Smith", None)
+    protected val requestBody: CreateMarriageAllowanceRequestBody =
+      CreateMarriageAllowanceRequestBody("TC663795B", None, "Smith", None)
 
-    protected val request: CreateMarriageAllowanceRequest = CreateMarriageAllowanceRequest(
+    protected val request: CreateMarriageAllowanceRequestData = CreateMarriageAllowanceRequestData(
       nino = Nino(nino),
       body = requestBody
     )

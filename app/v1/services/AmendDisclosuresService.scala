@@ -21,7 +21,7 @@ import api.models.errors._
 import api.services.{BaseService, ServiceOutcome}
 import cats.implicits._
 import v1.connectors.AmendDisclosuresConnector
-import v1.models.request.amend.AmendDisclosuresRequest
+import v1.models.request.amend.AmendDisclosuresRequestData
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -29,7 +29,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class AmendDisclosuresService @Inject() (connector: AmendDisclosuresConnector) extends BaseService {
 
-  def amendDisclosures(request: AmendDisclosuresRequest)(implicit ctx: RequestContext, ec: ExecutionContext): Future[ServiceOutcome[Unit]] = {
+  def amendDisclosures(request: AmendDisclosuresRequestData)(implicit ctx: RequestContext, ec: ExecutionContext): Future[ServiceOutcome[Unit]] = {
 
     connector
       .amendDisclosures(request)
