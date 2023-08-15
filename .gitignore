@@ -1,4 +1,4 @@
-
+.*
 logs
 project/project
 project/target
@@ -24,3 +24,18 @@ yarn-error.log
 ./bsp
 ./bsp/sbt.json
 /.bsp/
+.cache
+db
+.DS_Store
+**/*.DS_Store
+eclipse
+*.eml
+lib
+log
+modules
+precompiled
+server.pid
+.target
+test-result
+.idea_modules
+bin
