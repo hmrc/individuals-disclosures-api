@@ -24,7 +24,7 @@ class BusinessIdSpec extends UnitSpec {
     "return the BusinessId value" when {
       "called" in {
         val businessId = BusinessId("some id")
-        businessId.toString() shouldBe "some id"
+        businessId.toString shouldBe "some id"
       }
     }
   }

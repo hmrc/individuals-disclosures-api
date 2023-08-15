@@ -20,13 +20,15 @@ import support.UnitSpec
 
 class CalculationIdSpec extends UnitSpec {
 
-  "CalculationId toString" should {
-    "return the CalculationId value" when {
-      "called" in {
+  class CalculationIdSpec extends UnitSpec {
+
+    "toString" should {
+      "return the CalculationId value" in {
         val calculationId = CalculationId("some id")
-        calculationId.toString() shouldBe "some id"
+        calculationId.toString shouldBe "some id"
       }
     }
+
   }
 
 }
