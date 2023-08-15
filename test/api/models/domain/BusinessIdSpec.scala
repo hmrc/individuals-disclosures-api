@@ -14,18 +14,19 @@
  * limitations under the License.
  */
 
-package api.controllers.requestParsers.validators.validations
+package api.models.domain
 
-import api.models.domain.TaxYear
-import api.models.errors.MtdError
-import config.FixedConfig
+import support.UnitSpec
 
-object MtdTaxYearValidation extends FixedConfig {
+class BusinessIdSpec extends UnitSpec {
 
-  // @param taxYear In format YYYY-YY
-  def validate(taxYear: String, error: MtdError): List[MtdError] = {
-    val downstreamTaxYear = Integer.parseInt(TaxYear.fromMtd(taxYear).asDownstream)
-    if (downstreamTaxYear >= minimumTaxYear) NoValidationErrors else List(error)
+  "BusinessId toString" should {
+    "return the BusinessId value" when {
+      "called" in {
+        val businessId = BusinessId("some id")
+        businessId.toString() shouldBe "some id"
+      }
+    }
   }
 
 }
