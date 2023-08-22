@@ -22,7 +22,7 @@ import api.models.errors._
 import api.services.{BaseService, ServiceOutcome}
 import cats.implicits._
 import v1.connectors.RetrieveDisclosuresConnector
-import v1.models.request.retrieve.RetrieveDisclosuresRequest
+import v1.models.request.retrieve.RetrieveDisclosuresRequestData
 import v1.models.response.retrieveDisclosures.RetrieveDisclosuresResponse
 
 import javax.inject.{Inject, Singleton}
@@ -31,7 +31,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class RetrieveDisclosuresService @Inject() (connector: RetrieveDisclosuresConnector) extends BaseService {
 
-  def retrieve(request: RetrieveDisclosuresRequest)(implicit
+  def retrieve(request: RetrieveDisclosuresRequestData)(implicit
       ctx: RequestContext,
       ec: ExecutionContext): Future[ServiceOutcome[RetrieveDisclosuresResponse]] = {
 

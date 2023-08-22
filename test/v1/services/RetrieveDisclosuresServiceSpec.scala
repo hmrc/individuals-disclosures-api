@@ -17,14 +17,14 @@
 package v1.services
 
 import api.controllers.EndpointLogContext
-import api.models.domain.{Nino, Timestamp}
+import api.models.domain.{Nino, TaxYear, Timestamp}
 import api.models.errors
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import api.services.ServiceSpec
 import uk.gov.hmrc.http.HeaderCarrier
-import v1.mocks.connectors.MockRetrieveDisclosuresConnector
-import v1.models.request.retrieve.RetrieveDisclosuresRequest
+import v1.connectors.MockRetrieveDisclosuresConnector
+import v1.models.request.retrieve.RetrieveDisclosuresRequestData
 import v1.models.response.retrieveDisclosures.RetrieveDisclosuresResponse
 
 import scala.concurrent.Future
@@ -32,7 +32,7 @@ import scala.concurrent.Future
 class RetrieveDisclosuresServiceSpec extends ServiceSpec {
 
   private val nino    = Nino("AA112233A")
-  private val taxYear = "2021-22"
+  private val taxYear = TaxYear.fromMtd("2021-22")
 
   trait Test extends MockRetrieveDisclosuresConnector {
     implicit val hc: HeaderCarrier              = HeaderCarrier()
@@ -41,8 +41,8 @@ class RetrieveDisclosuresServiceSpec extends ServiceSpec {
     lazy val service = new RetrieveDisclosuresService(mockRetrieveDisclosuresConnector)
   }
 
-  lazy val request: RetrieveDisclosuresRequest   = RetrieveDisclosuresRequest(nino, taxYear)
-  lazy val response: RetrieveDisclosuresResponse = RetrieveDisclosuresResponse(None, None, Timestamp("2020-07-06T09:37:17Z"))
+  lazy val request: RetrieveDisclosuresRequestData = RetrieveDisclosuresRequestData(nino, taxYear)
+  lazy val response: RetrieveDisclosuresResponse   = RetrieveDisclosuresResponse(None, None, Timestamp("2020-07-06T09:37:17Z"))
 
   "retrieve" must {
     "return correct result for a success" in new Test {

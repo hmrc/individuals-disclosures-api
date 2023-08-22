@@ -21,8 +21,7 @@ import api.hateoas.HateoasFactory
 import api.services.{EnrolmentsAuthService, MtdIdLookupService}
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import utils.IdGenerator
-import v1.controllers.requestParsers.RetrieveDisclosuresRequestParser
-import v1.models.request.retrieve.RetrieveDisclosuresRawData
+import v1.controllers.validators.RetrieveDisclosuresValidatorFactory
 import v1.models.response.retrieveDisclosures.RetrieveDisclosuresHateoasData
 import v1.services._
 
@@ -32,7 +31,7 @@ import scala.concurrent.ExecutionContext
 @Singleton
 class RetrieveDisclosuresController @Inject() (val authService: EnrolmentsAuthService,
                                                val lookupService: MtdIdLookupService,
-                                               parser: RetrieveDisclosuresRequestParser,
+                                               validatorFactory: RetrieveDisclosuresValidatorFactory,
                                                service: RetrieveDisclosuresService,
                                                hateoasFactory: HateoasFactory,
                                                cc: ControllerComponents,
@@ -49,18 +48,15 @@ class RetrieveDisclosuresController @Inject() (val authService: EnrolmentsAuthSe
     authorisedAction(nino).async { implicit request =>
       implicit val ctx: RequestContext = RequestContext.from(idGenerator, endpointLogContext)
 
-      val rawData: RetrieveDisclosuresRawData = RetrieveDisclosuresRawData(
-        nino = nino,
-        taxYear = taxYear
-      )
+      val validator = validatorFactory.validator(nino, taxYear)
 
       val requestHandler =
         RequestHandler
-          .withParser(parser)
+          .withValidator(validator)
           .withService(service.retrieve)
           .withHateoasResult(hateoasFactory)(RetrieveDisclosuresHateoasData(nino, taxYear))
 
-      requestHandler.handleRequest(rawData)
+      requestHandler.handleRequest()
 
     }
 

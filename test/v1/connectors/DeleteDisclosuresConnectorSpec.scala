@@ -17,10 +17,10 @@
 package v1.connectors
 
 import api.connectors.ConnectorSpec
-import api.models.domain.Nino
+import api.models.domain.{Nino, TaxYear}
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
-import v1.models.request.delete.DeleteDisclosuresRequest
+import v1.models.request.delete.DeleteDisclosuresRequestData
 
 import scala.concurrent.Future
 
@@ -86,9 +86,9 @@ class DeleteDisclosuresConnectorSpec extends ConnectorSpec {
   trait Test {
     _: ConnectorTest =>
 
-    protected val request: DeleteDisclosuresRequest = DeleteDisclosuresRequest(
+    protected val request: DeleteDisclosuresRequestData = DeleteDisclosuresRequestData(
       nino = Nino(nino),
-      taxYear = taxYear
+      taxYear = TaxYear.fromMtd(taxYear)
     )
 
     val connector: DeleteDisclosuresConnector = new DeleteDisclosuresConnector(

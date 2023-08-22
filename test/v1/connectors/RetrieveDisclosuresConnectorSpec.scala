@@ -17,10 +17,10 @@
 package v1.connectors
 
 import api.connectors.ConnectorSpec
-import api.models.domain.Nino
+import api.models.domain.{Nino, TaxYear}
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
-import v1.models.request.retrieve.RetrieveDisclosuresRequest
+import v1.models.request.retrieve.RetrieveDisclosuresRequestData
 
 import scala.concurrent.Future
 
@@ -86,9 +86,9 @@ class RetrieveDisclosuresConnectorSpec extends ConnectorSpec {
   trait Test {
     _: ConnectorTest =>
 
-    protected val request: RetrieveDisclosuresRequest = RetrieveDisclosuresRequest(
+    protected val request: RetrieveDisclosuresRequestData = RetrieveDisclosuresRequestData(
       nino = Nino(nino),
-      taxYear = taxYear
+      taxYear = TaxYear.fromMtd(taxYear)
     )
 
     val connector: RetrieveDisclosuresConnector = new RetrieveDisclosuresConnector(

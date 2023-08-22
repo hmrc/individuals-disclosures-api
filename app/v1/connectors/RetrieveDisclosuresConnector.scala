@@ -21,7 +21,7 @@ import api.connectors.httpparsers.StandardDownstreamHttpParser._
 import api.connectors.{BaseDownstreamConnector, DownstreamOutcome}
 import config.AppConfig
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
-import v1.models.request.retrieve.RetrieveDisclosuresRequest
+import v1.models.request.retrieve.RetrieveDisclosuresRequestData
 import v1.models.response.retrieveDisclosures.RetrieveDisclosuresResponse
 
 import javax.inject.{Inject, Singleton}
@@ -30,14 +30,14 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class RetrieveDisclosuresConnector @Inject() (val http: HttpClient, val appConfig: AppConfig) extends BaseDownstreamConnector {
 
-  def retrieve(request: RetrieveDisclosuresRequest)(implicit
+  def retrieve(request: RetrieveDisclosuresRequestData)(implicit
       hc: HeaderCarrier,
       ec: ExecutionContext,
       correlationId: String): Future[DownstreamOutcome[RetrieveDisclosuresResponse]] = {
 
     import request._
 
-    val downstreamUri = Ifs1Uri[RetrieveDisclosuresResponse](s"income-tax/disclosures/$nino/$taxYear")
+    val downstreamUri = Ifs1Uri[RetrieveDisclosuresResponse](s"income-tax/disclosures/$nino/${taxYear.asMtd}")
 
     get(uri = downstreamUri)
   }

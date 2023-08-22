@@ -16,30 +16,31 @@
 
 package v1.connectors
 
-import api.connectors.{ BaseDownstreamConnector, DownstreamOutcome }
+import api.connectors.{BaseDownstreamConnector, DownstreamOutcome}
 import api.connectors.DownstreamUri.Ifs1Uri
 import config.AppConfig
 
-import javax.inject.{ Inject, Singleton }
-import uk.gov.hmrc.http.{ HeaderCarrier, HttpClient }
-import v1.models.request.amend.AmendDisclosuresRequest
+import javax.inject.{Inject, Singleton}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import v1.models.request.amend.AmendDisclosuresRequestData
 import api.connectors.httpparsers.StandardDownstreamHttpParser._
 
-import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class AmendDisclosuresConnector @Inject()(val http: HttpClient, val appConfig: AppConfig) extends BaseDownstreamConnector {
+class AmendDisclosuresConnector @Inject() (val http: HttpClient, val appConfig: AppConfig) extends BaseDownstreamConnector {
 
-  def amendDisclosures(request: AmendDisclosuresRequest)(implicit
-                                                         hc: HeaderCarrier,
-                                                         ec: ExecutionContext,
-                                                         correlationId: String): Future[DownstreamOutcome[Unit]] = {
+  def amendDisclosures(request: AmendDisclosuresRequestData)(implicit
+      hc: HeaderCarrier,
+      ec: ExecutionContext,
+      correlationId: String): Future[DownstreamOutcome[Unit]] = {
 
     import request._
 
     put(
       body = body,
-      uri = Ifs1Uri[Unit](s"income-tax/disclosures/$nino/$taxYear")
+      uri = Ifs1Uri[Unit](s"income-tax/disclosures/$nino/${taxYear.asMtd}")
     )
   }
+
 }

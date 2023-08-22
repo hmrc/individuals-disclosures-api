@@ -17,22 +17,21 @@
 package v1.controllers
 
 import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
+import api.hateoas.{HateoasWrapper, MockHateoasFactory}
 import api.mocks.MockIdGenerator
-import api.mocks.hateoas.MockHateoasFactory
-import api.mocks.services.{MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService}
+import api.mocks.services.{MockEnrolmentsAuthService, MockMtdIdLookupService}
 import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
-import api.models.domain.Nino
-import api.models.errors
+import api.models.domain.{Nino, TaxYear}
 import api.models.errors._
-import api.models.hateoas.HateoasWrapper
 import api.models.outcomes.ResponseWrapper
+import api.services.MockAuditService
 import mocks.MockAppConfig
 import play.api.libs.json.{JsValue, Json}
-import play.api.mvc.{AnyContentAsJson, Result}
-import v1.mocks.requestParsers.MockAmendDisclosuresRequestParser
-import v1.mocks.services.MockAmendDisclosuresService
+import play.api.mvc.Result
+import v1.controllers.validators.MockAmendDisclosuresValidatorFactory
 import v1.models.request.amend._
 import v1.models.response.amendDisclosures.AmendDisclosuresHateoasData
+import v1.services.MockAmendDisclosuresService
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -45,7 +44,7 @@ class AmendDisclosuresControllerSpec
     with MockAppConfig
     with MockAmendDisclosuresService
     with MockHateoasFactory
-    with MockAmendDisclosuresRequestParser
+    with MockAmendDisclosuresValidatorFactory
     with MockAuditService
     with MockIdGenerator {
 
@@ -71,12 +70,6 @@ class AmendDisclosuresControllerSpec
     """.stripMargin
   )
 
-  val rawData: AmendDisclosuresRawData = AmendDisclosuresRawData(
-    nino = nino,
-    taxYear = taxYear,
-    body = AnyContentAsJson(requestBodyJson)
-  )
-
   val taxAvoidanceModel: Seq[AmendTaxAvoidanceItem] = Seq(
     AmendTaxAvoidanceItem(
       srn = "14211123",
@@ -95,9 +88,9 @@ class AmendDisclosuresControllerSpec
     class2Nics = Some(class2NicsModel)
   )
 
-  val requestData: AmendDisclosuresRequest = AmendDisclosuresRequest(
+  val requestData: AmendDisclosuresRequestData = AmendDisclosuresRequestData(
     nino = Nino(nino),
-    taxYear = taxYear,
+    taxYear = TaxYear.fromMtd(taxYear),
     body = amendDisclosuresRequestBody
   )
 
@@ -125,13 +118,53 @@ class AmendDisclosuresControllerSpec
     """.stripMargin
   )
 
+  "AmendDisclosuresController" should {
+    "return a successful response with header X-CorrelationId and body" when {
+      "the request received is valid" in new Test {
+        willUseValidator(returningSuccess(requestData))
+
+        MockAmendDisclosuresService
+          .amendDisclosures(requestData)
+          .returns(Future.successful(Right(ResponseWrapper(correlationId, ()))))
+
+        MockHateoasFactory
+          .wrap((), AmendDisclosuresHateoasData(nino, taxYear))
+          .returns(HateoasWrapper((), hateoaslinks))
+
+        runOkTestWithAudit(
+          expectedStatus = OK,
+          maybeExpectedResponseBody = Some(hateoaslinksJson),
+          maybeAuditRequestBody = Some(requestBodyJson),
+          maybeAuditResponseBody = Some(hateoaslinksJson)
+        )
+      }
+    }
+
+    "return the error as per spec" when {
+      "parser validation fails" in new Test {
+        willUseValidator(returning(NinoFormatError))
+
+        runErrorTestWithAudit(NinoFormatError, Some(requestBodyJson))
+      }
+
+      "service errors occur" in new Test {
+        willUseValidator(returningSuccess(requestData))
+
+        MockAmendDisclosuresService
+          .amendDisclosures(requestData)
+          .returns(Future.successful(Left(ErrorWrapper(correlationId, RuleTaxYearNotSupportedError))))
+
+        runErrorTestWithAudit(RuleTaxYearNotSupportedError, maybeAuditRequestBody = Some(requestBodyJson))
+      }
+    }
+  }
+
   trait Test extends ControllerTest with AuditEventChecking {
 
     val controller = new AmendDisclosuresController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
-      appConfig = mockAppConfig,
-      parser = mockAmendDisclosuresRequestParser,
+      validatorFactory = mockAmendDisclosuresValidatorFactory,
       service = mockAmendDisclosuresService,
       auditService = mockAuditService,
       cc = cc,
@@ -155,56 +188,6 @@ class AmendDisclosuresControllerSpec
         )
       )
 
-  }
-
-  "AmendDisclosuresController" should {
-    "return a successful response with header X-CorrelationId and body" when {
-      "the request received is valid" in new Test {
-
-        MockAmendDisclosuresRequestParser
-          .parse(rawData)
-          .returns(Right(requestData))
-
-        MockAmendDisclosuresService
-          .amendDisclosures(requestData)
-          .returns(Future.successful(Right(ResponseWrapper(correlationId, ()))))
-
-        MockHateoasFactory
-          .wrap((), AmendDisclosuresHateoasData(nino, taxYear))
-          .returns(HateoasWrapper((), hateoaslinks))
-
-        runOkTestWithAudit(
-          expectedStatus = OK,
-          maybeExpectedResponseBody = Some(hateoaslinksJson),
-          maybeAuditRequestBody = Some(requestBodyJson),
-          maybeAuditResponseBody = Some(hateoaslinksJson)
-        )
-      }
-    }
-
-    "return the error as per spec" when {
-      "parser validation fails" in new Test {
-
-        MockAmendDisclosuresRequestParser
-          .parse(rawData)
-          .returns(Left(errors.ErrorWrapper(correlationId, NinoFormatError)))
-
-        runErrorTestWithAudit(NinoFormatError, Some(requestBodyJson))
-      }
-
-      "service errors occur" in new Test {
-
-        MockAmendDisclosuresRequestParser
-          .parse(rawData)
-          .returns(Right(requestData))
-
-        MockAmendDisclosuresService
-          .amendDisclosures(requestData)
-          .returns(Future.successful(Left(ErrorWrapper(correlationId, RuleTaxYearNotSupportedError))))
-
-        runErrorTestWithAudit(RuleTaxYearNotSupportedError, maybeAuditRequestBody = Some(requestBodyJson))
-      }
-    }
   }
 
 }

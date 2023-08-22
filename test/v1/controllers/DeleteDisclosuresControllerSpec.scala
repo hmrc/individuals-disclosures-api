@@ -18,16 +18,17 @@ package v1.controllers
 
 import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import api.mocks.MockIdGenerator
-import api.mocks.services.{MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService}
+import api.mocks.services.{MockEnrolmentsAuthService, MockMtdIdLookupService}
 import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
-import api.models.domain.Nino
+import api.models.domain.{Nino, TaxYear}
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
+import api.services.MockAuditService
 import play.api.libs.json.JsValue
 import play.api.mvc.Result
-import v1.mocks.requestParsers.MockDeleteDisclosuresRequestParser
-import v1.mocks.services.MockDeleteDisclosuresService
-import v1.models.request.delete.{DeleteDisclosuresRawData, DeleteDisclosuresRequest}
+import v1.controllers.validators.MockDeleteDisclosuresValidatorFactory
+import v1.models.request.delete.DeleteDisclosuresRequestData
+import v1.services.MockDeleteDisclosuresService
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -38,21 +39,48 @@ class DeleteDisclosuresControllerSpec
     with MockEnrolmentsAuthService
     with MockMtdIdLookupService
     with MockDeleteDisclosuresService
-    with MockDeleteDisclosuresRequestParser
+    with MockDeleteDisclosuresValidatorFactory
     with MockAuditService
     with MockIdGenerator {
 
   val taxYear: String = "2021-22"
 
-  val rawData: DeleteDisclosuresRawData = DeleteDisclosuresRawData(
-    nino = nino,
-    taxYear = taxYear
+  val requestData: DeleteDisclosuresRequestData = DeleteDisclosuresRequestData(
+    nino = Nino(nino),
+    taxYear = TaxYear.fromMtd(taxYear)
   )
 
-  val requestData: DeleteDisclosuresRequest = DeleteDisclosuresRequest(
-    nino = Nino(nino),
-    taxYear = taxYear
-  )
+  "DeleteDisclosuresController" should {
+    "return a successful response with header X-CorrelationId" when {
+      "the request received is valid" in new Test {
+        willUseValidator(returningSuccess(requestData))
+
+        MockDeleteDisclosuresService
+          .delete(requestData)
+          .returns(Future.successful(Right(ResponseWrapper(correlationId, ()))))
+
+        runOkTestWithAudit(expectedStatus = NO_CONTENT)
+      }
+    }
+
+    "return the error as per spec" when {
+      "the parser validation fails" in new Test {
+        willUseValidator(returning(NinoFormatError))
+
+        runErrorTestWithAudit(NinoFormatError)
+      }
+
+      "the service returns an error" in new Test {
+        willUseValidator(returningSuccess(requestData))
+
+        MockDeleteDisclosuresService
+          .delete(requestData)
+          .returns(Future.successful(Left(ErrorWrapper(correlationId, TaxYearFormatError))))
+
+        runErrorTestWithAudit(TaxYearFormatError)
+      }
+    }
+  }
 
   trait Test extends ControllerTest with AuditEventChecking {
 
@@ -60,7 +88,7 @@ class DeleteDisclosuresControllerSpec
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
       service = mockDeleteDisclosuresService,
-      parser = mockDeleteDisclosuresRequestParser,
+      validatorFactory = mockDeleteDisclosuresValidatorFactory,
       auditService = mockAuditService,
       cc = cc,
       idGenerator = mockIdGenerator
@@ -82,43 +110,6 @@ class DeleteDisclosuresControllerSpec
         )
       )
 
-  }
-
-  "DeleteDisclosuresController" should {
-    "return a successful response with header X-CorrelationId" when {
-      "the request received is valid" in new Test {
-
-        MockDeleteDisclosuresRequestParser.parse(rawData).returns(Right(requestData))
-
-        MockDeleteDisclosuresService
-          .delete(requestData)
-          .returns(Future.successful(Right(ResponseWrapper(correlationId, ()))))
-
-        runOkTestWithAudit(expectedStatus = NO_CONTENT)
-      }
-    }
-
-    "return the error as per spec" when {
-      "the parser validation fails" in new Test {
-        MockDeleteDisclosuresRequestParser
-          .parse(rawData)
-          .returns(Left(ErrorWrapper(correlationId, NinoFormatError, None)))
-
-        runErrorTestWithAudit(NinoFormatError)
-      }
-
-      "the service returns an error" in new Test {
-        MockDeleteDisclosuresRequestParser
-          .parse(rawData)
-          .returns(Right(requestData))
-
-        MockDeleteDisclosuresService
-          .delete(requestData)
-          .returns(Future.successful(Left(ErrorWrapper(correlationId, TaxYearFormatError))))
-
-        runErrorTestWithAudit(TaxYearFormatError)
-      }
-    }
   }
 
 }

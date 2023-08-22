@@ -22,7 +22,7 @@ import api.models.errors._
 import api.services.{BaseService, ServiceOutcome}
 import cats.implicits._
 import v1.connectors.CreateMarriageAllowanceConnector
-import v1.models.request.create.CreateMarriageAllowanceRequest
+import v1.models.request.create.CreateMarriageAllowanceRequestData
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -30,7 +30,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class CreateMarriageAllowanceService @Inject() (connector: CreateMarriageAllowanceConnector) extends BaseService {
 
-  def create(request: CreateMarriageAllowanceRequest)(implicit ctx: RequestContext, ec: ExecutionContext): Future[ServiceOutcome[Unit]] = {
+  def create(request: CreateMarriageAllowanceRequestData)(implicit ctx: RequestContext, ec: ExecutionContext): Future[ServiceOutcome[Unit]] = {
 
     connector
       .create(request)
