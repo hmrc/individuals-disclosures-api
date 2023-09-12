@@ -84,6 +84,15 @@ class CreateMarriageAllowanceValidatorFactorySpec extends UnitSpec {
          |}
          |""".stripMargin)
 
+  private val invalidDobRangeInBody = Json.parse(
+    """{
+      |  "spouseOrCivilPartnerNino": "AA123456B",
+      |  "spouseOrCivilPartnerFirstName": "Marge",
+      |  "spouseOrCivilPartnerSurname": "Simpson",
+      |  "spouseOrCivilPartnerDateOfBirth": "0010-01-01"
+      |}
+      |""".stripMargin)
+
   private val parsedNino = Nino(validNino)
 
   private val parsedBody = CreateMarriageAllowanceRequestBody("AA123456B", Some("Marge"), "Simpson", Some("1970-01-01"))
@@ -145,6 +154,13 @@ class CreateMarriageAllowanceValidatorFactorySpec extends UnitSpec {
       "passed a request body with an invalid Spouse or Civil Partner dob" in {
         val result: Either[ErrorWrapper, CreateMarriageAllowanceRequestData] =
           validator(validNino, invalidBodyBadDob).validateAndWrapResult()
+
+        result shouldBe Left(ErrorWrapper(correlationId, PartnerDoBFormatError))
+      }
+
+      "passed a request body with an invalid range of Spouse or Civil Partner dob" in {
+        val result: Either[ErrorWrapper, CreateMarriageAllowanceRequestData] =
+          validator(validNino, invalidDobRangeInBody).validateAndWrapResult()
 
         result shouldBe Left(ErrorWrapper(correlationId, PartnerDoBFormatError))
       }
