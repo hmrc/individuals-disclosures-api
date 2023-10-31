@@ -80,7 +80,7 @@ class DocumentationControllerISpec extends IntegrationBaseSpec {
       s"return the documentation for $version" in {
         val response = get(s"/api/conf/${version.name}/application.yaml")
 
-        val body         = response.body[String]
+        val body         = response.body
         val parserResult = Try(new OpenAPIV3Parser().readContents(body)).getOrElse(fail("openAPI couldn't read contents"))
 
         val openAPI = Option(parserResult.getOpenAPI).getOrElse(fail("openAPI wasn't defined"))
