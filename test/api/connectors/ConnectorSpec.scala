@@ -31,7 +31,7 @@ trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames
 
   val otherHeaders: Seq[(String, String)] = List(
     "Gov-Test-Scenario" -> "DEFAULT",
-    "AnotherHeader" -> "HeaderValue"
+    "AnotherHeader"     -> "HeaderValue"
   )
 
   implicit val hc: HeaderCarrier    = HeaderCarrier(otherHeaders = otherHeaders)
@@ -45,10 +45,10 @@ trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames
     )
 
   val requiredIfs1Headers: Seq[(String, String)] = List(
-    "Authorization" -> "Bearer ifs1-token",
-    "Environment" -> "ifs1-environment",
-    "User-Agent" -> "individual-disclosures-api",
-    "CorrelationId" -> correlationId,
+    "Authorization"     -> "Bearer ifs1-token",
+    "Environment"       -> "ifs1-environment",
+    "User-Agent"        -> "individual-disclosures-api",
+    "CorrelationId"     -> correlationId,
     "Gov-Test-Scenario" -> "DEFAULT"
   )
 
@@ -62,10 +62,10 @@ trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames
   )
 
   val requiredIfs2Headers: Seq[(String, String)] = List(
-    "Authorization" -> "Bearer ifs2-token",
-    "Environment" -> "ifs2-environment",
-    "User-Agent" -> "individual-disclosures-api",
-    "CorrelationId" -> correlationId,
+    "Authorization"     -> "Bearer ifs2-token",
+    "Environment"       -> "ifs2-environment",
+    "User-Agent"        -> "individual-disclosures-api",
+    "CorrelationId"     -> correlationId,
     "Gov-Test-Scenario" -> "DEFAULT"
   )
 
