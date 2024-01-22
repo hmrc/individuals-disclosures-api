@@ -21,9 +21,10 @@ import play.api.libs.json.Json
 import support.UnitSpec
 
 class ErrorWrapperSpec extends UnitSpec {
-  val correlationId: String = "X-123"
 
-  "Rendering a error response with one error" should {
+  private val correlationId = "X-123"
+
+  "Rendering an error response with one error" should {
     val error = ErrorWrapper(correlationId, NinoFormatError, Some(List.empty[MtdError]))
 
     val json = Json.parse(
@@ -40,7 +41,7 @@ class ErrorWrapperSpec extends UnitSpec {
     }
   }
 
-  "Rendering a error response with one error and an empty sequence of errors" should {
+  "Rendering an error response with one error and an empty sequence of errors" should {
     val error = ErrorWrapper(correlationId, NinoFormatError, Some(List.empty[MtdError]))
 
     val json = Json.parse(
@@ -57,7 +58,7 @@ class ErrorWrapperSpec extends UnitSpec {
     }
   }
 
-  "Rendering a error response with two errors" should {
+  "Rendering an error response with two errors" should {
     val error = ErrorWrapper(correlationId, BadRequestError, Some(List(NinoFormatError, TaxYearFormatError)))
 
     val json = Json.parse(

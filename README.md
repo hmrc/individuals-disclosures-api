@@ -7,14 +7,14 @@ The Individuals Disclosures API allows a developer to create and amend, retrieve
 
 ## Requirements
 - Scala 2.12.x
-- Java 8
-- sbt 1.6.x
-- [Service Manager](https://github.com/hmrc/service-manager)
+- Java 11
+- sbt 1.9.x
+- [Service Manager 2](https://github.com/hmrc/sm2)
 
 ## Development Setup
 Run the microservice from the console using: `sbt run` (starts on port 7799 by default)
 
-Start the service manager profile: `sm --start MTDFB_INDIVIDUALS_DISCLOSURES`
+Start the service manager profile: `sm2 --start MTDFB_INDIVIDUALS_DISCLOSURES`
  
 ## Run Tests
 Run unit tests: `sbt test`
