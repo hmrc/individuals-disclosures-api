@@ -31,12 +31,11 @@ object AppDependencies {
   )
 
   def test(scope: String = "test, it"): Seq[ModuleID] = List(
-    "org.scalatest"       %% "scalatest"       % "3.2.15"   % scope,
-    "org.scalatestplus"   %% "scalacheck-1-15" % "3.2.11.0" % scope,
-    "com.vladsch.flexmark" % "flexmark-all"    % "0.64.6"   % scope,
-    "org.scalacheck"      %% "scalacheck"      % "1.17.0"   % scope,
-    "org.scalamock"       %% "scalamock"       % "5.2.0"    % scope,
-    // "org.scalatestplus.play" %% "scalatestplus-play"     % "5.1.0"              % scope,
+    "org.scalatest"       %% "scalatest"              % "3.2.15"             % scope,
+    "org.scalatestplus"   %% "scalacheck-1-15"        % "3.2.11.0"           % scope,
+    "com.vladsch.flexmark" % "flexmark-all"           % "0.64.6"             % scope,
+    "org.scalacheck"      %% "scalacheck"             % "1.17.0"             % scope,
+    "org.scalamock"       %% "scalamock"              % "5.2.0"              % scope,
     "org.playframework"   %% "play-test"              % PlayVersion.current  % scope,
     "uk.gov.hmrc"         %% "bootstrap-test-play-30" % bootstrapPlayVersion % scope,
     "org.wiremock"         % "wiremock"               % "3.0.4"              % scope,
