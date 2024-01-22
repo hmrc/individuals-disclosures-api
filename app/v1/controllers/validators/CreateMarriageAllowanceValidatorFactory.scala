@@ -26,12 +26,10 @@ import v1.controllers.validators.CreateMarriageAllowanceValidator.validateBusine
 import v1.models.request.create.{CreateMarriageAllowanceRequestBody, CreateMarriageAllowanceRequestData}
 
 import javax.inject.Singleton
-import scala.annotation.nowarn
 
 @Singleton
 class CreateMarriageAllowanceValidatorFactory {
 
-  @nowarn("cat=lint-byname-implicit")
   private val resolveJson = new ResolveNonEmptyJsonObject[CreateMarriageAllowanceRequestBody]()
 
   def validator(nino: String, body: JsValue): Validator[CreateMarriageAllowanceRequestData] =

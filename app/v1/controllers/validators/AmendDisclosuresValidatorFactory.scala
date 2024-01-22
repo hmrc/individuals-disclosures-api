@@ -27,12 +27,10 @@ import v1.controllers.validators.AmendDisclosuresValidator.validateBusinessRules
 import v1.models.request.amend.{AmendDisclosuresRequestBody, AmendDisclosuresRequestData}
 
 import javax.inject.{Inject, Singleton}
-import scala.annotation.nowarn
 
 @Singleton
 class AmendDisclosuresValidatorFactory @Inject() (appConfig: AppConfig) {
 
-  @nowarn("cat=lint-byname-implicit")
   private val resolveJson = new ResolveNonEmptyJsonObject[AmendDisclosuresRequestBody]()
 
   def validator(nino: String, taxYear: String, body: JsValue): Validator[AmendDisclosuresRequestData] =
