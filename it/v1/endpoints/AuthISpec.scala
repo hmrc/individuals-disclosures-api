@@ -49,17 +49,16 @@ class AuthISpec extends IntegrationBaseSpec {
 
   }
 
-  "Calling the 'delete disclosures' endpoint" when {
+  "Calling the sample endpoint" when {
 
-    "the NINO cannot be converted to a MTD ID" should {
+    "MTD ID lookup fails with a 500" should {
 
       "return 500" in new Test {
         override val nino: String = "AA123456A"
 
         override def setupStubs(): StubMapping = {
           AuditStub.audit()
-          AuthStub.authorised()
-          MtdIdLookupStub.internalServerError(nino)
+          MtdIdLookupStub.error(nino, Status.INTERNAL_SERVER_ERROR)
         }
 
         val response: WSResponse = await(request().delete())
@@ -67,51 +66,66 @@ class AuthISpec extends IntegrationBaseSpec {
       }
     }
 
-    "an MTD ID is successfully retrieve from the NINO and the user is authorised" should {
-
-      "return 204" in new Test {
-        override def setupStubs(): StubMapping = {
-          AuditStub.audit()
-          AuthStub.authorised()
-          MtdIdLookupStub.ninoFound(nino)
-          DownstreamStub.onSuccess(DownstreamStub.DELETE, ifs1Uri, NO_CONTENT)
-        }
-
-        val response: WSResponse = await(request().delete())
-        response.status shouldBe Status.NO_CONTENT
-      }
-    }
-
-    "an MTD ID is successfully retrieve from the NINO and the user is NOT logged in" should {
+    "MTD ID lookup fails with a 403" should {
 
       "return 403" in new Test {
         override val nino: String = "AA123456A"
 
         override def setupStubs(): StubMapping = {
           AuditStub.audit()
-          MtdIdLookupStub.ninoFound(nino)
-          AuthStub.unauthorisedNotLoggedIn()
+          MtdIdLookupStub.error(nino, Status.FORBIDDEN)
         }
 
         val response: WSResponse = await(request().delete())
         response.status shouldBe Status.FORBIDDEN
       }
     }
+  }
 
-    "an MTD ID is successfully retrieve from the NINO and the user is NOT authorised" should {
+  "MTD ID lookup succeeds and the user is authorised" should {
 
-      "return 403" in new Test {
-        override val nino: String = "AA123456A"
-
-        override def setupStubs(): StubMapping = {
-          AuditStub.audit()
-          MtdIdLookupStub.ninoFound(nino)
-          AuthStub.unauthorisedOther()
-        }
-
-        val response: WSResponse = await(request().delete())
-        response.status shouldBe Status.FORBIDDEN
+    "return success" in new Test {
+      override def setupStubs(): StubMapping = {
+        AuditStub.audit()
+        AuthStub.authorised()
+        MtdIdLookupStub.ninoFound(nino)
+        DownstreamStub.onSuccess(DownstreamStub.DELETE, ifs1Uri, NO_CONTENT)
       }
+
+      val response: WSResponse = await(request().delete())
+      response.status shouldBe Status.NO_CONTENT
+    }
+  }
+
+  "MTD ID lookup succeeds but the user is NOT logged in" should {
+
+    "return 403" in new Test {
+      override val nino: String = "AA123456A"
+
+      override def setupStubs(): StubMapping = {
+        AuditStub.audit()
+        MtdIdLookupStub.ninoFound(nino)
+        AuthStub.unauthorisedNotLoggedIn()
+      }
+
+      val response: WSResponse = await(request().delete())
+      response.status shouldBe Status.FORBIDDEN
+    }
+  }
+
+  "MTD ID lookup succeeds but the user is NOT authorised" should {
+
+    "return 403" in new Test {
+      override val nino: String = "AA123456A"
+
+      override def setupStubs(): StubMapping = {
+        AuditStub.audit()
+        MtdIdLookupStub.ninoFound(nino)
+        AuthStub.unauthorisedOther()
+      }
+
+      val response: WSResponse = await(request().delete())
+      response.status shouldBe Status.FORBIDDEN
     }
   }
 

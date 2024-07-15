@@ -46,7 +46,7 @@ class ApiDefinitionFactorySpec extends UnitSpec {
       def testDefinitionWithConfidence(confidenceLevelConfig: ConfidenceLevelConfig): Unit = new Test {
         MockAppConfig.apiStatus(Version1) returns "BETA"
         MockAppConfig.endpointsEnabled(Version1) returns true
-        MockAppConfig.confidenceLevelCheckEnabled.returns(confidenceLevelConfig).anyNumberOfTimes()
+        MockAppConfig.confidenceLevelConfig.returns(confidenceLevelConfig).anyNumberOfTimes()
 
         val readScope: String                = "read:self-assessment"
         val writeScope: String               = "write:self-assessment"
@@ -96,7 +96,7 @@ class ApiDefinitionFactorySpec extends UnitSpec {
       case (definitionEnabled, configCL, expectedDefinitionCL) =>
         s"confidence-level-check.definition.enabled is $definitionEnabled and confidence-level = $configCL" should {
           s"return confidence level $expectedDefinitionCL" in new Test {
-            MockAppConfig.confidenceLevelCheckEnabled returns ConfidenceLevelConfig(confidenceLevel = configCL,
+            MockAppConfig.confidenceLevelConfig returns ConfidenceLevelConfig(confidenceLevel = configCL,
               definitionEnabled = definitionEnabled,
               authValidationEnabled = true)
             apiDefinitionFactory.confidenceLevel shouldBe expectedDefinitionCL
