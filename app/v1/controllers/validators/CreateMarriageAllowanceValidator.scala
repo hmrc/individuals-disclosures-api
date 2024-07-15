@@ -18,7 +18,8 @@ package v1.controllers.validators
 
 import api.controllers.validators.RulesValidator
 import api.controllers.validators.resolvers.{ResolveIsoDate, ResolveNino}
-import api.models.errors.{MtdError, PartnerDoBFormatError, PartnerFirstNameFormatError, PartnerNinoFormatError, PartnerSurnameFormatError}
+import api.models.domain.Nino
+import api.models.errors._
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
 import v1.models.request.create.CreateMarriageAllowanceRequestData
@@ -34,8 +35,6 @@ object CreateMarriageAllowanceValidator extends RulesValidator[CreateMarriageAll
   override def validateBusinessRules(parsed: CreateMarriageAllowanceRequestData): Validated[Seq[MtdError], CreateMarriageAllowanceRequestData] = {
     import parsed.body._
 
-    val validatedPartnerNino = ResolveNino(spouseOrCivilPartnerNino, PartnerNinoFormatError)
-
     val validatedPartnerSurname = validateName(PartnerSurnameFormatError)(spouseOrCivilPartnerSurname)
 
     val validatedPartnerFirstName = spouseOrCivilPartnerFirstName.map(validateName(PartnerFirstNameFormatError)).getOrElse(valid)
@@ -45,7 +44,7 @@ object CreateMarriageAllowanceValidator extends RulesValidator[CreateMarriageAll
       .getOrElse(valid)
 
     combine(
-      validatedPartnerNino,
+      resolvePartnerNino(spouseOrCivilPartnerNino),
       validatedPartnerSurname,
       validatedPartnerFirstName,
       validatedPartnerDateOfBirth
@@ -57,5 +56,11 @@ object CreateMarriageAllowanceValidator extends RulesValidator[CreateMarriageAll
 
   private def validatePartnerDoB(partnerDoB: LocalDate): Validated[Seq[MtdError], LocalDate] =
     if (partnerDoB.getYear <= maxYear && partnerDoB.getYear >= minYear) Valid(partnerDoB) else Invalid(Seq(PartnerDoBFormatError))
+
+  private def resolvePartnerNino(nino: String) =
+    if (ResolveNino.isValid(nino))
+      Valid(Nino(nino))
+    else
+      Invalid(List(PartnerNinoFormatError))
 
 }
