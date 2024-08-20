@@ -22,7 +22,7 @@ import play.api.http.Status.NO_CONTENT
 import play.api.libs.json.JsValue
 import play.api.libs.ws.{WSRequest, WSResponse}
 
-class DeleteDisclosuresAuthMainAgentsOnlyISpec extends AuthMainAgentsOnlyISpec {
+class DisclosuresAPIAuthSupportingAgentsOnlyISpec extends AuthMainAgentsOnlyISpec {
 
   val callingApiVersion = "1.0"
 
