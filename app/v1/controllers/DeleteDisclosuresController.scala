@@ -18,6 +18,7 @@ package v1.controllers
 
 import api.controllers._
 import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
+import config.AppConfig
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import utils.IdGenerator
 import v1.controllers.validators.DeleteDisclosuresValidatorFactory
@@ -33,8 +34,10 @@ class DeleteDisclosuresController @Inject() (val authService: EnrolmentsAuthServ
                                              service: DeleteDisclosuresService,
                                              auditService: AuditService,
                                              cc: ControllerComponents,
-                                             val idGenerator: IdGenerator)(implicit ec: ExecutionContext)
+                                             val idGenerator: IdGenerator)(implicit appConfig: AppConfig, ec: ExecutionContext)
     extends AuthorisedController(cc) {
+
+  val endpointName = "delete-disclosures"
 
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(

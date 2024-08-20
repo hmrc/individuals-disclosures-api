@@ -84,8 +84,7 @@ class CreateMarriageAllowanceValidatorFactorySpec extends UnitSpec {
          |}
          |""".stripMargin)
 
-  private val invalidDobRangeInBody = Json.parse(
-    """{
+  private val invalidDobRangeInBody = Json.parse("""{
       |  "spouseOrCivilPartnerNino": "AA123456B",
       |  "spouseOrCivilPartnerFirstName": "Marge",
       |  "spouseOrCivilPartnerSurname": "Simpson",

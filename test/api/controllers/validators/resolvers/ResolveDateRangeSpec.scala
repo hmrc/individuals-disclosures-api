@@ -16,8 +16,8 @@
 
 package api.controllers.validators.resolvers
 
-import api.models.errors.{ EndDateFormatError, RuleEndBeforeStartDateError, StartDateFormatError }
-import cats.data.Validated.{ Invalid, Valid }
+import api.models.errors.{EndDateFormatError, RuleEndBeforeStartDateError, StartDateFormatError}
+import cats.data.Validated.{Invalid, Valid}
 import support.UnitSpec
 
 import java.time.LocalDate
@@ -52,4 +52,5 @@ class ResolveDateRangeSpec extends UnitSpec {
       }
     }
   }
+
 }

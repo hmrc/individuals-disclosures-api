@@ -18,15 +18,16 @@ package v1.controllers
 
 import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import api.mocks.MockIdGenerator
-import api.mocks.services.{MockEnrolmentsAuthService, MockMtdIdLookupService}
+import api.services.{MockEnrolmentsAuthService, MockMtdIdLookupService}
 import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import api.models.domain.Nino
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import api.services.MockAuditService
-import mocks.MockAppConfig
+import config.MockAppConfig
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
+import play.api.Configuration
 import v1.controllers.validators.MockCreateMarriageAllowanceValidatorFactory
 import v1.models.request.create.{CreateMarriageAllowanceRequestBody, CreateMarriageAllowanceRequestData}
 import v1.services.MockCreateMarriageAllowanceService
@@ -114,6 +115,16 @@ class CreateMarriageAllowanceControllerSpec
       cc = cc,
       idGenerator = mockIdGenerator
     )
+
+    MockedAppConfig.featureSwitches.anyNumberOfTimes() returns Configuration(
+      "supporting-agents-access-control.enabled" -> true
+    )
+
+    MockedAppConfig.endpointAllowsSupportingAgents(controller.endpointName).anyNumberOfTimes() returns false
+
+    MockedAppConfig.minimumPermittedTaxYear
+      .returns(2022)
+      .anyNumberOfTimes()
 
     protected def callController(): Future[Result] = controller.createMarriageAllowance(nino)(fakePostRequest(requestBodyJson))
 

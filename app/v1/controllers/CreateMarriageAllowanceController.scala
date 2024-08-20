@@ -18,6 +18,7 @@ package v1.controllers
 
 import api.controllers._
 import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
+import config.AppConfig
 import play.api.libs.json.JsValue
 import play.api.mvc.{Action, ControllerComponents}
 import utils.IdGenerator
@@ -33,8 +34,10 @@ class CreateMarriageAllowanceController @Inject() (val authService: EnrolmentsAu
                                                    service: CreateMarriageAllowanceService,
                                                    auditService: AuditService,
                                                    cc: ControllerComponents,
-                                                   val idGenerator: IdGenerator)(implicit ec: ExecutionContext)
+                                                   val idGenerator: IdGenerator)(implicit appConfig: AppConfig, ec: ExecutionContext)
     extends AuthorisedController(cc) {
+
+  val endpointName = "create-marriage-allowance"
 
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(controllerName = "CreateMarriageAllowanceController", endpointName = "createMarriageAllowance")

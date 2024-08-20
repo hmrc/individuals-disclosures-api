@@ -23,10 +23,11 @@ import api.models.domain.{Nino, TaxYear, Timestamp}
 import api.models.errors.{ErrorWrapper, NinoFormatError, TaxYearFormatError}
 import api.hateoas.Method._
 import api.hateoas.RelType._
-import api.mocks.services.{MockEnrolmentsAuthService, MockMtdIdLookupService}
+import api.services.{MockEnrolmentsAuthService, MockMtdIdLookupService}
 import api.models.outcomes.ResponseWrapper
-import mocks.MockAppConfig
+import config.MockAppConfig
 import play.api.mvc.Result
+import play.api.Configuration
 import v1.controllers.validators.MockRetrieveDisclosuresValidatorFactory
 import v1.fixtures.RetrieveDisclosuresControllerFixture.mtdResponseWithHateoas
 import v1.models.request.retrieve.RetrieveDisclosuresRequestData
@@ -144,9 +145,9 @@ class RetrieveDisclosuresControllerSpec
 
   trait Test extends ControllerTest {
 
-    MockAppConfig.minimumPermittedTaxYear
-      .returns(2022)
-      .anyNumberOfTimes()
+    MockedAppConfig.featureSwitches.anyNumberOfTimes() returns Configuration(
+      "supporting-agents-access-control.enabled" -> true
+    )
 
     val controller = new RetrieveDisclosuresController(
       authService = mockEnrolmentsAuthService,
@@ -157,6 +158,12 @@ class RetrieveDisclosuresControllerSpec
       cc = cc,
       idGenerator = mockIdGenerator
     )
+
+    MockedAppConfig.endpointAllowsSupportingAgents(controller.endpointName).anyNumberOfTimes() returns false
+
+    MockedAppConfig.minimumPermittedTaxYear
+      .returns(2022)
+      .anyNumberOfTimes()
 
     override protected def callController(): Future[Result] = controller.retrieveDisclosures(nino, taxYear)(fakeGetRequest)
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package mocks
+package config
 
 import config.{AppConfig, ConfidenceLevelConfig}
 import org.scalamock.handlers.CallHandler
@@ -26,7 +26,7 @@ trait MockAppConfig extends MockFactory {
 
   implicit val mockAppConfig: AppConfig = mock[AppConfig]
 
-  object MockAppConfig {
+  object MockedAppConfig {
     // MTD ID Lookup Config
     def mtdIdBaseUrl: CallHandler[String] = (() => mockAppConfig.mtdIdBaseUrl: String).expects()
 
@@ -46,11 +46,15 @@ trait MockAppConfig extends MockFactory {
     def minimumPermittedTaxYear: CallHandler[Int] = (() => mockAppConfig.minimumPermittedTaxYear: Int).expects()
 
     // API Config
-    def featureSwitches: CallHandler[Configuration]                     = (() => mockAppConfig.featureSwitches: Configuration).expects()
-    def apiGatewayContext: CallHandler[String]                          = (() => mockAppConfig.apiGatewayContext: String).expects()
-    def apiStatus(version: Version): CallHandler[String]                = (mockAppConfig.apiStatus(_: Version)).expects(version)
-    def endpointsEnabled(version: Version): CallHandler[Boolean]        = (mockAppConfig.endpointsEnabled(_: Version)).expects(version)
+    def featureSwitches: CallHandler[Configuration]               = (() => mockAppConfig.featureSwitches: Configuration).expects()
+    def apiGatewayContext: CallHandler[String]                    = (() => mockAppConfig.apiGatewayContext: String).expects()
+    def apiStatus(version: Version): CallHandler[String]          = (mockAppConfig.apiStatus(_: Version)).expects(version)
+    def endpointsEnabled(version: Version): CallHandler[Boolean]  = (mockAppConfig.endpointsEnabled(_: Version)).expects(version)
     def confidenceLevelConfig: CallHandler[ConfidenceLevelConfig] = (() => mockAppConfig.confidenceLevelConfig: ConfidenceLevelConfig).expects()
+
+    def endpointAllowsSupportingAgents(endpointName: String): CallHandler[Boolean] =
+      (mockAppConfig.endpointAllowsSupportingAgents(_: String)).expects(endpointName)
+
   }
 
 }

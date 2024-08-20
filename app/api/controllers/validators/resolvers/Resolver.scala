@@ -16,7 +16,7 @@
 
 package api.controllers.validators.resolvers
 
-import api.models.errors.{ InternalError, MtdError }
+import api.models.errors.{InternalError, MtdError}
 import cats.data.Validated
 import cats.data.Validated.Valid
 
@@ -77,4 +77,5 @@ trait Resolver[S, T] {
       case Some(error) => List(error.maybeWithExtraPath(extraPath))
       case None        => additional
     }
+
 }

@@ -14,23 +14,35 @@
  * limitations under the License.
  */
 
-package v1.stubs
+package api.services
 
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
-import play.api.http.Status._
-import play.api.libs.json.Json
+import play.api.http.Status.{BAD_REQUEST, INTERNAL_SERVER_ERROR, OK}
+import play.api.libs.json.{JsObject, Json}
 import support.WireMockMethods
 
 object MtdIdLookupStub extends WireMockMethods {
 
   private def lookupUrl(nino: String): String = s"/mtd-identifier-lookup/nino/$nino"
 
-  def ninoFound(nino: String): StubMapping =
+  def ninoFound(nino: String): StubMapping = {
     when(method = GET, uri = lookupUrl(nino))
-      .thenReturn(status = OK, body = Json.obj("mtdbsa" -> "12345678"))
+      .thenReturn(status = OK, body = Json.obj("mtdbsa" -> "1234567890"))
+  }
 
-  def error(nino: String, status: Int): StubMapping =
+  def error(nino: String, status: Int): StubMapping = {
     when(method = GET, uri = lookupUrl(nino))
-      .thenReturn(status, body = Json.obj())
+      .thenReturn(status, body = JsObject.empty)
+  }
+
+  def badRequest(nino: String): StubMapping = {
+    when(method = GET, uri = lookupUrl(nino))
+      .thenReturn(BAD_REQUEST, body = JsObject.empty)
+  }
+
+  def internalServerError(nino: String): StubMapping = {
+    when(method = GET, uri = lookupUrl(nino))
+      .thenReturn(INTERNAL_SERVER_ERROR, body = JsObject.empty)
+  }
 
 }

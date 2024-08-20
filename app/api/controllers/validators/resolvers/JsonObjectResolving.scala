@@ -16,9 +16,9 @@
 
 package api.controllers.validators.resolvers
 
-import api.models.errors.{ MtdError, RuleIncorrectOrEmptyBodyError }
+import api.models.errors.{MtdError, RuleIncorrectOrEmptyBodyError}
 import cats.data.Validated
-import cats.data.Validated.{ Invalid, Valid }
+import cats.data.Validated.{Invalid, Valid}
 import play.api.libs.json._
 import utils.Logging
 
@@ -76,6 +76,7 @@ trait JsonObjectResolving[T] extends Logging {
       path.toString
         .replace("(", "/")
         .replace(")", "")
+
   }
 
   protected case class MissingMandatoryField(path: JsPath) extends JsonFormatValidationFailure(path, "Missing mandatory field")

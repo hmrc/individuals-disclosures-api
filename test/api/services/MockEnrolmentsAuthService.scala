@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 
-package api.mocks.services
+package api.services
 
 import api.models.auth.UserDetails
 import api.models.outcomes.AuthOutcome
-import api.services.EnrolmentsAuthService
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
-import uk.gov.hmrc.auth.core.authorise.Predicate
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -34,15 +32,15 @@ trait MockEnrolmentsAuthService extends MockFactory {
 
     def authoriseUser(): Unit = {
       (mockEnrolmentsAuthService
-        .authorised(_: Predicate)(_: HeaderCarrier, _: ExecutionContext))
-        .expects(*, *, *)
+        .authorised(_: String, _: Boolean)(_: HeaderCarrier, _: ExecutionContext))
+        .expects(*, *, *, *)
         .returns(Future.successful(Right(UserDetails("mtd-id", "Individual", None))))
     }
 
-    def authorised(predicate: Predicate): CallHandler[Future[AuthOutcome]] = {
+    def authoriseAgent(mtdId: String, supportingAgentAccessAllowed: Boolean = false): CallHandler[Future[AuthOutcome]] = {
       (mockEnrolmentsAuthService
-        .authorised(_: Predicate)(_: HeaderCarrier, _: ExecutionContext))
-        .expects(predicate, *, *)
+        .authorised(_: String, _: Boolean)(_: HeaderCarrier, _: ExecutionContext))
+        .expects(mtdId, supportingAgentAccessAllowed, *, *)
     }
 
   }

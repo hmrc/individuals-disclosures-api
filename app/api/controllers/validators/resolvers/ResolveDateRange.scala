@@ -16,12 +16,13 @@
 
 package api.controllers.validators.resolvers
 
-import api.models.errors.{ EndDateFormatError, MtdError, RuleEndBeforeStartDateError, StartDateFormatError }
+import api.models.errors.{EndDateFormatError, MtdError, RuleEndBeforeStartDateError, StartDateFormatError}
 import cats.data.Validated
-import cats.data.Validated.{ Invalid, Valid }
+import cats.data.Validated.{Invalid, Valid}
 import cats.implicits._
 
 import java.time.LocalDate
+
 case class DateRange(startDate: LocalDate, endDate: LocalDate)
 
 object ResolveDateRange extends Resolver[(String, String), DateRange] {

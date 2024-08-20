@@ -27,7 +27,7 @@ import api.services.{MockAuditService, ServiceOutcome}
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
 import config.AppConfig
-import mocks.MockAppConfig
+import config.MockAppConfig
 import org.scalamock.handlers.CallHandler
 import play.api.http.{HeaderNames, Status}
 import play.api.libs.json.{JsString, Json, OWrites}
