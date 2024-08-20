@@ -86,9 +86,7 @@ abstract class AuthSupportingAgentsAllowedISpec extends IntegrationBaseSpec {
           AuthStub.unauthorisedForPrimaryAgentEnrolment()
           AuthStub.authorisedWithSupportingAgentEnrolment()
 
-          DownstreamStub
-            .when(downstreamHttpMethod, downstreamUri)
-            .thenReturn(downstreamSuccessStatus, maybeDownstreamResponseJson)
+          DownstreamStub.onSuccess(DownstreamStub.DELETE, downstreamUri, NO_CONTENT)
         }
 
         val response: WSResponse = sendMtdRequest(request)

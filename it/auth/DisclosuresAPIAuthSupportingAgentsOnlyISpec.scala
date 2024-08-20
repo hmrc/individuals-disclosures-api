@@ -22,11 +22,11 @@ import play.api.http.Status.NO_CONTENT
 import play.api.libs.json.JsValue
 import play.api.libs.ws.{WSRequest, WSResponse}
 
-class DisclosuresAPIAuthSupportingAgentsOnlyISpec extends AuthMainAgentsOnlyISpec {
+class DisclosuresAPIAuthSupportingAgentsOnlyISpec extends AuthSupportingAgentsAllowedISpec {
 
   val callingApiVersion = "1.0"
 
-  val supportingAgentsNotAllowedEndpoint = "delete-disclosures"
+  val supportingAgentsAllowedEndpoint = "delete-disclosures"
 
   private val taxYear = TaxYear.fromMtd("2021-22")
 
