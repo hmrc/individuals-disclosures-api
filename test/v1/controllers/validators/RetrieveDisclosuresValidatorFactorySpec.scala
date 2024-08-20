@@ -18,7 +18,7 @@ package v1.controllers.validators
 
 import api.models.domain.{Nino, TaxYear}
 import api.models.errors._
-import mocks.MockAppConfig
+import config.MockAppConfig
 import support.UnitSpec
 import v1.models.request.retrieve.RetrieveDisclosuresRequestData
 
@@ -37,7 +37,7 @@ class RetrieveDisclosuresValidatorFactorySpec extends UnitSpec with MockAppConfi
 
   class SetUp {
 
-    MockAppConfig.minimumPermittedTaxYear
+    MockedAppConfig.minimumPermittedTaxYear
       .returns(2022)
       .anyNumberOfTimes()
 

@@ -17,7 +17,7 @@
 package routing
 
 import api.models.errors.{InvalidAcceptHeaderError, UnsupportedVersionError}
-import mocks.MockAppConfig
+import config.MockAppConfig
 import org.apache.pekko.actor.ActorSystem
 import org.scalatest.Inside
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
@@ -94,14 +94,14 @@ class VersionRoutingRequestHandlerSpec extends UnitSpec with Inside with MockApp
     "if the request ends with a trailing slash" when {
       "handler found" should {
         "use it" in new Test {
-          MockAppConfig.endpointsEnabled(Version1).returns(true).anyNumberOfTimes()
+          MockedAppConfig.endpointsEnabled(Version1).returns(true).anyNumberOfTimes()
           requestHandler.routeRequest(buildRequest("/")) shouldBe Some(DefaultHandler)
         }
       }
 
       "handler not found" should {
         "try without the trailing slash" in new Test {
-          MockAppConfig.endpointsEnabled(Version1).returns(true).anyNumberOfTimes()
+          MockedAppConfig.endpointsEnabled(Version1).returns(true).anyNumberOfTimes()
           requestHandler.routeRequest(buildRequest("")) shouldBe Some(DefaultHandler)
         }
       }
@@ -112,14 +112,14 @@ class VersionRoutingRequestHandlerSpec extends UnitSpec with Inside with MockApp
     "if the request ends with a trailing slash" when {
       "handler found" should {
         "use it" in new Test {
-          MockAppConfig.endpointsEnabled(version).returns(true).anyNumberOfTimes()
+          MockedAppConfig.endpointsEnabled(version).returns(true).anyNumberOfTimes()
           requestHandler.routeRequest(buildRequest(s"$path/")) shouldBe Some(handler)
         }
       }
 
       "handler not found" should {
         "try without the trailing slash" in new Test {
-          MockAppConfig.endpointsEnabled(version).returns(true).anyNumberOfTimes()
+          MockedAppConfig.endpointsEnabled(version).returns(true).anyNumberOfTimes()
           requestHandler.routeRequest(buildRequest(s"$path")) shouldBe Some(handler)
         }
       }

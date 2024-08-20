@@ -16,7 +16,8 @@
 
 package api.connectors
 
-import mocks.{MockAppConfig, MockHttpClient}
+import config.MockAppConfig
+import mocks.MockHttpClient
 import org.scalamock.handlers.CallHandler
 import play.api.http.{HeaderNames, MimeTypes, Status}
 import support.UnitSpec
@@ -133,10 +134,10 @@ trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames
 
     protected lazy val requiredHeaders: Seq[(String, String)] = requiredIfs1Headers
 
-    MockAppConfig.ifs1BaseUrl returns this.baseUrl
-    MockAppConfig.ifs1Token returns "ifs1-token"
-    MockAppConfig.ifs1Environment returns "ifs1-environment"
-    MockAppConfig.ifs1EnvironmentHeaders returns Some(allowedIfs1Headers)
+    MockedAppConfig.ifs1BaseUrl returns this.baseUrl
+    MockedAppConfig.ifs1Token returns "ifs1-token"
+    MockedAppConfig.ifs1Environment returns "ifs1-environment"
+    MockedAppConfig.ifs1EnvironmentHeaders returns Some(allowedIfs1Headers)
 
   }
 
@@ -144,10 +145,10 @@ trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames
 
     protected lazy val requiredHeaders: Seq[(String, String)] = requiredIfs2Headers
 
-    MockAppConfig.ifs2BaseUrl returns this.baseUrl
-    MockAppConfig.ifs2Token returns "ifs2-token"
-    MockAppConfig.ifs2Environment returns "ifs2-environment"
-    MockAppConfig.ifs2EnvironmentHeaders returns Some(allowedIfs2Headers)
+    MockedAppConfig.ifs2BaseUrl returns this.baseUrl
+    MockedAppConfig.ifs2Token returns "ifs2-token"
+    MockedAppConfig.ifs2Environment returns "ifs2-environment"
+    MockedAppConfig.ifs2EnvironmentHeaders returns Some(allowedIfs2Headers)
 
   }
 

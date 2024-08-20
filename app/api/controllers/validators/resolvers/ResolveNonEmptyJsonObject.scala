@@ -16,12 +16,12 @@
 
 package api.controllers.validators.resolvers
 
-import api.models.errors.{ MtdError, RuleIncorrectOrEmptyBodyError }
+import api.models.errors.{MtdError, RuleIncorrectOrEmptyBodyError}
 import cats.data.Validated
-import cats.data.Validated.{ Invalid, Valid }
-import play.api.libs.json.{ JsValue, OFormat, Reads }
+import cats.data.Validated.{Invalid, Valid}
+import play.api.libs.json.{JsValue, OFormat, Reads}
 import utils.EmptinessChecker
-import utils.EmptyPathsResult.{ CompletelyEmpty, EmptyPaths, NoEmptyPaths }
+import utils.EmptyPathsResult.{CompletelyEmpty, EmptyPaths, NoEmptyPaths}
 
 class ResolveNonEmptyJsonObject[T: OFormat: EmptinessChecker]()(implicit val reads: Reads[T])
     extends Resolver[JsValue, T]

@@ -30,7 +30,7 @@ class ResolveNonEmptyJsonObjectSpec extends UnitSpec with JsonErrorValidators {
 
   case class TestDataWrapper(arrayField: Seq[TestDataObject])
 
-  implicit val testDataObjectFormat: OFormat[TestDataObject] = Json.format[TestDataObject]
+  implicit val testDataObjectFormat: OFormat[TestDataObject]   = Json.format[TestDataObject]
   implicit val testDataWrapperFormat: OFormat[TestDataWrapper] = Json.format[TestDataWrapper]
 
   // at least one of oneOf1 and oneOf2 must be included:
@@ -38,7 +38,7 @@ class ResolveNonEmptyJsonObjectSpec extends UnitSpec with JsonErrorValidators {
     "oneOf1" -> o.oneOf1 :: "oneOf2" -> o.oneOf2 :: HNil
   }
 
-  private val resolveTestDataObject = new ResolveNonEmptyJsonObject[TestDataObject]()
+  private val resolveTestDataObject  = new ResolveNonEmptyJsonObject[TestDataObject]()
   private val resolveTestDataWrapper = new ResolveNonEmptyJsonObject[TestDataWrapper]()
 
   "ResolveNonEmptyJsonObject" should {

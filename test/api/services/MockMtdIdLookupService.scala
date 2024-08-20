@@ -14,19 +14,27 @@
  * limitations under the License.
  */
 
-package v1.stubs
+package api.services
 
-import com.github.tomakehurst.wiremock.stubbing.StubMapping
-import play.api.http.Status._
-import support.WireMockMethods
+import api.services.MtdIdLookupService
+import org.scalamock.handlers.CallHandler
+import org.scalamock.scalatest.MockFactory
+import uk.gov.hmrc.http.HeaderCarrier
 
-object AuditStub extends WireMockMethods {
+import scala.concurrent.{ExecutionContext, Future}
 
-  private val auditUri: String = s"/write/audit.*"
+trait MockMtdIdLookupService extends MockFactory {
 
-  def audit(): StubMapping = {
-    when(method = POST, uri = auditUri)
-      .thenReturn(status = NO_CONTENT)
+  val mockMtdIdLookupService: MtdIdLookupService = mock[MtdIdLookupService]
+
+  object MockedMtdIdLookupService {
+
+    def lookup(nino: String): CallHandler[Future[MtdIdLookupService.Outcome]] = {
+      (mockMtdIdLookupService
+        .lookup(_: String)(_: HeaderCarrier, _: ExecutionContext))
+        .expects(nino, *, *)
+    }
+
   }
 
 }

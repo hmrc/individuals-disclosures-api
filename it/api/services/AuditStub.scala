@@ -14,22 +14,19 @@
  * limitations under the License.
  */
 
-package api.controllers.validators.resolvers
+package api.services
 
-import api.models.errors.MtdError
-import cats.data.Validated
-import cats.data.Validated.{Invalid, Valid}
+import com.github.tomakehurst.wiremock.stubbing.StubMapping
+import play.api.http.Status._
+import support.WireMockMethods
 
-import scala.util.{Failure, Success, Try}
+object AuditStub extends WireMockMethods {
 
-object ResolveBoolean extends Resolver[String, Boolean] {
+  private val auditUri: String = s"/write/audit.*"
 
-  def apply(value: String, error: Option[MtdError], path: Option[String]): Validated[Seq[MtdError], Boolean] =
-    Try {
-      value.toBoolean
-    } match {
-      case Success(result) => Valid(result)
-      case Failure(_)      => Invalid(List(requireError(error, path)))
-    }
+  def audit(): StubMapping = {
+    when(method = POST, uri = auditUri)
+      .thenReturn(status = NO_CONTENT)
+  }
 
 }

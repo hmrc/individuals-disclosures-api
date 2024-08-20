@@ -18,8 +18,8 @@ package api.connectors
 
 import api.connectors.DownstreamUri.{Ifs1Uri, Ifs2Uri}
 import api.models.outcomes.ResponseWrapper
-import config.AppConfig
-import mocks.{MockAppConfig, MockHttpClient}
+import config.{AppConfig, MockAppConfig}
+import mocks.MockHttpClient
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpReads}
 
 import scala.concurrent.Future
@@ -44,10 +44,10 @@ class BaseDownstreamConnectorSpec extends ConnectorSpec {
       val appConfig: AppConfig = mockAppConfig
     }
 
-    MockAppConfig.ifs1BaseUrl returns baseUrl
-    MockAppConfig.ifs1Token returns "ifs1-token"
-    MockAppConfig.ifs1Environment returns "ifs1-environment"
-    MockAppConfig.ifs1EnvironmentHeaders returns Some(allowedIfs1Headers)
+    MockedAppConfig.ifs1BaseUrl returns baseUrl
+    MockedAppConfig.ifs1Token returns "ifs1-token"
+    MockedAppConfig.ifs1Environment returns "ifs1-environment"
+    MockedAppConfig.ifs1EnvironmentHeaders returns Some(allowedIfs1Headers)
 
     val qps = Seq("param1" -> "value1")
   }
@@ -59,10 +59,10 @@ class BaseDownstreamConnectorSpec extends ConnectorSpec {
       val appConfig: AppConfig = mockAppConfig
     }
 
-    MockAppConfig.ifs2BaseUrl returns baseUrl
-    MockAppConfig.ifs2Token returns "ifs2-token"
-    MockAppConfig.ifs2Environment returns "ifs2-environment"
-    MockAppConfig.ifs2EnvironmentHeaders returns Some(allowedIfs2Headers)
+    MockedAppConfig.ifs2BaseUrl returns baseUrl
+    MockedAppConfig.ifs2Token returns "ifs2-token"
+    MockedAppConfig.ifs2Environment returns "ifs2-environment"
+    MockedAppConfig.ifs2EnvironmentHeaders returns Some(allowedIfs2Headers)
 
     val qps = Seq("param1" -> "value1")
   }

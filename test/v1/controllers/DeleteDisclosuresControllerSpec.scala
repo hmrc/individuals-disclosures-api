@@ -18,7 +18,8 @@ package v1.controllers
 
 import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import api.mocks.MockIdGenerator
-import api.mocks.services.{MockEnrolmentsAuthService, MockMtdIdLookupService}
+import config.MockAppConfig
+import api.services.{MockEnrolmentsAuthService, MockMtdIdLookupService}
 import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import api.models.domain.{Nino, TaxYear}
 import api.models.errors._
@@ -26,6 +27,7 @@ import api.models.outcomes.ResponseWrapper
 import api.services.MockAuditService
 import play.api.libs.json.JsValue
 import play.api.mvc.Result
+import play.api.Configuration
 import v1.controllers.validators.MockDeleteDisclosuresValidatorFactory
 import v1.models.request.delete.DeleteDisclosuresRequestData
 import v1.services.MockDeleteDisclosuresService
@@ -41,6 +43,7 @@ class DeleteDisclosuresControllerSpec
     with MockDeleteDisclosuresService
     with MockDeleteDisclosuresValidatorFactory
     with MockAuditService
+    with MockAppConfig
     with MockIdGenerator {
 
   val taxYear: String = "2021-22"
@@ -93,6 +96,12 @@ class DeleteDisclosuresControllerSpec
       cc = cc,
       idGenerator = mockIdGenerator
     )
+
+    MockedAppConfig.featureSwitches.anyNumberOfTimes() returns Configuration(
+      "supporting-agents-access-control.enabled" -> true
+    )
+
+    MockedAppConfig.endpointAllowsSupportingAgents(controller.endpointName).anyNumberOfTimes() returns false
 
     override protected def callController(): Future[Result] = controller.deleteDisclosures(nino, taxYear)(fakeRequest)
 

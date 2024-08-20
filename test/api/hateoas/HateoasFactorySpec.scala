@@ -19,7 +19,7 @@ package api.hateoas
 import api.hateoas.Method.GET
 import cats.Functor
 import config.AppConfig
-import mocks.MockAppConfig
+import config.MockAppConfig
 import support.UnitSpec
 
 class HateoasFactorySpec extends UnitSpec with MockAppConfig {
@@ -35,7 +35,7 @@ class HateoasFactorySpec extends UnitSpec with MockAppConfig {
   val response: Response = Response("X")
 
   class Test {
-    MockAppConfig.apiGatewayContext.returns("context").anyNumberOfTimes()
+    MockedAppConfig.apiGatewayContext.returns("context").anyNumberOfTimes()
   }
 
   "wrap" should {
