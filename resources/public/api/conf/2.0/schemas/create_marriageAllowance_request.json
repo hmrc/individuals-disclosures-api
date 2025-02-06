@@ -1,0 +1,38 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Create Marriage Allowance Request",
+  "description": "Create Marriage Allowance Request",
+  "type": "object",
+  "properties": {
+    "spouseOrCivilPartnerNino": {
+      "type": "string",
+      "description": "Your spouse or civil partner's National Insurance number.",
+      "format": "^((?!(BG|GB|KN|NK|NT|TN|ZZ)|(D|F|I|Q|U|V)[A-Z]|[A-Z](D|F|I|O|Q|U|V))[A-Z]{2})[0-9]{6}[A-D]$",
+      "example": "AA999999A"
+    },
+    "spouseOrCivilPartnerFirstName": {
+      "type": "string",
+      "description": "Your spouse or civil partner's first name.",
+      "minLength": 1,
+      "maxLength": 35,
+      "example": "John"
+    },
+    "spouseOrCivilPartnerSurname": {
+      "type": "string",
+      "description": "Your spouse or civil partner's surname.",
+      "minLength": 1,
+      "maxLength": 35,
+      "example": "Smith"
+    },
+    "spouseOrCivilPartnerDateOfBirth": {
+      "type": "string",
+      "description": "The date of birth of your spouse or civil partner in the format YYYY-MM-DD.",
+      "format": "[0-9]{4}-[0-9]{2}-[0-9]{2}$",
+      "example": "1998-04-06"
+    }
+  },
+  "required": [
+    "spouseOrCivilPartnerSurname",
+    "spouseOrCivilPartnerNino"
+  ]
+}

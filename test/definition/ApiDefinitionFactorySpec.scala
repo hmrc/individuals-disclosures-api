@@ -19,7 +19,7 @@ package definition
 import config.{ConfidenceLevelConfig, MockAppConfig}
 import definition.APIStatus.{ALPHA, BETA}
 import mocks.MockHttpClient
-import routing.Version1
+import routing.{Version1, Version2}
 import support.UnitSpec
 import uk.gov.hmrc.auth.core.ConfidenceLevel
 
@@ -46,6 +46,8 @@ class ApiDefinitionFactorySpec extends UnitSpec {
       def testDefinitionWithConfidence(confidenceLevelConfig: ConfidenceLevelConfig): Unit = new Test {
         MockedAppConfig.apiStatus(Version1) returns "BETA"
         MockedAppConfig.endpointsEnabled(Version1) returns true
+        MockedAppConfig.apiStatus(Version2) returns "BETA"
+        MockedAppConfig.endpointsEnabled(Version2) returns true
         MockedAppConfig.confidenceLevelConfig.returns(confidenceLevelConfig).anyNumberOfTimes()
 
         apiDefinitionFactory.definition shouldBe
@@ -58,6 +60,11 @@ class ApiDefinitionFactorySpec extends UnitSpec {
               versions = Seq(
                 APIVersion(
                   version = Version1,
+                  status = BETA,
+                  endpointsEnabled = true
+                ),
+                APIVersion(
+                  version = Version2,
                   status = BETA,
                   endpointsEnabled = true
                 )

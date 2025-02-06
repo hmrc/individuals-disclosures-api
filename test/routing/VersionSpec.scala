@@ -28,6 +28,9 @@ class VersionSpec extends UnitSpec {
       "return Version1" in {
         JsString(Version1.name).validate[Version](Version.VersionReads) shouldBe JsSuccess(Version1)
       }
+      "return Version2" in {
+        JsString(Version2.name).validate[Version](Version.VersionReads) shouldBe JsSuccess(Version2)
+      }
     }
     "reading an invalid version string" should {
       "return a JsError" in {
@@ -41,11 +44,14 @@ class VersionSpec extends UnitSpec {
       "return Version1 for valid header" in {
         Versions.getFromRequest(FakeRequest().withHeaders((ACCEPT, "application/vnd.hmrc.1.0+json"))) shouldBe Right(Version1)
       }
+      "return Version2 for valid header" in {
+        Versions.getFromRequest(FakeRequest().withHeaders((ACCEPT, "application/vnd.hmrc.2.0+json"))) shouldBe Right(Version2)
+      }
       "return InvalidHeader when the version header is missing" in {
         Versions.getFromRequest(FakeRequest().withHeaders()) shouldBe Left(InvalidHeader)
       }
       "return VersionNotFound for unrecognised version" in {
-        Versions.getFromRequest(FakeRequest().withHeaders((ACCEPT, "application/vnd.hmrc.2.0+json"))) shouldBe Left(VersionNotFound)
+        Versions.getFromRequest(FakeRequest().withHeaders((ACCEPT, "application/vnd.hmrc.3.0+json"))) shouldBe Left(VersionNotFound)
       }
       "return InvalidHeader for a header format that doesn't match regex" in {
         Versions.getFromRequest(FakeRequest().withHeaders((ACCEPT, "invalidHeaderFormat"))) shouldBe Left(InvalidHeader)

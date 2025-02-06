@@ -1,0 +1,19 @@
+{
+   "links":[
+      {
+         "href":"/individuals/disclosures/TC663795B/2021-22",
+         "rel":"create-and-amend-disclosures",
+         "method":"PUT"
+      },
+      {
+         "href":"/individuals/disclosures/TC663795B/2021-22",
+         "rel":"self",
+         "method":"GET"
+      },
+      {
+         "href":"/individuals/disclosures/TC663795B/2021-22",
+         "rel":"delete-disclosures",
+         "method":"DELETE"
+      }
+   ]
+}
