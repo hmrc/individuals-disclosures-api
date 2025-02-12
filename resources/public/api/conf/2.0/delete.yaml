@@ -5,12 +5,13 @@ description: |
   ### Test data
   Scenario simulations using Gov-Test-Scenario headers is only available in the sandbox environment.
 
-  | Header Value (Gov-Test-Scenario)      | Scenario                                                               |
-  |---------------------------------------|------------------------------------------------------------------------|
-  | N/A - DEFAULT                         | Simulates success response.                                            |
-  | VOLUNTARY_CLASS2_CANNOT_BE_CHANGED    | Simulates the scenario where Voluntary Class 2 NICs cannot be changed. |                                                 
-  | NOT_FOUND                             | Simulates the scenario where no data is found.                         |
-  | STATEFUL                              | Performs a stateful delete.                                            |   
+  | Header Value (Gov-Test-Scenario)      | Scenario                                                                                        |
+  |---------------------------------------|-------------------------------------------------------------------------------------------------|
+  | N/A - DEFAULT                         | Simulates success response.                                                                     |
+  | VOLUNTARY_CLASS2_CANNOT_BE_CHANGED    | Simulates the scenario where Voluntary Class 2 NICs cannot be changed.                          |                                                 
+  | NOT_FOUND                             | Simulates the scenario where no data is found.                                                  |
+  | STATEFUL                              | Performs a stateful delete.                                                                     |
+  | OUTSIDE_AMENDMENT_WINDOW              | Simulates the scenario where request cannot be completed as it is outside the amendment window.	|
 
 tags:
   - Disclosures
@@ -46,6 +47,8 @@ responses:
             $ref: './common/errors.yaml#/components/examples/ruleTaxYearRangeInvalid'
           RULE_VOLUNTARY_CLASS2_CANNOT_BE_CHANGED:
             $ref: './common/errors.yaml#/components/examples/voluntaryClass2CannotBeChanged'
+          RULE_OUTSIDE_AMENDMENT_WINDOW:
+            $ref: './common/errors.yaml#/components/examples/ruleOutsideAmendmentWindow'
           RULE_INCORRECT_GOV_TEST_SCENARIO:
             $ref: './common/errors.yaml#/components/examples/ruleIncorrectGovTestScenario'
 
