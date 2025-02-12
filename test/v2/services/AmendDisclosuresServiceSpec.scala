@@ -90,6 +90,7 @@ class AmendDisclosuresServiceSpec extends ServiceSpec {
           ("INVALID_PAYLOAD", errors.InternalError),
           ("INCOME_SOURCE_NOT_FOUND", NotFoundError),
           ("VOLUNTARY_CLASS2_CANNOT_BE_CHANGED", RuleVoluntaryClass2CannotBeChangedError),
+          ("OUTSIDE_AMENDMENT_WINDOW", RuleOutsideAmendmentWindow),
           ("SERVER_ERROR", errors.InternalError),
           ("SERVICE_UNAVAILABLE", errors.InternalError)
         )

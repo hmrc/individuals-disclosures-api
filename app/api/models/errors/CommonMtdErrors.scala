@@ -96,6 +96,8 @@ object RuleActiveMarriageAllowanceClaimError
 
 object RuleInvalidRequestError extends MtdError("RULE_INVALID_REQUEST", "The NINO supplied is invalid", BAD_REQUEST)
 
+object RuleOutsideAmendmentWindow extends MtdError("RULE_OUTSIDE_AMENDMENT_WINDOW", "You are outside the amendment window", BAD_REQUEST)
+
 //Standard Errors
 object NotFoundError extends MtdError("MATCHING_RESOURCE_NOT_FOUND", "Matching resource not found", NOT_FOUND)
 

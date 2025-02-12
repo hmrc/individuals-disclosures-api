@@ -44,6 +44,7 @@ class AmendDisclosuresService @Inject() (connector: AmendDisclosuresConnector) e
       "INVALID_PAYLOAD"                    -> InternalError,
       "INCOME_SOURCE_NOT_FOUND"            -> NotFoundError,
       "VOLUNTARY_CLASS2_CANNOT_BE_CHANGED" -> RuleVoluntaryClass2CannotBeChangedError,
+      "OUTSIDE_AMENDMENT_WINDOW"           -> RuleOutsideAmendmentWindow,
       "SERVER_ERROR"                       -> InternalError,
       "SERVICE_UNAVAILABLE"                -> InternalError
     )
