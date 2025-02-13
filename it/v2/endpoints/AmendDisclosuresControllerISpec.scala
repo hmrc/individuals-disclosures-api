@@ -519,6 +519,7 @@ class AmendDisclosuresControllerISpec extends IntegrationBaseSpec {
           (BAD_REQUEST, "INVALID_PAYLOAD", INTERNAL_SERVER_ERROR, errors.InternalError),
           (NOT_FOUND, "INCOME_SOURCE_NOT_FOUND", NOT_FOUND, NotFoundError),
           (UNPROCESSABLE_ENTITY, "VOLUNTARY_CLASS2_CANNOT_BE_CHANGED", BAD_REQUEST, RuleVoluntaryClass2CannotBeChangedError),
+          (UNPROCESSABLE_ENTITY, "OUTSIDE_AMENDMENT_WINDOW", BAD_REQUEST, RuleOutsideAmendmentWindow),
           (SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, errors.InternalError),
           (INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, errors.InternalError)
         )
