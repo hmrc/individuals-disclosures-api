@@ -19,12 +19,7 @@ package api.services
 import api.models.auth.UserDetails
 import api.models.errors.{ClientOrAgentNotAuthorisedError, InternalError}
 import api.models.outcomes.AuthOutcome
-import api.services.EnrolmentsAuthService.{
-  authorisationDisabledPredicate,
-  authorisationEnabledPredicate,
-  mtdEnrolmentPredicate,
-  supportingAgentAuthPredicate
-}
+import api.services.EnrolmentsAuthService.{authorisationDisabledPredicate, authorisationEnabledPredicate, mtdEnrolmentPredicate, supportingAgentAuthPredicate}
 import config.{ConfidenceLevelConfig, MockAppConfig}
 import org.scalamock.handlers.CallHandler
 import uk.gov.hmrc.auth.core.AffinityGroup.{Agent, Individual, Organisation}

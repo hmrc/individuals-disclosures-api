@@ -18,6 +18,7 @@ package v1.endpoints
 
 import api.models.errors
 import api.models.errors._
+import api.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status._
@@ -25,7 +26,7 @@ import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
 import support.IntegrationBaseSpec
-import api.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
+import v1.fixtures.RetrieveDisclosuresControllerFixture.fullRetrieveDisclosuresResponse
 
 class AmendDisclosuresControllerISpec extends IntegrationBaseSpec {
 
@@ -87,6 +88,7 @@ class AmendDisclosuresControllerISpec extends IntegrationBaseSpec {
 
         val response: WSResponse = await(request().put(requestBodyJson))
         response.status shouldBe OK
+        response.body[JsValue] shouldBe
         response.header("Content-Type") shouldBe None
       }
     }
@@ -166,7 +168,7 @@ class AmendDisclosuresControllerISpec extends IntegrationBaseSpec {
             ),
             errors = None
           ))
-        response.header("Content-Type") shouldBe None      }
+        response.header("Content-Type") shouldBe fullRetrieveDisclosuresResponse  }
     }
 
     "return a 400 with multiple errors" when {

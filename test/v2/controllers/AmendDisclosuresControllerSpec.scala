@@ -17,23 +17,20 @@
 package v2.controllers
 
 import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import api.hateoas.{HateoasWrapper, MockHateoasFactory}
 import api.mocks.MockIdGenerator
-import api.services.{MockEnrolmentsAuthService, MockMtdIdLookupService}
 import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import api.models.domain.{Nino, TaxYear}
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
-import api.services.MockAuditService
+import api.services.{MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService}
 import config.MockAppConfig
+import play.api.Configuration
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
-import play.api.Configuration
 import v2.controllers.validators.MockAmendDisclosuresValidatorFactory
+import v2.fixtures.RetrieveDisclosuresControllerFixture.fullRetrieveDisclosuresResponse
 import v2.models.request.amend._
-import v2.models.response.amendDisclosures.AmendDisclosuresHateoasData
 import v2.services.MockAmendDisclosuresService
-
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
@@ -44,7 +41,6 @@ class AmendDisclosuresControllerSpec
     with MockMtdIdLookupService
     with MockAppConfig
     with MockAmendDisclosuresService
-    with MockHateoasFactory
     with MockAmendDisclosuresValidatorFactory
     with MockAuditService
     with MockIdGenerator {
@@ -95,29 +91,7 @@ class AmendDisclosuresControllerSpec
     body = amendDisclosuresRequestBody
   )
 
-  val hateoasResponse: JsValue = Json.parse(
-    s"""
-      |{
-      |   "links": [
-      |      {
-      |         "href": "/baseUrl/$nino/$taxYear",
-      |         "rel": "create-and-amend-disclosures",
-      |         "method": "PUT"
-      |      },
-      |      {
-      |         "href": "/baseUrl/$nino/$taxYear",
-      |         "rel": "self",
-      |         "method": "GET"
-      |      },
-      |      {
-      |         "href": "/baseUrl/$nino/$taxYear",
-      |         "rel": "delete-disclosures",
-      |         "method": "DELETE"
-      |      }
-      |   ]
-      |}
-    """.stripMargin
-  )
+
 
   "AmendDisclosuresController" should {
     "return a successful response with header X-CorrelationId and body" when {
@@ -128,16 +102,8 @@ class AmendDisclosuresControllerSpec
           .amendDisclosures(requestData)
           .returns(Future.successful(Right(ResponseWrapper(correlationId, ()))))
 
-        MockHateoasFactory
-          .wrap((), AmendDisclosuresHateoasData(nino, taxYear))
-          .returns(HateoasWrapper((), hateoaslinks))
 
-        runOkTestWithAudit(
-          expectedStatus = OK,
-          maybeExpectedResponseBody = Some(hateoaslinksJson),
-          maybeAuditRequestBody = Some(requestBodyJson),
-          maybeAuditResponseBody = Some(hateoaslinksJson)
-        )
+        runOkTest(OK, Some(fullRetrieveDisclosuresResponse))
       }
     }
 
@@ -169,8 +135,7 @@ class AmendDisclosuresControllerSpec
       service = mockAmendDisclosuresService,
       auditService = mockAuditService,
       cc = cc,
-      idGenerator = mockIdGenerator,
-      hateoasFactory = mockHateoasFactory
+      idGenerator = mockIdGenerator
     )
 
     MockedAppConfig.featureSwitches.anyNumberOfTimes() returns Configuration(

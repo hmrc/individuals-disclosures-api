@@ -18,16 +18,15 @@ package v1.controllers
 
 import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import api.mocks.MockIdGenerator
-import api.services.{MockEnrolmentsAuthService, MockMtdIdLookupService}
 import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import api.models.domain.{Nino, TaxYear}
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
-import api.services.MockAuditService
+import api.services.{MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService}
 import config.MockAppConfig
+import play.api.Configuration
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
-import play.api.Configuration
 import v1.controllers.validators.MockAmendDisclosuresValidatorFactory
 import v1.models.request.amend._
 import v1.services.MockAmendDisclosuresService
@@ -92,29 +91,6 @@ class AmendDisclosuresControllerSpec
     body = amendDisclosuresRequestBody
   )
 
-  val hateoasResponse: JsValue = Json.parse(
-    s"""
-      |{
-      |   "links": [
-      |      {
-      |         "href": "/baseUrl/$nino/$taxYear",
-      |         "rel": "create-and-amend-disclosures",
-      |         "method": "PUT"
-      |      },
-      |      {
-      |         "href": "/baseUrl/$nino/$taxYear",
-      |         "rel": "self",
-      |         "method": "GET"
-      |      },
-      |      {
-      |         "href": "/baseUrl/$nino/$taxYear",
-      |         "rel": "delete-disclosures",
-      |         "method": "DELETE"
-      |      }
-      |   ]
-      |}
-    """.stripMargin
-  )
 
   "AmendDisclosuresController" should {
     "return a successful response with header X-CorrelationId and body" when {

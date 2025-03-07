@@ -17,6 +17,7 @@
 package api.controllers
 
 import api.controllers.ControllerTestRunner.validNino
+import api.mocks.MockIdGenerator
 import api.models.audit.{AuditError, AuditEvent, AuditResponse, GenericAuditDetail}
 import api.models.errors.MtdError
 import api.services.{MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService}
@@ -28,7 +29,6 @@ import play.api.test.Helpers.stubControllerComponents
 import play.api.test.{FakeRequest, ResultExtractors}
 import support.UnitSpec
 import uk.gov.hmrc.http.HeaderCarrier
-import api.mocks.MockIdGenerator
 
 import scala.concurrent.Future
 

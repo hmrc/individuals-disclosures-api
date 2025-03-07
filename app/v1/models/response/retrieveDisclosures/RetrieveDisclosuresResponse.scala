@@ -17,7 +17,6 @@
 package v1.models.response.retrieveDisclosures
 
 import api.models.domain.Timestamp
-import config.AppConfig
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 import utils.JsonUtils

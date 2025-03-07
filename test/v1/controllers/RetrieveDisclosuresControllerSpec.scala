@@ -20,11 +20,11 @@ import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import api.mocks.MockIdGenerator
 import api.models.domain.{Nino, TaxYear, Timestamp}
 import api.models.errors.{ErrorWrapper, NinoFormatError, TaxYearFormatError}
-import api.services.{MockEnrolmentsAuthService, MockMtdIdLookupService}
 import api.models.outcomes.ResponseWrapper
+import api.services.{MockEnrolmentsAuthService, MockMtdIdLookupService}
 import config.MockAppConfig
-import play.api.mvc.Result
 import play.api.Configuration
+import play.api.mvc.Result
 import v1.controllers.validators.MockRetrieveDisclosuresValidatorFactory
 import v1.fixtures.RetrieveDisclosuresControllerFixture.fullRetrieveDisclosuresResponse
 import v1.models.request.retrieve.RetrieveDisclosuresRequestData
@@ -51,26 +51,6 @@ class RetrieveDisclosuresControllerSpec
     taxYear = TaxYear.fromMtd(taxYear)
   )
 
-  val amendDisclosuresLink: Link =
-    Link(
-      href = s"/individuals/disclosures/$nino/$taxYear",
-      method = PUT,
-      rel = AMEND_DISCLOSURES
-    )
-
-  val retrieveDisclosuresLink: Link =
-    Link(
-      href = s"/individuals/disclosures/$nino/$taxYear",
-      method = GET,
-      rel = SELF
-    )
-
-  val deleteDisclosuresLink: Link =
-    Link(
-      href = s"/individuals/disclosures/$nino/$taxYear",
-      method = DELETE,
-      rel = DELETE_DISCLOSURES
-    )
 
   val taxAvoidanceModel: Seq[TaxAvoidanceItem] = Seq(
     TaxAvoidanceItem(

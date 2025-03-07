@@ -17,10 +17,10 @@
 package utils
 
 import api.models.errors._
-import play.api.{Configuration, Logger}
 import play.api.http.Status._
 import play.api.mvc.Results._
 import play.api.mvc.{RequestHeader, Result}
+import play.api.{Configuration, Logger}
 import routing.Versions
 import uk.gov.hmrc.auth.core.AuthorisationException
 import uk.gov.hmrc.http._

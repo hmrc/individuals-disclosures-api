@@ -26,6 +26,7 @@ import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
 import support.IntegrationBaseSpec
+import v2.fixtures.RetrieveDisclosuresControllerFixture.fullRetrieveDisclosuresResponse
 
 class AmendDisclosuresControllerISpec extends IntegrationBaseSpec {
 
@@ -86,7 +87,7 @@ class AmendDisclosuresControllerISpec extends IntegrationBaseSpec {
 
         val response: WSResponse = await(request().put(requestBodyJson))
         response.status shouldBe OK
-
+        response.body[JsValue] shouldBe fullRetrieveDisclosuresResponse
         response.header("Content-Type") shouldBe Some("application/json")
       }
     }
