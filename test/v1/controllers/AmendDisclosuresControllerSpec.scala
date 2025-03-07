@@ -17,7 +17,6 @@
 package v1.controllers
 
 import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import api.hateoas.{HateoasWrapper, MockHateoasFactory}
 import api.mocks.MockIdGenerator
 import api.services.{MockEnrolmentsAuthService, MockMtdIdLookupService}
 import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
@@ -31,7 +30,6 @@ import play.api.mvc.Result
 import play.api.Configuration
 import v1.controllers.validators.MockAmendDisclosuresValidatorFactory
 import v1.models.request.amend._
-import v1.models.response.amendDisclosures.AmendDisclosuresHateoasData
 import v1.services.MockAmendDisclosuresService
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -44,7 +42,6 @@ class AmendDisclosuresControllerSpec
     with MockMtdIdLookupService
     with MockAppConfig
     with MockAmendDisclosuresService
-    with MockHateoasFactory
     with MockAmendDisclosuresValidatorFactory
     with MockAuditService
     with MockIdGenerator {
@@ -128,15 +125,12 @@ class AmendDisclosuresControllerSpec
           .amendDisclosures(requestData)
           .returns(Future.successful(Right(ResponseWrapper(correlationId, ()))))
 
-        MockHateoasFactory
-          .wrap((), AmendDisclosuresHateoasData(nino, taxYear))
-          .returns(HateoasWrapper((), hateoaslinks))
 
         runOkTestWithAudit(
           expectedStatus = OK,
-          maybeExpectedResponseBody = Some(hateoaslinksJson),
+          maybeExpectedResponseBody = None,
           maybeAuditRequestBody = Some(requestBodyJson),
-          maybeAuditResponseBody = Some(hateoaslinksJson)
+          maybeAuditResponseBody = None
         )
       }
     }
@@ -169,8 +163,7 @@ class AmendDisclosuresControllerSpec
       service = mockAmendDisclosuresService,
       auditService = mockAuditService,
       cc = cc,
-      idGenerator = mockIdGenerator,
-      hateoasFactory = mockHateoasFactory
+      idGenerator = mockIdGenerator
     )
 
     MockedAppConfig.featureSwitches.anyNumberOfTimes() returns Configuration(

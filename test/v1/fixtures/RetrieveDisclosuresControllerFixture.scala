@@ -41,30 +41,4 @@ object RetrieveDisclosuresControllerFixture {
     """.stripMargin
   )
 
-  def mtdResponseWithHateoas(nino: String, taxYear: String): JsObject = fullRetrieveDisclosuresResponse.as[JsObject] ++ Json
-    .parse(
-      s"""
-       |{
-       |   "links":[
-       |      {
-       |         "href":"/individuals/disclosures/$nino/$taxYear",
-       |         "method":"PUT",
-       |         "rel":"create-and-amend-disclosures"
-       |      },
-       |      {
-       |         "href":"/individuals/disclosures/$nino/$taxYear",
-       |         "method":"GET",
-       |         "rel":"self"
-       |      },
-       |      {
-       |         "href":"/individuals/disclosures/$nino/$taxYear",
-       |         "method":"DELETE",
-       |         "rel":"delete-disclosures"
-       |      }
-       |   ]
-       |}
-    """.stripMargin
-    )
-    .as[JsObject]
-
 }

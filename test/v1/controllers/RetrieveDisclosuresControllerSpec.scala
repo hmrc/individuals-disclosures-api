@@ -17,21 +17,18 @@
 package v1.controllers
 
 import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import api.hateoas.{HateoasLinks, HateoasWrapper, Link, MockHateoasFactory}
 import api.mocks.MockIdGenerator
 import api.models.domain.{Nino, TaxYear, Timestamp}
 import api.models.errors.{ErrorWrapper, NinoFormatError, TaxYearFormatError}
-import api.hateoas.Method._
-import api.hateoas.RelType._
 import api.services.{MockEnrolmentsAuthService, MockMtdIdLookupService}
 import api.models.outcomes.ResponseWrapper
 import config.MockAppConfig
 import play.api.mvc.Result
 import play.api.Configuration
 import v1.controllers.validators.MockRetrieveDisclosuresValidatorFactory
-import v1.fixtures.RetrieveDisclosuresControllerFixture.mtdResponseWithHateoas
+import v1.fixtures.RetrieveDisclosuresControllerFixture.fullRetrieveDisclosuresResponse
 import v1.models.request.retrieve.RetrieveDisclosuresRequestData
-import v1.models.response.retrieveDisclosures.{Class2Nics, RetrieveDisclosuresHateoasData, RetrieveDisclosuresResponse, TaxAvoidanceItem}
+import v1.models.response.retrieveDisclosures.{Class2Nics, RetrieveDisclosuresResponse, TaxAvoidanceItem}
 import v1.services.MockRetrieveDisclosuresService
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -43,9 +40,7 @@ class RetrieveDisclosuresControllerSpec
     with MockEnrolmentsAuthService
     with MockMtdIdLookupService
     with MockRetrieveDisclosuresService
-    with MockHateoasFactory
     with MockRetrieveDisclosuresValidatorFactory
-    with HateoasLinks
     with MockIdGenerator
     with MockAppConfig {
 
@@ -96,7 +91,7 @@ class RetrieveDisclosuresControllerSpec
     submittedOn = Timestamp("2020-07-06T09:37:17Z")
   )
 
-  private val response = mtdResponseWithHateoas(nino, taxYear)
+  private val response = fullRetrieveDisclosuresResponse
 
   "RetrieveDisclosuresController" should {
     "return a successful response with header X-CorrelationId and body" when {
@@ -107,16 +102,6 @@ class RetrieveDisclosuresControllerSpec
           .retrieve(requestData)
           .returns(Future.successful(Right(ResponseWrapper(correlationId, retrieveDisclosuresResponseModel))))
 
-        MockHateoasFactory
-          .wrap(retrieveDisclosuresResponseModel, RetrieveDisclosuresHateoasData(nino, taxYear))
-          .returns(
-            HateoasWrapper(
-              retrieveDisclosuresResponseModel,
-              Seq(
-                amendDisclosuresLink,
-                retrieveDisclosuresLink,
-                deleteDisclosuresLink
-              )))
 
         runOkTest(OK, Some(response))
 
@@ -154,7 +139,6 @@ class RetrieveDisclosuresControllerSpec
       lookupService = mockMtdIdLookupService,
       validatorFactory = mockRetrieveDisclosuresValidatorFactory,
       service = mockRetrieveDisclosuresService,
-      hateoasFactory = mockHateoasFactory,
       cc = cc,
       idGenerator = mockIdGenerator
     )

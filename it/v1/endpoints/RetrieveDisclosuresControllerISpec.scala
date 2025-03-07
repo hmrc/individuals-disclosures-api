@@ -37,7 +37,8 @@ class RetrieveDisclosuresControllerISpec extends IntegrationBaseSpec {
     val correlationId: String = "X-123"
 
     val ifsResponse: JsValue = RetrieveDisclosuresControllerFixture.fullRetrieveDisclosuresResponse
-    val mtdResponse: JsValue = RetrieveDisclosuresControllerFixture.mtdResponseWithHateoas(nino, taxYear)
+
+
 
     def uri: String = s"/$nino/$taxYear"
 
@@ -69,7 +70,7 @@ class RetrieveDisclosuresControllerISpec extends IntegrationBaseSpec {
 
         val response: WSResponse = await(request.get())
         response.status shouldBe OK
-        response.json shouldBe mtdResponse
+        response.json shouldBe ifsResponse
         response.header("Content-Type") shouldBe Some("application/json")
       }
     }

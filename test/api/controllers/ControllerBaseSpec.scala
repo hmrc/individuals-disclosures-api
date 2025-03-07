@@ -38,8 +38,7 @@ abstract class ControllerBaseSpec
     with MimeTypes
     with HeaderNames
     with ResultExtractors
-    with MockAuditService
-    with ControllerSpecHateoasSupport {
+    with MockAuditService {
 
   implicit lazy val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
 

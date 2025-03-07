@@ -55,29 +55,7 @@ class AmendDisclosuresControllerISpec extends IntegrationBaseSpec {
       """.stripMargin
     )
 
-    val hateoasResponse: JsValue = Json.parse(
-      s"""
-         |{
-         |   "links": [
-         |      {
-         |         "href": "/individuals/disclosures/$nino/$taxYear",
-         |         "rel": "create-and-amend-disclosures",
-         |         "method": "PUT"
-         |      },
-         |      {
-         |         "href": "/individuals/disclosures/$nino/$taxYear",
-         |         "rel": "self",
-         |         "method": "GET"
-         |      },
-         |      {
-         |         "href": "/individuals/disclosures/$nino/$taxYear",
-         |         "rel": "delete-disclosures",
-         |         "method": "DELETE"
-         |      }
-         |   ]
-         |}
-       """.stripMargin
-    )
+
 
     def uri: String = s"/$nino/$taxYear"
 
@@ -109,8 +87,7 @@ class AmendDisclosuresControllerISpec extends IntegrationBaseSpec {
 
         val response: WSResponse = await(request().put(requestBodyJson))
         response.status shouldBe OK
-        response.body[JsValue] shouldBe hateoasResponse
-        response.header("Content-Type") shouldBe Some("application/json")
+        response.header("Content-Type") shouldBe None
       }
     }
 
@@ -150,8 +127,7 @@ class AmendDisclosuresControllerISpec extends IntegrationBaseSpec {
             ),
             errors = None
           ))
-        response.header("Content-Type") shouldBe Some("application/json")
-      }
+        response.header("Content-Type") shouldBe None      }
     }
 
     "return a RuleTaxYearRangeInvalidError with 400 (BAD_REQUEST) status code" when {
@@ -190,8 +166,7 @@ class AmendDisclosuresControllerISpec extends IntegrationBaseSpec {
             ),
             errors = None
           ))
-        response.header("Content-Type") shouldBe Some("application/json")
-      }
+        response.header("Content-Type") shouldBe None      }
     }
 
     "return a 400 with multiple errors" when {
