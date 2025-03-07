@@ -18,7 +18,6 @@ package v1.endpoints
 
 import api.models.errors
 import api.models.errors._
-import api.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status._
@@ -26,6 +25,7 @@ import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
 import support.IntegrationBaseSpec
+import api.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 
 class AmendDisclosuresControllerISpec extends IntegrationBaseSpec {
 
@@ -55,7 +55,29 @@ class AmendDisclosuresControllerISpec extends IntegrationBaseSpec {
       """.stripMargin
     )
 
-
+    val hateoasResponse: JsValue = Json.parse(
+      s"""
+         |{
+         |   "links": [
+         |      {
+         |         "href": "/individuals/disclosures/$nino/$taxYear",
+         |         "rel": "create-and-amend-disclosures",
+         |         "method": "PUT"
+         |      },
+         |      {
+         |         "href": "/individuals/disclosures/$nino/$taxYear",
+         |         "rel": "self",
+         |         "method": "GET"
+         |      },
+         |      {
+         |         "href": "/individuals/disclosures/$nino/$taxYear",
+         |         "rel": "delete-disclosures",
+         |         "method": "DELETE"
+         |      }
+         |   ]
+         |}
+       """.stripMargin
+    )
 
     def uri: String = s"/$nino/$taxYear"
 
@@ -87,7 +109,8 @@ class AmendDisclosuresControllerISpec extends IntegrationBaseSpec {
 
         val response: WSResponse = await(request().put(requestBodyJson))
         response.status shouldBe OK
-        response.header("Content-Type") shouldBe None
+        response.body[JsValue] shouldBe hateoasResponse
+        response.header("Content-Type") shouldBe Some("application/json")
       }
     }
 

@@ -17,12 +17,15 @@
 package v1.controllers
 
 import api.controllers._
+import api.hateoas.HateoasFactory
 import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
 import config.AppConfig
 import play.api.libs.json.JsValue
 import play.api.mvc.{Action, ControllerComponents}
 import utils.IdGenerator
 import v1.controllers.validators.AmendDisclosuresValidatorFactory
+import v1.models.response.amendDisclosures.AmendDisclosuresHateoasData
+import v1.models.response.amendDisclosures.AmendDisclosuresResponse.AmendLinksFactory
 import v1.services._
 
 import javax.inject._
@@ -32,7 +35,7 @@ class AmendDisclosuresController @Inject() (val authService: EnrolmentsAuthServi
                                             val lookupService: MtdIdLookupService,
                                             service: AmendDisclosuresService,
                                             validatorFactory: AmendDisclosuresValidatorFactory,
-
+                                            hateoasFactory: HateoasFactory,
                                             auditService: AuditService,
                                             cc: ControllerComponents,
                                             val idGenerator: IdGenerator)(implicit appConfig: AppConfig, ec: ExecutionContext)
@@ -53,7 +56,7 @@ class AmendDisclosuresController @Inject() (val authService: EnrolmentsAuthServi
         RequestHandler
           .withValidator(validator)
           .withService(service.amendDisclosures)
-          .withNoContentResult(OK)
+          .withHateoasResult(hateoasFactory)(AmendDisclosuresHateoasData(nino, taxYear))
           .withAuditing(AuditHandler(
             auditService,
             auditType = "CreateAmendDisclosures",

@@ -18,15 +18,16 @@ package v1.controllers
 
 import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import api.mocks.MockIdGenerator
+import config.MockAppConfig
+import api.services.{MockEnrolmentsAuthService, MockMtdIdLookupService}
 import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import api.models.domain.{Nino, TaxYear}
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
-import api.services.{MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService}
-import config.MockAppConfig
-import play.api.Configuration
+import api.services.MockAuditService
 import play.api.libs.json.JsValue
 import play.api.mvc.Result
+import play.api.Configuration
 import v1.controllers.validators.MockDeleteDisclosuresValidatorFactory
 import v1.models.request.delete.DeleteDisclosuresRequestData
 import v1.services.MockDeleteDisclosuresService

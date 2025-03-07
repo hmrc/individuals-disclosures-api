@@ -16,8 +16,8 @@
 
 package api.connectors
 
-import config.MockAppConfig
 import mocks.MockHttpClient
+import config.MockAppConfig
 
 import scala.concurrent.Future
 

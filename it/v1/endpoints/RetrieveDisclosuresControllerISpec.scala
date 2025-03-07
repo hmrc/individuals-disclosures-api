@@ -18,7 +18,6 @@ package v1.endpoints
 
 import api.models.errors
 import api.models.errors._
-import api.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status._
@@ -27,6 +26,7 @@ import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
 import support.IntegrationBaseSpec
 import v1.fixtures.RetrieveDisclosuresControllerFixture
+import api.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 
 class RetrieveDisclosuresControllerISpec extends IntegrationBaseSpec {
 
@@ -37,8 +37,7 @@ class RetrieveDisclosuresControllerISpec extends IntegrationBaseSpec {
     val correlationId: String = "X-123"
 
     val ifsResponse: JsValue = RetrieveDisclosuresControllerFixture.fullRetrieveDisclosuresResponse
-
-
+    val mtdResponse: JsValue = RetrieveDisclosuresControllerFixture.mtdResponseWithHateoas(nino, taxYear)
 
     def uri: String = s"/$nino/$taxYear"
 
@@ -70,7 +69,7 @@ class RetrieveDisclosuresControllerISpec extends IntegrationBaseSpec {
 
         val response: WSResponse = await(request.get())
         response.status shouldBe OK
-        response.json shouldBe ifsResponse
+        response.json shouldBe mtdResponse
         response.header("Content-Type") shouldBe Some("application/json")
       }
     }

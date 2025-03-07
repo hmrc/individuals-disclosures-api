@@ -14,27 +14,23 @@
  * limitations under the License.
  */
 
-package api.services
+package v1.hateoas
 
-import api.services.MtdIdLookupService
-import org.scalamock.handlers.CallHandler
-import org.scalamock.scalatest.MockFactory
-import uk.gov.hmrc.http.HeaderCarrier
+import api.hateoas.HateoasLinks
+import config.AppConfig
+import play.api.libs.json.{JsValue, Json}
 
-import scala.concurrent.{ExecutionContext, Future}
+trait AmendHateoasBody extends HateoasLinks {
 
-trait MockMtdIdLookupService extends MockFactory {
+  def amendDisclosuresHateoasBody(appConfig: AppConfig, nino: String, taxYear: String): JsValue = {
 
-  val mockMtdIdLookupService: MtdIdLookupService = mock[MtdIdLookupService]
+    val links = Seq(
+      amendDisclosures(appConfig, nino, taxYear),
+      retrieveDisclosures(appConfig, nino, taxYear),
+      deleteDisclosures(appConfig, nino, taxYear)
+    )
 
-  object MockedMtdIdLookupService {
-
-    def lookup(nino: String): CallHandler[Future[MtdIdLookupService.Outcome]] = {
-      (mockMtdIdLookupService
-        .lookup(_: String)(_: HeaderCarrier, _: ExecutionContext))
-        .expects(nino, *, *)
-    }
-
+    Json.obj("links" -> links)
   }
 
 }

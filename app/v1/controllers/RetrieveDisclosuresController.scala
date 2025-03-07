@@ -17,11 +17,13 @@
 package v1.controllers
 
 import api.controllers._
+import api.hateoas.HateoasFactory
 import api.services.{EnrolmentsAuthService, MtdIdLookupService}
 import config.AppConfig
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import utils.IdGenerator
 import v1.controllers.validators.RetrieveDisclosuresValidatorFactory
+import v1.models.response.retrieveDisclosures.RetrieveDisclosuresHateoasData
 import v1.services._
 
 import javax.inject.{Inject, Singleton}
@@ -32,6 +34,7 @@ class RetrieveDisclosuresController @Inject() (val authService: EnrolmentsAuthSe
                                                val lookupService: MtdIdLookupService,
                                                validatorFactory: RetrieveDisclosuresValidatorFactory,
                                                service: RetrieveDisclosuresService,
+                                               hateoasFactory: HateoasFactory,
                                                cc: ControllerComponents,
                                                val idGenerator: IdGenerator)(implicit appConfig: AppConfig, ec: ExecutionContext)
     extends AuthorisedController(cc) {
@@ -54,7 +57,7 @@ class RetrieveDisclosuresController @Inject() (val authService: EnrolmentsAuthSe
         RequestHandler
           .withValidator(validator)
           .withService(service.retrieve)
-          .withPlainJsonResult()
+          .withHateoasResult(hateoasFactory)(RetrieveDisclosuresHateoasData(nino, taxYear))
 
       requestHandler.handleRequest()
 

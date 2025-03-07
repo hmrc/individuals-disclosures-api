@@ -14,25 +14,28 @@
  * limitations under the License.
  */
 
-package api.services
+package api.hateoas
 
-import api.services.MtdIdLookupService
+import cats.Functor
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
-import uk.gov.hmrc.http.HeaderCarrier
 
-import scala.concurrent.{ExecutionContext, Future}
+trait MockHateoasFactory extends MockFactory {
 
-trait MockMtdIdLookupService extends MockFactory {
+  val mockHateoasFactory: HateoasFactory = mock[HateoasFactory]
 
-  val mockMtdIdLookupService: MtdIdLookupService = mock[MtdIdLookupService]
+  object MockHateoasFactory {
 
-  object MockedMtdIdLookupService {
+    def wrap[A, D <: HateoasData](a: A, data: D): CallHandler[HateoasWrapper[A]] = {
+      (mockHateoasFactory
+        .wrap(_: A, _: D)(_: HateoasLinksFactory[A, D]))
+        .expects(a, data, *)
+    }
 
-    def lookup(nino: String): CallHandler[Future[MtdIdLookupService.Outcome]] = {
-      (mockMtdIdLookupService
-        .lookup(_: String)(_: HeaderCarrier, _: ExecutionContext))
-        .expects(nino, *, *)
+    def wrapList[A[_]: Functor, I, D <: HateoasData](a: A[I], data: D): CallHandler[HateoasWrapper[A[HateoasWrapper[I]]]] = {
+      (mockHateoasFactory
+        .wrapList(_: A[I], _: D)(_: Functor[A], _: HateoasListLinksFactory[A, I, D]))
+        .expects(a, data, *, *)
     }
 
   }
