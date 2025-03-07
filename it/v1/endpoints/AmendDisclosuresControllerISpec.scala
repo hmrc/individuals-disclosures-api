@@ -26,7 +26,6 @@ import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
 import support.IntegrationBaseSpec
-import v1.fixtures.RetrieveDisclosuresControllerFixture.fullRetrieveDisclosuresResponse
 
 class AmendDisclosuresControllerISpec extends IntegrationBaseSpec {
 
@@ -88,7 +87,6 @@ class AmendDisclosuresControllerISpec extends IntegrationBaseSpec {
 
         val response: WSResponse = await(request().put(requestBodyJson))
         response.status shouldBe OK
-        response.body[JsValue] shouldBe
         response.header("Content-Type") shouldBe None
       }
     }
@@ -129,7 +127,8 @@ class AmendDisclosuresControllerISpec extends IntegrationBaseSpec {
             ),
             errors = None
           ))
-        response.header("Content-Type") shouldBe None      }
+        response.header("Content-Type") shouldBe Some("application/json")
+      }
     }
 
     "return a RuleTaxYearRangeInvalidError with 400 (BAD_REQUEST) status code" when {
@@ -168,7 +167,8 @@ class AmendDisclosuresControllerISpec extends IntegrationBaseSpec {
             ),
             errors = None
           ))
-        response.header("Content-Type") shouldBe fullRetrieveDisclosuresResponse  }
+        response.header("Content-Type") shouldBe Some("application/json")
+      }
     }
 
     "return a 400 with multiple errors" when {

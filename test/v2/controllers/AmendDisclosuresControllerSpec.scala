@@ -28,7 +28,6 @@ import play.api.Configuration
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
 import v2.controllers.validators.MockAmendDisclosuresValidatorFactory
-import v2.fixtures.RetrieveDisclosuresControllerFixture.fullRetrieveDisclosuresResponse
 import v2.models.request.amend._
 import v2.services.MockAmendDisclosuresService
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -103,7 +102,12 @@ class AmendDisclosuresControllerSpec
           .returns(Future.successful(Right(ResponseWrapper(correlationId, ()))))
 
 
-        runOkTest(OK, Some(fullRetrieveDisclosuresResponse))
+        runOkTestWithAudit(
+          expectedStatus = OK,
+          maybeExpectedResponseBody = None,
+          maybeAuditRequestBody = Some(requestBodyJson),
+          maybeAuditResponseBody = None
+        )
       }
     }
 
