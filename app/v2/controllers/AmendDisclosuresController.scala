@@ -52,7 +52,7 @@ class AmendDisclosuresController @Inject() (val authService: EnrolmentsAuthServi
         RequestHandler
           .withValidator(validator)
           .withService(service.amendDisclosures)
-          .withNoContentResult(OK)
+            .withNoContentResult(NO_CONTENT)
           .withAuditing(AuditHandler(
             auditService,
             auditType = "CreateAmendDisclosures",

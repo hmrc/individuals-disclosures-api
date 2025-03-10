@@ -103,7 +103,7 @@ class AmendDisclosuresControllerSpec
 
 
         runOkTestWithAudit(
-          expectedStatus = OK,
+          expectedStatus = NO_CONTENT,
           maybeExpectedResponseBody = None,
           maybeAuditRequestBody = Some(requestBodyJson),
           maybeAuditResponseBody = None
