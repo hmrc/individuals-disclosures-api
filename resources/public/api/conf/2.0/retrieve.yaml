@@ -23,19 +23,12 @@ parameters:
   - $ref: './common/headers.yaml#/components/parameters/testScenarioHeader'
 
 responses:
-  "200":
+  "204":
     description: Success
     headers:
       X-CorrelationId:
         $ref: './common/headers.yaml#/components/parameters/correlationId'
-    content:
-      application/json:
-        schema:
-          $ref: './schemas/retrieve_disclosures_response.json'
-        examples:
-          Request:
-            value:
-              $ref: './examples/disclosures/retrieve_response.json'
+
 
 
   "400":
