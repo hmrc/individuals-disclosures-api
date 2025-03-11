@@ -1,0 +1,12 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": 	"Retrieve Disclosures Response",
+  "description":"Retrieve Disclosures Response",
+  "type": "object",
+  "properties": {
+    "submittedOn": {"$ref": "retrieve_disclosures_definitions.json#/definitions/submittedOn"},
+    "taxAvoidance": {"$ref": "retrieve_disclosures_definitions.json#/definitions/taxAvoidance"},
+    "class2Nics": {"$ref": "retrieve_disclosures_definitions.json#/definitions/class2Nics"}
+  },
+  "required": ["submittedOn"]
+}
