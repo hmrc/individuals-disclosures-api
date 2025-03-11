@@ -74,7 +74,7 @@ class AmendDisclosuresControllerISpec extends IntegrationBaseSpec {
   }
 
   "Calling the 'amend disclosures' endpoint" should {
-    "return a 200 status code" when {
+    "return a 204 status code" when {
       "any valid request is made" in new Test {
 
         override def setupStubs(): StubMapping = {
@@ -85,7 +85,7 @@ class AmendDisclosuresControllerISpec extends IntegrationBaseSpec {
         }
 
         val response: WSResponse = await(request().put(requestBodyJson))
-        response.status shouldBe OK
+        response.status shouldBe NO_CONTENT
         response.header("Content-Type") shouldBe None
       }
     }
