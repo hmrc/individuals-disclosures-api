@@ -35,19 +35,11 @@ requestBody:
             $ref: './examples/disclosures/amend_request.json'
 
 responses:
-  "200":
-    description: Success
+  "204":
+    description: Success (No Content)
     headers:
       X-CorrelationId:
         $ref: './common/headers.yaml#/components/parameters/correlationId'
-    content:
-      application/json:
-        schema:
-          $ref: './schemas/amend_disclosures_response.json'
-        examples:
-          Request:
-            value:
-              $ref: './examples/disclosures/amend_response.json'
 
 
   "400":

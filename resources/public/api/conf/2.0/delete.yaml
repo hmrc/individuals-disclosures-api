@@ -25,7 +25,7 @@ parameters:
 
 responses:
   "204":
-    description: Success
+    description: Success (No Content)
     headers:
       X-CorrelationId:
         $ref: './common/headers.yaml#/components/parameters/correlationId'
