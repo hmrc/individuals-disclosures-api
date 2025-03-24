@@ -1,7 +1,7 @@
 get:
   $ref: "./retrieve.yaml"
 
-  summary: Retrieve Disclosures
+  summary: Retrieve Disclosures [test only]
 
   security:
     - User-Restricted:
@@ -10,7 +10,7 @@ get:
 put:
   $ref: "./amend.yaml"
 
-  summary: Create and Amend Disclosures
+  summary: Create and Amend Disclosures [test only]
 
   security:
     - User-Restricted:
@@ -19,7 +19,7 @@ put:
 delete:
   $ref: "./delete.yaml"
 
-  summary: Delete Disclosures
+  summary: Delete Disclosures [test only]
 
   security:
     - User-Restricted:
