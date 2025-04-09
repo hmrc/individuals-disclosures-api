@@ -45,6 +45,24 @@ class FeatureSwitchesImpl(featureSwitchConfig: Configuration) extends FeatureSwi
   private def isConfigTrue(key: String): Boolean = featureSwitchConfig.getOptional[Boolean](key).getOrElse(true)
 }
 
+/** This is just here for non-typesafe usage such as Handlebars using OasFeatureRewriter. In most cases, should use the API-specific
+ * XyzFeatureSwitches class instead.
+ */
+case class ConfigFeatureSwitches private (protected val featureSwitchConfig: Configuration) extends FeatureSwitches {
+  val supportingAgentsAccessControlEnabled: Boolean = isEnabled("supporting-agents-access-control")
+
+  def isEnabled(key: String): Boolean = isConfigTrue(key + ".enabled")
+
+  def isReleasedInProduction(feature: String): Boolean = isConfigTrue(feature + ".released-in-production")
+
+  private def isConfigTrue(key: String): Boolean = featureSwitchConfig.getOptional[Boolean](key).getOrElse(true)
+}
+
+object ConfigFeatureSwitches {
+  def apply()(implicit appConfig: AppConfig): ConfigFeatureSwitches = ConfigFeatureSwitches(appConfig.featureSwitches)
+}
+
+
 object FeatureSwitches {
   def apply(configuration: Configuration): FeatureSwitches = new FeatureSwitchesImpl(configuration)
 

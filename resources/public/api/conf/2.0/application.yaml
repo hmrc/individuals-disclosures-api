@@ -2,7 +2,7 @@ openapi: "3.0.3"
 
 info:
   version: "2.0"
-  title: Individuals Disclosures (MTD) [test only]
+  title: Individuals Disclosures (MTD)
   description: |
     The following group of endpoints is stateful in the Sandbox:
     * [Disclosures](#tag/Disclosures)

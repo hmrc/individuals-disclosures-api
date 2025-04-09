@@ -16,7 +16,6 @@
 
 package config
 
-import config.{AppConfig, ConfidenceLevelConfig}
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import play.api.Configuration
@@ -46,12 +45,16 @@ trait MockAppConfig extends MockFactory {
     def minimumPermittedTaxYear: CallHandler[Int] = (() => mockAppConfig.minimumPermittedTaxYear: Int).expects()
 
     // API Config
-    def featureSwitches: CallHandler[Configuration]               = (() => mockAppConfig.featureSwitches: Configuration).expects()
-    def apiGatewayContext: CallHandler[String]                    = (() => mockAppConfig.apiGatewayContext: String).expects()
-    def apiStatus(version: Version): CallHandler[String]          = (mockAppConfig.apiStatus(_: Version)).expects(version)
-    def endpointsEnabled(version: Version): CallHandler[Boolean]  = (mockAppConfig.endpointsEnabled(_: Version)).expects(version)
-    def confidenceLevelConfig: CallHandler[ConfidenceLevelConfig] = (() => mockAppConfig.confidenceLevelConfig: ConfidenceLevelConfig).expects()
+    def featureSwitches: CallHandler[Configuration]                           = (() => mockAppConfig.featureSwitches: Configuration).expects()
+    def apiGatewayContext: CallHandler[String]                                = (() => mockAppConfig.apiGatewayContext: String).expects()
+    def apiStatus(version: Version): CallHandler[String]                      = (mockAppConfig.apiStatus(_: Version)).expects(version)
+    def apiVersionReleasedInProduction(version: String): CallHandler[Boolean] = (mockAppConfig.apiVersionReleasedInProduction: String => Boolean).expects(version)
+    def endpointsEnabled(version: String): CallHandler[Boolean]               = (mockAppConfig.endpointsEnabled(_: String)).expects(version)
+    def endpointsEnabled(version: Version): CallHandler[Boolean]              = (mockAppConfig.endpointsEnabled(_: Version)).expects(version)
+    def confidenceLevelConfig: CallHandler[ConfidenceLevelConfig]             = (() => mockAppConfig.confidenceLevelConfig: ConfidenceLevelConfig).expects()
 
+    def endpointReleasedInProduction(version: String, key: String): CallHandler[Boolean] =
+      (mockAppConfig.endpointReleasedInProduction: (String, String) => Boolean).expects(version, key)
     def endpointAllowsSupportingAgents(endpointName: String): CallHandler[Boolean] =
       (mockAppConfig.endpointAllowsSupportingAgents(_: String)).expects(endpointName)
 
