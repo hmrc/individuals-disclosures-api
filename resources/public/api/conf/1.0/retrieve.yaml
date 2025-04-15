@@ -1,3 +1,4 @@
+summary: Retrieve Disclosures
 description: |
   This endpoint allows a developer to retrieve data related to disclosures, for a given tax year. A National Insurance 
   number and tax year must be provided.

@@ -1,3 +1,4 @@
+summary: Create and Amend Disclosures
 description: |
   This endpoint allows a developer to create and amend data related to disclosures, for a given tax year. A National 
   Insurance number and tax year must be provided.

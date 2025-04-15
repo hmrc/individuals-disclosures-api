@@ -76,7 +76,7 @@ object Versions {
   private def getFrom(headers: Seq[(String, String)]): Either[GetFromRequestError, String] =
     headers.collectFirst { case (ACCEPT, versionRegex(ver)) => ver }.toRight(left = InvalidHeader)
 
-  private def getFrom(name: String): Either[GetFromRequestError, Version] =
+  def getFrom(name: String): Either[GetFromRequestError, Version] =
     versionsByName.get(name).toRight(left = VersionNotFound)
 
 }
