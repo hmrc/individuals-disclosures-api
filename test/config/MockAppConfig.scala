@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,10 +18,11 @@ package config
 
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
+import org.scalatest.TestSuite
 import play.api.Configuration
 import routing.Version
 
-trait MockAppConfig extends MockFactory {
+trait MockAppConfig extends TestSuite with MockFactory {
 
   implicit val mockAppConfig: AppConfig = mock[AppConfig]
 
@@ -48,7 +49,8 @@ trait MockAppConfig extends MockFactory {
     def featureSwitches: CallHandler[Configuration]                           = (() => mockAppConfig.featureSwitches: Configuration).expects()
     def apiGatewayContext: CallHandler[String]                                = (() => mockAppConfig.apiGatewayContext: String).expects()
     def apiStatus(version: Version): CallHandler[String]                      = (mockAppConfig.apiStatus(_: Version)).expects(version)
-    def apiVersionReleasedInProduction(version: String): CallHandler[Boolean] = (mockAppConfig.apiVersionReleasedInProduction: String => Boolean).expects(version)
+    def apiVersionReleasedInProduction(version: String): CallHandler[Boolean] =
+      (mockAppConfig.apiVersionReleasedInProduction: String => Boolean).expects(version)
     def endpointsEnabled(version: String): CallHandler[Boolean]               = (mockAppConfig.endpointsEnabled(_: String)).expects(version)
     def endpointsEnabled(version: Version): CallHandler[Boolean]              = (mockAppConfig.endpointsEnabled(_: Version)).expects(version)
     def confidenceLevelConfig: CallHandler[ConfidenceLevelConfig]             = (() => mockAppConfig.confidenceLevelConfig: ConfidenceLevelConfig).expects()

@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import api.connectors.ConnectorSpec
 import api.models.domain.{Nino, TaxYear}
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
+import uk.gov.hmrc.http.StringContextOps
 import v1.models.request.delete.DeleteDisclosuresRequestData
 
 import scala.concurrent.Future
@@ -31,12 +32,11 @@ class DeleteDisclosuresConnectorSpec extends ConnectorSpec {
   "DeleteDisclosuresConnector" when {
     "a valid request is supplied" should {
       "return a successful response with the correct correlationId" in new Ifs1Test with Test {
-
-        val expected = Right(ResponseWrapper(correlationId, ()))
+        val expected: Right[Nothing, ResponseWrapper[Unit]] = Right(ResponseWrapper(correlationId, ()))
 
         MockedHttpClient
           .delete(
-            url = s"$baseUrl/income-tax/disclosures/$nino/$taxYear",
+            url = url"$baseUrl/income-tax/disclosures/$nino/$taxYear",
             config = dummyHeaderCarrierConfig,
             requiredHeaders = requiredIfs1Headers,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
@@ -49,12 +49,11 @@ class DeleteDisclosuresConnectorSpec extends ConnectorSpec {
 
     "A request returning a single error" should {
       "return an unsuccessful response with the correct correlationId and a single error" in new Ifs1Test with Test {
-
-        val expected = Left(ResponseWrapper(correlationId, NinoFormatError))
+        val expected: Left[ResponseWrapper[NinoFormatError.type], Nothing] = Left(ResponseWrapper(correlationId, NinoFormatError))
 
         MockedHttpClient
           .delete(
-            url = s"$baseUrl/income-tax/disclosures/$nino/$taxYear",
+            url = url"$baseUrl/income-tax/disclosures/$nino/$taxYear",
             config = dummyHeaderCarrierConfig,
             requiredHeaders = requiredIfs1Headers,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
@@ -67,11 +66,12 @@ class DeleteDisclosuresConnectorSpec extends ConnectorSpec {
 
     "a request returning multiple errors" should {
       "return an unsuccessful response with the correct correlationId and multiple errors" in new Ifs1Test with Test {
-        val expected = Left(ResponseWrapper(correlationId, Seq(NinoFormatError, InternalError, TaxYearFormatError)))
+        val expected: Left[ResponseWrapper[Seq[MtdError]], Nothing] =
+          Left(ResponseWrapper(correlationId, Seq(NinoFormatError, InternalError, TaxYearFormatError)))
 
         MockedHttpClient
           .delete(
-            url = s"$baseUrl/income-tax/disclosures/$nino/$taxYear",
+            url = url"$baseUrl/income-tax/disclosures/$nino/$taxYear",
             config = dummyHeaderCarrierConfig,
             requiredHeaders = requiredIfs1Headers,
             excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")

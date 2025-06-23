@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 
 package auth
 
+import api.auth.AuthMainAgentsOnlyISpec
 import api.models.domain.TaxYear
 import api.services.DownstreamStub
 import play.api.http.Status.NO_CONTENT
@@ -24,7 +25,7 @@ import play.api.libs.ws.{WSRequest, WSResponse}
 
 class DisclosuresAPIAuthMainAgentsOnlyISpec extends AuthMainAgentsOnlyISpec {
 
-  val callingApiVersion = "1.0"
+  val callingApiVersion = "2.0"
 
   val supportingAgentsNotAllowedEndpoint = "delete-disclosures"
 

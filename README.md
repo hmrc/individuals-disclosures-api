@@ -6,9 +6,9 @@ individuals-disclosures-api
 The Individuals Disclosures API allows a developer to create and amend, retrieve, and delete data relating to disclosures.
 
 ## Requirements
-- Scala 2.12.x
+- Scala 2.13.x
 - Java 11
-- sbt 1.9.x
+- sbt 1.10.x
 - [Service Manager 2](https://github.com/hmrc/sm2)
 
 ## Development Setup
@@ -19,7 +19,7 @@ Start the service manager profile: `sm2 --start MTDFB_INDIVIDUALS_DISCLOSURES`
 ## Run Tests
 Run unit tests: `sbt test`
 
-Run integration tests: `sbt it:test`
+Run integration tests: `sbt it/test`
 
 ## Viewing OAS
 To view documentation locally, ensure the Individuals Disclosures API is running, and run api-documentation-frontend:
@@ -35,14 +35,14 @@ http://localhost:7799/api/conf/2.0/application.yaml
 
 ## Changelog
 
-You can see our changelog [here](https://github.com/hmrc/income-tax-mtd-changelog/wiki)
+You can see our changelog [here](https://github.com/hmrc/income-tax-mtd-changelog)
 
 ## Support and Reporting Issues
 
 You can create a GitHub issue [here](https://github.com/hmrc/income-tax-mtd-changelog/issues)
 
 ## API Reference / Documentation 
-Available on the [HMRC Developer Hub](https://developer.service.hmrc.gov.uk/api-documentation/docs/api/service/individuals-disclosures-api/1.0)
+Available on the [HMRC Developer Hub](https://developer.service.hmrc.gov.uk/api-documentation/docs/api/service/individuals-disclosures-api)
 
 ## License
 This code is open source software licensed under the [Apache 2.0 License]("http://www.apache.org/licenses/LICENSE-2.0.html")

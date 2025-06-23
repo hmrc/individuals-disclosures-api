@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,27 +20,29 @@ import api.connectors.DownstreamUri.{Ifs1Uri, Ifs2Uri}
 import api.models.outcomes.ResponseWrapper
 import config.{AppConfig, MockAppConfig}
 import mocks.MockHttpClient
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpReads}
+import play.api.libs.json.Json
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, HttpReads, StringContextOps}
 
 import scala.concurrent.Future
 
 class BaseDownstreamConnectorSpec extends ConnectorSpec {
 
   // WLOG
-  val body        = "body"
-  val outcome     = Right(ResponseWrapper(correlationId, Result(2)))
-  val url         = "some/url?param=value"
-  val absoluteUrl = s"$baseUrl/$url"
+  private val body        = Json.toJson("body")
+  private val outcome     = Right(ResponseWrapper(correlationId, Result(2)))
+  private val url         = "some/url?param=value"
+  private val absoluteUrl = url"$baseUrl/some/url?param=value"
 
   // WLOG
   case class Result(value: Int)
 
   implicit val httpReads: HttpReads[DownstreamOutcome[Result]] = mock[HttpReads[DownstreamOutcome[Result]]]
 
-  class Ifs1BaseTest extends MockHttpClient with MockAppConfig {
+  trait Ifs1BaseTest extends MockHttpClient with MockAppConfig {
 
     val connector: BaseDownstreamConnector = new BaseDownstreamConnector {
-      val http: HttpClient     = mockHttpClient
+      val http: HttpClientV2   = mockHttpClient
       val appConfig: AppConfig = mockAppConfig
     }
 
@@ -49,13 +51,13 @@ class BaseDownstreamConnectorSpec extends ConnectorSpec {
     MockedAppConfig.ifs1Environment returns "ifs1-environment"
     MockedAppConfig.ifs1EnvironmentHeaders returns Some(allowedIfs1Headers)
 
-    val qps = Seq("param1" -> "value1")
+    val qps: Seq[(String, String)] = Seq("param1" -> "value1")
   }
 
-  class Ifs2BaseTest extends MockHttpClient with MockAppConfig {
+  trait Ifs2BaseTest extends MockHttpClient with MockAppConfig {
 
     val connector: BaseDownstreamConnector = new BaseDownstreamConnector {
-      val http: HttpClient     = mockHttpClient
+      val http: HttpClientV2   = mockHttpClient
       val appConfig: AppConfig = mockAppConfig
     }
 
@@ -64,7 +66,7 @@ class BaseDownstreamConnectorSpec extends ConnectorSpec {
     MockedAppConfig.ifs2Environment returns "ifs2-environment"
     MockedAppConfig.ifs2EnvironmentHeaders returns Some(allowedIfs2Headers)
 
-    val qps = Seq("param1" -> "value1")
+    val qps: Seq[(String, String)] = Seq("param1" -> "value1")
   }
 
   "for IFS1" when {

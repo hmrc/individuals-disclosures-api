@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,9 +20,11 @@ import config.MockAppConfig
 import mocks.MockHttpClient
 import org.scalamock.handlers.CallHandler
 import play.api.http.{HeaderNames, MimeTypes, Status}
+import play.api.libs.json.{Json, Writes}
 import support.UnitSpec
 import uk.gov.hmrc.http.HeaderCarrier
 
+import java.net.URL
 import scala.concurrent.{ExecutionContext, Future}
 
 trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames {
@@ -86,7 +88,7 @@ trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames
 
     protected val requiredHeaders: Seq[(String, String)]
 
-    protected def willGet[T](url: String): CallHandler[Future[T]] = {
+    protected def willGet[T](url: URL): CallHandler[Future[T]] = {
       MockedHttpClient
         .get(
           url = url,
@@ -96,29 +98,29 @@ trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames
         )
     }
 
-    protected def willPost[BODY, T](url: String, body: BODY): CallHandler[Future[T]] = {
+    protected def willPost[BODY, T](url: URL, body: BODY)(implicit writes: Writes[BODY]): CallHandler[Future[T]] = {
       MockedHttpClient
         .post(
           url = url,
           config = dummyHeaderCarrierConfig,
-          body = body,
+          body = Json.toJson(body),
           requiredHeaders = requiredHeaders ++ List("Content-Type" -> "application/json"),
           excludedHeaders = List("AnotherHeader" -> "HeaderValue")
         )
     }
 
-    protected def willPut[BODY, T](url: String, body: BODY): CallHandler[Future[T]] = {
+    protected def willPut[BODY, T](url: URL, body: BODY)(implicit writes: Writes[BODY]): CallHandler[Future[T]] = {
       MockedHttpClient
         .put(
           url = url,
           config = dummyHeaderCarrierConfig,
-          body = body,
+          body = Json.toJson(body),
           requiredHeaders = requiredHeaders ++ List("Content-Type" -> "application/json"),
           excludedHeaders = List("AnotherHeader" -> "HeaderValue")
         )
     }
 
-    protected def willDelete[T](url: String): CallHandler[Future[T]] = {
+    protected def willDelete[T](url: URL): CallHandler[Future[T]] = {
       MockedHttpClient
         .delete(
           url = url,

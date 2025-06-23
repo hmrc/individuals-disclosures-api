@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,10 +16,10 @@
 
 package api.services
 
+import api.support.WireMockMethods
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.Status.{OK, UNAUTHORIZED}
 import play.api.libs.json.{JsArray, JsObject, JsValue, Json}
-import support.WireMockMethods
 import uk.gov.hmrc.auth.core.Enrolment
 
 object AuthStub extends WireMockMethods {

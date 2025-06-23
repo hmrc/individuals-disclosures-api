@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,38 +14,31 @@
  * limitations under the License.
  */
 
-package v1.endpoints
+package v1
 
 import api.models.errors
 import api.models.errors._
-import com.github.tomakehurst.wiremock.stubbing.StubMapping
-import play.api.http.HeaderNames.ACCEPT
-import play.api.http.Status._
-import play.api.libs.json.{JsValue, Json}
-import play.api.libs.ws.{WSRequest, WSResponse}
-import play.api.test.Helpers.AUTHORIZATION
-import support.IntegrationBaseSpec
-import v1.fixtures.RetrieveDisclosuresControllerFixture
 import api.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
+import api.support.IntegrationBaseSpec
+import com.github.tomakehurst.wiremock.stubbing.StubMapping
+import play.api.libs.json.Json
+import play.api.libs.ws.{WSRequest, WSResponse}
+import play.api.test.Helpers._
 
-class RetrieveDisclosuresControllerISpec extends IntegrationBaseSpec {
+class DeleteDisclosuresControllerISpec extends IntegrationBaseSpec {
 
   private trait Test {
 
-    val nino: String          = "AA123456A"
-    val taxYear: String       = "2021-22"
-    val correlationId: String = "X-123"
+    val nino: String    = "AA123456A"
+    val taxYear: String = "2021-22"
 
-    val ifsResponse: JsValue = RetrieveDisclosuresControllerFixture.fullRetrieveDisclosuresResponse
-    val mtdResponse: JsValue = RetrieveDisclosuresControllerFixture.mtdResponseWithHateoas(nino, taxYear)
-
-    def uri: String = s"/$nino/$taxYear"
+    private def uri: String = s"/$nino/$taxYear"
 
     def ifs1Uri: String = s"/income-tax/disclosures/$nino/$taxYear"
 
     def setupStubs(): StubMapping
 
-    def request: WSRequest = {
+    def request(): WSRequest = {
       setupStubs()
       buildRequest(uri)
         .withHttpHeaders(
@@ -56,21 +49,20 @@ class RetrieveDisclosuresControllerISpec extends IntegrationBaseSpec {
 
   }
 
-  "Calling the 'retrieve disclosures' endpoint" should {
-    "return a 200 status code" when {
+  "Calling the 'delete disclosures' endpoint" should {
+    "return a 204 status code" when {
       "any valid request is made" in new Test {
 
         override def setupStubs(): StubMapping = {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DownstreamStub.onSuccess(DownstreamStub.GET, ifs1Uri, OK, ifsResponse)
+          DownstreamStub.onSuccess(DownstreamStub.DELETE, ifs1Uri, NO_CONTENT)
         }
 
-        val response: WSResponse = await(request.get())
-        response.status shouldBe OK
-        response.json shouldBe mtdResponse
-        response.header("Content-Type") shouldBe Some("application/json")
+        val response: WSResponse = await(request().delete())
+        response.status shouldBe NO_CONTENT
+        response.header("X-CorrelationId").nonEmpty shouldBe true
       }
     }
 
@@ -89,7 +81,7 @@ class RetrieveDisclosuresControllerISpec extends IntegrationBaseSpec {
               MtdIdLookupStub.ninoFound(nino)
             }
 
-            val response: WSResponse = await(request.get())
+            val response: WSResponse = await(request().delete())
             response.status shouldBe expectedStatus
             response.json shouldBe Json.toJson(expectedBody)
             response.header("Content-Type") shouldBe Some("application/json")
@@ -98,8 +90,8 @@ class RetrieveDisclosuresControllerISpec extends IntegrationBaseSpec {
 
         val input = Seq(
           ("AA1123A", "2021-22", BAD_REQUEST, NinoFormatError),
-          ("AA123456A", "20177", BAD_REQUEST, TaxYearFormatError),
           ("AA123456A", "2017-18", BAD_REQUEST, RuleTaxYearNotSupportedError),
+          ("AA123456A", "20177", BAD_REQUEST, TaxYearFormatError),
           ("AA123456A", "2015-17", BAD_REQUEST, RuleTaxYearRangeInvalidError)
         )
         input.foreach(args => (validationErrorTest _).tupled(args))
@@ -113,10 +105,10 @@ class RetrieveDisclosuresControllerISpec extends IntegrationBaseSpec {
               AuditStub.audit()
               AuthStub.authorised()
               MtdIdLookupStub.ninoFound(nino)
-              DownstreamStub.onError(DownstreamStub.GET, ifs1Uri, ifsStatus, errorBody(ifsCode))
+              DownstreamStub.onError(DownstreamStub.DELETE, ifs1Uri, ifsStatus, errorBody(ifsCode))
             }
 
-            val response: WSResponse = await(request.get())
+            val response: WSResponse = await(request().delete())
             response.status shouldBe expectedStatus
             response.json shouldBe Json.toJson(expectedBody)
             response.header("Content-Type") shouldBe Some("application/json")
@@ -136,6 +128,7 @@ class RetrieveDisclosuresControllerISpec extends IntegrationBaseSpec {
           (BAD_REQUEST, "INVALID_TAX_YEAR", BAD_REQUEST, TaxYearFormatError),
           (BAD_REQUEST, "INVALID_CORRELATIONID", INTERNAL_SERVER_ERROR, errors.InternalError),
           (NOT_FOUND, "NO_DATA_FOUND", NOT_FOUND, NotFoundError),
+          (UNPROCESSABLE_ENTITY, "VOLUNTARY_CLASS2_CANNOT_BE_CHANGED", BAD_REQUEST, RuleVoluntaryClass2CannotBeChangedError),
           (INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, errors.InternalError),
           (SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, errors.InternalError)
         )

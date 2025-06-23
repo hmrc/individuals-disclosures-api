@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,19 +14,17 @@
  * limitations under the License.
  */
 
-package v2.endpoints
+package v1
 
 import api.models.errors
 import api.models.errors._
 import api.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
+import api.support.IntegrationBaseSpec
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
-import play.api.http.HeaderNames.ACCEPT
-import play.api.http.Status._
 import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
-import play.api.test.Helpers.AUTHORIZATION
-import support.IntegrationBaseSpec
-import v2.fixtures.RetrieveDisclosuresControllerFixture
+import play.api.test.Helpers._
+import v1.fixtures.RetrieveDisclosuresControllerFixture
 
 class RetrieveDisclosuresControllerISpec extends IntegrationBaseSpec {
 
@@ -34,12 +32,11 @@ class RetrieveDisclosuresControllerISpec extends IntegrationBaseSpec {
 
     val nino: String          = "AA123456A"
     val taxYear: String       = "2021-22"
-    val correlationId: String = "X-123"
 
     val ifsResponse: JsValue = RetrieveDisclosuresControllerFixture.fullRetrieveDisclosuresResponse
+    val mtdResponse: JsValue = RetrieveDisclosuresControllerFixture.mtdResponseWithHateoas(nino, taxYear)
 
-
-    def uri: String = s"/$nino/$taxYear"
+    private def uri: String = s"/$nino/$taxYear"
 
     def ifs1Uri: String = s"/income-tax/disclosures/$nino/$taxYear"
 
@@ -49,7 +46,7 @@ class RetrieveDisclosuresControllerISpec extends IntegrationBaseSpec {
       setupStubs()
       buildRequest(uri)
         .withHttpHeaders(
-          (ACCEPT, "application/vnd.hmrc.2.0+json"),
+          (ACCEPT, "application/vnd.hmrc.1.0+json"),
           (AUTHORIZATION, "Bearer 123") // some bearer token
         )
     }
@@ -69,7 +66,7 @@ class RetrieveDisclosuresControllerISpec extends IntegrationBaseSpec {
 
         val response: WSResponse = await(request.get())
         response.status shouldBe OK
-        response.json shouldBe ifsResponse
+        response.json shouldBe mtdResponse
         response.header("Content-Type") shouldBe Some("application/json")
       }
     }
