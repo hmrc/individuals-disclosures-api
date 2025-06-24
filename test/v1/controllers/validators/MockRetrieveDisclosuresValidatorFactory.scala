@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,9 +22,10 @@ import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
+import org.scalatest.TestSuite
 import v1.models.request.retrieve.RetrieveDisclosuresRequestData
 
-trait MockRetrieveDisclosuresValidatorFactory extends MockFactory {
+trait MockRetrieveDisclosuresValidatorFactory extends TestSuite with MockFactory {
 
   val mockRetrieveDisclosuresValidatorFactory: RetrieveDisclosuresValidatorFactory = mock[RetrieveDisclosuresValidatorFactory]
 

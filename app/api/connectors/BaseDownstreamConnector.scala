@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,18 +18,17 @@ package api.connectors
 
 import api.connectors.DownstreamUri._
 import config.{AppConfig, FeatureSwitches}
-import play.api.Logger
 import play.api.http.{HeaderNames, MimeTypes}
-import play.api.libs.json.Writes
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpReads}
+import play.api.libs.json.{Json, Writes}
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, HttpReads, StringContextOps}
+import utils.{Logging, UrlUtils}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait BaseDownstreamConnector {
-  val http: HttpClient
+trait BaseDownstreamConnector extends Logging {
+  val http: HttpClientV2
   val appConfig: AppConfig
-
-  val logger: Logger = Logger(this.getClass)
 
   implicit protected lazy val featureSwitches: FeatureSwitches = FeatureSwitches(appConfig.featureSwitches)
 
@@ -41,9 +40,8 @@ trait BaseDownstreamConnector {
       httpReads: HttpReads[DownstreamOutcome[Resp]],
       correlationId: String): Future[DownstreamOutcome[Resp]] = {
 
-    def doPost(implicit hc: HeaderCarrier): Future[DownstreamOutcome[Resp]] = {
-      http.POST(getBackendUri(uri), body)
-    }
+    def doPost(implicit hc: HeaderCarrier): Future[DownstreamOutcome[Resp]] =
+      http.post(url"${getBackendUri(uri)}").withBody(Json.toJson(body)).execute
 
     doPost(getBackendHeaders(uri, hc, correlationId, jsonContentTypeHeader))
   }
@@ -54,8 +52,10 @@ trait BaseDownstreamConnector {
       httpReads: HttpReads[DownstreamOutcome[Resp]],
       correlationId: String): Future[DownstreamOutcome[Resp]] = {
 
-    def doGet(implicit hc: HeaderCarrier): Future[DownstreamOutcome[Resp]] =
-      http.GET(getBackendUri(uri), queryParams = queryParams)
+    def doGet(implicit hc: HeaderCarrier): Future[DownstreamOutcome[Resp]] = {
+      val fullUrl: String = UrlUtils.appendQueryParams(getBackendUri(uri), queryParams)
+      http.get(url"$fullUrl").execute
+    }
 
     doGet(getBackendHeaders(uri, hc, correlationId))
   }
@@ -66,9 +66,8 @@ trait BaseDownstreamConnector {
       httpReads: HttpReads[DownstreamOutcome[Resp]],
       correlationId: String): Future[DownstreamOutcome[Resp]] = {
 
-    def doDelete(implicit hc: HeaderCarrier): Future[DownstreamOutcome[Resp]] = {
-      http.DELETE(getBackendUri(uri))
-    }
+    def doDelete(implicit hc: HeaderCarrier): Future[DownstreamOutcome[Resp]] =
+      http.delete(url"${getBackendUri(uri)}").execute
 
     doDelete(getBackendHeaders(uri, hc, correlationId))
   }
@@ -79,9 +78,8 @@ trait BaseDownstreamConnector {
       httpReads: HttpReads[DownstreamOutcome[Resp]],
       correlationId: String): Future[DownstreamOutcome[Resp]] = {
 
-    def doPut(implicit hc: HeaderCarrier): Future[DownstreamOutcome[Resp]] = {
-      http.PUT(getBackendUri(uri), body)
-    }
+    def doPut(implicit hc: HeaderCarrier): Future[DownstreamOutcome[Resp]] =
+      http.put(url"${getBackendUri(uri)}").withBody(Json.toJson(body)).execute
 
     doPut(getBackendHeaders(uri, hc, correlationId, jsonContentTypeHeader))
   }

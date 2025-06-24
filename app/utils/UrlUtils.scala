@@ -14,27 +14,27 @@
  * limitations under the License.
  */
 
-package api.services
+package utils
 
-import org.scalamock.handlers.CallHandler
-import org.scalamock.scalatest.MockFactory
-import org.scalatest.TestSuite
-import uk.gov.hmrc.http.HeaderCarrier
+import java.net.URI
 
-import scala.concurrent.{ExecutionContext, Future}
+object UrlUtils {
 
-trait MockMtdIdLookupService extends TestSuite with MockFactory {
+  def appendQueryParams(uri: String, queryParams: Seq[(String, String)]): String =
+    if (queryParams.isEmpty) {
+      uri
+    } else {
+      val oldUri   = new URI(uri)
+      val oldQuery = oldUri.getQuery
 
-  val mockMtdIdLookupService: MtdIdLookupService = mock[MtdIdLookupService]
+      val appendQuery = queryParams.map { case (k, v) => s"$k=$v" }.mkString("&")
 
-  object MockedMtdIdLookupService {
+      val newQuery = Option(oldQuery) match {
+        case None                => appendQuery
+        case Some(existingQuery) => s"$existingQuery&$appendQuery"
+      }
 
-    def lookup(nino: String): CallHandler[Future[MtdIdLookupService.Outcome]] = {
-      (mockMtdIdLookupService
-        .lookup(_: String)(_: HeaderCarrier, _: ExecutionContext))
-        .expects(nino, *, *)
+      new URI(oldUri.getScheme, oldUri.getAuthority, oldUri.getPath, newQuery, oldUri.getFragment).toString
     }
-
-  }
 
 }

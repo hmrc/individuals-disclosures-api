@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,12 +20,13 @@ import api.controllers.RequestContext
 import api.services.ServiceOutcome
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
+import org.scalatest.TestSuite
 import v2.models.request.retrieve.RetrieveDisclosuresRequestData
 import v2.models.response.retrieveDisclosures.RetrieveDisclosuresResponse
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait MockRetrieveDisclosuresService extends MockFactory {
+trait MockRetrieveDisclosuresService extends TestSuite with MockFactory {
 
   val mockRetrieveDisclosuresService: RetrieveDisclosuresService = mock[RetrieveDisclosuresService]
 

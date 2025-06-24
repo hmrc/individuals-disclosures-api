@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,18 +14,16 @@
  * limitations under the License.
  */
 
-package v2.endpoints
+package v2
 
 import api.models.errors
 import api.models.errors._
 import api.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
+import api.support.IntegrationBaseSpec
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
-import play.api.http.HeaderNames.ACCEPT
-import play.api.http.Status._
 import play.api.libs.json.Json
 import play.api.libs.ws.{WSRequest, WSResponse}
-import play.api.test.Helpers.AUTHORIZATION
-import support.IntegrationBaseSpec
+import play.api.test.Helpers._
 
 class DeleteDisclosuresControllerISpec extends IntegrationBaseSpec {
 
@@ -34,7 +32,7 @@ class DeleteDisclosuresControllerISpec extends IntegrationBaseSpec {
     val nino: String    = "AA123456A"
     val taxYear: String = "2021-22"
 
-    def uri: String = s"/$nino/$taxYear"
+    private def uri: String = s"/$nino/$taxYear"
 
     def ifs1Uri: String = s"/income-tax/disclosures/$nino/$taxYear"
 

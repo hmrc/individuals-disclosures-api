@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,51 +14,38 @@
  * limitations under the License.
  */
 
-import sbt.*
-import sbt.Keys.{baseDirectory, parallelExecution, unmanagedClasspath}
-import uk.gov.hmrc.DefaultBuildSettings.{addTestReportOption, defaultSettings}
-import uk.gov.hmrc.versioning.SbtGitVersioning.autoImport.majorVersion
+import uk.gov.hmrc.DefaultBuildSettings
+
+ThisBuild / scalaVersion := "2.13.16"
+ThisBuild / majorVersion := 0
+ThisBuild / scalacOptions += "-Xfatal-warnings"
 
 val appName = "individuals-disclosures-api"
 
-lazy val ItTest = config("it") extend Test
-
 lazy val microservice = Project(appName, file("."))
-  .enablePlugins(play.sbt.PlayScala, SbtDistributablesPlugin)
+  .enablePlugins(PlayScala, SbtDistributablesPlugin)
   .disablePlugins(JUnitXmlReportPlugin) //Required to prevent https://github.com/scalatest/scalatest/issues/1427
   .settings(
-    libraryDependencies ++= AppDependencies.compile ++ AppDependencies.test(),
-    retrieveManaged := true,
-    update / evictionWarningOptions := EvictionWarningOptions.default.withWarnScalaVersionEviction(warnScalaVersionEviction = false),
-    scalaVersion := "2.13.12",
-    scalacOptions ++= Seq("-language:higherKinds", "-Xlint:-byname-implicit", "-Xfatal-warnings", "-Wconf:src=routes/.*:silent")
+    libraryDependencies ++= AppDependencies.compile ++ AppDependencies.test,
+    scalacOptions ++= Seq(
+      "-feature",
+      "-Wconf:src=routes/.*:s"
+    )
   )
   .settings(
-    Compile / unmanagedResourceDirectories += baseDirectory.value / "resources"
-  )
-  .settings(majorVersion := 0)
-  .settings(CodeCoverageSettings.settings: _*)
-  .settings(defaultSettings(): _*)
-  .configs(ItTest)
-  .settings(
-    inConfig(ItTest)(Defaults.itSettings ++ headerSettings(ItTest) ++ automateHeaderSettings(ItTest)),
-    ItTest / fork := true,
-    ItTest / unmanagedSourceDirectories := List((ItTest / baseDirectory).value / "it"),
-    ItTest / unmanagedClasspath += baseDirectory.value / "resources",
-    Runtime / unmanagedClasspath += baseDirectory.value / "resources",
-    ItTest / javaOptions += "-Dlogger.resource=logback-test.xml",
-    ItTest / parallelExecution := false,
-    addTestReportOption(ItTest, directory = "int-test-reports")
+    Compile / unmanagedResourceDirectories += baseDirectory.value / "resources",
+    Compile / unmanagedClasspath += baseDirectory.value / "resources"
   )
   .settings(
-    resolvers += Resolver.jcenterRepo
+    CodeCoverageSettings.settings,
+    PlayKeys.playDefaultPort := 7799
   )
-  .settings(PlayKeys.playDefaultPort := 7799)
 
-dependencyUpdatesFilter -= moduleFilter(organization = "org.playframework")
-dependencyUpdatesFilter -= moduleFilter(name = "scala-library")
-dependencyUpdatesFilter -= moduleFilter(name = "flexmark-all")
-dependencyUpdatesFilter -= moduleFilter(name = "scalatestplus-play")
-dependencyUpdatesFilter -= moduleFilter(name = "scalatestplus-scalacheck")
-dependencyUpdatesFilter -= moduleFilter(name = "bootstrap-backend-play-30")
-dependencyUpdatesFailBuild := true
+lazy val it = project
+  .enablePlugins(PlayScala)
+  .dependsOn(microservice % "test->test")
+  .settings(DefaultBuildSettings.itSettings() ++ ScalafmtPlugin.scalafmtConfigSettings)
+  .settings(
+    Test / fork := true,
+    Test / javaOptions += "-Dlogger.resource=logback-test.xml")
+  .settings(libraryDependencies ++= AppDependencies.itDependencies)

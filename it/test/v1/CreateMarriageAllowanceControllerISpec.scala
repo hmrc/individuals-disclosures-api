@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,25 +14,23 @@
  * limitations under the License.
  */
 
-package v1.endpoints
+package v1
 
 import api.models.errors
 import api.models.errors._
+import api.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
+import api.support.IntegrationBaseSpec
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
-import play.api.http.HeaderNames.ACCEPT
-import play.api.http.Status._
 import play.api.libs.json.{JsResult, JsSuccess, JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
-import play.api.test.Helpers.AUTHORIZATION
-import support.IntegrationBaseSpec
-import api.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
+import play.api.test.Helpers._
 
 class CreateMarriageAllowanceControllerISpec extends IntegrationBaseSpec {
 
   private trait Test {
 
     val nino1: String         = "AA123456A"
-    val nino2: String         = "BB123456B"
+    private val nino2: String = "BB123456B"
     val invalidNino: String   = "BB123456Br"
     val correlationId: String = "X-123"
 
@@ -47,7 +45,7 @@ class CreateMarriageAllowanceControllerISpec extends IntegrationBaseSpec {
       """.stripMargin
     )
 
-    def uri: String = s"/marriage-allowance/$nino1"
+    private def uri: String = s"/marriage-allowance/$nino1"
 
     def ifs2Uri: String = s"/income-tax/marriage-allowance/claim/nino/$nino1"
 

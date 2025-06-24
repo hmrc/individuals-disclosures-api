@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,7 +35,7 @@ trait EmptinessChecker[A] {
   final def findEmptyPaths(a: A): EmptyPathsResult = {
 
     def search(acc: List[String], path: String, structure: Structure): List[String] = {
-      def recurseIfNotEmpty(keyedChildren: Seq[(String, Structure)]) =
+      def recurseIfNotEmpty(keyedChildren: Seq[(String, Structure)]): List[String] =
         if (keyedChildren.isEmpty) {
           path :: acc
         } else {
@@ -45,8 +45,8 @@ trait EmptinessChecker[A] {
         }
 
       structure match {
-        case o: Structure.Obj => recurseIfNotEmpty(o.keyedChildren)
-        case a: Structure.Arr => recurseIfNotEmpty(a.keyedChildren)
+        case obj: Structure.Obj => recurseIfNotEmpty(obj.keyedChildren)
+        case arr: Structure.Arr => recurseIfNotEmpty(arr.keyedChildren)
         case _                => acc
       }
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,13 +19,14 @@ package v1.connectors
 import api.connectors.DownstreamOutcome
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
+import org.scalatest.TestSuite
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.models.request.retrieve.RetrieveDisclosuresRequestData
 import v1.models.response.retrieveDisclosures.RetrieveDisclosuresResponse
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait MockRetrieveDisclosuresConnector extends MockFactory {
+trait MockRetrieveDisclosuresConnector extends TestSuite with MockFactory {
 
   val mockRetrieveDisclosuresConnector: RetrieveDisclosuresConnector = mock[RetrieveDisclosuresConnector]
 
