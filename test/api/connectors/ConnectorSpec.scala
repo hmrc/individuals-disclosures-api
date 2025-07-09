@@ -16,6 +16,7 @@
 
 package api.connectors
 
+import com.google.common.base.Charsets
 import config.MockAppConfig
 import mocks.MockHttpClient
 import org.scalamock.handlers.CallHandler
@@ -25,11 +26,12 @@ import support.UnitSpec
 import uk.gov.hmrc.http.HeaderCarrier
 
 import java.net.URL
+import java.util.Base64
 import scala.concurrent.{ExecutionContext, Future}
 
 trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames {
 
-  lazy val baseUrl                   = "http://test-BaseUrl"
+  lazy val baseUrl: String           = "http://test-BaseUrl"
   implicit val correlationId: String = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
 
   val otherHeaders: Seq[(String, String)] = List(
@@ -47,32 +49,7 @@ trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames
       Some("individual-disclosures-api")
     )
 
-  val requiredIfs1Headers: Seq[(String, String)] = List(
-    "Authorization"     -> "Bearer ifs1-token",
-    "Environment"       -> "ifs1-environment",
-    "User-Agent"        -> "individual-disclosures-api",
-    "CorrelationId"     -> correlationId,
-    "Gov-Test-Scenario" -> "DEFAULT"
-  )
-
-  val allowedIfs1Headers: Seq[String] = List(
-    "Accept",
-    "Gov-Test-Scenario",
-    "Content-Type",
-    "Location",
-    "X-Request-Timestamp",
-    "X-Session-Id"
-  )
-
-  val requiredIfs2Headers: Seq[(String, String)] = List(
-    "Authorization"     -> "Bearer ifs2-token",
-    "Environment"       -> "ifs2-environment",
-    "User-Agent"        -> "individual-disclosures-api",
-    "CorrelationId"     -> correlationId,
-    "Gov-Test-Scenario" -> "DEFAULT"
-  )
-
-  val allowedIfs2Headers: Seq[String] = List(
+  val allowedHeaders: Seq[String] = List(
     "Accept",
     "Gov-Test-Scenario",
     "Content-Type",
@@ -134,23 +111,57 @@ trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames
 
   protected trait Ifs1Test extends ConnectorTest {
 
-    protected lazy val requiredHeaders: Seq[(String, String)] = requiredIfs1Headers
+    protected lazy val requiredHeaders: Seq[(String, String)] = List(
+      "Authorization"     -> "Bearer ifs1-token",
+      "Environment"       -> "ifs1-environment",
+      "User-Agent"        -> "individual-disclosures-api",
+      "CorrelationId"     -> correlationId,
+      "Gov-Test-Scenario" -> "DEFAULT"
+    )
 
     MockedAppConfig.ifs1BaseUrl returns this.baseUrl
     MockedAppConfig.ifs1Token returns "ifs1-token"
-    MockedAppConfig.ifs1Environment returns "ifs1-environment"
-    MockedAppConfig.ifs1EnvironmentHeaders returns Some(allowedIfs1Headers)
+    MockedAppConfig.ifs1Env returns "ifs1-environment"
+    MockedAppConfig.ifs1EnvironmentHeaders returns Some(allowedHeaders)
 
   }
 
   protected trait Ifs2Test extends ConnectorTest {
 
-    protected lazy val requiredHeaders: Seq[(String, String)] = requiredIfs2Headers
+    protected lazy val requiredHeaders: Seq[(String, String)] = List(
+      "Authorization"     -> "Bearer ifs2-token",
+      "Environment"       -> "ifs2-environment",
+      "User-Agent"        -> "individual-disclosures-api",
+      "CorrelationId"     -> correlationId,
+      "Gov-Test-Scenario" -> "DEFAULT"
+    )
 
     MockedAppConfig.ifs2BaseUrl returns this.baseUrl
     MockedAppConfig.ifs2Token returns "ifs2-token"
-    MockedAppConfig.ifs2Environment returns "ifs2-environment"
-    MockedAppConfig.ifs2EnvironmentHeaders returns Some(allowedIfs2Headers)
+    MockedAppConfig.ifs2Env returns "ifs2-environment"
+    MockedAppConfig.ifs2EnvironmentHeaders returns Some(allowedHeaders)
+
+  }
+
+  protected trait HipTest extends ConnectorTest {
+    private val clientId: String = "clientId"
+    private val clientSecret: String = "clientSecret"
+
+    private val token: String = Base64.getEncoder.encodeToString(s"$clientId:$clientSecret".getBytes(Charsets.UTF_8))
+
+    protected lazy val requiredHeaders: Seq[(String, String)] = List(
+      "Authorization"     -> s"Basic $token",
+      "Environment"       -> "hip-environment",
+      "User-Agent"        -> "individual-disclosures-api",
+      "CorrelationId"     -> correlationId,
+      "Gov-Test-Scenario" -> "DEFAULT"
+    )
+
+    MockedAppConfig.hipBaseUrl returns this.baseUrl
+    MockedAppConfig.hipEnv returns "hip-environment"
+    MockedAppConfig.hipClientId returns clientId
+    MockedAppConfig.hipClientSecret returns clientSecret
+    MockedAppConfig.hipEnvironmentHeaders returns Some(allowedHeaders.filterNot(Set("Content-Type")))
 
   }
 
