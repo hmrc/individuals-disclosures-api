@@ -36,6 +36,8 @@ trait IntegrationBaseSpec extends UnitSpec with WireMockHelper with GuiceOneServ
     "microservice.services.ifs1.port"          -> mockPort,
     "microservice.services.ifs2.host"          -> mockHost,
     "microservice.services.ifs2.port"          -> mockPort,
+    "microservice.services.hip.host"           -> mockHost,
+    "microservice.services.hip.port"           -> mockPort,
     "microservice.services.mtd-id-lookup.host" -> mockHost,
     "microservice.services.mtd-id-lookup.port" -> mockPort,
     "microservice.services.auth.host"          -> mockHost,

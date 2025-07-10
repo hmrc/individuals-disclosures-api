@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,6 +46,21 @@ trait AppConfig {
   lazy val ifs2DownstreamConfig: DownstreamConfig =
     DownstreamConfig(baseUrl = ifs2BaseUrl, env = ifs2Env, token = ifs2Token, environmentHeaders = ifs2EnvironmentHeaders)
 
+  // HIP Config
+  def hipBaseUrl: String
+  def hipEnv: String
+  def hipClientId: String
+  def hipClientSecret: String
+  def hipEnvironmentHeaders: Option[Seq[String]]
+
+  lazy val hipDownstreamConfig: BasicAuthDownstreamConfig = BasicAuthDownstreamConfig(
+    baseUrl = hipBaseUrl,
+    env = hipEnv,
+    clientId = hipClientId,
+    clientSecret = hipClientSecret,
+    environmentHeaders = hipEnvironmentHeaders
+  )
+
   // Business Rule Config
   def minimumPermittedTaxYear: Int
 
@@ -83,6 +98,13 @@ class AppConfigImpl @Inject() (config: ServicesConfig, val configuration: Config
   val ifs2Env: String                             = config.getString("microservice.services.ifs2.env")
   val ifs2Token: String                           = config.getString("microservice.services.ifs2.token")
   val ifs2EnvironmentHeaders: Option[Seq[String]] = configuration.getOptional[Seq[String]]("microservice.services.ifs2.environmentHeaders")
+
+  // HIP Config
+  val hipBaseUrl: String                         = config.baseUrl("hip")
+  val hipEnv: String                             = config.getString("microservice.services.hip.env")
+  val hipClientId: String                        = config.getString("microservice.services.hip.clientId")
+  val hipClientSecret: String                    = config.getString("microservice.services.hip.clientSecret")
+  val hipEnvironmentHeaders: Option[Seq[String]] = configuration.getOptional[Seq[String]]("microservice.services.hip.environmentHeaders")
 
   // Business rule Config
   val minimumPermittedTaxYear: Int = config.getInt("minimumPermittedTaxYear")

@@ -33,14 +33,21 @@ trait MockAppConfig extends TestSuite with MockFactory {
     // IFS-1 Config
     def ifs1BaseUrl: CallHandler[String]                         = (() => mockAppConfig.ifs1BaseUrl: String).expects()
     def ifs1Token: CallHandler[String]                           = (() => mockAppConfig.ifs1Token: String).expects()
-    def ifs1Environment: CallHandler[String]                     = (() => mockAppConfig.ifs1Env: String).expects()
+    def ifs1Env: CallHandler[String]                             = (() => mockAppConfig.ifs1Env: String).expects()
     def ifs1EnvironmentHeaders: CallHandler[Option[Seq[String]]] = (() => mockAppConfig.ifs1EnvironmentHeaders: Option[Seq[String]]).expects()
 
     // IFS-2 Config
     def ifs2BaseUrl: CallHandler[String]                         = (() => mockAppConfig.ifs2BaseUrl: String).expects()
     def ifs2Token: CallHandler[String]                           = (() => mockAppConfig.ifs2Token: String).expects()
-    def ifs2Environment: CallHandler[String]                     = (() => mockAppConfig.ifs2Env: String).expects()
+    def ifs2Env: CallHandler[String]                             = (() => mockAppConfig.ifs2Env: String).expects()
     def ifs2EnvironmentHeaders: CallHandler[Option[Seq[String]]] = (() => mockAppConfig.ifs2EnvironmentHeaders: Option[Seq[String]]).expects()
+
+    // HIP Config
+    def hipBaseUrl: CallHandler[String]                         = (() => mockAppConfig.hipBaseUrl: String).expects()
+    def hipEnv: CallHandler[String]                             = (() => mockAppConfig.hipEnv: String).expects()
+    def hipClientId: CallHandler[String]                        = (() => mockAppConfig.hipClientId: String).expects()
+    def hipClientSecret: CallHandler[String]                    = (() => mockAppConfig.hipClientSecret).expects()
+    def hipEnvironmentHeaders: CallHandler[Option[Seq[String]]] = (() => mockAppConfig.hipEnvironmentHeaders: Option[Seq[String]]).expects()
 
     // Business Rule Config
     def minimumPermittedTaxYear: CallHandler[Int] = (() => mockAppConfig.minimumPermittedTaxYear: Int).expects()

@@ -34,31 +34,17 @@ class RetrieveDisclosuresConnectorSpec extends ConnectorSpec {
       "return a successful response with the correct correlationId" in new Ifs1Test with Test {
         val expected: Right[Nothing, ResponseWrapper[Unit]] = Right(ResponseWrapper(correlationId, ()))
 
-        MockedHttpClient
-          .get(
-            url = url"$baseUrl/income-tax/disclosures/$nino/$taxYear",
-            config = dummyHeaderCarrierConfig,
-            requiredHeaders = requiredIfs1Headers,
-            excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-          )
-          .returns(Future.successful(expected))
+        willGet(url"$baseUrl/income-tax/disclosures/$nino/$taxYear").returns(Future.successful(expected))
 
         await(connector.retrieve(request)) shouldBe expected
       }
     }
 
-    "A request returning a single error" should {
+    "a request returning a single error" should {
       "return an unsuccessful response with the correct correlationId and a single error" in new Ifs1Test with Test {
         val expected: Left[ResponseWrapper[NinoFormatError.type], Nothing] = Left(ResponseWrapper(correlationId, NinoFormatError))
 
-        MockedHttpClient
-          .get(
-            url = url"$baseUrl/income-tax/disclosures/$nino/$taxYear",
-            config = dummyHeaderCarrierConfig,
-            requiredHeaders = requiredIfs1Headers,
-            excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-          )
-          .returns(Future.successful(expected))
+        willGet(url"$baseUrl/income-tax/disclosures/$nino/$taxYear").returns(Future.successful(expected))
 
         await(connector.retrieve(request)) shouldBe expected
       }
@@ -69,14 +55,7 @@ class RetrieveDisclosuresConnectorSpec extends ConnectorSpec {
         val expected: Left[ResponseWrapper[Seq[MtdError]], Nothing] =
           Left(ResponseWrapper(correlationId, Seq(NinoFormatError, InternalError, TaxYearFormatError)))
 
-        MockedHttpClient
-          .get(
-            url = url"$baseUrl/income-tax/disclosures/$nino/$taxYear",
-            config = dummyHeaderCarrierConfig,
-            requiredHeaders = requiredIfs1Headers,
-            excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-          )
-          .returns(Future.successful(expected))
+        willGet(url"$baseUrl/income-tax/disclosures/$nino/$taxYear").returns(Future.successful(expected))
 
         await(connector.retrieve(request)) shouldBe expected
       }
