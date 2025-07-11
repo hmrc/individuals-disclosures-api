@@ -16,10 +16,10 @@
 
 package v2.connectors
 
-import api.connectors.DownstreamUri.Ifs1Uri
+import api.connectors.DownstreamUri.{HipUri, Ifs1Uri}
 import api.connectors.httpparsers.StandardDownstreamHttpParser._
 import api.connectors.{BaseDownstreamConnector, DownstreamOutcome}
-import config.AppConfig
+import config.{AppConfig, ConfigFeatureSwitches}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.client.HttpClientV2
 import v2.models.request.retrieve.RetrieveDisclosuresRequestData
@@ -38,7 +38,11 @@ class RetrieveDisclosuresConnector @Inject() (val http: HttpClientV2, val appCon
 
     import request._
 
-    val downstreamUri = Ifs1Uri[RetrieveDisclosuresResponse](s"income-tax/disclosures/$nino/${taxYear.asMtd}")
+    val downstreamUri = if(ConfigFeatureSwitches().isEnabled("ifs_hip_migration_1639")) {
+      HipUri[RetrieveDisclosuresResponse](s"/itsd/disclosures/$nino/${taxYear.asMtd}")
+    } else {
+      Ifs1Uri[RetrieveDisclosuresResponse](s"income-tax/disclosures/$nino/${taxYear.asMtd}")
+    }
 
     get(uri = downstreamUri)
   }
