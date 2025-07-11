@@ -14,27 +14,27 @@
  * limitations under the License.
  */
 
-package v1
+package v2
 
 import api.models.errors
-import api.models.errors._
+import api.models.errors.{MtdError, NinoFormatError, NotFoundError, RuleOutsideAmendmentWindow, RuleTaxYearNotSupportedError, RuleTaxYearRangeInvalidError, RuleVoluntaryClass2CannotBeChangedError, TaxYearFormatError}
 import api.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 import api.support.IntegrationBaseSpec
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.libs.json.Json
 import play.api.libs.ws.{WSRequest, WSResponse}
-import play.api.test.Helpers._
+import play.api.test.Helpers.{ACCEPT, AUTHORIZATION, BAD_REQUEST, INTERNAL_SERVER_ERROR, NOT_FOUND, NO_CONTENT, SERVICE_UNAVAILABLE, UNPROCESSABLE_ENTITY}
 
-class DeleteDisclosuresControllerISpec extends IntegrationBaseSpec {
+class DeleteDisclosuresControllerHipISpec extends IntegrationBaseSpec {
 
   private trait Test {
 
-    val nino: String    = "AA123456A"
+    val nino: String = "AA123456A"
     val taxYear: String = "2021-22"
 
     private def uri: String = s"/$nino/$taxYear"
 
-    def ifs1Uri: String = s"/income-tax/disclosures/$nino/$taxYear"
+    def HipUri: String = s"/itsd/disclosures/$nino/$taxYear"
 
     def setupStubs(): StubMapping
 
@@ -42,7 +42,7 @@ class DeleteDisclosuresControllerISpec extends IntegrationBaseSpec {
       setupStubs()
       buildRequest(uri)
         .withHttpHeaders(
-          (ACCEPT, "application/vnd.hmrc.1.0+json"),
+          (ACCEPT, "application/vnd.hmrc.2.0+json"),
           (AUTHORIZATION, "Bearer 123") // some bearer token
         )
     }
@@ -57,7 +57,7 @@ class DeleteDisclosuresControllerISpec extends IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DownstreamStub.onSuccess(DownstreamStub.DELETE, ifs1Uri, NO_CONTENT)
+          DownstreamStub.onSuccess(DownstreamStub.DELETE, HipUri, NO_CONTENT)
         }
 
         val response: WSResponse = await(request().delete())
@@ -72,7 +72,7 @@ class DeleteDisclosuresControllerISpec extends IntegrationBaseSpec {
         def validationErrorTest(requestNino: String, requestTaxYear: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
           s"validation fails with ${expectedBody.code} error" in new Test {
 
-            override val nino: String    = requestNino
+            override val nino: String = requestNino
             override val taxYear: String = requestTaxYear
 
             override def setupStubs(): StubMapping = {
@@ -105,7 +105,7 @@ class DeleteDisclosuresControllerISpec extends IntegrationBaseSpec {
               AuditStub.audit()
               AuthStub.authorised()
               MtdIdLookupStub.ninoFound(nino)
-              DownstreamStub.onError(DownstreamStub.DELETE, ifs1Uri, ifsStatus, errorBody(ifsCode))
+              DownstreamStub.onError(DownstreamStub.DELETE, HipUri, ifsStatus, errorBody(ifsCode))
             }
 
             val response: WSResponse = await(request().delete())
@@ -118,8 +118,13 @@ class DeleteDisclosuresControllerISpec extends IntegrationBaseSpec {
         def errorBody(code: String): String =
           s"""
              |{
-             |   "code": "$code",
-             |   "reason": "ifs1 message"
+             |   "origin": "HIP",
+             |   "response": [
+             |       {
+             |          "errorCode": "$code",
+             |          "errorDescription": "hip error"
+             |       }
+             |   ]
              |}
             """.stripMargin
 
@@ -129,6 +134,7 @@ class DeleteDisclosuresControllerISpec extends IntegrationBaseSpec {
           (BAD_REQUEST, "INVALID_CORRELATIONID", INTERNAL_SERVER_ERROR, errors.InternalError),
           (NOT_FOUND, "NO_DATA_FOUND", NOT_FOUND, NotFoundError),
           (UNPROCESSABLE_ENTITY, "VOLUNTARY_CLASS2_CANNOT_BE_CHANGED", BAD_REQUEST, RuleVoluntaryClass2CannotBeChangedError),
+          (UNPROCESSABLE_ENTITY, "OUTSIDE_AMENDMENT_WINDOW", BAD_REQUEST, RuleOutsideAmendmentWindow),
           (INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, errors.InternalError),
           (SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, errors.InternalError)
         )
@@ -136,5 +142,4 @@ class DeleteDisclosuresControllerISpec extends IntegrationBaseSpec {
       }
     }
   }
-
 }
