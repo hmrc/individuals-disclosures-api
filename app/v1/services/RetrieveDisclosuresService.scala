@@ -42,7 +42,7 @@ class RetrieveDisclosuresService @Inject() (connector: RetrieveDisclosuresConnec
   }
 
   private val downstreamErrorMap: Map[String, MtdError] = {
-    val error = Map(
+    val ifsErrors = Map(
       "INVALID_NINO"          -> NinoFormatError,
       "INVALID_TAX_YEAR"      -> TaxYearFormatError,
       "INVALID_CORRELATIONID" -> errors.InternalError,
@@ -51,10 +51,16 @@ class RetrieveDisclosuresService @Inject() (connector: RetrieveDisclosuresConnec
       "SERVICE_UNAVAILABLE"   -> errors.InternalError
     )
 
+    val hipErrors = Map(
+      "1215" -> NinoFormatError,
+      "1117" -> TaxYearFormatError,
+      "5010" -> NotFoundError
+    )
+
     val extra_error = Map {
       "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError
     }
-    error ++ extra_error
+    ifsErrors ++ hipErrors ++ extra_error
   }
 
 }
