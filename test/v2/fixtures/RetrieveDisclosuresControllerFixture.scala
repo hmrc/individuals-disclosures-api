@@ -20,7 +20,7 @@ import play.api.libs.json.{JsValue, Json}
 
 object RetrieveDisclosuresControllerFixture {
 
-  val fullRetrieveDisclosuresResponse: JsValue = Json.parse(
+  val fullIfsRetrieveDisclosuresResponse: JsValue = Json.parse(
     """
       |{
       |  "taxAvoidance": [
@@ -30,6 +30,27 @@ object RetrieveDisclosuresControllerFixture {
       |    },
       |    {
       |      "srn": "34522678",
+      |      "taxYear": "2021-22"
+      |    }
+      |  ],
+      |  "class2Nics": {
+      |     "class2VoluntaryContributions": true
+      |  },
+      |  "submittedOn": "2020-07-06T09:37:17.000Z"
+      |}
+    """.stripMargin
+  )
+
+  val fullHipRetrieveDisclosuresResponse: JsValue = Json.parse(
+    """
+      |{
+      |  "taxAvoidance": [
+      |    {
+      |      "SRN": "14211123",
+      |      "taxYear": "2020-21"
+      |    },
+      |    {
+      |      "SRN": "34522678",
       |      "taxYear": "2021-22"
       |    }
       |  ],

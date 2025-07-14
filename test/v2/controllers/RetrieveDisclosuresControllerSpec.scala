@@ -26,7 +26,7 @@ import config.MockAppConfig
 import play.api.Configuration
 import play.api.mvc.Result
 import v2.controllers.validators.MockRetrieveDisclosuresValidatorFactory
-import v2.fixtures.RetrieveDisclosuresControllerFixture.fullRetrieveDisclosuresResponse
+import v2.fixtures.RetrieveDisclosuresControllerFixture.fullIfsRetrieveDisclosuresResponse
 import v2.models.request.retrieve.RetrieveDisclosuresRequestData
 import v2.models.response.retrieveDisclosures.{Class2Nics, RetrieveDisclosuresResponse, TaxAvoidanceItem}
 import v2.services.MockRetrieveDisclosuresService
@@ -83,7 +83,7 @@ class RetrieveDisclosuresControllerSpec
 
 
 
-        runOkTest(OK, Some(fullRetrieveDisclosuresResponse))
+        runOkTest(OK, Some(fullIfsRetrieveDisclosuresResponse))
 
       }
     }

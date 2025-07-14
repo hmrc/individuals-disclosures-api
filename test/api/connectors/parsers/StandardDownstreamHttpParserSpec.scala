@@ -69,6 +69,7 @@ class StandardDownstreamHttpParserSpec extends UnitSpec {
       handleInternalErrorsCorrectly(httpReads)
       handleUnexpectedResponse(httpReads)
       handleBvrsCorrectly(httpReads)
+      handleHipErrorsCorrectly(httpReads)
     }
 
     "a success code is specified" must {
@@ -99,6 +100,7 @@ class StandardDownstreamHttpParserSpec extends UnitSpec {
       handleInternalErrorsCorrectly(httpReads)
       handleUnexpectedResponse(httpReads)
       handleBvrsCorrectly(httpReads)
+      handleHipErrorsCorrectly(httpReads)
     }
 
     "a success code is specified" must {
@@ -229,6 +231,71 @@ class StandardDownstreamHttpParserSpec extends UnitSpec {
         httpReads.read(method, url, httpResponse) shouldBe
           Left(
             ResponseWrapper(correlationId, OutboundError(BVRError, Some(Seq(MtdError("BVR1", "", BAD_REQUEST), MtdError("BVR2", "", BAD_REQUEST))))))
+      }
+    }
+  }
+
+  def topLevelErrorCodeJson(code: String): JsValue = Json.parse(
+    s"""
+       |[
+       |    {
+       |        "errorCode": "$code",
+       |        "errorDescription": "error description"
+       |    }
+       |]
+  """.stripMargin
+  )
+
+  val multipleErrorCodesInResponseJson: JsValue = Json.parse(
+    """
+      |{
+      |    "origin": "HIP",
+      |    "response": [
+      |        {
+      |            "errorCode": "1117",
+      |            "errorDescription": "The tax year provided is invalid"
+      |        },
+      |        {
+      |            "errorCode": "1215",
+      |            "errorDescription": "Invalid taxable entity id"
+      |        }
+      |    ]
+      |}
+  """.stripMargin
+  )
+
+  private def handleHipErrorsCorrectly[A](httpReads: HttpReads[DownstreamOutcome[A]]): Unit = {
+    List(
+      (BAD_REQUEST, "1215"),
+      (BAD_REQUEST, "1117"),
+      (NOT_FOUND, "5010")
+    ).foreach { case (responseStatus, responseCode) =>
+      "receiving a response with HIP error containing top level error code" should {
+        s"return a Left ResponseWrapper containing the extracted error code $responseCode" in {
+          val httpResponse = HttpResponse(
+            responseStatus,
+            topLevelErrorCodeJson(responseCode),
+            Map("CorrelationId" -> List(correlationId))
+          )
+
+          httpReads.read(method, url, httpResponse) shouldBe Left(
+            ResponseWrapper(correlationId, DownstreamErrors.single(DownstreamErrorCode(responseCode)))
+          )
+        }
+      }
+    }
+
+    "receiving a response with multiple HIP errors containing error codes in response array" should {
+      "return a Left ResponseWrapper containing the extracted error codes" in {
+        val httpResponse = HttpResponse(
+          BAD_REQUEST,
+          multipleErrorCodesInResponseJson,
+          Map("CorrelationId" -> List(correlationId))
+        )
+
+        httpReads.read(method, url, httpResponse) shouldBe Left(
+          ResponseWrapper(correlationId, DownstreamErrors(List(DownstreamErrorCode("1117"), DownstreamErrorCode("1215"))))
+        )
       }
     }
   }

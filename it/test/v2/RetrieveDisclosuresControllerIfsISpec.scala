@@ -26,14 +26,18 @@ import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers._
 import v2.fixtures.RetrieveDisclosuresControllerFixture
 
-class RetrieveDisclosuresControllerISpec extends IntegrationBaseSpec {
+class RetrieveDisclosuresControllerIfsISpec extends IntegrationBaseSpec {
+
+  override def servicesConfig: Map[String, Any] = Map(
+    "feature-switch.ifs_hip_migration_1639.enabled" -> false
+  ) ++ super.servicesConfig
 
   private trait Test {
 
     val nino: String          = "AA123456A"
     val taxYear: String       = "2021-22"
 
-    val ifsResponse: JsValue = RetrieveDisclosuresControllerFixture.fullRetrieveDisclosuresResponse
+    val ifsResponse: JsValue = RetrieveDisclosuresControllerFixture.fullIfsRetrieveDisclosuresResponse
 
     private def uri: String = s"/$nino/$taxYear"
 
@@ -128,7 +132,7 @@ class RetrieveDisclosuresControllerISpec extends IntegrationBaseSpec {
             """.stripMargin
 
         val input = Seq(
-          (BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", BAD_REQUEST, NinoFormatError),
+          (BAD_REQUEST, "INVALID_NINO", BAD_REQUEST, NinoFormatError),
           (BAD_REQUEST, "INVALID_TAX_YEAR", BAD_REQUEST, TaxYearFormatError),
           (BAD_REQUEST, "INVALID_CORRELATIONID", INTERNAL_SERVER_ERROR, errors.InternalError),
           (NOT_FOUND, "NO_DATA_FOUND", NOT_FOUND, NotFoundError),

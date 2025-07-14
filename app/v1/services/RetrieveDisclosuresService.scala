@@ -57,10 +57,7 @@ class RetrieveDisclosuresService @Inject() (connector: RetrieveDisclosuresConnec
       "5010" -> NotFoundError
     )
 
-    val extra_error = Map {
-      "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError
-    }
-    ifsErrors ++ hipErrors ++ extra_error
+    ifsErrors ++ hipErrors
   }
 
 }

@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-package v1
+package v2
 
-import api.models.errors
 import api.models.errors._
 import api.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 import api.support.IntegrationBaseSpec
@@ -24,21 +23,21 @@ import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers._
-import v1.fixtures.RetrieveDisclosuresControllerFixture
+import v2.fixtures.RetrieveDisclosuresControllerFixture
 
-class RetrieveDisclosuresControllerISpec extends IntegrationBaseSpec {
+class RetrieveDisclosuresControllerHipISpec extends IntegrationBaseSpec {
 
   private trait Test {
 
     val nino: String          = "AA123456A"
     val taxYear: String       = "2021-22"
 
-    val ifsResponse: JsValue = RetrieveDisclosuresControllerFixture.fullRetrieveDisclosuresResponse
-    val mtdResponse: JsValue = RetrieveDisclosuresControllerFixture.mtdResponseWithHateoas(nino, taxYear)
+    val hipResponse: JsValue = RetrieveDisclosuresControllerFixture.fullHipRetrieveDisclosuresResponse
+    val ifsResponse: JsValue = RetrieveDisclosuresControllerFixture.fullIfsRetrieveDisclosuresResponse
 
     private def uri: String = s"/$nino/$taxYear"
 
-    def ifs1Uri: String = s"/income-tax/disclosures/$nino/$taxYear"
+    def downstreamUrl: String = s"/itsd/disclosures/$nino/$taxYear"
 
     def setupStubs(): StubMapping
 
@@ -46,7 +45,7 @@ class RetrieveDisclosuresControllerISpec extends IntegrationBaseSpec {
       setupStubs()
       buildRequest(uri)
         .withHttpHeaders(
-          (ACCEPT, "application/vnd.hmrc.1.0+json"),
+          (ACCEPT, "application/vnd.hmrc.2.0+json"),
           (AUTHORIZATION, "Bearer 123") // some bearer token
         )
     }
@@ -61,12 +60,12 @@ class RetrieveDisclosuresControllerISpec extends IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DownstreamStub.onSuccess(DownstreamStub.GET, ifs1Uri, OK, ifsResponse)
+          DownstreamStub.onSuccess(DownstreamStub.GET, downstreamUrl, OK, hipResponse)
         }
 
         val response: WSResponse = await(request.get())
         response.status shouldBe OK
-        response.json shouldBe mtdResponse
+        response.json shouldBe ifsResponse
         response.header("Content-Type") shouldBe Some("application/json")
       }
     }
@@ -102,15 +101,15 @@ class RetrieveDisclosuresControllerISpec extends IntegrationBaseSpec {
         input.foreach(args => (validationErrorTest _).tupled(args))
       }
 
-      "ifs service error" when {
-        def serviceErrorTest(ifsStatus: Int, ifsCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
-          s"ifs returns an $ifsCode error and status $ifsStatus" in new Test {
+      "hip service error" when {
+        def serviceErrorTest(downstreamStatus: Int, downstreamCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
+          s"hip returns an $downstreamCode error and status $downstreamStatus" in new Test {
 
             override def setupStubs(): StubMapping = {
               AuditStub.audit()
               AuthStub.authorised()
               MtdIdLookupStub.ninoFound(nino)
-              DownstreamStub.onError(DownstreamStub.GET, ifs1Uri, ifsStatus, errorBody(ifsCode))
+              DownstreamStub.onError(DownstreamStub.GET, downstreamUrl, downstreamStatus, errorBody(downstreamCode))
             }
 
             val response: WSResponse = await(request.get())
@@ -123,18 +122,20 @@ class RetrieveDisclosuresControllerISpec extends IntegrationBaseSpec {
         def errorBody(code: String): String =
           s"""
              |{
-             |   "code": "$code",
-             |   "reason": "ifs1 message"
+             |  "origin": "HIP",
+             |  "response":  [
+             |    {
+             |      "errorCode": "$code",
+             |      "errorDescription": "error message"
+             |    }
+             |  ]
              |}
-            """.stripMargin
+             |""".stripMargin
 
         val input = Seq(
-          (BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", BAD_REQUEST, NinoFormatError),
-          (BAD_REQUEST, "INVALID_TAX_YEAR", BAD_REQUEST, TaxYearFormatError),
-          (BAD_REQUEST, "INVALID_CORRELATIONID", INTERNAL_SERVER_ERROR, errors.InternalError),
-          (NOT_FOUND, "NO_DATA_FOUND", NOT_FOUND, NotFoundError),
-          (INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, errors.InternalError),
-          (SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, errors.InternalError)
+          (BAD_REQUEST, "1215", BAD_REQUEST, NinoFormatError),
+          (BAD_REQUEST, "1117", BAD_REQUEST, TaxYearFormatError),
+          (NOT_FOUND, "5010", NOT_FOUND, NotFoundError)
         )
         input.foreach(args => (serviceErrorTest _).tupled(args))
       }
