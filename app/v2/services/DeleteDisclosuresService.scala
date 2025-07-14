@@ -41,7 +41,7 @@ class DeleteDisclosuresService @Inject() (connector: DeleteDisclosuresConnector)
     "INVALID_CORRELATIONID"              -> InternalError,
     "NO_DATA_FOUND"                      -> NotFoundError,
     "VOLUNTARY_CLASS2_CANNOT_BE_CHANGED" -> RuleVoluntaryClass2CannotBeChangedError,
-    "OUTSIDE_AMENDMENT_WINDOW"           -> RuleOutsideAmendmentWindow,
+    "OUTSIDE_AMENDMENT_WINDOW"           -> RuleOutsideAmendmentWindowError,
     "SERVER_ERROR"                       -> InternalError,
     "SERVICE_UNAVAILABLE"                -> InternalError
   )

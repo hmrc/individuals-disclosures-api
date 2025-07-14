@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ import api.models.errors._
 import config.MockAppConfig
 import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec
-import v1.models.request.amend.{AmendClass2Nics, AmendDisclosuresRequestBody, AmendDisclosuresRequestData, AmendTaxAvoidanceItem}
+import v1.models.request.amend._
 
 class AmendDisclosuresValidatorFactorySpec extends UnitSpec with MockAppConfig {
   private implicit val correlationId: String = "1234"
@@ -159,7 +159,7 @@ class AmendDisclosuresValidatorFactorySpec extends UnitSpec with MockAppConfig {
     )
   )
 
-  private val validatorFactory = new AmendDisclosuresValidatorFactory(mockAppConfig)
+  private val validatorFactory = new AmendDisclosuresValidatorFactory
 
   private def validator(nino: String, taxYear: String, body: JsValue) = validatorFactory.validator(nino, taxYear, body)
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v2
+package v1
 
 import api.models.errors
 import api.models.errors._
@@ -25,7 +25,10 @@ import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers._
 
-class AmendDisclosuresControllerISpec extends IntegrationBaseSpec {
+class AmendDisclosuresControllerIfsISpec extends IntegrationBaseSpec {
+
+  override def servicesConfig: Map[String, Any] =
+    Map("feature-switch.ifs_hip_migration_1638.enabled" -> false) ++ super.servicesConfig
 
   private trait Test {
 
@@ -53,6 +56,29 @@ class AmendDisclosuresControllerISpec extends IntegrationBaseSpec {
       """.stripMargin
     )
 
+    val hateoasResponse: JsValue = Json.parse(
+      s"""
+         |{
+         |   "links": [
+         |      {
+         |         "href": "/individuals/disclosures/$nino/$taxYear",
+         |         "rel": "create-and-amend-disclosures",
+         |         "method": "PUT"
+         |      },
+         |      {
+         |         "href": "/individuals/disclosures/$nino/$taxYear",
+         |         "rel": "self",
+         |         "method": "GET"
+         |      },
+         |      {
+         |         "href": "/individuals/disclosures/$nino/$taxYear",
+         |         "rel": "delete-disclosures",
+         |         "method": "DELETE"
+         |      }
+         |   ]
+         |}
+       """.stripMargin
+    )
 
     private def uri: String = s"/$nino/$taxYear"
 
@@ -64,7 +90,7 @@ class AmendDisclosuresControllerISpec extends IntegrationBaseSpec {
       setupStubs()
       buildRequest(uri)
         .withHttpHeaders(
-          (ACCEPT, "application/vnd.hmrc.2.0+json"),
+          (ACCEPT, "application/vnd.hmrc.1.0+json"),
           (AUTHORIZATION, "Bearer 123") // some bearer token
         )
     }
@@ -72,7 +98,7 @@ class AmendDisclosuresControllerISpec extends IntegrationBaseSpec {
   }
 
   "Calling the 'amend disclosures' endpoint" should {
-    "return a 204 status code" when {
+    "return a 200 status code" when {
       "any valid request is made" in new Test {
 
         override def setupStubs(): StubMapping = {
@@ -83,8 +109,9 @@ class AmendDisclosuresControllerISpec extends IntegrationBaseSpec {
         }
 
         val response: WSResponse = await(request().put(requestBodyJson))
-        response.status shouldBe NO_CONTENT
-        response.header("Content-Type") shouldBe None
+        response.status shouldBe OK
+        response.body[JsValue] shouldBe hateoasResponse
+        response.header("Content-Type") shouldBe Some("application/json")
       }
     }
 
@@ -487,13 +514,12 @@ class AmendDisclosuresControllerISpec extends IntegrationBaseSpec {
             """.stripMargin
 
         val input = Seq(
-          (BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", BAD_REQUEST, NinoFormatError),
+          (BAD_REQUEST, "INVALID_NINO", BAD_REQUEST, NinoFormatError),
           (BAD_REQUEST, "INVALID_TAX_YEAR", BAD_REQUEST, TaxYearFormatError),
           (BAD_REQUEST, "INVALID_CORRELATIONID", INTERNAL_SERVER_ERROR, errors.InternalError),
           (BAD_REQUEST, "INVALID_PAYLOAD", INTERNAL_SERVER_ERROR, errors.InternalError),
           (NOT_FOUND, "INCOME_SOURCE_NOT_FOUND", NOT_FOUND, NotFoundError),
           (UNPROCESSABLE_ENTITY, "VOLUNTARY_CLASS2_CANNOT_BE_CHANGED", BAD_REQUEST, RuleVoluntaryClass2CannotBeChangedError),
-          (UNPROCESSABLE_ENTITY, "OUTSIDE_AMENDMENT_WINDOW", BAD_REQUEST, RuleOutsideAmendmentWindow),
           (SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, errors.InternalError),
           (INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, errors.InternalError)
         )

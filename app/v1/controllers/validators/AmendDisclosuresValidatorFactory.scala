@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,9 +29,9 @@ import v1.models.request.amend.{AmendDisclosuresRequestBody, AmendDisclosuresReq
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class AmendDisclosuresValidatorFactory @Inject() (appConfig: AppConfig) {
+class AmendDisclosuresValidatorFactory @Inject() (implicit appConfig: AppConfig) {
 
-  private val resolveJson = new ResolveNonEmptyJsonObject[AmendDisclosuresRequestBody]()
+  private val resolveJson = new ResolveNonEmptyJsonObject[AmendDisclosuresRequestBody]
 
   def validator(nino: String, taxYear: String, body: JsValue): Validator[AmendDisclosuresRequestData] =
     new Validator[AmendDisclosuresRequestData] {

@@ -20,6 +20,7 @@ import api.connectors.ConnectorSpec
 import api.models.domain.{Nino, TaxYear}
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
+import play.api.Configuration
 import uk.gov.hmrc.http.StringContextOps
 import v2.models.request.amend._
 
@@ -29,33 +30,50 @@ class AmendDisclosuresConnectorSpec extends ConnectorSpec {
   private val nino: String    = "AA111111A"
   private val taxYear: String = "2021-22"
 
-  "AmendDisclosuresConnector" when {
-    "a valid request is supplied" should {
-      "return a successful response with the correct correlationId" in new Ifs1Test with Test {
+  "amendDisclosures" when {
+    "given a valid request" must {
+      "return a success response when feature switch is disabled (IFS enabled)" in new Ifs1Test with Test {
+        MockedAppConfig.featureSwitches.returns(Configuration("ifs_hip_migration_1638.enabled" -> false))
+
         val expected: Right[Nothing, ResponseWrapper[Unit]] = Right(ResponseWrapper(correlationId, ()))
 
         willPut(url = url"$baseUrl/income-tax/disclosures/$nino/$taxYear", body = request.body).returns(Future.successful(expected))
 
         await(connector.amendDisclosures(request)) shouldBe expected
       }
-    }
 
-    "A request returning a single error" should {
-      "return an unsuccessful response with the correct correlationId and a single error" in new Ifs1Test with Test {
-        val expected: Left[ResponseWrapper[NinoFormatError.type], Nothing] = Left(ResponseWrapper(correlationId, NinoFormatError))
+      "return a success response when feature switch is enabled (HIP enabled)" in new HipTest with Test {
+        MockedAppConfig.featureSwitches.returns(Configuration("ifs_hip_migration_1638.enabled" -> true))
 
-        willPut(url = url"$baseUrl/income-tax/disclosures/$nino/$taxYear", body = request.body).returns(Future.successful(expected))
+        val expected: Right[Nothing, ResponseWrapper[Unit]] = Right(ResponseWrapper(correlationId, ()))
+
+        willPut(url = url"$baseUrl/itsd/disclosures/$nino/$taxYear", body = request.body)
+          .returns(Future.successful(expected))
 
         await(connector.amendDisclosures(request)) shouldBe expected
       }
     }
 
-    "a request returning multiple errors" should {
-      "return an unsuccessful response with the correct correlationId and multiple errors" in new Ifs1Test with Test {
+    "given a request returning an error" must {
+      "return an unsuccessful response with the correct correlationId and a single error" in new HipTest with Test {
+        MockedAppConfig.featureSwitches.returns(Configuration("ifs_hip_migration_1638.enabled" -> true))
+
+        val expected: Left[ResponseWrapper[NinoFormatError.type], Nothing] = Left(ResponseWrapper(correlationId, NinoFormatError))
+
+        willPut(url = url"$baseUrl/itsd/disclosures/$nino/$taxYear", body = request.body).returns(Future.successful(expected))
+
+        await(connector.amendDisclosures(request)) shouldBe expected
+      }
+    }
+
+    "given a request returning multiple errors" must {
+      "return an unsuccessful response with the correct correlationId and multiple errors" in new HipTest with Test {
+        MockedAppConfig.featureSwitches.returns(Configuration("ifs_hip_migration_1638.enabled" -> true))
+
         val expected: Left[ResponseWrapper[Seq[MtdError]], Nothing] =
           Left(ResponseWrapper(correlationId, Seq(NinoFormatError, InternalError, TaxYearFormatError)))
 
-        willPut(url = url"$baseUrl/income-tax/disclosures/$nino/$taxYear", body = request.body).returns(Future.successful(expected))
+        willPut(url = url"$baseUrl/itsd/disclosures/$nino/$taxYear", body = request.body).returns(Future.successful(expected))
 
         await(connector.amendDisclosures(request)) shouldBe expected
       }

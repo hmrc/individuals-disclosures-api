@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,19 +16,24 @@
 
 package v2.models.request.amend
 
-import play.api.libs.json.{JsError, JsObject, Json}
+import config.MockAppConfig
+import play.api.Configuration
+import play.api.libs.json._
 import support.UnitSpec
 
-class AmendTaxAvoidanceItemSpec extends UnitSpec {
+class AmendTaxAvoidanceItemSpec extends UnitSpec with MockAppConfig {
 
-  private val json = Json.parse(
-    """
-      |{
-      |   "srn": "14211123",
-      |   "taxYear": "2020-21"
-      |}
+  private def json(srnUpperCase: Boolean = false): JsValue = {
+    val srn = if (srnUpperCase) "SRN" else "srn"
+    Json.parse(
+      s"""
+        |{
+        |   "$srn": "14211123",
+        |   "taxYear": "2020-21"
+        |}
     """.stripMargin
-  )
+    )
+  }
 
   private val model: AmendTaxAvoidanceItem = AmendTaxAvoidanceItem(
     srn = "14211123",
@@ -38,7 +43,7 @@ class AmendTaxAvoidanceItemSpec extends UnitSpec {
   "AmendTaxAvoidanceItem" when {
     "read from valid JSON" should {
       "produce the expected AmendTaxAvoidanceItem object" in {
-        json.as[AmendTaxAvoidanceItem] shouldBe model
+        json().as[AmendTaxAvoidanceItem] shouldBe model
       }
     }
 
@@ -51,8 +56,16 @@ class AmendTaxAvoidanceItemSpec extends UnitSpec {
     }
 
     "written to JSON" should {
-      "produce the expected JsObject" in {
-        Json.toJson(model) shouldBe json
+      "produce the expected JsObject when using HIP format downstream" in {
+        MockedAppConfig.featureSwitches.returns(Configuration("ifs_hip_migration_1638.enabled" -> true))
+        val isHipEnabled = true
+        Json.toJson(model) shouldBe json(isHipEnabled)
+      }
+
+      "produce the expected JsObject when using IFS format downstream" in {
+        MockedAppConfig.featureSwitches.returns(Configuration("ifs_hip_migration_1638.enabled" -> false))
+        val isHipEnabled = false
+        Json.toJson(model) shouldBe json(isHipEnabled)
       }
     }
   }

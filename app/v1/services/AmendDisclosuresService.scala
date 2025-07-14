@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,7 +37,7 @@ class AmendDisclosuresService @Inject() (connector: AmendDisclosuresConnector) e
   }
 
   private def downstreamErrorMap: Map[String, MtdError] = {
-    val error = Map(
+    val ifsErrors = Map(
       "INVALID_NINO"                       -> NinoFormatError,
       "INVALID_TAX_YEAR"                   -> TaxYearFormatError,
       "INVALID_CORRELATIONID"              -> InternalError,
@@ -48,11 +48,17 @@ class AmendDisclosuresService @Inject() (connector: AmendDisclosuresConnector) e
       "SERVICE_UNAVAILABLE"                -> InternalError
     )
 
-    val extra_error = Map {
-      "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError
-    }
+    val hipErrors = Map(
+      "1000" -> InternalError,
+      "1117" -> TaxYearFormatError,
+      "1215" -> NinoFormatError,
+      "1216" -> InternalError,
+      "5000" -> RuleTaxYearNotSupportedError,
+      "5003" -> NotFoundError,
+      "5004" -> RuleVoluntaryClass2CannotBeChangedError
+    )
 
-    error ++ extra_error
+    ifsErrors ++ hipErrors
   }
 
 }
