@@ -49,7 +49,6 @@ class DeleteDisclosuresService @Inject() (connector: DeleteDisclosuresConnector)
       "1215" -> NinoFormatError,
       "1117" -> TaxYearFormatError,
       "5010" -> NotFoundError,
-      "4200" -> RuleOutsideAmendmentWindow,
       "5000" -> RuleTaxYearNotSupportedError
     )
     ifsErrors ++ hipErrors
