@@ -67,7 +67,7 @@ class RetrieveDisclosuresServiceSpec extends ServiceSpec {
           await(service.retrieve(request)) shouldBe Left(ErrorWrapper(correlationId, error))
         }
 
-      val input = Seq(
+      val ifsErrors = Seq(
         ("INVALID_NINO", NinoFormatError),
         ("INVALID_TAX_YEAR", TaxYearFormatError),
         ("INVALID_CORRELATIONID", errors.InternalError),
@@ -76,11 +76,13 @@ class RetrieveDisclosuresServiceSpec extends ServiceSpec {
         ("SERVICE_UNAVAILABLE", errors.InternalError)
       )
 
-      val extra_error = Seq(
-        ("INVALID_TAXABLE_ENTITY_ID", NinoFormatError)
+      val hipErrors = Seq(
+        ("1215", NinoFormatError),
+        ("1117", TaxYearFormatError),
+        ("5010", NotFoundError)
       )
 
-      (input ++ extra_error).foreach(args => (serviceError _).tupled(args))
+      (ifsErrors ++ hipErrors).foreach(args => (serviceError _).tupled(args))
     }
   }
 

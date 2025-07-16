@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v2
+package v1
 
 import api.models.errors
 import api.models.errors._
@@ -24,16 +24,21 @@ import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers._
-import v2.fixtures.RetrieveDisclosuresControllerFixture
+import v1.fixtures.RetrieveDisclosuresControllerFixture
 
-class RetrieveDisclosuresControllerISpec extends IntegrationBaseSpec {
+class RetrieveDisclosuresControllerIfsISpec extends IntegrationBaseSpec {
+
+  override def servicesConfig: Map[String, Any] = Map(
+    "feature-switch.ifs_hip_migration_1639.enabled" -> false
+  ) ++ super.servicesConfig
 
   private trait Test {
 
     val nino: String          = "AA123456A"
     val taxYear: String       = "2021-22"
 
-    val ifsResponse: JsValue = RetrieveDisclosuresControllerFixture.fullRetrieveDisclosuresResponse
+    val ifsResponse: JsValue = RetrieveDisclosuresControllerFixture.fullIfsRetrieveDisclosuresResponse
+    val mtdResponse: JsValue = RetrieveDisclosuresControllerFixture.mtdResponseWithHateoas(nino, taxYear)
 
     private def uri: String = s"/$nino/$taxYear"
 
@@ -45,7 +50,7 @@ class RetrieveDisclosuresControllerISpec extends IntegrationBaseSpec {
       setupStubs()
       buildRequest(uri)
         .withHttpHeaders(
-          (ACCEPT, "application/vnd.hmrc.2.0+json"),
+          (ACCEPT, "application/vnd.hmrc.1.0+json"),
           (AUTHORIZATION, "Bearer 123") // some bearer token
         )
     }
@@ -65,7 +70,7 @@ class RetrieveDisclosuresControllerISpec extends IntegrationBaseSpec {
 
         val response: WSResponse = await(request.get())
         response.status shouldBe OK
-        response.json shouldBe ifsResponse
+        response.json shouldBe mtdResponse
         response.header("Content-Type") shouldBe Some("application/json")
       }
     }
@@ -128,7 +133,7 @@ class RetrieveDisclosuresControllerISpec extends IntegrationBaseSpec {
             """.stripMargin
 
         val input = Seq(
-          (BAD_REQUEST, "INVALID_TAXABLE_ENTITY_ID", BAD_REQUEST, NinoFormatError),
+          (BAD_REQUEST, "INVALID_NINO", BAD_REQUEST, NinoFormatError),
           (BAD_REQUEST, "INVALID_TAX_YEAR", BAD_REQUEST, TaxYearFormatError),
           (BAD_REQUEST, "INVALID_CORRELATIONID", INTERNAL_SERVER_ERROR, errors.InternalError),
           (NOT_FOUND, "NO_DATA_FOUND", NOT_FOUND, NotFoundError),

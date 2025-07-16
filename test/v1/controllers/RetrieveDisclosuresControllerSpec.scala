@@ -96,8 +96,6 @@ class RetrieveDisclosuresControllerSpec
     submittedOn = Timestamp("2020-07-06T09:37:17Z")
   )
 
-  private val response = mtdResponseWithHateoas(nino, taxYear)
-
   "RetrieveDisclosuresController" should {
     "return a successful response with header X-CorrelationId and body" when {
       "the request received is valid" in new Test {
@@ -118,7 +116,7 @@ class RetrieveDisclosuresControllerSpec
                 deleteDisclosuresLink
               )))
 
-        runOkTest(OK, Some(response))
+        runOkTest(OK, Some(mtdResponseWithHateoas(nino, taxYear)))
 
       }
     }

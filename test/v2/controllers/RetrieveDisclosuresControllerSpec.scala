@@ -26,7 +26,7 @@ import config.MockAppConfig
 import play.api.Configuration
 import play.api.mvc.Result
 import v2.controllers.validators.MockRetrieveDisclosuresValidatorFactory
-import v2.fixtures.RetrieveDisclosuresControllerFixture.fullRetrieveDisclosuresResponse
+import v2.fixtures.RetrieveDisclosuresControllerFixture.mtdResponse
 import v2.models.request.retrieve.RetrieveDisclosuresRequestData
 import v2.models.response.retrieveDisclosures.{Class2Nics, RetrieveDisclosuresResponse, TaxAvoidanceItem}
 import v2.services.MockRetrieveDisclosuresService
@@ -71,7 +71,6 @@ class RetrieveDisclosuresControllerSpec
     submittedOn = Timestamp("2020-07-06T09:37:17Z")
   )
 
-
   "RetrieveDisclosuresController" should {
     "return a successful response with header X-CorrelationId and body" when {
       "the request received is valid" in new Test {
@@ -82,8 +81,7 @@ class RetrieveDisclosuresControllerSpec
           .returns(Future.successful(Right(ResponseWrapper(correlationId, retrieveDisclosuresResponseModel))))
 
 
-
-        runOkTest(OK, Some(fullRetrieveDisclosuresResponse))
+        runOkTest(OK, Some(mtdResponse))
 
       }
     }

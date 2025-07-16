@@ -22,12 +22,29 @@ import support.UnitSpec
 
 class RetrieveDisclosuresResponseSpec extends UnitSpec {
 
-  private val json = Json.parse(
+  private val ifsJson = Json.parse(
     """
       |{
       |   "taxAvoidance": [
       |      {
       |         "srn": "14211123",
+      |         "taxYear": "2020-21"
+      |      }
+      |   ],
+      |   "class2Nics": {
+      |      "class2VoluntaryContributions": true
+      |   },
+      |   "submittedOn": "2020-07-06T09:37:17.000Z"
+      |}
+    """.stripMargin
+  )
+
+  private val hipJson = Json.parse(
+    """
+      |{
+      |   "taxAvoidance": [
+      |      {
+      |         "SRN": "14211123",
       |         "taxYear": "2020-21"
       |      }
       |   ],
@@ -56,8 +73,13 @@ class RetrieveDisclosuresResponseSpec extends UnitSpec {
 
   "RetrieveDisclosuresResponse" when {
     "read from valid JSON" should {
-      "produce the expected RetrieveDisclosuresResponse object" in {
-        json.as[RetrieveDisclosuresResponse] shouldBe parsedResponse
+      "produce the expected RetrieveDisclosuresResponse object" when {
+        "srn is lower case" in {
+          ifsJson.as[RetrieveDisclosuresResponse] shouldBe parsedResponse
+        }
+        "srn is upper case" in {
+          hipJson.as[RetrieveDisclosuresResponse] shouldBe parsedResponse
+        }
       }
     }
 
@@ -104,7 +126,7 @@ class RetrieveDisclosuresResponseSpec extends UnitSpec {
 
     "written to JSON" should {
       "produce the expected JsObject" in {
-        Json.toJson(parsedResponse) shouldBe json
+        Json.toJson(parsedResponse) shouldBe ifsJson
       }
     }
   }
