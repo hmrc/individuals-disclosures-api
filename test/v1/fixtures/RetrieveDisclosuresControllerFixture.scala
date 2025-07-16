@@ -17,6 +17,7 @@
 package v1.fixtures
 
 import play.api.libs.json.{JsObject, JsValue, Json}
+import v1.models.response.retrieveDisclosures.RetrieveDisclosuresResponse
 
 object RetrieveDisclosuresControllerFixture {
 
@@ -62,7 +63,7 @@ object RetrieveDisclosuresControllerFixture {
     """.stripMargin
   )
 
-  def mtdResponseWithHateoas(nino: String, taxYear: String): JsObject = fullIfsRetrieveDisclosuresResponse.as[JsObject] ++ Json
+  def mtdResponseWithHateoas(nino: String, taxYear: String, payload: JsValue): JsObject = payload.as[JsObject] ++ Json
     .parse(
       s"""
        |{
@@ -87,5 +88,12 @@ object RetrieveDisclosuresControllerFixture {
     """.stripMargin
     )
     .as[JsObject]
+
+  def mtdIfsResponseWithHateoas(nino: String, taxYear: String): JsObject = mtdResponseWithHateoas(nino, taxYear, fullIfsRetrieveDisclosuresResponse)
+
+  def mtdHipResponseWithHateoas(nino: String, taxYear: String): JsObject = {
+    val payload: JsValue = Json.toJson(fullHipRetrieveDisclosuresResponse.as[RetrieveDisclosuresResponse])
+    mtdResponseWithHateoas(nino, taxYear, payload)
+  }
 
 }

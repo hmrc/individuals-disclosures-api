@@ -33,7 +33,7 @@ class RetrieveDisclosuresControllerHipISpec extends IntegrationBaseSpec {
     val taxYear: String = "2021-22"
 
     val hipResponse: JsValue = RetrieveDisclosuresControllerFixture.fullHipRetrieveDisclosuresResponse
-    val mtdResponse: JsValue = RetrieveDisclosuresControllerFixture.mtdResponseWithHateoas(nino, taxYear)
+    val mtdResponse: JsValue = RetrieveDisclosuresControllerFixture.mtdHipResponseWithHateoas(nino, taxYear)
 
     private def uri: String = s"/$nino/$taxYear"
 
