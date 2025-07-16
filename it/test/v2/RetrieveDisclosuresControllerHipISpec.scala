@@ -33,7 +33,7 @@ class RetrieveDisclosuresControllerHipISpec extends IntegrationBaseSpec {
     val taxYear: String       = "2021-22"
 
     val hipResponse: JsValue = RetrieveDisclosuresControllerFixture.fullHipRetrieveDisclosuresResponse
-    val ifsResponse: JsValue = RetrieveDisclosuresControllerFixture.fullIfsRetrieveDisclosuresResponse
+    val mtdResponse: JsValue = RetrieveDisclosuresControllerFixture.fullIfsRetrieveDisclosuresResponse
 
     private def uri: String = s"/$nino/$taxYear"
 
@@ -65,7 +65,7 @@ class RetrieveDisclosuresControllerHipISpec extends IntegrationBaseSpec {
 
         val response: WSResponse = await(request.get())
         response.status shouldBe OK
-        response.json shouldBe ifsResponse
+        response.json shouldBe mtdResponse
         response.header("Content-Type") shouldBe Some("application/json")
       }
     }
