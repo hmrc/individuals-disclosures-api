@@ -116,15 +116,12 @@ class DeleteDisclosuresControllerHipISpec extends IntegrationBaseSpec {
 
         def errorBody(code: String): String =
           s"""
-             |{
-             |   "origin": "HIP",
-             |   "response": [
-             |       {
-             |          "errorCode": "$code",
-             |          "errorDescription": "hip error"
-             |       }
-             |   ]
-             |}
+             |[
+             |  {
+             |    "errorCode": "$code",
+             |    "errorDescription": "error message"
+             |  }
+             |]
             """.stripMargin
 
         val input = Seq(
