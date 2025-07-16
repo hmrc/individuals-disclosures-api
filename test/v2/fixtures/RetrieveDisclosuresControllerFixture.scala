@@ -62,5 +62,25 @@ object RetrieveDisclosuresControllerFixture {
     """.stripMargin
   )
 
+  val mtdResponse: JsValue = Json.parse(
+    """
+      |{
+      |  "taxAvoidance": [
+      |    {
+      |      "srn": "14211123",
+      |      "taxYear": "2020-21"
+      |    },
+      |    {
+      |      "srn": "34522678",
+      |      "taxYear": "2021-22"
+      |    }
+      |  ],
+      |  "class2Nics": {
+      |     "class2VoluntaryContributions": true
+      |  },
+      |  "submittedOn": "2020-07-06T09:37:17.000Z"
+      |}
+    """.stripMargin
+  )
 
 }

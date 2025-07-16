@@ -29,7 +29,7 @@ import config.MockAppConfig
 import play.api.mvc.Result
 import play.api.Configuration
 import v1.controllers.validators.MockRetrieveDisclosuresValidatorFactory
-import v1.fixtures.RetrieveDisclosuresControllerFixture.mtdIfsResponseWithHateoas
+import v1.fixtures.RetrieveDisclosuresControllerFixture.mtdResponseWithHateoas
 import v1.models.request.retrieve.RetrieveDisclosuresRequestData
 import v1.models.response.retrieveDisclosures.{Class2Nics, RetrieveDisclosuresHateoasData, RetrieveDisclosuresResponse, TaxAvoidanceItem}
 import v1.services.MockRetrieveDisclosuresService
@@ -96,8 +96,6 @@ class RetrieveDisclosuresControllerSpec
     submittedOn = Timestamp("2020-07-06T09:37:17Z")
   )
 
-  private val response = mtdIfsResponseWithHateoas(nino, taxYear)
-
   "RetrieveDisclosuresController" should {
     "return a successful response with header X-CorrelationId and body" when {
       "the request received is valid" in new Test {
@@ -118,7 +116,7 @@ class RetrieveDisclosuresControllerSpec
                 deleteDisclosuresLink
               )))
 
-        runOkTest(OK, Some(response))
+        runOkTest(OK, Some(mtdResponseWithHateoas(nino, taxYear)))
 
       }
     }

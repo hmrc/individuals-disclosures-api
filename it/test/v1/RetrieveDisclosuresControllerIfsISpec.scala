@@ -38,7 +38,7 @@ class RetrieveDisclosuresControllerIfsISpec extends IntegrationBaseSpec {
     val taxYear: String       = "2021-22"
 
     val ifsResponse: JsValue = RetrieveDisclosuresControllerFixture.fullIfsRetrieveDisclosuresResponse
-    val mtdResponse: JsValue = RetrieveDisclosuresControllerFixture.mtdIfsResponseWithHateoas(nino, taxYear)
+    val mtdResponse: JsValue = RetrieveDisclosuresControllerFixture.mtdResponseWithHateoas(nino, taxYear)
 
     private def uri: String = s"/$nino/$taxYear"
 

@@ -24,10 +24,9 @@ import api.models.outcomes.ResponseWrapper
 import api.services.{MockEnrolmentsAuthService, MockMtdIdLookupService}
 import config.MockAppConfig
 import play.api.Configuration
-import play.api.libs.json.JsValue
 import play.api.mvc.Result
 import v2.controllers.validators.MockRetrieveDisclosuresValidatorFactory
-import v2.fixtures.RetrieveDisclosuresControllerFixture.fullIfsRetrieveDisclosuresResponse
+import v2.fixtures.RetrieveDisclosuresControllerFixture.mtdResponse
 import v2.models.request.retrieve.RetrieveDisclosuresRequestData
 import v2.models.response.retrieveDisclosures.{Class2Nics, RetrieveDisclosuresResponse, TaxAvoidanceItem}
 import v2.services.MockRetrieveDisclosuresService
@@ -71,8 +70,6 @@ class RetrieveDisclosuresControllerSpec
     class2Nics = Some(class2NicsModel),
     submittedOn = Timestamp("2020-07-06T09:37:17Z")
   )
-
-  val mtdResponse: JsValue = fullIfsRetrieveDisclosuresResponse
 
   "RetrieveDisclosuresController" should {
     "return a successful response with header X-CorrelationId and body" when {
