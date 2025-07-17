@@ -20,7 +20,6 @@ import com.google.common.base.Charsets
 import config.MockAppConfig
 import mocks.MockHttpClient
 import org.scalamock.handlers.CallHandler
-import play.api.Configuration
 import play.api.http.{HeaderNames, MimeTypes, Status}
 import play.api.libs.json.{Json, Writes}
 import support.UnitSpec
@@ -119,7 +118,6 @@ trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames
       "CorrelationId"     -> correlationId,
       "Gov-Test-Scenario" -> "DEFAULT"
     )
-    MockedAppConfig.featureSwitches returns Configuration("ifs_hip_migration_1640.enabled" -> false)
     MockedAppConfig.ifs1BaseUrl returns this.baseUrl
     MockedAppConfig.ifs1Token returns "ifs1-token"
     MockedAppConfig.ifs1Env returns "ifs1-environment"
@@ -157,7 +155,6 @@ trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames
       "CorrelationId"     -> correlationId,
       "Gov-Test-Scenario" -> "DEFAULT"
     )
-    MockedAppConfig.featureSwitches returns Configuration("ifs_hip_migration_1640.enabled" -> true)
     MockedAppConfig.hipBaseUrl returns this.baseUrl
     MockedAppConfig.hipEnv returns "hip-environment"
     MockedAppConfig.hipClientId returns clientId

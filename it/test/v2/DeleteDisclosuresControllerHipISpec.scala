@@ -16,7 +16,7 @@
 
 package v2
 
-import api.models.errors.{MtdError, NinoFormatError, NotFoundError, RuleOutsideAmendmentWindow, RuleTaxYearNotSupportedError, RuleTaxYearRangeInvalidError, TaxYearFormatError}
+import api.models.errors.{MtdError, NinoFormatError, NotFoundError, RuleOutsideAmendmentWindowError, RuleTaxYearNotSupportedError, RuleTaxYearRangeInvalidError, TaxYearFormatError}
 import api.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 import api.support.IntegrationBaseSpec
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
@@ -128,7 +128,7 @@ class DeleteDisclosuresControllerHipISpec extends IntegrationBaseSpec {
           (BAD_REQUEST, "1215", BAD_REQUEST, NinoFormatError),
           (BAD_REQUEST, "1117", BAD_REQUEST, TaxYearFormatError),
           (NOT_FOUND, "5010", NOT_FOUND, NotFoundError),
-          (UNPROCESSABLE_ENTITY, "4200", BAD_REQUEST, RuleOutsideAmendmentWindow),
+          (UNPROCESSABLE_ENTITY, "4200", BAD_REQUEST, RuleOutsideAmendmentWindowError),
           (UNPROCESSABLE_ENTITY, "5000", BAD_REQUEST, RuleTaxYearNotSupportedError)
         )
         input.foreach(args => (serviceErrorTest _).tupled(args))

@@ -20,6 +20,7 @@ import api.connectors.ConnectorSpec
 import api.models.domain.{Nino, TaxYear}
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
+import play.api.Configuration
 import uk.gov.hmrc.http.StringContextOps
 import v1.models.request.delete.DeleteDisclosuresRequestData
 
@@ -32,6 +33,7 @@ class DeleteDisclosuresConnectorSpec extends ConnectorSpec {
   "DeleteDisclosuresConnector" when {
     "a valid request is supplied" should {
       "return a successful response with the correct correlationId using IFS" in new Ifs1Test with Test {
+        MockedAppConfig.featureSwitches returns Configuration("ifs_hip_migration_1640.enabled" -> false)
         val expected: Right[Nothing, ResponseWrapper[Unit]] = Right(ResponseWrapper(correlationId, ()))
 
         willDelete(url"$baseUrl/income-tax/disclosures/$nino/$taxYear").returns(Future.successful(expected))
@@ -39,6 +41,7 @@ class DeleteDisclosuresConnectorSpec extends ConnectorSpec {
         await(connector.deleteDisclosures(request)) shouldBe expected
       }
       "return a successful response with the correct correlationId using HIP" in new HipTest with Test {
+        MockedAppConfig.featureSwitches returns Configuration("ifs_hip_migration_1640.enabled" -> true)
         val expected: Right[Nothing, ResponseWrapper[Unit]] = Right(ResponseWrapper(correlationId, ()))
 
         willDelete(url"$baseUrl/itsd/disclosures/$nino/$taxYear").returns(Future.successful(expected))
@@ -49,6 +52,7 @@ class DeleteDisclosuresConnectorSpec extends ConnectorSpec {
 
     "a request returning a single error" should {
       "return an unsuccessful response with the correct correlationId and a single error using IFS" in new Ifs1Test with Test {
+        MockedAppConfig.featureSwitches returns Configuration("ifs_hip_migration_1640.enabled" -> false)
         val expected: Left[ResponseWrapper[NinoFormatError.type], Nothing] = Left(ResponseWrapper(correlationId, NinoFormatError))
 
         willDelete(url"$baseUrl/income-tax/disclosures/$nino/$taxYear").returns(Future.successful(expected))
@@ -56,6 +60,7 @@ class DeleteDisclosuresConnectorSpec extends ConnectorSpec {
         await(connector.deleteDisclosures(request)) shouldBe expected
       }
       "return an unsuccessful response with the correct correlationId and a single error using HIP" in new HipTest with Test {
+        MockedAppConfig.featureSwitches returns Configuration("ifs_hip_migration_1640.enabled" -> true)
         val expected: Left[ResponseWrapper[NinoFormatError.type], Nothing] = Left(ResponseWrapper(correlationId, NinoFormatError))
 
         willDelete(url"$baseUrl/itsd/disclosures/$nino/$taxYear").returns(Future.successful(expected))
@@ -66,6 +71,7 @@ class DeleteDisclosuresConnectorSpec extends ConnectorSpec {
 
     "a request returning multiple errors" should {
       "return an unsuccessful response with the correct correlationId and multiple errors using IFS" in new Ifs1Test with Test {
+        MockedAppConfig.featureSwitches returns Configuration("ifs_hip_migration_1640.enabled" -> false)
         val expected: Left[ResponseWrapper[Seq[MtdError]], Nothing] =
           Left(ResponseWrapper(correlationId, Seq(NinoFormatError, InternalError, TaxYearFormatError)))
 
@@ -74,6 +80,7 @@ class DeleteDisclosuresConnectorSpec extends ConnectorSpec {
         await(connector.deleteDisclosures(request)) shouldBe expected
       }
       "return an unsuccessful response with the correct correlationId and multiple errors using HIP" in new HipTest with Test {
+        MockedAppConfig.featureSwitches returns Configuration("ifs_hip_migration_1640.enabled" -> true)
         val expected: Left[ResponseWrapper[Seq[MtdError]], Nothing] =
           Left(ResponseWrapper(correlationId, Seq(NinoFormatError, InternalError, TaxYearFormatError)))
 
