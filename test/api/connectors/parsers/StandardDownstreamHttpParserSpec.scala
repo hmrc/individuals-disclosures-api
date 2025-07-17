@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -141,6 +141,55 @@ class StandardDownstreamHttpParserSpec extends UnitSpec {
     """.stripMargin
   )
 
+  val multipleTopLevelErrorCodesJson: JsValue = Json.parse(
+    """
+      |[
+      |    {
+      |        "errorCode": "1117",
+      |        "errorDescription": "Error 1 description"
+      |    },
+      |    {
+      |        "errorCode": "1215",
+      |        "errorDescription": "Error 2 description"
+      |    },
+      |    {
+      |        "errorCode": "1216",
+      |        "errorDescription": "Error 3 description"
+      |    },
+      |    {
+      |        "errorCode": "1217",
+      |        "errorDescription": "Error 4 description"
+      |    }
+      |]
+    """.stripMargin
+  )
+
+  val multipleErrorCodesInResponseJson: JsValue = Json.parse(
+    """
+      |{
+      |    "origin": "HIP",
+      |    "response": [
+      |        {
+      |            "errorCode": "1117",
+      |            "errorDescription": "Error 1 description"
+      |        },
+      |        {
+      |            "errorCode": "1215",
+      |            "errorDescription": "Error 2 description"
+      |        },
+      |        {
+      |            "errorCode": "1216",
+      |            "errorDescription": "Error 3 description"
+      |        },
+      |        {
+      |        "errorCode": "1217",
+      |        "errorDescription": "Error 4 description"
+      |        }
+      |    ]
+      |}
+    """.stripMargin
+  )
+
   val malformedErrorJson: JsValue = Json.parse(
     """
       |{
@@ -151,7 +200,7 @@ class StandardDownstreamHttpParserSpec extends UnitSpec {
   )
 
   private def handleErrorsCorrectly[A](httpReads: HttpReads[DownstreamOutcome[A]]): Unit =
-    Seq(BAD_REQUEST, NOT_FOUND, FORBIDDEN, CONFLICT, UNPROCESSABLE_ENTITY).foreach(responseCode =>
+    Seq(BAD_REQUEST, NOT_FOUND, FORBIDDEN, CONFLICT, UNPROCESSABLE_ENTITY, NOT_IMPLEMENTED).foreach(responseCode =>
       s"receiving a $responseCode response" should {
         "be able to parse a single error" in {
           val httpResponse = HttpResponse(responseCode, singleErrorJson.toString(), Map("CorrelationId" -> Seq(correlationId)))
@@ -224,7 +273,7 @@ class StandardDownstreamHttpParserSpec extends UnitSpec {
                                      |}
       """.stripMargin)
 
-    s"receiving a response with a bvr errors" should {
+    "receiving a response with a bvr errors" should {
       "return an outbound BUSINESS_ERROR error containing the BVR ids" in {
         val httpResponse = HttpResponse(BAD_REQUEST, singleBvrJson.toString(), Map("CorrelationId" -> Seq(correlationId)))
 
@@ -235,51 +284,21 @@ class StandardDownstreamHttpParserSpec extends UnitSpec {
     }
   }
 
-  def topLevelErrorCodeJson(code: String): JsValue = Json.parse(
-    s"""
-       |[
-       |    {
-       |        "errorCode": "$code",
-       |        "errorDescription": "error description"
-       |    }
-       |]
-  """.stripMargin
-  )
-
-  val multipleErrorCodesInResponseJson: JsValue = Json.parse(
-    """
-      |{
-      |    "origin": "HIP",
-      |    "response": [
-      |        {
-      |            "errorCode": "1117",
-      |            "errorDescription": "The tax year provided is invalid"
-      |        },
-      |        {
-      |            "errorCode": "1215",
-      |            "errorDescription": "Invalid taxable entity id"
-      |        }
-      |    ]
-      |}
-  """.stripMargin
-  )
-
   private def handleHipErrorsCorrectly[A](httpReads: HttpReads[DownstreamOutcome[A]]): Unit = {
-    List(
-      (BAD_REQUEST, "1215"),
-      (BAD_REQUEST, "1117"),
-      (NOT_FOUND, "5010")
-    ).foreach { case (responseStatus, responseCode) =>
-      "receiving a response with HIP error containing top level error code" should {
-        s"return a Left ResponseWrapper containing the extracted error code $responseCode" in {
+    List(NOT_FOUND, UNPROCESSABLE_ENTITY, NOT_IMPLEMENTED).foreach { responseStatus =>
+      s"receiving a $responseStatus response with multiple HIP errors containing top level error codes" should {
+        "return a Left ResponseWrapper containing the extracted error codes" in {
           val httpResponse = HttpResponse(
             responseStatus,
-            topLevelErrorCodeJson(responseCode),
+            multipleTopLevelErrorCodesJson,
             Map("CorrelationId" -> List(correlationId))
           )
 
           httpReads.read(method, url, httpResponse) shouldBe Left(
-            ResponseWrapper(correlationId, DownstreamErrors.single(DownstreamErrorCode(responseCode)))
+            ResponseWrapper(
+              correlationId,
+              DownstreamErrors(
+                List(DownstreamErrorCode("1117"), DownstreamErrorCode("1215"), DownstreamErrorCode("1216"), DownstreamErrorCode("1217"))))
           )
         }
       }
@@ -294,7 +313,10 @@ class StandardDownstreamHttpParserSpec extends UnitSpec {
         )
 
         httpReads.read(method, url, httpResponse) shouldBe Left(
-          ResponseWrapper(correlationId, DownstreamErrors(List(DownstreamErrorCode("1117"), DownstreamErrorCode("1215"))))
+          ResponseWrapper(
+            correlationId,
+            DownstreamErrors(
+              List(DownstreamErrorCode("1117"), DownstreamErrorCode("1215"), DownstreamErrorCode("1216"), DownstreamErrorCode("1217"))))
         )
       }
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -83,23 +83,29 @@ class AmendDisclosuresServiceSpec extends ServiceSpec {
             await(service.amendDisclosures(amendDisclosuresRequest)) shouldBe Left(ErrorWrapper(correlationId, error))
           }
 
-        val input = Seq(
+        val ifsErrors = Seq(
           ("INVALID_NINO", NinoFormatError),
           ("INVALID_TAX_YEAR", TaxYearFormatError),
           ("INVALID_CORRELATIONID", errors.InternalError),
           ("INVALID_PAYLOAD", errors.InternalError),
           ("INCOME_SOURCE_NOT_FOUND", NotFoundError),
           ("VOLUNTARY_CLASS2_CANNOT_BE_CHANGED", RuleVoluntaryClass2CannotBeChangedError),
-          ("OUTSIDE_AMENDMENT_WINDOW", RuleOutsideAmendmentWindow),
           ("SERVER_ERROR", errors.InternalError),
           ("SERVICE_UNAVAILABLE", errors.InternalError)
         )
 
-        val extra_error = Seq(
-          ("INVALID_TAXABLE_ENTITY_ID", NinoFormatError)
+        val hipErrors = Seq(
+          ("1000", InternalError),
+          ("1117", TaxYearFormatError),
+          ("1215", NinoFormatError),
+          ("1216", InternalError),
+          ("4200", RuleOutsideAmendmentWindowError),
+          ("5000", RuleTaxYearNotSupportedError),
+          ("5003", NotFoundError),
+          ("5004", RuleVoluntaryClass2CannotBeChangedError)
         )
 
-        (input ++ extra_error).foreach(args => (serviceError _).tupled(args))
+        (ifsErrors ++ hipErrors).foreach(args => (serviceError _).tupled(args))
       }
     }
   }

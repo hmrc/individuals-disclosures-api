@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,26 +16,31 @@
 
 package v2.models.request.amend
 
-import play.api.libs.json.{JsError, JsObject, Json}
+import config.MockAppConfig
+import play.api.Configuration
+import play.api.libs.json.{JsError, JsObject, JsValue, Json}
 import support.UnitSpec
 
-class AmendDisclosuresRequestDataBodySpec extends UnitSpec {
+class AmendDisclosuresRequestDataBodySpec extends UnitSpec with MockAppConfig {
 
-  private val json = Json.parse(
-    """
-      |{
-      |   "taxAvoidance": [
-      |      {
-      |         "srn": "14211123",
-      |         "taxYear": "2020-21"
-      |      }
-      |   ],
-      |   "class2Nics": {
-      |      "class2VoluntaryContributions": true
-      |   }
-      |}
+  private def json(srnUpperCase: Boolean = false): JsValue = {
+    lazy val srn: String = if (srnUpperCase) "SRN" else "srn"
+    Json.parse(
+      s"""
+         |{
+         |   "taxAvoidance": [
+         |      {
+         |         "$srn": "14211123",
+         |         "taxYear": "2020-21"
+         |      }
+         |   ],
+         |   "class2Nics": {
+         |      "class2VoluntaryContributions": true
+         |   }
+         |}
     """.stripMargin
-  )
+    )
+  }
 
   private val taxAvoidanceModel = Seq(
     AmendTaxAvoidanceItem(
@@ -54,7 +59,7 @@ class AmendDisclosuresRequestDataBodySpec extends UnitSpec {
   "AmendDisclosuresRequestBody" when {
     "read from valid JSON" should {
       "produce the expected AmendDisclosuresRequestBody object" in {
-        json.as[AmendDisclosuresRequestBody] shouldBe requestBodyModel
+        json().as[AmendDisclosuresRequestBody] shouldBe requestBodyModel
       }
     }
 
@@ -104,8 +109,16 @@ class AmendDisclosuresRequestDataBodySpec extends UnitSpec {
     }
 
     "written to JSON" should {
-      "produce the expected JsObject" in {
-        Json.toJson(requestBodyModel) shouldBe json
+      "produce the expected JsObject when using HIP format downstream" in {
+        MockedAppConfig.featureSwitches.returns(Configuration("ifs_hip_migration_1638.enabled" -> true))
+        val isHipEnabled = true
+        Json.toJson(requestBodyModel) shouldBe json(isHipEnabled)
+      }
+
+      "produce the expected JsObject when using IFS format downstream" in {
+          MockedAppConfig.featureSwitches.returns(Configuration("ifs_hip_migration_1638.enabled" -> false))
+          val isHipEnabled = false
+          Json.toJson(requestBodyModel) shouldBe json(isHipEnabled)
       }
     }
   }
