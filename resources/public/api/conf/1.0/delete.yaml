@@ -8,8 +8,7 @@ description: |
 
   | Header Value (Gov-Test-Scenario)      | Scenario                                                               |
   |---------------------------------------|------------------------------------------------------------------------|
-  | N/A - DEFAULT                         | Simulates success response.                                            |
-  | VOLUNTARY_CLASS2_CANNOT_BE_CHANGED    | Simulates the scenario where Voluntary Class 2 NICs cannot be changed. |                                                 
+  | N/A - DEFAULT                         | Simulates success response.                                            |                                                
   | NOT_FOUND                             | Simulates the scenario where no data is found.                         |
   | STATEFUL                              | Performs a stateful delete.                                            |   
 
@@ -48,8 +47,6 @@ responses:
             $ref: './common/errors.yaml#/components/examples/ruleTaxYearNotSupported'
           RULE_TAX_YEAR_RANGE_INVALID:
             $ref: './common/errors.yaml#/components/examples/ruleTaxYearRangeInvalid'
-          RULE_VOLUNTARY_CLASS2_CANNOT_BE_CHANGED:
-            $ref: './common/errors.yaml#/components/examples/voluntaryClass2CannotBeChanged'
           RULE_INCORRECT_GOV_TEST_SCENARIO:
             $ref: './common/errors.yaml#/components/examples/ruleIncorrectGovTestScenario'
 

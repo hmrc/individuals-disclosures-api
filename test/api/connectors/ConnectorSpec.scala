@@ -118,7 +118,6 @@ trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames
       "CorrelationId"     -> correlationId,
       "Gov-Test-Scenario" -> "DEFAULT"
     )
-
     MockedAppConfig.ifs1BaseUrl returns this.baseUrl
     MockedAppConfig.ifs1Token returns "ifs1-token"
     MockedAppConfig.ifs1Env returns "ifs1-environment"
@@ -156,7 +155,6 @@ trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames
       "CorrelationId"     -> correlationId,
       "Gov-Test-Scenario" -> "DEFAULT"
     )
-
     MockedAppConfig.hipBaseUrl returns this.baseUrl
     MockedAppConfig.hipEnv returns "hip-environment"
     MockedAppConfig.hipClientId returns clientId
