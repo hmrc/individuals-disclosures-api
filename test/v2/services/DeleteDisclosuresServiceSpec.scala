@@ -64,18 +64,25 @@ class DeleteDisclosuresServiceSpec extends ServiceSpec {
           await(service.delete(request)) shouldBe Left(ErrorWrapper(correlationId, error))
         }
 
-      val input = Seq(
+      val ifsInput = Seq(
         ("INVALID_TAXABLE_ENTITY_ID", NinoFormatError),
         ("INVALID_TAX_YEAR", TaxYearFormatError),
         ("INVALID_CORRELATIONID", InternalError),
         ("NO_DATA_FOUND", NotFoundError),
-        ("VOLUNTARY_CLASS2_CANNOT_BE_CHANGED", RuleVoluntaryClass2CannotBeChangedError),
         ("OUTSIDE_AMENDMENT_WINDOW", RuleOutsideAmendmentWindowError),
         ("SERVER_ERROR", InternalError),
         ("SERVICE_UNAVAILABLE", InternalError)
       )
 
-      input.foreach(args => (serviceError _).tupled(args))
+      val hipInput = Seq(
+        ("1215", NinoFormatError),
+        ("1117", TaxYearFormatError),
+        ("5010", NotFoundError),
+        ("4200", RuleOutsideAmendmentWindowError),
+        ("5000", RuleTaxYearNotSupportedError)
+      )
+
+      (ifsInput ++ hipInput).foreach(args => (serviceError _).tupled(args))
     }
   }
 
