@@ -17,7 +17,7 @@
 package v2.services
 
 import api.controllers.RequestContext
-import api.models.errors._
+import api.models.errors.*
 import api.services.{BaseService, ServiceOutcome}
 import cats.implicits.toBifunctorOps
 import v2.connectors.DeleteDisclosuresConnector

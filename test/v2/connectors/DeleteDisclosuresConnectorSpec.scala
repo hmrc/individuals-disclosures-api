@@ -92,7 +92,7 @@ class DeleteDisclosuresConnectorSpec extends ConnectorSpec {
   }
 
   trait Test {
-    _: ConnectorTest =>
+    self: ConnectorTest =>
 
     protected val request: DeleteDisclosuresRequestData = DeleteDisclosuresRequestData(
       nino = Nino(nino),

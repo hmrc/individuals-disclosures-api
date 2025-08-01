@@ -17,7 +17,7 @@
 package v1.connectors
 
 import api.connectors.DownstreamUri.{HipUri, Ifs1Uri}
-import api.connectors.httpparsers.StandardDownstreamHttpParser._
+import api.connectors.httpparsers.StandardDownstreamHttpParser.*
 import api.connectors.{BaseDownstreamConnector, DownstreamOutcome}
 import config.{AppConfig, ConfigFeatureSwitches}
 import uk.gov.hmrc.http.HeaderCarrier

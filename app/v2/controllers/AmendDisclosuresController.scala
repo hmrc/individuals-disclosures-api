@@ -16,16 +16,16 @@
 
 package v2.controllers
 
-import api.controllers._
+import api.controllers.*
 import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
 import config.AppConfig
 import play.api.libs.json.JsValue
 import play.api.mvc.{Action, ControllerComponents}
 import utils.IdGenerator
 import v2.controllers.validators.AmendDisclosuresValidatorFactory
-import v2.services._
+import v2.services.*
 
-import javax.inject._
+import javax.inject.*
 import scala.concurrent.ExecutionContext
 
 class AmendDisclosuresController @Inject() (val authService: EnrolmentsAuthService,

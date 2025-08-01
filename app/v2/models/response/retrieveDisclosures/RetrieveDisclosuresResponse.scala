@@ -17,7 +17,7 @@
 package v2.models.response.retrieveDisclosures
 
 import api.models.domain.Timestamp
-import play.api.libs.functional.syntax._
+import play.api.libs.functional.syntax.*
 import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 import utils.JsonUtils
 
@@ -29,7 +29,7 @@ object RetrieveDisclosuresResponse extends  JsonUtils {
     (JsPath \ "taxAvoidance").readNullable[Seq[TaxAvoidanceItem]].mapEmptySeqToNone and
       (JsPath \ "class2Nics").readNullable[Class2Nics].mapEmptyModelToNone(Class2Nics.empty) and
       (JsPath \ "submittedOn").read[Timestamp]
-  )(RetrieveDisclosuresResponse.apply _)
+  )(RetrieveDisclosuresResponse.apply)
 
   implicit val writes: OWrites[RetrieveDisclosuresResponse] = Json.writes[RetrieveDisclosuresResponse]
 

@@ -105,7 +105,7 @@ class CreateMarriageAllowanceControllerSpec
 
   trait Test extends ControllerTest with AuditEventChecking {
 
-    val controller = new CreateMarriageAllowanceController(
+    val controller: CreateMarriageAllowanceController = new CreateMarriageAllowanceController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
       validatorFactory = mockCreateMarriageAllowanceValidatorFactory,

@@ -16,7 +16,7 @@
 
 package v1.models.request.create
 
-import play.api.libs.functional.syntax._
+import play.api.libs.functional.syntax.*
 import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 import utils.JsonUtils
 
@@ -34,6 +34,6 @@ object CreateMarriageAllowanceRequestBody extends JsonUtils {
       (JsPath \ "participant1Details" \ "firstForeName").writeNullable[String] and
       (JsPath \ "participant1Details" \ "surname").write[String] and
       (JsPath \ "participant1Details" \ "dateOfBirth").writeNullable[String]
-  )(unlift(CreateMarriageAllowanceRequestBody.unapply))
+  )(o => Tuple.fromProductTyped(o))
 
 }

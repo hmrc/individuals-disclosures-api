@@ -81,7 +81,7 @@ class AmendDisclosuresConnectorSpec extends ConnectorSpec {
   }
 
   trait Test {
-    _: ConnectorTest =>
+    self: ConnectorTest =>
 
     val requestBody: AmendDisclosuresRequestBody =
       AmendDisclosuresRequestBody(None, None)

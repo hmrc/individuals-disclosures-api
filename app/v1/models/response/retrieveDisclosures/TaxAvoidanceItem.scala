@@ -26,5 +26,5 @@ object TaxAvoidanceItem {
   implicit val reads: Reads[TaxAvoidanceItem] = (
     (JsPath \ "SRN").read[String].orElse((JsPath \ "srn").read[String]) and
       (JsPath \ "taxYear").read[String]
-  )(TaxAvoidanceItem.apply _)
+  )(TaxAvoidanceItem.apply)
 }

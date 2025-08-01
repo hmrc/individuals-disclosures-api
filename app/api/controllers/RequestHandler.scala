@@ -35,7 +35,7 @@ trait RequestHandler {
 
   def handleRequest()(implicit
       ctx: RequestContext,
-      request: UserRequest[_],
+      request: UserRequest[?],
       ec: ExecutionContext
   ): Future[Result]
 
@@ -61,7 +61,7 @@ object RequestHandler {
       auditHandler: Option[AuditHandler] = None
   ) extends RequestHandler {
 
-    def handleRequest()(implicit ctx: RequestContext, request: UserRequest[_], ec: ExecutionContext): Future[Result] =
+    def handleRequest()(implicit ctx: RequestContext, request: UserRequest[?], ec: ExecutionContext): Future[Result] =
       Delegate.handleRequest()
 
     def withErrorHandling(errorHandling: ErrorHandling): RequestHandlerBuilder[Input, Output] =
@@ -129,7 +129,7 @@ object RequestHandler {
 
       def handleRequest()(implicit
           ctx: RequestContext,
-          request: UserRequest[_],
+          request: UserRequest[?],
           ec: ExecutionContext
       ): Future[Result] = {
 
@@ -156,7 +156,7 @@ object RequestHandler {
 
       private def handleSuccess(parsedRequest: Input, serviceResponse: ResponseWrapper[Output])(implicit
           ctx: RequestContext,
-          request: UserRequest[_],
+          request: UserRequest[?],
           ec: ExecutionContext
       ): Result = {
         logger.info(
@@ -173,7 +173,7 @@ object RequestHandler {
 
       private def handleFailure(errorWrapper: ErrorWrapper)(implicit
           ctx: RequestContext,
-          request: UserRequest[_],
+          request: UserRequest[?],
           ec: ExecutionContext
       ): Result = {
         logger.warn(
@@ -195,7 +195,7 @@ object RequestHandler {
 
       def auditIfRequired(httpStatus: Int, response: Either[ErrorWrapper, Option[JsValue]])(implicit
           ctx: RequestContext,
-          request: UserRequest[_],
+          request: UserRequest[?],
           ec: ExecutionContext): Unit =
         auditHandler.foreach { creator =>
           creator.performAudit(request.userDetails, httpStatus, response)

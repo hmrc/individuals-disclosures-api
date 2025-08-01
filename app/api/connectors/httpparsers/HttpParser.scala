@@ -18,7 +18,7 @@ package api.connectors.httpparsers
 
 import api.models.errors.{BVRError, DownstreamError, DownstreamErrorCode, DownstreamErrors, InternalError, OutboundError}
 import play.api.Logger
-import play.api.libs.json._
+import play.api.libs.json.*
 import uk.gov.hmrc.http.HttpResponse
 
 import scala.util.{Success, Try}

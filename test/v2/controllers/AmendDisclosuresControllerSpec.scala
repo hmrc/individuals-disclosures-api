@@ -132,7 +132,7 @@ class AmendDisclosuresControllerSpec
 
   trait Test extends ControllerTest with AuditEventChecking {
 
-    val controller = new AmendDisclosuresController(
+    val controller: AmendDisclosuresController = new AmendDisclosuresController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
       validatorFactory = mockAmendDisclosuresValidatorFactory,

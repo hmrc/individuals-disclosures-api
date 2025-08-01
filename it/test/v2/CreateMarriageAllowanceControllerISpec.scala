@@ -17,13 +17,13 @@
 package v2
 
 import api.models.errors
-import api.models.errors._
+import api.models.errors.*
 import api.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 import api.support.IntegrationBaseSpec
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.libs.json.{JsResult, JsSuccess, JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 
 class CreateMarriageAllowanceControllerISpec extends IntegrationBaseSpec {
 
@@ -236,9 +236,9 @@ class CreateMarriageAllowanceControllerISpec extends IntegrationBaseSpec {
           val responseErrorMessage: JsResult[String]    = (response.json \ "message").validate[String]
           val responseErrorPaths: JsResult[Seq[String]] = (response.json \ "paths").validate[Seq[String]]
 
-          responseErrorCode shouldBe a[JsSuccess[_]]
-          responseErrorMessage shouldBe a[JsSuccess[_]]
-          responseErrorPaths shouldBe a[JsSuccess[_]]
+          responseErrorCode shouldBe a[JsSuccess[?]]
+          responseErrorMessage shouldBe a[JsSuccess[?]]
+          responseErrorPaths shouldBe a[JsSuccess[?]]
 
           responseErrorCode.get shouldBe RuleIncorrectOrEmptyBodyError.code
           responseErrorMessage.get shouldBe RuleIncorrectOrEmptyBodyError.message

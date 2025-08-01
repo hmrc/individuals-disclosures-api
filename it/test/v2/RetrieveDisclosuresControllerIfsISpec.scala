@@ -17,13 +17,13 @@
 package v2
 
 import api.models.errors
-import api.models.errors._
+import api.models.errors.*
 import api.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 import api.support.IntegrationBaseSpec
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import v2.fixtures.RetrieveDisclosuresControllerFixture
 
 class RetrieveDisclosuresControllerIfsISpec extends IntegrationBaseSpec {

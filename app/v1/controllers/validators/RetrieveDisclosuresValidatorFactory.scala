@@ -20,7 +20,7 @@ import api.controllers.validators.Validator
 import api.controllers.validators.resolvers.{ResolveNino, ResolveTaxYear}
 import api.models.errors.MtdError
 import cats.data.Validated
-import cats.implicits._
+import cats.implicits.*
 import config.AppConfig
 import v1.models.request.retrieve.RetrieveDisclosuresRequestData
 
@@ -36,7 +36,7 @@ class RetrieveDisclosuresValidatorFactory @Inject() (appConfig: AppConfig) {
         (
           ResolveNino(nino),
           ResolveTaxYear(appConfig.minimumPermittedTaxYear, taxYear, None, None)
-        ).mapN(RetrieveDisclosuresRequestData)
+        ).mapN(RetrieveDisclosuresRequestData.apply)
 
     }
 

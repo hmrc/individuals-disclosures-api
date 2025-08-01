@@ -17,10 +17,10 @@
 package v1.controllers.validators
 
 import api.controllers.validators.Validator
-import api.controllers.validators.resolvers._
+import api.controllers.validators.resolvers.*
 import api.models.errors.MtdError
 import cats.data.Validated
-import cats.implicits._
+import cats.implicits.*
 import play.api.libs.json.JsValue
 import v1.controllers.validators.CreateMarriageAllowanceValidator.validateBusinessRules
 import v1.models.request.create.{CreateMarriageAllowanceRequestBody, CreateMarriageAllowanceRequestData}
@@ -39,7 +39,7 @@ class CreateMarriageAllowanceValidatorFactory {
         (
           ResolveNino(nino),
           resolveJson(body)
-        ).mapN(CreateMarriageAllowanceRequestData) andThen validateBusinessRules
+        ).mapN(CreateMarriageAllowanceRequestData.apply) andThen validateBusinessRules
 
     }
 
