@@ -16,11 +16,11 @@
 
 import uk.gov.hmrc.DefaultBuildSettings
 
-ThisBuild / scalaVersion := "3.4.3"
+ThisBuild / scalaVersion := "3.5.2"
 ThisBuild / majorVersion := 0
 ThisBuild / scalacOptions ++= Seq(
   "-Wconf:msg=Flag.*repeatedly:s",
-//  "-Werror"
+  "-Werror"
 )
 
 val appName = "individuals-disclosures-api"
@@ -31,8 +31,6 @@ lazy val microservice = Project(appName, file("."))
   .settings(
     libraryDependencies ++= AppDependencies.compile ++ AppDependencies.test,
     scalacOptions ++= Seq(
-      "-explain-cyclic",
-      "-Ydebug-cyclic",
       "-feature",
       "-Wconf:src=routes/.*:s"
     )

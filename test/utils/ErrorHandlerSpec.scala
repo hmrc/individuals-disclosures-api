@@ -16,15 +16,13 @@
 
 package utils
 
-import api.models.errors._
+import api.models.errors.*
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Configuration
-import play.api.http.Status
-import play.api.http.Status.UNSUPPORTED_MEDIA_TYPE
 import play.api.libs.json.Json
 import play.api.mvc.{AnyContent, RequestHeader, Result}
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import support.UnitSpec
 import uk.gov.hmrc.auth.core.InsufficientEnrolments
 import uk.gov.hmrc.http.{HeaderCarrier, JsValidationException, NotFoundException}
@@ -44,8 +42,8 @@ class ErrorHandlerSpec extends UnitSpec with GuiceOneAppPerSuite {
     "return 404 with error body" when {
       s"URI not found" in new Test {
 
-        val result: Future[Result] = handler.onClientError(requestHeader, Status.NOT_FOUND, "test")
-        status(result) shouldBe Status.NOT_FOUND
+        val result: Future[Result] = handler.onClientError(requestHeader, NOT_FOUND, "test")
+        status(result) shouldBe NOT_FOUND
 
         contentAsJson(result) shouldBe NotFoundError.asJson
       }
