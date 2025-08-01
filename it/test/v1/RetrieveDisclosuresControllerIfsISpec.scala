@@ -103,7 +103,7 @@ class RetrieveDisclosuresControllerIfsISpec extends IntegrationBaseSpec {
           ("AA123456A", "2017-18", BAD_REQUEST, RuleTaxYearNotSupportedError),
           ("AA123456A", "2015-17", BAD_REQUEST, RuleTaxYearRangeInvalidError)
         )
-        input.foreach(args => (validationErrorTest _).tupled(args))
+        input.foreach(validationErrorTest.tupled)
       }
 
       "ifs service error" when {
@@ -140,7 +140,7 @@ class RetrieveDisclosuresControllerIfsISpec extends IntegrationBaseSpec {
           (INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, errors.InternalError),
           (SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, errors.InternalError)
         )
-        input.foreach(args => (serviceErrorTest _).tupled(args))
+        input.foreach(serviceErrorTest.tupled)
       }
     }
   }

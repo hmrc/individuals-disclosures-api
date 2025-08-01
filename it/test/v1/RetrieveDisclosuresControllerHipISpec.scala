@@ -97,7 +97,7 @@ class RetrieveDisclosuresControllerHipISpec extends IntegrationBaseSpec {
           ("AA123456A", "2017-18", BAD_REQUEST, RuleTaxYearNotSupportedError),
           ("AA123456A", "2015-17", BAD_REQUEST, RuleTaxYearRangeInvalidError)
         )
-        input.foreach(args => (validationErrorTest _).tupled(args))
+        input.foreach(validationErrorTest.tupled)
       }
 
     }
@@ -138,7 +138,7 @@ class RetrieveDisclosuresControllerHipISpec extends IntegrationBaseSpec {
         (BAD_REQUEST, "1117", BAD_REQUEST, TaxYearFormatError),
         (NOT_FOUND, "5010", NOT_FOUND, NotFoundError)
       )
-      input.foreach(args => (serviceErrorTest _).tupled(args))
+      input.foreach(serviceErrorTest.tupled)
     }
   }
 }

@@ -20,6 +20,7 @@ import api.models.errors.{ClientOrAgentNotAuthorisedError, InternalError}
 import api.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 import api.support.IntegrationBaseSpec
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
+import play.api.libs.ws.DefaultBodyReadables.readableAsString
 import play.api.libs.json.JsValue
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.*

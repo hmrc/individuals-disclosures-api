@@ -21,6 +21,7 @@ import api.models.errors.*
 import api.services.*
 import api.support.IntegrationBaseSpec
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
+import play.api.libs.ws.WSBodyWritables.writeableOf_JsValue
 import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.*
@@ -459,7 +460,7 @@ class AmendDisclosuresControllerHipISpec extends IntegrationBaseSpec {
           ("AA123456A", "2021-22", invalidSRNRequestBodyJson, BAD_REQUEST, srnFormatError),
           ("AA123456A", "2021-22", invalidClass2ValueRequestBodyJson, BAD_REQUEST, ruleVoluntaryClass2ValueInvalidError)
         )
-        input.foreach(args => (validationErrorTest _).tupled(args))
+        input.foreach(validationErrorTest.tupled)
       }
 
       "downstream service error" when {
@@ -499,7 +500,7 @@ class AmendDisclosuresControllerHipISpec extends IntegrationBaseSpec {
           (UNPROCESSABLE_ENTITY, "4200", BAD_REQUEST, RuleOutsideAmendmentWindowError),
           (NOT_IMPLEMENTED, "5000", BAD_REQUEST, RuleTaxYearNotSupportedError)
         )
-        input.foreach(args => (serviceErrorTest _).tupled(args))
+        input.foreach(serviceErrorTest.tupled)
       }
     }
   }
