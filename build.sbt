@@ -22,6 +22,7 @@ ThisBuild / scalacOptions ++= Seq(
   "-Wconf:msg=Flag.*repeatedly:s",
   "-Werror"
 )
+ThisBuild / scalafmtOnCompile := true
 
 val appName = "individuals-disclosures-api"
 
