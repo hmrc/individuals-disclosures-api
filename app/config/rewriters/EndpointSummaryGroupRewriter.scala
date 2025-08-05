@@ -23,8 +23,8 @@ import config.rewriters.DocumentationRewriters.CheckAndRewrite
 import javax.inject.{Inject, Singleton}
 
 /** For the OAS workaround where the "grouped endpoints" yaml file (e.g. employment_expenses.yaml) must include the matching summary text for each
- * endpoint. This rewriter uses handlebars and config to add [test only] if necessary.
- */
+  * endpoint. This rewriter uses handlebars and config to add [test only] if necessary.
+  */
 @Singleton class EndpointSummaryGroupRewriter @Inject() (val appConfig: AppConfig) extends HandlebarsRewriter {
 
   hb.registerHelper(

@@ -51,7 +51,6 @@ class RetrieveDisclosuresControllerSpec
     taxYear = TaxYear.fromMtd(taxYear)
   )
 
-
   val taxAvoidanceModel: Seq[TaxAvoidanceItem] = Seq(
     TaxAvoidanceItem(
       srn = "14211123",
@@ -79,7 +78,6 @@ class RetrieveDisclosuresControllerSpec
         MockRetrieveDisclosuresService
           .retrieve(requestData)
           .returns(Future.successful(Right(ResponseWrapper(correlationId, retrieveDisclosuresResponseModel))))
-
 
         runOkTest(OK, Some(mtdResponse))
 

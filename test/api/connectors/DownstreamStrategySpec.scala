@@ -30,8 +30,7 @@ class DownstreamStrategySpec extends UnitSpec with ScalaFutures {
         baseUrl = "someBaseUrl",
         env = "someEnv",
         token = "someToken",
-        environmentHeaders = Some(Seq("header1", "header2")
-        )
+        environmentHeaders = Some(Seq("header1", "header2"))
       )
 
       val strategy: DownstreamStrategy = DownstreamStrategy.standardStrategy(downstreamConfig)
@@ -111,4 +110,5 @@ class DownstreamStrategySpec extends UnitSpec with ScalaFutures {
       strategy.environmentHeaders shouldBe empty
     }
   }
+
 }

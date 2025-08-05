@@ -116,9 +116,9 @@ class AmendDisclosuresRequestDataBodySpec extends UnitSpec with MockAppConfig {
       }
 
       "produce the expected JsObject when using IFS format downstream" in {
-          MockedAppConfig.featureSwitches.returns(Configuration("ifs_hip_migration_1638.enabled" -> false))
-          val isHipEnabled = false
-          Json.toJson(requestBodyModel) shouldBe json(isHipEnabled)
+        MockedAppConfig.featureSwitches.returns(Configuration("ifs_hip_migration_1638.enabled" -> false))
+        val isHipEnabled = false
+        Json.toJson(requestBodyModel) shouldBe json(isHipEnabled)
       }
     }
   }

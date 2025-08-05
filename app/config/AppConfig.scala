@@ -78,7 +78,7 @@ trait AppConfig {
   def safeEndpointsEnabled(version: String): Boolean
 
   /** Defaults to false
-   */
+    */
   def endpointAllowsSupportingAgents(endpointName: String): Boolean
 }
 
@@ -115,8 +115,8 @@ class AppConfigImpl @Inject() (config: ServicesConfig, val configuration: Config
   def apiStatus(version: Version): String          = config.getString(s"api.${version.name}.status")
   def featureSwitches: Configuration               = configuration.getOptional[Configuration](s"feature-switch").getOrElse(Configuration.empty)
 
-  def endpointsEnabled(version: Version): Boolean  = config.getBoolean(s"api.${version.name}.endpoints.enabled")
-  def endpointsEnabled(version: String): Boolean = config.getBoolean(s"api.$version.endpoints.enabled")
+  def endpointsEnabled(version: Version): Boolean = config.getBoolean(s"api.${version.name}.endpoints.enabled")
+  def endpointsEnabled(version: String): Boolean  = config.getBoolean(s"api.$version.endpoints.enabled")
 
   def apiVersionReleasedInProduction(version: String): Boolean = config.getBoolean(s"api.$version.endpoints.api-released-in-production")
 

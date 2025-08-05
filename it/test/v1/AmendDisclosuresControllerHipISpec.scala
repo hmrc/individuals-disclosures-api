@@ -31,10 +31,10 @@ class AmendDisclosuresControllerHipISpec extends IntegrationBaseSpec {
 
   private trait Test {
 
-    val nino: String          = "AA123456A"
-    val taxYear: String       = "2021-22"
+    val nino: String                      = "AA123456A"
+    val taxYear: String                   = "2021-22"
     private val downstreamTaxYear: String = "2021-22"
-    val correlationId: String = "X-123"
+    val correlationId: String             = "X-123"
 
     val requestBodyJson: JsValue = Json.parse(
       """

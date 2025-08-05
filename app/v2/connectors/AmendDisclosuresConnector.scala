@@ -37,7 +37,7 @@ class AmendDisclosuresConnector @Inject() (val http: HttpClientV2, val appConfig
 
     import request._
 
-    val downstreamUri: DownstreamUri[Unit] = if(ConfigFeatureSwitches().isEnabled("ifs_hip_migration_1638")){
+    val downstreamUri: DownstreamUri[Unit] = if (ConfigFeatureSwitches().isEnabled("ifs_hip_migration_1638")) {
       HipUri[Unit](s"itsd/disclosures/$nino/${taxYear.asMtd}")
     } else {
       Ifs1Uri[Unit](s"income-tax/disclosures/$nino/${taxYear.asMtd}")

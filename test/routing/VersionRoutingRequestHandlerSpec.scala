@@ -55,11 +55,13 @@ class VersionRoutingRequestHandlerSpec extends UnitSpec with Inside with MockApp
   }
 
   private val routingMap = new VersionRoutingMap {
-    override val defaultRouter: Router     = test.defaultRouter
+    override val defaultRouter: Router = test.defaultRouter
+
     override val map: Map[Version, Router] = Map(
       Version1 -> v1Router,
       Version2 -> v2Router
     )
+
   }
 
   class Test(implicit acceptHeader: Option[String]) {

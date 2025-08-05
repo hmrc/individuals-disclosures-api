@@ -28,7 +28,7 @@ object EmptyPathsResult {
 }
 
 /** Type class to locate paths to empty objects or arrays within an instance of an object.
- */
+  */
 trait EmptinessChecker[A] {
   import EmptinessChecker.*
 
@@ -115,13 +115,13 @@ object EmptinessChecker {
   given EmptinessChecker[BigDecimal] = instance(_ => Structure.Primitive)
 
   given [A](using aInstance: EmptinessChecker[A]): EmptinessChecker[Option[A]] =
-  instance(opt => opt.map(aInstance.structureOf).getOrElse(Structure.Null))
+    instance(opt => opt.map(aInstance.structureOf).getOrElse(Structure.Null))
 
   given [A](using aInstance: EmptinessChecker[A]): EmptinessChecker[Seq[A]] =
-  instance(seq => Structure.Arr(seq.map(aInstance.structureOf)))
+    instance(seq => Structure.Arr(seq.map(aInstance.structureOf)))
 
   given [A](using aInstance: EmptinessChecker[A]): EmptinessChecker[List[A]] =
-  instance(list => Structure.Arr(list.map(aInstance.structureOf)))
+    instance(list => Structure.Arr(list.map(aInstance.structureOf)))
 
   // Lazy prevents infinite recursion in generic derivation
   final class Lazy[+A](val value: () => A) extends AnyVal
@@ -131,26 +131,26 @@ object EmptinessChecker {
   }
 
   inline given derived[A](using m: Mirror.Of[A]): EmptinessChecker[A] =
-  instance { a =>
-    val elemLabels    = summonLabels[m.MirroredElemLabels]
-    val elemInstances = summonAllInstances[m.MirroredElemTypes]
-    val elems         = a.asInstanceOf[Product].productIterator.toList
-    val fields = elemLabels.lazyZip(elems).lazyZip(elemInstances).map { (label, value, checker) =>
-      label -> checker.value().structureOf(value)
+    instance { a =>
+      val elemLabels    = summonLabels[m.MirroredElemLabels]
+      val elemInstances = summonAllInstances[m.MirroredElemTypes]
+      val elems         = a.asInstanceOf[Product].productIterator.toList
+      val fields = elemLabels.lazyZip(elems).lazyZip(elemInstances).map { (label, value, checker) =>
+        label -> checker.value().structureOf(value)
+      }
+      Structure.Obj(fields)
     }
-    Structure.Obj(fields)
-  }
 
   private inline def summonLabels[T <: Tuple]: List[String] =
     inline erasedValue[T] match {
-    case _: (h *: t)   => constValue[h].asInstanceOf[String] :: summonLabels[t]
-    case _: EmptyTuple => Nil
-  }
+      case _: (h *: t)   => constValue[h].asInstanceOf[String] :: summonLabels[t]
+      case _: EmptyTuple => Nil
+    }
 
   private inline def summonAllInstances[T <: Tuple]: List[Lazy[EmptinessChecker[Any]]] =
     inline erasedValue[T] match {
-    case _: (h *: t)   => summonInline[Lazy[EmptinessChecker[h]]].asInstanceOf[Lazy[EmptinessChecker[Any]]] :: summonAllInstances[t]
-    case _: EmptyTuple => Nil
-  }
+      case _: (h *: t)   => summonInline[Lazy[EmptinessChecker[h]]].asInstanceOf[Lazy[EmptinessChecker[Any]]] :: summonAllInstances[t]
+      case _: EmptyTuple => Nil
+    }
 
 }

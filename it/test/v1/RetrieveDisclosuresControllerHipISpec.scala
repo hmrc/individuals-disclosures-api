@@ -29,7 +29,7 @@ class RetrieveDisclosuresControllerHipISpec extends IntegrationBaseSpec {
 
   private trait Test {
 
-    val nino: String = "AA123456A"
+    val nino: String    = "AA123456A"
     val taxYear: String = "2021-22"
 
     val hipResponse: JsValue = RetrieveDisclosuresControllerFixture.fullHipRetrieveDisclosuresResponse
@@ -141,4 +141,5 @@ class RetrieveDisclosuresControllerHipISpec extends IntegrationBaseSpec {
       input.foreach(serviceErrorTest.tupled)
     }
   }
+
 }

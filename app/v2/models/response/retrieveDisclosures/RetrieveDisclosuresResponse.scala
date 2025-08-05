@@ -23,7 +23,7 @@ import utils.JsonUtils
 
 case class RetrieveDisclosuresResponse(taxAvoidance: Option[Seq[TaxAvoidanceItem]], class2Nics: Option[Class2Nics], submittedOn: Timestamp)
 
-object RetrieveDisclosuresResponse extends  JsonUtils {
+object RetrieveDisclosuresResponse extends JsonUtils {
 
   implicit val reads: Reads[RetrieveDisclosuresResponse] = (
     (JsPath \ "taxAvoidance").readNullable[Seq[TaxAvoidanceItem]].mapEmptySeqToNone and
@@ -33,6 +33,4 @@ object RetrieveDisclosuresResponse extends  JsonUtils {
 
   implicit val writes: OWrites[RetrieveDisclosuresResponse] = Json.writes[RetrieveDisclosuresResponse]
 
-
 }
-

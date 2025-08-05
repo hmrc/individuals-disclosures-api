@@ -20,7 +20,7 @@ import play.api.libs.json.Format
 import utils.enums.Enums
 
 enum Method {
-  case GET, PUT ,POST, DELETE
+  case GET, PUT, POST, DELETE
 }
 
 object Method {

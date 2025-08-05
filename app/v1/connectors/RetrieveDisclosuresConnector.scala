@@ -39,7 +39,7 @@ class RetrieveDisclosuresConnector @Inject() (val http: HttpClientV2, val appCon
 
     import request._
 
-    val downstreamUri = if(ConfigFeatureSwitches().isEnabled("ifs_hip_migration_1639")) {
+    val downstreamUri = if (ConfigFeatureSwitches().isEnabled("ifs_hip_migration_1639")) {
       HipUri[RetrieveDisclosuresResponse](s"itsd/disclosures/$nino/${taxYear.asMtd}")
     } else {
       Ifs1Uri[RetrieveDisclosuresResponse](s"income-tax/disclosures/$nino/${taxYear.asMtd}")

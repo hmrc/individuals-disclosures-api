@@ -33,7 +33,7 @@ object Enum {
 case class Foo[A](someField: A)
 
 object Foo {
-  given[A: Format]: Format[Foo[A]] = Json.format[Foo[A]]
+  given [A: Format]: Format[Foo[A]] = Json.format[Foo[A]]
 }
 
 class EnumsSpec extends UnitSpec with Inspectors {
@@ -55,19 +55,19 @@ class EnumsSpec extends UnitSpec with Inspectors {
           """.stripMargin)
 
     "generates reads" in {
-      forAll(List(`enum-one`, `enum-two`, `enum-three`)) {( value: Enum) =>
+      forAll(List(`enum-one`, `enum-two`, `enum-three`)) { (value: Enum) =>
         json(value).as[Foo[Enum]] shouldBe Foo(value)
       }
     }
 
     "generates writes" in {
-      forAll(List(`enum-one`, `enum-two`, `enum-three`)) {( value: Enum) =>
+      forAll(List(`enum-one`, `enum-two`, `enum-three`)) { (value: Enum) =>
         Json.toJson(Foo(value)) shouldBe json(value)
       }
     }
 
     "allow roundtrip" in {
-      forAll(List(`enum-one`, `enum-two`, `enum-three`)) {( value: Enum) =>
+      forAll(List(`enum-one`, `enum-two`, `enum-three`)) { (value: Enum) =>
         val foo = Foo(value)
         Json.toJson(foo).as[Foo[Enum]] shouldBe foo
       }
@@ -81,13 +81,13 @@ class EnumsSpec extends UnitSpec with Inspectors {
     "allows alternative names (specified by method)" in {
 
       enum Enum2(val altName: String) {
-        case `enum-one` extends Enum2("one")
-        case `enum-two` extends Enum2("two")
+        case `enum-one`   extends Enum2("one")
+        case `enum-two`   extends Enum2("two")
         case `enum-three` extends Enum2("three")
       }
 
       object Enum2 {
-        given Show[Enum2]     = Show.show[Enum2](_.altName)
+        given Show[Enum2]   = Show.show[Enum2](_.altName)
         given Format[Enum2] = Enums.format(values)
       }
 

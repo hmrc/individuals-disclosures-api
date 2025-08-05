@@ -29,8 +29,8 @@ class RetrieveDisclosuresControllerHipISpec extends IntegrationBaseSpec {
 
   private trait Test {
 
-    val nino: String          = "AA123456A"
-    val taxYear: String       = "2021-22"
+    val nino: String    = "AA123456A"
+    val taxYear: String = "2021-22"
 
     val hipResponse: JsValue = RetrieveDisclosuresControllerFixture.fullHipRetrieveDisclosuresResponse
     val mtdResponse: JsValue = RetrieveDisclosuresControllerFixture.mtdResponse

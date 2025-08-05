@@ -37,7 +37,7 @@ class DeleteDisclosuresConnector @Inject() (val http: HttpClientV2, val appConfi
 
     import request._
 
-    val downstreamUri = if(ConfigFeatureSwitches().isEnabled("ifs_hip_migration_1640")) {
+    val downstreamUri = if (ConfigFeatureSwitches().isEnabled("ifs_hip_migration_1640")) {
       HipUri[Unit](s"itsd/disclosures/$nino/${taxYear.asMtd}")
     } else {
       Ifs1Uri[Unit](s"income-tax/disclosures/$nino/${taxYear.asMtd}")

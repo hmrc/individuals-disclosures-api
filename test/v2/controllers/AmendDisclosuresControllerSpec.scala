@@ -90,8 +90,6 @@ class AmendDisclosuresControllerSpec
     body = amendDisclosuresRequestBody
   )
 
-
-
   "AmendDisclosuresController" should {
     "return a successful response with header X-CorrelationId and body" when {
       "the request received is valid" in new Test {
@@ -100,7 +98,6 @@ class AmendDisclosuresControllerSpec
         MockAmendDisclosuresService
           .amendDisclosures(requestData)
           .returns(Future.successful(Right(ResponseWrapper(correlationId, ()))))
-
 
         runOkTestWithAudit(
           expectedStatus = NO_CONTENT,

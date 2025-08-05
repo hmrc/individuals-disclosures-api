@@ -106,11 +106,10 @@ trait BaseDownstreamConnector extends Logging {
 
   private def getBackendUri(path: String, strategy: DownstreamStrategy): String = s"${strategy.baseUrl}/$path"
 
-  private def getBackendHeaders(strategy: DownstreamStrategy,
-                                additionalHeaders: Seq[(String, String)] = Seq.empty)(implicit
-                                                                                      ec: ExecutionContext,
-                                                                                      hc: HeaderCarrier,
-                                                                                      correlationId: String): Future[HeaderCarrier] = {
+  private def getBackendHeaders(strategy: DownstreamStrategy, additionalHeaders: Seq[(String, String)] = Seq.empty)(implicit
+      ec: ExecutionContext,
+      hc: HeaderCarrier,
+      correlationId: String): Future[HeaderCarrier] = {
 
     for {
       contractHeaders <- strategy.contractHeaders(correlationId)

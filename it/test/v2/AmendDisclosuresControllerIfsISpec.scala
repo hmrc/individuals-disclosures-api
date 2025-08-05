@@ -57,7 +57,6 @@ class AmendDisclosuresControllerIfsISpec extends IntegrationBaseSpec {
       """.stripMargin
     )
 
-
     private def uri: String = s"/$nino/$taxYear"
 
     def ifs1Uri: String = s"/income-tax/disclosures/$nino/$taxYear"

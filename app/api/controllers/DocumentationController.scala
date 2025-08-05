@@ -27,11 +27,11 @@ import javax.inject.{Inject, Singleton}
 
 @Singleton
 class DocumentationController @Inject() (
-                                          selfAssessmentApiDefinition: ApiDefinitionFactory,
-                                          docRewriters: DocumentationRewriters,
-                                          assets: RewriteableAssets,
-                                          cc: ControllerComponents
-                                        ) extends BackendController(cc) {
+    selfAssessmentApiDefinition: ApiDefinitionFactory,
+    docRewriters: DocumentationRewriters,
+    assets: RewriteableAssets,
+    cc: ControllerComponents
+) extends BackendController(cc) {
 
   def definition(): Action[AnyContent] = Action {
     Ok(Json.toJson(selfAssessmentApiDefinition.definition))
