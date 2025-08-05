@@ -110,7 +110,7 @@ class RetrieveDisclosuresConnectorSpec extends ConnectorSpec {
   }
 
   trait Test {
-    _: ConnectorTest =>
+    self: ConnectorTest =>
 
     protected val request: RetrieveDisclosuresRequestData = RetrieveDisclosuresRequestData(
       nino = Nino(nino),

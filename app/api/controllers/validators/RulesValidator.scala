@@ -32,7 +32,7 @@ trait RulesValidator[PARSED] {
 
   def validateBusinessRules(parsed: PARSED): Validated[Seq[MtdError], PARSED]
 
-  protected def combine(results: Validated[Seq[MtdError], _]*): Validated[Seq[MtdError], Unit] =
+  protected def combine(results: Validated[Seq[MtdError], ?]*): Validated[Seq[MtdError], Unit] =
     results.traverse_(identity)
 
   implicit class ResultOps(result: Validated[Seq[MtdError], Unit]) {

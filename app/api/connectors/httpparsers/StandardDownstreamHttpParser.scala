@@ -21,7 +21,7 @@ import api.models.errors
 import api.models.errors.InternalError
 import api.models.outcomes.ResponseWrapper
 import play.api.Logger
-import play.api.http.Status._
+import play.api.http.Status.*
 import play.api.libs.json.Reads
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 

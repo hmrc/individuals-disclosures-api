@@ -46,8 +46,8 @@ class FeatureSwitchesImpl(featureSwitchConfig: Configuration) extends FeatureSwi
 }
 
 /** This is just here for non-typesafe usage such as Handlebars using OasFeatureRewriter. In most cases, should use the API-specific
- * XyzFeatureSwitches class instead.
- */
+  * XyzFeatureSwitches class instead.
+  */
 case class ConfigFeatureSwitches private (protected val featureSwitchConfig: Configuration) extends FeatureSwitches {
   val supportingAgentsAccessControlEnabled: Boolean = isEnabled("supporting-agents-access-control")
 
@@ -61,7 +61,6 @@ case class ConfigFeatureSwitches private (protected val featureSwitchConfig: Con
 object ConfigFeatureSwitches {
   def apply()(implicit appConfig: AppConfig): ConfigFeatureSwitches = ConfigFeatureSwitches(appConfig.featureSwitches)
 }
-
 
 object FeatureSwitches {
   def apply(configuration: Configuration): FeatureSwitches = new FeatureSwitchesImpl(configuration)

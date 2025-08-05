@@ -82,7 +82,7 @@ class DeleteDisclosuresServiceSpec extends ServiceSpec {
         ("5000", RuleTaxYearNotSupportedError)
       )
 
-      (ifsInput ++ hipInput).foreach(args => (serviceError _).tupled(args))
+      (ifsInput ++ hipInput).foreach(serviceError.tupled)
     }
   }
 

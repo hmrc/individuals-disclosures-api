@@ -20,7 +20,7 @@ import config.MockAppConfig
 import support.UnitSpec
 
 class EndpointSummaryRewriterSpec extends UnitSpec with MockAppConfig {
-  
+
   val rewriter = new EndpointSummaryRewriter(mockAppConfig)
 
   "check and rewrite for the endpoint yaml file" when {
@@ -83,4 +83,5 @@ class EndpointSummaryRewriterSpec extends UnitSpec with MockAppConfig {
       }
     }
   }
+
 }

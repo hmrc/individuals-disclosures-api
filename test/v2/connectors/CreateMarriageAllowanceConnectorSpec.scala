@@ -66,7 +66,7 @@ class CreateMarriageAllowanceConnectorSpec extends ConnectorSpec {
   }
 
   trait Test {
-    _: ConnectorTest =>
+    self: ConnectorTest =>
 
     protected val requestBody: CreateMarriageAllowanceRequestBody =
       CreateMarriageAllowanceRequestBody("TC663795B", None, "Smith", None)

@@ -116,7 +116,7 @@ object TaxYear {
 
   type TodaySupplier = () => LocalDate
 
-  def currentTaxYear()(implicit todaySupplier: TodaySupplier = today _): TaxYear = {
+  def currentTaxYear()(implicit todaySupplier: TodaySupplier = () => today()): TaxYear = {
     val today            = todaySupplier()
     val year             = today.getYear
     val taxYearStartDate = LocalDate.parse(s"$year-04-06")

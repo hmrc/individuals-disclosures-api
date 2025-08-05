@@ -32,7 +32,7 @@ object AmendDisclosuresValidator extends RulesValidator[AmendDisclosuresRequestD
 
     val validatedTaxAvoidance = body.taxAvoidance match {
       case Some(taxAvoidanceItems) =>
-        combine(taxAvoidanceItems.zipWithIndex.map { case (item, idx) => validateTaxAvoidance(item, idx) }: _*)
+        combine(taxAvoidanceItems.zipWithIndex.map { case (item, idx) => validateTaxAvoidance(item, idx) }*)
       case None => valid
     }
 

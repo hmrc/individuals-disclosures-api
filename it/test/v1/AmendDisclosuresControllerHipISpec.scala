@@ -17,22 +17,24 @@
 package v1
 
 import api.models.errors
-import api.models.errors._
-import api.services._
+import api.models.errors.*
+import api.services.*
 import api.support.IntegrationBaseSpec
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
+import play.api.libs.ws.WSBodyWritables.writeableOf_JsValue
+import play.api.libs.ws.WSBodyReadables.readableAsJson
 import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 
 class AmendDisclosuresControllerHipISpec extends IntegrationBaseSpec {
 
   private trait Test {
 
-    val nino: String          = "AA123456A"
-    val taxYear: String       = "2021-22"
+    val nino: String                      = "AA123456A"
+    val taxYear: String                   = "2021-22"
     private val downstreamTaxYear: String = "2021-22"
-    val correlationId: String = "X-123"
+    val correlationId: String             = "X-123"
 
     val requestBodyJson: JsValue = Json.parse(
       """
@@ -483,7 +485,7 @@ class AmendDisclosuresControllerHipISpec extends IntegrationBaseSpec {
           ("AA123456A", "2021-22", invalidSRNRequestBodyJson, BAD_REQUEST, srnFormatError),
           ("AA123456A", "2021-22", invalidClass2ValueRequestBodyJson, BAD_REQUEST, ruleVoluntaryClass2ValueInvalidError)
         )
-        input.foreach(args => (validationErrorTest _).tupled(args))
+        input.foreach(validationErrorTest.tupled)
       }
 
       "downstream service error" when {
@@ -522,7 +524,7 @@ class AmendDisclosuresControllerHipISpec extends IntegrationBaseSpec {
           (UNPROCESSABLE_ENTITY, "5004", BAD_REQUEST, RuleVoluntaryClass2CannotBeChangedError),
           (NOT_IMPLEMENTED, "5000", BAD_REQUEST, RuleTaxYearNotSupportedError)
         )
-        input.foreach(args => (serviceErrorTest _).tupled(args))
+        input.foreach(serviceErrorTest.tupled)
       }
     }
   }

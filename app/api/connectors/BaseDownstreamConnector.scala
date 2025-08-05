@@ -19,6 +19,7 @@ package api.connectors
 import config.AppConfig
 import play.api.http.{HeaderNames, MimeTypes}
 import play.api.libs.json.{Json, Writes}
+import play.api.libs.ws.WSBodyWritables.writeableOf_JsValue
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, HttpReads, StringContextOps}
 import utils.{Logging, UrlUtils}
@@ -105,11 +106,10 @@ trait BaseDownstreamConnector extends Logging {
 
   private def getBackendUri(path: String, strategy: DownstreamStrategy): String = s"${strategy.baseUrl}/$path"
 
-  private def getBackendHeaders(strategy: DownstreamStrategy,
-                                additionalHeaders: Seq[(String, String)] = Seq.empty)(implicit
-                                                                                      ec: ExecutionContext,
-                                                                                      hc: HeaderCarrier,
-                                                                                      correlationId: String): Future[HeaderCarrier] = {
+  private def getBackendHeaders(strategy: DownstreamStrategy, additionalHeaders: Seq[(String, String)] = Seq.empty)(implicit
+      ec: ExecutionContext,
+      hc: HeaderCarrier,
+      correlationId: String): Future[HeaderCarrier] = {
 
     for {
       contractHeaders <- strategy.contractHeaders(correlationId)

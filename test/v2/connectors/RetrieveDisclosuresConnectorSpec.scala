@@ -27,7 +27,7 @@ import v2.models.request.retrieve.RetrieveDisclosuresRequestData
 import scala.concurrent.Future
 
 class RetrieveDisclosuresConnectorSpec extends ConnectorSpec {
-  private val nino: String = "AA111111A"
+  private val nino: String    = "AA111111A"
   private val taxYear: String = "2021-22"
 
   "RetrieveDisclosuresConnector" when {
@@ -110,7 +110,7 @@ class RetrieveDisclosuresConnectorSpec extends ConnectorSpec {
   }
 
   trait Test {
-    _: ConnectorTest =>
+    self: ConnectorTest =>
 
     protected val request: RetrieveDisclosuresRequestData = RetrieveDisclosuresRequestData(
       nino = Nino(nino),

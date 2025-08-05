@@ -16,7 +16,6 @@
 
 package controllers
 
-import controllers.{AssetInfo, Assets, AssetsMetadata}
 import play.api.Environment
 import play.api.http.{AcceptEncoding, HttpErrorHandler}
 import play.api.mvc.{Action, AnyContent, RequestHeader, Result}
@@ -35,7 +34,7 @@ trait Rewriter {
 @Singleton
 class RewriteableAssets @Inject() (errorHandler: HttpErrorHandler, meta: AssetsMetadata, env: Environment)(implicit ec: ExecutionContext)
     extends Assets(errorHandler, meta, env) {
-  import meta._
+  import meta.*
 
   /** Retrieves the requested asset and runs it through the rewriters if any..
     * @param path

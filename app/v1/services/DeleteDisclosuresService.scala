@@ -17,7 +17,7 @@
 package v1.services
 
 import api.controllers.RequestContext
-import api.models.errors._
+import api.models.errors.*
 import api.services.{BaseService, ServiceOutcome}
 import cats.implicits.toBifunctorOps
 import v1.connectors.DeleteDisclosuresConnector
@@ -37,12 +37,12 @@ class DeleteDisclosuresService @Inject() (connector: DeleteDisclosuresConnector)
 
   private val downstreamErrorMap: Map[String, MtdError] = {
     val ifsErrors = Map(
-      "INVALID_TAXABLE_ENTITY_ID"          -> NinoFormatError,
-      "INVALID_TAX_YEAR"                   -> TaxYearFormatError,
-      "INVALID_CORRELATIONID"              -> InternalError,
-      "NO_DATA_FOUND"                      -> NotFoundError,
-      "SERVER_ERROR"                       -> InternalError,
-      "SERVICE_UNAVAILABLE"                -> InternalError
+      "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
+      "INVALID_TAX_YEAR"          -> TaxYearFormatError,
+      "INVALID_CORRELATIONID"     -> InternalError,
+      "NO_DATA_FOUND"             -> NotFoundError,
+      "SERVER_ERROR"              -> InternalError,
+      "SERVICE_UNAVAILABLE"       -> InternalError
     )
     val hipErrors = Map(
       "1215" -> NinoFormatError,

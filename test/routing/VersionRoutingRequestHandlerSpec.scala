@@ -21,13 +21,12 @@ import config.MockAppConfig
 import org.apache.pekko.actor.ActorSystem
 import org.scalatest.Inside
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
-import play.api.http.HeaderNames.ACCEPT
 import play.api.http.{HttpConfiguration, HttpErrorHandler, HttpFilters}
 import play.api.libs.json.Json
-import play.api.mvc._
+import play.api.mvc.*
 import play.api.routing.Router
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import support.UnitSpec
 
 class VersionRoutingRequestHandlerSpec extends UnitSpec with Inside with MockAppConfig with GuiceOneAppPerSuite {
@@ -56,11 +55,13 @@ class VersionRoutingRequestHandlerSpec extends UnitSpec with Inside with MockApp
   }
 
   private val routingMap = new VersionRoutingMap {
-    override val defaultRouter: Router     = test.defaultRouter
+    override val defaultRouter: Router = test.defaultRouter
+
     override val map: Map[Version, Router] = Map(
       Version1 -> v1Router,
       Version2 -> v2Router
     )
+
   }
 
   class Test(implicit acceptHeader: Option[String]) {

@@ -16,7 +16,7 @@
 
 package v1.controllers
 
-import api.controllers._
+import api.controllers.*
 import api.hateoas.HateoasFactory
 import api.services.{EnrolmentsAuthService, MtdIdLookupService}
 import config.AppConfig
@@ -24,7 +24,7 @@ import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import utils.IdGenerator
 import v1.controllers.validators.RetrieveDisclosuresValidatorFactory
 import v1.models.response.retrieveDisclosures.RetrieveDisclosuresHateoasData
-import v1.services._
+import v1.services.*
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext

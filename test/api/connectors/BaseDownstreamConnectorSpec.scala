@@ -201,7 +201,7 @@ class BaseDownstreamConnectorSpec extends UnitSpec with MockHttpClient with Mock
 
     "a request is received with headers" must {
       def makeCall(downstreamUri: DownstreamUri[Result], requiredHeaders: Seq[(String, String)] = Nil, excludedHeaders: Seq[(String, String)] = Nil)(
-        implicit hc: HeaderCarrier): Assertion = {
+          implicit hc: HeaderCarrier): Assertion = {
         MockedHttpClient.put(
           url = absoluteUrl,
           config = headerCarrierConfig,

@@ -19,7 +19,7 @@ package v1.models.response.retrieveDisclosures
 import api.hateoas.{HateoasData, HateoasLinks, HateoasLinksFactory, Link}
 import api.models.domain.Timestamp
 import config.AppConfig
-import play.api.libs.functional.syntax._
+import play.api.libs.functional.syntax.*
 import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 import utils.JsonUtils
 
@@ -31,7 +31,7 @@ object RetrieveDisclosuresResponse extends HateoasLinks with JsonUtils {
     (JsPath \ "taxAvoidance").readNullable[Seq[TaxAvoidanceItem]].mapEmptySeqToNone and
       (JsPath \ "class2Nics").readNullable[Class2Nics].mapEmptyModelToNone(Class2Nics.empty) and
       (JsPath \ "submittedOn").read[Timestamp]
-  )(RetrieveDisclosuresResponse.apply _)
+  )(RetrieveDisclosuresResponse.apply)
 
   implicit val writes: OWrites[RetrieveDisclosuresResponse] = Json.writes[RetrieveDisclosuresResponse]
 

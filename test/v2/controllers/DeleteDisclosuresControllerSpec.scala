@@ -86,7 +86,7 @@ class DeleteDisclosuresControllerSpec
 
   trait Test extends ControllerTest with AuditEventChecking {
 
-    val controller = new DeleteDisclosuresController(
+    val controller: DeleteDisclosuresController = new DeleteDisclosuresController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
       service = mockDeleteDisclosuresService,

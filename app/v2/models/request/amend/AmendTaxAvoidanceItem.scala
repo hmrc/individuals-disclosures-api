@@ -25,17 +25,16 @@ object AmendTaxAvoidanceItem {
   implicit val reads: Reads[AmendTaxAvoidanceItem] = Json.reads[AmendTaxAvoidanceItem]
 
   implicit def writes(implicit appConfig: AppConfig): OWrites[AmendTaxAvoidanceItem] = (amendTaxAvoidanceItem: AmendTaxAvoidanceItem) => {
-    val srn = if(ConfigFeatureSwitches().isEnabled("ifs_hip_migration_1638")) {
+    val srn = if (ConfigFeatureSwitches().isEnabled("ifs_hip_migration_1638")) {
       "SRN"
     } else {
       "srn"
     }
 
     Json.obj(
-      srn -> amendTaxAvoidanceItem.srn,
+      srn       -> amendTaxAvoidanceItem.srn,
       "taxYear" -> amendTaxAvoidanceItem.taxYear
     )
   }
-
 
 }

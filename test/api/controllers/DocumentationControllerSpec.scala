@@ -41,7 +41,7 @@ class DocumentationControllerSpec extends ControllerBaseSpec with MockAppConfig 
       .getOrElse(fail(s"Matching Version object not found for $apiVersionName"))
 
   private val titleLineMatcher = """(.*title:.*)""".r
-  private val titleMatcher = """^(\s*title:\s*".*?\s*\[test\sonly]).*$""".r
+  private val titleMatcher     = """^(\s*title:\s*".*?\s*\[test\sonly]).*$""".r
 
   private val actualApplicationYaml: String = {
     val loader = Thread.currentThread().getContextClassLoader
@@ -107,8 +107,7 @@ class DocumentationControllerSpec extends ControllerBaseSpec with MockAppConfig 
         result should include("""  title: """)
         numberOfTestOnlyOccurrences(result) shouldBe 0
 
-        result should startWith(
-          s"""openapi: "3.0.3"
+        result should startWith(s"""openapi: "3.0.3"
              |
              |info:
              |  version: "$apiVersionName"""".stripMargin)
@@ -136,8 +135,7 @@ class DocumentationControllerSpec extends ControllerBaseSpec with MockAppConfig 
           numberOfTestOnlyOccurrences(result) shouldBe 1
         }
 
-        result should startWith(
-          s"""openapi: "3.0.3"
+        result should startWith(s"""openapi: "3.0.3"
              |
              |info:
              |  version: "$apiVersionName"""".stripMargin)
@@ -191,7 +189,7 @@ class DocumentationControllerSpec extends ControllerBaseSpec with MockAppConfig 
 
     }
 
-    private val config = new Configuration(ConfigFactory.load())
+    private val config    = new Configuration(ConfigFactory.load())
     private val mimeTypes = HttpConfiguration.parseFileMimeTypes(config) ++ Map("yaml" -> "text/yaml", "md" -> "text/markdown")
 
     private val assetsMetadata =

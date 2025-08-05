@@ -147,7 +147,7 @@ class RetrieveDisclosuresControllerSpec
       "supporting-agents-access-control.enabled" -> true
     )
 
-    val controller = new RetrieveDisclosuresController(
+    val controller: RetrieveDisclosuresController = new RetrieveDisclosuresController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
       validatorFactory = mockRetrieveDisclosuresValidatorFactory,

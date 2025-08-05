@@ -96,7 +96,7 @@ class CreateMarriageAllowanceServiceSpec extends ServiceSpec {
           ("INVALID_NINO", NinoFormatError)
         }
 
-        (input ++ extra_errors).foreach(args => (serviceError _).tupled(args))
+        (input ++ extra_errors).foreach(serviceError.tupled)
       }
     }
   }

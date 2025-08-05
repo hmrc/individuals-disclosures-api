@@ -19,7 +19,7 @@ package v1.controllers.validators
 import api.controllers.validators.RulesValidator
 import api.controllers.validators.resolvers.{ResolveIsoDate, ResolveNino}
 import api.models.domain.Nino
-import api.models.errors._
+import api.models.errors.*
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
 import v1.models.request.create.CreateMarriageAllowanceRequestData

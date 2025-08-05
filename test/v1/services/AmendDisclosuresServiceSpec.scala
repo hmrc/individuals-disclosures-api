@@ -104,7 +104,7 @@ class AmendDisclosuresServiceSpec extends ServiceSpec {
           ("5004", RuleVoluntaryClass2CannotBeChangedError)
         )
 
-        (ifsErrors ++ hipErrors).foreach(args => (serviceError _).tupled(args))
+        (ifsErrors ++ hipErrors).foreach(serviceError.tupled)
       }
     }
   }

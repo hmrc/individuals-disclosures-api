@@ -17,9 +17,9 @@
 package v1.services
 
 import api.controllers.RequestContext
-import api.models.errors._
+import api.models.errors.*
 import api.services.{BaseService, ServiceOutcome}
-import cats.implicits._
+import cats.implicits.*
 import v1.connectors.AmendDisclosuresConnector
 import v1.models.request.amend.AmendDisclosuresRequestData
 

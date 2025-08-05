@@ -28,22 +28,13 @@ object Parameter {
 
 case class PublishingException(message: String) extends Exception(message)
 
-sealed trait APIStatus
+enum APIStatus {
+  case ALPHA, BETA, STABLE, DEPRECATED, RETIRED
+}
 
-object APIStatus extends Enumeration {
-
-  case object ALPHA extends APIStatus
-
-  case object BETA extends APIStatus
-
-  case object STABLE extends APIStatus
-
-  case object DEPRECATED extends APIStatus
-
-  case object RETIRED extends APIStatus
-
-  implicit val formatApiVersion: Format[APIStatus] = Enums.format[APIStatus]
-  val parser: PartialFunction[String, APIStatus]   = Enums.parser[APIStatus]
+object APIStatus {
+  given Format[APIStatus]                        = Enums.format(values)
+  val parser: PartialFunction[String, APIStatus] = Enums.parser(values)
 }
 
 case class APIVersion(version: Version, status: APIStatus, endpointsEnabled: Boolean)
@@ -73,11 +64,11 @@ case class APIDefinition(name: String,
 }
 
 object APIDefinition {
-  implicit val formatAPIDefinition: OFormat[APIDefinition] = Json.format[APIDefinition]
+  given OFormat[APIDefinition] = Json.format[APIDefinition]
 }
 
-case class Definition( api: APIDefinition)
+case class Definition(api: APIDefinition)
 
 object Definition {
-  implicit val formatDefinition: OFormat[Definition] = Json.format[Definition]
+  given OFormat[Definition] = Json.format[Definition]
 }

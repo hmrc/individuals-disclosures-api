@@ -21,7 +21,7 @@ import api.support.IntegrationBaseSpec
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.libs.json.JsValue
 import play.api.libs.ws.{WSRequest, WSResponse}
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 
 abstract class AuthSupportingAgentsAllowedISpec extends IntegrationBaseSpec {
 

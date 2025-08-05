@@ -16,7 +16,7 @@
 
 package v1
 
-import api.models.errors._
+import api.models.errors.*
 import api.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 import api.support.IntegrationBaseSpec
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
@@ -29,7 +29,7 @@ class RetrieveDisclosuresControllerHipISpec extends IntegrationBaseSpec {
 
   private trait Test {
 
-    val nino: String = "AA123456A"
+    val nino: String    = "AA123456A"
     val taxYear: String = "2021-22"
 
     val hipResponse: JsValue = RetrieveDisclosuresControllerFixture.fullHipRetrieveDisclosuresResponse
@@ -97,7 +97,7 @@ class RetrieveDisclosuresControllerHipISpec extends IntegrationBaseSpec {
           ("AA123456A", "2017-18", BAD_REQUEST, RuleTaxYearNotSupportedError),
           ("AA123456A", "2015-17", BAD_REQUEST, RuleTaxYearRangeInvalidError)
         )
-        input.foreach(args => (validationErrorTest _).tupled(args))
+        input.foreach(validationErrorTest.tupled)
       }
 
     }
@@ -138,7 +138,8 @@ class RetrieveDisclosuresControllerHipISpec extends IntegrationBaseSpec {
         (BAD_REQUEST, "1117", BAD_REQUEST, TaxYearFormatError),
         (NOT_FOUND, "5010", NOT_FOUND, NotFoundError)
       )
-      input.foreach(args => (serviceErrorTest _).tupled(args))
+      input.foreach(serviceErrorTest.tupled)
     }
   }
+
 }

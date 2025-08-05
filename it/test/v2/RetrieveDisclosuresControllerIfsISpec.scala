@@ -17,13 +17,13 @@
 package v2
 
 import api.models.errors
-import api.models.errors._
+import api.models.errors.*
 import api.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 import api.support.IntegrationBaseSpec
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import v2.fixtures.RetrieveDisclosuresControllerFixture
 
 class RetrieveDisclosuresControllerIfsISpec extends IntegrationBaseSpec {
@@ -34,8 +34,8 @@ class RetrieveDisclosuresControllerIfsISpec extends IntegrationBaseSpec {
 
   private trait Test {
 
-    val nino: String          = "AA123456A"
-    val taxYear: String       = "2021-22"
+    val nino: String    = "AA123456A"
+    val taxYear: String = "2021-22"
 
     val ifsResponse: JsValue = RetrieveDisclosuresControllerFixture.fullIfsRetrieveDisclosuresResponse
     val mtdResponse: JsValue = RetrieveDisclosuresControllerFixture.mtdResponse
@@ -103,7 +103,7 @@ class RetrieveDisclosuresControllerIfsISpec extends IntegrationBaseSpec {
           ("AA123456A", "2017-18", BAD_REQUEST, RuleTaxYearNotSupportedError),
           ("AA123456A", "2015-17", BAD_REQUEST, RuleTaxYearRangeInvalidError)
         )
-        input.foreach(args => (validationErrorTest _).tupled(args))
+        input.foreach(validationErrorTest.tupled)
       }
 
       "ifs service error" when {
@@ -140,7 +140,7 @@ class RetrieveDisclosuresControllerIfsISpec extends IntegrationBaseSpec {
           (INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, errors.InternalError),
           (SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, errors.InternalError)
         )
-        input.foreach(args => (serviceErrorTest _).tupled(args))
+        input.foreach(serviceErrorTest.tupled)
       }
     }
   }

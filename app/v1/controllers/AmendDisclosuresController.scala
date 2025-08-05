@@ -16,7 +16,7 @@
 
 package v1.controllers
 
-import api.controllers._
+import api.controllers.*
 import api.hateoas.HateoasFactory
 import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
 import config.AppConfig
@@ -26,9 +26,9 @@ import utils.IdGenerator
 import v1.controllers.validators.AmendDisclosuresValidatorFactory
 import v1.models.response.amendDisclosures.AmendDisclosuresHateoasData
 import v1.models.response.amendDisclosures.AmendDisclosuresResponse.AmendLinksFactory
-import v1.services._
+import v1.services.*
 
-import javax.inject._
+import javax.inject.*
 import scala.concurrent.ExecutionContext
 
 class AmendDisclosuresController @Inject() (val authService: EnrolmentsAuthService,

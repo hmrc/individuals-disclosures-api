@@ -16,21 +16,21 @@
 
 package v2
 
-import api.models.errors._
+import api.models.errors.*
 import api.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 import api.support.IntegrationBaseSpec
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import v2.fixtures.RetrieveDisclosuresControllerFixture
 
 class RetrieveDisclosuresControllerHipISpec extends IntegrationBaseSpec {
 
   private trait Test {
 
-    val nino: String          = "AA123456A"
-    val taxYear: String       = "2021-22"
+    val nino: String    = "AA123456A"
+    val taxYear: String = "2021-22"
 
     val hipResponse: JsValue = RetrieveDisclosuresControllerFixture.fullHipRetrieveDisclosuresResponse
     val mtdResponse: JsValue = RetrieveDisclosuresControllerFixture.mtdResponse
@@ -98,7 +98,7 @@ class RetrieveDisclosuresControllerHipISpec extends IntegrationBaseSpec {
           ("AA123456A", "2017-18", BAD_REQUEST, RuleTaxYearNotSupportedError),
           ("AA123456A", "2015-17", BAD_REQUEST, RuleTaxYearRangeInvalidError)
         )
-        input.foreach(args => (validationErrorTest _).tupled(args))
+        input.foreach(validationErrorTest.tupled)
       }
 
       "hip service error" when {
@@ -137,7 +137,7 @@ class RetrieveDisclosuresControllerHipISpec extends IntegrationBaseSpec {
           (BAD_REQUEST, "1117", BAD_REQUEST, TaxYearFormatError),
           (NOT_FOUND, "5010", NOT_FOUND, NotFoundError)
         )
-        input.foreach(args => (serviceErrorTest _).tupled(args))
+        input.foreach(serviceErrorTest.tupled)
       }
     }
   }

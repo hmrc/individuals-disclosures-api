@@ -111,13 +111,14 @@ trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames
 
   protected trait Ifs1Test extends ConnectorTest {
 
-    protected lazy val requiredHeaders: Seq[(String, String)] = List(
+    protected val requiredHeaders: Seq[(String, String)] = List(
       "Authorization"     -> "Bearer ifs1-token",
       "Environment"       -> "ifs1-environment",
       "User-Agent"        -> "individual-disclosures-api",
       "CorrelationId"     -> correlationId,
       "Gov-Test-Scenario" -> "DEFAULT"
     )
+
     MockedAppConfig.ifs1BaseUrl returns this.baseUrl
     MockedAppConfig.ifs1Token returns "ifs1-token"
     MockedAppConfig.ifs1Env returns "ifs1-environment"
@@ -127,7 +128,7 @@ trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames
 
   protected trait Ifs2Test extends ConnectorTest {
 
-    protected lazy val requiredHeaders: Seq[(String, String)] = List(
+    protected val requiredHeaders: Seq[(String, String)] = List(
       "Authorization"     -> "Bearer ifs2-token",
       "Environment"       -> "ifs2-environment",
       "User-Agent"        -> "individual-disclosures-api",
@@ -143,18 +144,19 @@ trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames
   }
 
   protected trait HipTest extends ConnectorTest {
-    private val clientId: String = "clientId"
+    private val clientId: String     = "clientId"
     private val clientSecret: String = "clientSecret"
 
     private val token: String = Base64.getEncoder.encodeToString(s"$clientId:$clientSecret".getBytes(Charsets.UTF_8))
 
-    protected lazy val requiredHeaders: Seq[(String, String)] = List(
+    protected val requiredHeaders: Seq[(String, String)] = List(
       "Authorization"     -> s"Basic $token",
       "Environment"       -> "hip-environment",
       "User-Agent"        -> "individual-disclosures-api",
       "CorrelationId"     -> correlationId,
       "Gov-Test-Scenario" -> "DEFAULT"
     )
+
     MockedAppConfig.hipBaseUrl returns this.baseUrl
     MockedAppConfig.hipEnv returns "hip-environment"
     MockedAppConfig.hipClientId returns clientId

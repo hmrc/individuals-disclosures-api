@@ -60,7 +60,7 @@ class ValidatorSpec extends UnitSpec with MockFactory {
         ResolveNino(nino),
         ResolveTaxYear(taxYear),
         jsonResolver(jsonBody, RuleIncorrectOrEmptyBodyError)
-      ).mapN(TestParsedRequest) andThen TestRulesValidator.validateBusinessRules
+      ).mapN(TestParsedRequest.apply) andThen TestRulesValidator.validateBusinessRules
 
   }
 
