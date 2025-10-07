@@ -115,6 +115,48 @@ class StandardDownstreamHttpParserSpec extends UnitSpec {
     }
   }
 
+  "validateJson" when {
+    implicit val reads: Reads[SomeModel] = Json.reads[SomeModel]
+
+    "the JSON is valid" should {
+      "return the parsed model" in {
+        val validJsonResponse: HttpResponse = HttpResponse(
+          OK,
+          desExpectedJson,
+          Map("CorrelationId" -> Seq(correlationId))
+        )
+
+        val result: Option[SomeModel] = validJsonResponse.validateJson[SomeModel]
+
+        result shouldBe Some(desModel)
+      }
+    }
+
+    "the JSON is invalid" should {
+      "return None" in {
+        val invalidJsonResponse: HttpResponse = HttpResponse(
+          OK,
+          Json.obj("data"     -> 1234),
+          Map("CorrelationId" -> Seq(correlationId))
+        )
+
+        val result: Option[SomeModel] = invalidJsonResponse.validateJson[SomeModel]
+
+        result shouldBe None
+      }
+    }
+
+    "the response contains no JSON" should {
+      "return None" in {
+        val emptyResponse: HttpResponse = HttpResponse(OK, "", Map("CorrelationId" -> Seq(correlationId)))
+
+        val result: Option[SomeModel] = emptyResponse.validateJson[SomeModel]
+
+        result shouldBe None
+      }
+    }
+  }
+
   val singleErrorJson: JsValue = Json.parse(
     """
       |{
