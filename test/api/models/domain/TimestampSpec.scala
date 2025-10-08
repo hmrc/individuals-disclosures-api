@@ -74,6 +74,12 @@ class TimestampSpec extends UnitSpec {
     }
   }
 
+  "Timestamp.toString" should {
+    "return the string value" in {
+      Timestamp("2023-01-20T01:20:30.000Z").toString shouldBe "2023-01-20T01:20:30.000Z"
+    }
+  }
+
   "Timestamp serialised to a JSON string field" should {
     "serialise correctly" in {
       val result = Json.toJson(response)

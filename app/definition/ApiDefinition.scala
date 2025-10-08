@@ -20,12 +20,6 @@ import play.api.libs.json.{Format, Json, OFormat}
 import routing.Version
 import utils.enums.Enums
 
-case class Parameter(name: String, required: Boolean = false)
-
-object Parameter {
-  implicit val formatParameter: OFormat[Parameter] = Json.format[Parameter]
-}
-
 case class PublishingException(message: String) extends Exception(message)
 
 enum APIStatus {

@@ -16,6 +16,7 @@
 
 package api.models.domain
 
+import api.models.domain.TaxYear.currentTaxYear
 import support.UnitSpec
 
 import java.time.LocalDate
@@ -52,6 +53,14 @@ class TaxYearRangeSpec extends UnitSpec {
 
       val result: TaxYearRange = TaxYearRange.todayMinus(years = 4)
       result shouldBe TaxYearRange(expectedFrom, TaxYear.fromMtd(currentTaxYear))
+    }
+
+    "return a TaxYearRange using the default systemUTC clock when no implicit clock is provided" in {
+      val expectedRange: TaxYearRange = TaxYearRange(TaxYear.fromDownstreamInt(currentTaxYear().year - 1), currentTaxYear())
+
+      val actualRange: TaxYearRange = TaxYearRange.todayMinus(1)
+
+      actualRange shouldBe expectedRange
     }
   }
 
