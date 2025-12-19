@@ -23,7 +23,6 @@ import api.models.domain.{Nino, TaxYear}
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import api.services.{MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService}
-import config.MockAppConfig
 import play.api.Configuration
 import play.api.libs.json.JsValue
 import play.api.mvc.Result
@@ -42,7 +41,6 @@ class DeleteDisclosuresControllerSpec
     with MockDeleteDisclosuresService
     with MockDeleteDisclosuresValidatorFactory
     with MockAuditService
-    with MockAppConfig
     with MockIdGenerator {
 
   val taxYear: String = "2021-22"

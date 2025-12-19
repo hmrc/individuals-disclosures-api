@@ -25,7 +25,6 @@ import api.hateoas.Method._
 import api.hateoas.RelType._
 import api.services.{MockEnrolmentsAuthService, MockMtdIdLookupService}
 import api.models.outcomes.ResponseWrapper
-import config.MockAppConfig
 import play.api.mvc.Result
 import play.api.Configuration
 import v1.controllers.validators.MockRetrieveDisclosuresValidatorFactory
@@ -46,8 +45,7 @@ class RetrieveDisclosuresControllerSpec
     with MockHateoasFactory
     with MockRetrieveDisclosuresValidatorFactory
     with HateoasLinks
-    with MockIdGenerator
-    with MockAppConfig {
+    with MockIdGenerator {
 
   val taxYear: String = "2021-22"
 

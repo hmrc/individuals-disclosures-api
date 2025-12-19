@@ -18,7 +18,6 @@ package v1.controllers
 
 import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import api.mocks.MockIdGenerator
-import config.MockAppConfig
 import api.services.{MockEnrolmentsAuthService, MockMtdIdLookupService}
 import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import api.models.domain.{Nino, TaxYear}
@@ -43,7 +42,6 @@ class DeleteDisclosuresControllerSpec
     with MockDeleteDisclosuresService
     with MockDeleteDisclosuresValidatorFactory
     with MockAuditService
-    with MockAppConfig
     with MockIdGenerator {
 
   val taxYear: String = "2021-22"
