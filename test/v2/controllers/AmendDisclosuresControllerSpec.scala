@@ -23,7 +23,6 @@ import api.models.domain.{Nino, TaxYear}
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
 import api.services.{MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService}
-import config.MockAppConfig
 import play.api.Configuration
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
@@ -38,7 +37,6 @@ class AmendDisclosuresControllerSpec
     with ControllerTestRunner
     with MockEnrolmentsAuthService
     with MockMtdIdLookupService
-    with MockAppConfig
     with MockAmendDisclosuresService
     with MockAmendDisclosuresValidatorFactory
     with MockAuditService

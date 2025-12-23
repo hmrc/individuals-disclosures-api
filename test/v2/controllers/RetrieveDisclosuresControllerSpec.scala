@@ -22,7 +22,6 @@ import api.models.domain.{Nino, TaxYear, Timestamp}
 import api.models.errors.{ErrorWrapper, NinoFormatError, TaxYearFormatError}
 import api.models.outcomes.ResponseWrapper
 import api.services.{MockEnrolmentsAuthService, MockMtdIdLookupService}
-import config.MockAppConfig
 import play.api.Configuration
 import play.api.mvc.Result
 import v2.controllers.validators.MockRetrieveDisclosuresValidatorFactory
@@ -41,8 +40,7 @@ class RetrieveDisclosuresControllerSpec
     with MockMtdIdLookupService
     with MockRetrieveDisclosuresService
     with MockRetrieveDisclosuresValidatorFactory
-    with MockIdGenerator
-    with MockAppConfig {
+    with MockIdGenerator {
 
   val taxYear: String = "2021-22"
 

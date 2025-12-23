@@ -17,15 +17,14 @@
 package api.controllers
 
 import com.typesafe.config.ConfigFactory
+import config.rewriters.*
 import config.rewriters.DocumentationRewriters.CheckAndRewrite
-import config.rewriters._
 import config.{MockAppConfig, RealAppConfig}
 import controllers.{AssetsConfiguration, DefaultAssetsMetadata, RewriteableAssets}
-import definition._
+import definition.*
 import play.api.http.{DefaultFileMimeTypes, DefaultHttpErrorHandler, FileMimeTypesConfiguration, HttpConfiguration}
 import play.api.mvc.Result
 import play.api.{Configuration, Environment}
-import routing.{Version, Versions}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -34,11 +33,6 @@ import scala.concurrent.Future
 class DocumentationControllerSpec extends ControllerBaseSpec with MockAppConfig with RealAppConfig {
 
   private val apiVersionName = s"$latestEnabledApiVersion.0"
-
-  protected val apiVersion: Version =
-    Versions
-      .getFrom(apiVersionName)
-      .getOrElse(fail(s"Matching Version object not found for $apiVersionName"))
 
   private val titleLineMatcher = """(.*title:.*)""".r
   private val titleMatcher     = """^(\s*title:\s*".*?\s*\[test\sonly]).*$""".r
