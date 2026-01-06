@@ -132,7 +132,7 @@ class RequestHandlerSpec
         service returns Future.successful(Right(ResponseWrapper(serviceCorrelationId, Output)))
 
         val result = requestHandler.handleRequest()
-        
+
         contentAsString(result) shouldBe ""
         header("X-CorrelationId", result) shouldBe Some(serviceCorrelationId)
         status(result) shouldBe NO_CONTENT
