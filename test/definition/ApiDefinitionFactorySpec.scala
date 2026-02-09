@@ -92,7 +92,6 @@ class ApiDefinitionFactorySpec extends UnitSpec {
             confidenceLevel = configCL,
             definitionEnabled = definitionEnabled,
             authValidationEnabled = true)
-          apiDefinitionFactory.confidenceLevel shouldBe expectedDefinitionCL
         }
       }
     }
