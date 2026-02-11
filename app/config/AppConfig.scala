@@ -207,7 +207,7 @@ object ConfidenceLevelConfig {
   implicit val configLoader: ConfigLoader[ConfidenceLevelConfig] = (rootConfig: Config, path: String) => {
     val config = rootConfig.getConfig(path)
     ConfidenceLevelConfig(
-      confidenceLevel = ConfidenceLevel.fromInt(config.getInt("confidence-level")).getOrElse(ConfidenceLevel.L200),
+      confidenceLevel = ConfidenceLevel.fromInt(config.getInt("confidence-level")).getOrElse(ConfidenceLevel.L250),
       definitionEnabled = config.getBoolean("definition.enabled"),
       authValidationEnabled = config.getBoolean("auth-validation.enabled")
     )
