@@ -23,17 +23,25 @@ class AuditErrorSpec extends UnitSpec {
 
   private val auditError = AuditError("FORMAT_NINO")
 
+  val json = Json.parse(s"""
+       |{
+       |  "errorCode": "FORMAT_NINO"
+       |}
+     """.stripMargin)
+
   "writes" when {
     "passed an audit error model" should {
       "produce valid json" in {
 
-        val json = Json.parse(s"""
-             |{
-             |  "errorCode": "FORMAT_NINO"
-             |}
-           """.stripMargin)
-
         Json.toJson(auditError) shouldBe json
+      }
+    }
+  }
+
+  "reads" when {
+    "read from valid JSON" should {
+      "produce an AuditError object" in {
+        json.as[AuditError] shouldBe auditError
       }
     }
   }

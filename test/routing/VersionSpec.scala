@@ -18,7 +18,8 @@ package routing
 
 import play.api.http.HeaderNames.ACCEPT
 import play.api.test.FakeRequest
-import play.api.libs.json._
+import play.api.libs.json.*
+import play.api.mvc.{Headers, RequestHeader}
 import support.UnitSpec
 
 class VersionSpec extends UnitSpec {
@@ -35,6 +36,33 @@ class VersionSpec extends UnitSpec {
     "reading an invalid version string" should {
       "return a JsError" in {
         JsString("unknown").validate[Version](Version.VersionReads) shouldBe a[JsError]
+      }
+    }
+  }
+
+  "Version.apply(RequestHeader)" when {
+
+    def mockRequestHeader(keyValue: (String, String)): RequestHeader = {
+      val (k, v)  = keyValue
+      val header  = mock[RequestHeader]
+      val headers = Headers(k -> v)
+
+      (() => header.headers: Headers).expects().returning(headers)
+      header
+    }
+
+    "given a valid Accept header" should {
+      "return the expected API Version" in {
+        val header = mockRequestHeader(ACCEPT -> "application/vnd.hmrc.2.0+json")
+        val result = Version(header)
+        result shouldBe Version2
+      }
+    }
+
+    "given an invalid Accept header" should {
+      "throw the expected exception (code shouldn't have reached this point)" in {
+        val header = mockRequestHeader(ACCEPT -> "not-a-valid-request-header")
+        the[Exception] thrownBy Version(header) should have message "Missing or unsupported version found in request accept header"
       }
     }
   }
