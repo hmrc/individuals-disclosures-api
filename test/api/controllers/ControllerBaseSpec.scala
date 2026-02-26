@@ -43,7 +43,6 @@ abstract class ControllerBaseSpec
     with HeaderNames
     with ResultExtractors
     with MockAuditService
-    with ControllerSpecHateoasSupport
     with MockAppConfig {
 
   implicit val apiVersion: Version = Version2

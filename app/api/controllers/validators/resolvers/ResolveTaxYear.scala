@@ -65,17 +65,3 @@ object ResolveTaxYear extends ResolvingTaxYear {
       }
 
 }
-
-object ResolveTysTaxYear extends ResolvingTaxYear {
-
-  def apply(value: String, error: Option[MtdError], path: Option[String]): Validated[Seq[MtdError], TaxYear] =
-    resolve(value, error, path)
-      .andThen { taxYear =>
-        if (taxYear.year < TaxYear.tysTaxYear) {
-          Invalid(List(InvalidTaxYearParameterError) ++ error)
-        } else {
-          Valid(taxYear)
-        }
-      }
-
-}

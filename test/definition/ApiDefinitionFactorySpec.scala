@@ -17,11 +17,11 @@
 package definition
 
 import cats.implicits.catsSyntaxValidatedId
-import config.{MockAppConfig}
 import config.Deprecation.NotDeprecated
+import config.MockAppConfig
 import definition.APIStatus.{ALPHA, BETA}
 import mocks.MockHttpClient
-import routing.{Version1, Version2}
+import routing.Version2
 import support.UnitSpec
 
 class ApiDefinitionFactorySpec extends UnitSpec {
@@ -31,11 +31,10 @@ class ApiDefinitionFactorySpec extends UnitSpec {
     MockedAppConfig.apiGatewayContext returns "individuals/disclosures"
   }
 
-
   "definition" when {
     "called" should {
       "return a valid Definition case class" in new Test {
-        Seq(Version1, Version2).foreach { version =>
+        Seq(Version2).foreach { version =>
           MockedAppConfig.apiStatus(version).returns("BETA")
           MockedAppConfig.endpointsEnabled(version).returns(true).anyNumberOfTimes()
           MockedAppConfig.deprecationFor(version).returns(NotDeprecated.valid).anyNumberOfTimes()
@@ -49,11 +48,6 @@ class ApiDefinitionFactorySpec extends UnitSpec {
               context = "individuals/disclosures",
               categories = Seq("INCOME_TAX_MTD"),
               versions = Seq(
-                APIVersion(
-                  version = Version1,
-                  status = BETA,
-                  endpointsEnabled = true
-                ),
                 APIVersion(
                   version = Version2,
                   status = BETA,
@@ -107,4 +101,5 @@ class ApiDefinitionFactorySpec extends UnitSpec {
       }
     }
   }
+
 }
