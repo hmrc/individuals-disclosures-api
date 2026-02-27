@@ -23,22 +23,12 @@ object NinoFormatError extends MtdError("FORMAT_NINO", "The provided NINO is inv
 
 object TaxYearFormatError extends MtdError("FORMAT_TAX_YEAR", "The provided tax year is invalid", BAD_REQUEST)
 
-object BusinessIdFormatError extends MtdError("FORMAT_BUSINESS_ID", "The provided Business ID is invalid", BAD_REQUEST)
-
-object InvalidTaxYearParameterError
-    extends MtdError(code = "INVALID_TAX_YEAR_PARAMETER", message = "A tax year before 2023-24 was supplied", BAD_REQUEST)
-
 object ValueFormatError extends MtdError("FORMAT_VALUE", "The value must be between 0 and 99999999999.99", BAD_REQUEST) {
 
   def forPathAndRange(path: String, min: String, max: String): MtdError =
     ValueFormatError.copy(paths = Some(Seq(path)), message = s"The value must be between $min and $max")
 
 }
-
-object CalculationIdFormatError extends MtdError("FORMAT_CALCULATION_ID", "The provided calculation ID is invalid", BAD_REQUEST)
-
-object StartDateFormatError extends MtdError("FORMAT_START_DATE", "The provided Start date is invalid", BAD_REQUEST)
-object EndDateFormatError   extends MtdError("FORMAT_END_DATE", "The provided End date is invalid", BAD_REQUEST)
 
 object SRNFormatError extends MtdError("FORMAT_SRN_INVALID", "The provided scheme reference number is invalid", BAD_REQUEST)
 
@@ -80,9 +70,6 @@ object RuleIncorrectOrEmptyBodyError
 object RuleTaxYearRangeInvalidError
     extends MtdError("RULE_TAX_YEAR_RANGE_INVALID", "Tax year range invalid. A tax year range of one year is required", BAD_REQUEST)
 
-object RuleEndBeforeStartDateError
-    extends MtdError("RULE_END_DATE_BEFORE_START_DATE", "The supplied accounting period end date is before the start date", BAD_REQUEST)
-
 object RuleVoluntaryClass2ValueInvalidError
     extends MtdError("RULE_VOLUNTARY_CLASS2_VALUE_INVALID", "Voluntary Class 2 Contributions can only be set to true", BAD_REQUEST)
 
@@ -108,8 +95,6 @@ object BadRequestError extends MtdError("INVALID_REQUEST", "Invalid request", BA
 object GatewayTimeoutError extends MtdError("GATEWAY_TIMEOUT", "The request has timed out", GATEWAY_TIMEOUT)
 
 object BVRError extends MtdError("BUSINESS_ERROR", "Business validation error", BAD_REQUEST)
-
-object ServiceUnavailableError extends MtdError("SERVICE_UNAVAILABLE", "Internal server error", INTERNAL_SERVER_ERROR)
 
 object InvalidHttpMethodError extends MtdError("INVALID_HTTP_METHOD", "Invalid HTTP method", METHOD_NOT_ALLOWED)
 

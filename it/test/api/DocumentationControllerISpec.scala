@@ -21,7 +21,7 @@ import io.swagger.v3.parser.OpenAPIV3Parser
 import play.api.http.Status.OK
 import play.api.libs.json.Json
 import play.api.libs.ws.WSResponse
-import routing.Version1
+import routing.Version2
 
 import scala.util.Try
 
@@ -38,11 +38,6 @@ class DocumentationControllerISpec extends IntegrationBaseSpec {
     |         "INCOME_TAX_MTD"
     |      ],
     |      "versions":[
-    |         {
-    |            "version":"1.0",
-    |            "status":"DEPRECATED",
-    |            "endpointsEnabled":true
-    |         },
     |         {
     |            "version":"2.0",
     |            "status":"BETA",
@@ -63,7 +58,7 @@ class DocumentationControllerISpec extends IntegrationBaseSpec {
   }
 
   "an OAS documentation request" must {
-    List(Version1).foreach { version =>
+    List(Version2).foreach { version =>
       s"return the documentation for $version" in {
         val response = get(s"/api/conf/${version.name}/application.yaml")
 
