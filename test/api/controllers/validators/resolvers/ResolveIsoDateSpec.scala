@@ -16,7 +16,7 @@
 
 package api.controllers.validators.resolvers
 
-import api.models.errors.{PartnerDoBFormatError}
+import api.models.errors.PartnerDoBFormatError
 import cats.data.Validated.{Invalid, Valid}
 import support.UnitSpec
 import java.time.LocalDate
@@ -25,7 +25,7 @@ class ResolveIsoDateSpec extends UnitSpec {
 
   "ResolveIsoDate" should {
     "return no errors" when {
-      "passed a valid business ID" in {
+      "passed a valid date" in {
         val validDate = "2024-06-21"
         val result    = ResolveIsoDate(validDate, Some(PartnerDoBFormatError), None)
         result shouldBe Valid(LocalDate.parse("2024-06-21"))
@@ -33,7 +33,7 @@ class ResolveIsoDateSpec extends UnitSpec {
     }
 
     "return an error" when {
-      "passed an invalid business ID" in {
+      "passed an invalid date" in {
         val invalidDate = "not-a-date"
         val result      = ResolveIsoDate(invalidDate, Some(PartnerDoBFormatError), None)
         result shouldBe Invalid(List(PartnerDoBFormatError))
