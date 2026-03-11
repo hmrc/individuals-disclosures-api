@@ -16,21 +16,19 @@
 
 package v2.models.request.amend
 
-import config.MockAppConfig
-import play.api.Configuration
-import play.api.libs.json._
+import play.api.libs.json.*
 import support.UnitSpec
 
-class AmendTaxAvoidanceItemSpec extends UnitSpec with MockAppConfig {
+class AmendTaxAvoidanceItemSpec extends UnitSpec {
 
   private def json(srnUpperCase: Boolean = false): JsValue = {
     val srn = if (srnUpperCase) "SRN" else "srn"
     Json.parse(
       s"""
-        |{
-        |   "$srn": "14211123",
-        |   "taxYear": "2020-21"
-        |}
+         |{
+         |   "$srn": "14211123",
+         |   "taxYear": "2020-21"
+         |}
     """.stripMargin
     )
   }
@@ -56,16 +54,8 @@ class AmendTaxAvoidanceItemSpec extends UnitSpec with MockAppConfig {
     }
 
     "written to JSON" should {
-      "produce the expected JsObject when using HIP format downstream" in {
-        MockedAppConfig.featureSwitches.returns(Configuration("ifs_hip_migration_1638.enabled" -> true))
-        val isHipEnabled = true
-        Json.toJson(model) shouldBe json(isHipEnabled)
-      }
-
-      "produce the expected JsObject when using IFS format downstream" in {
-        MockedAppConfig.featureSwitches.returns(Configuration("ifs_hip_migration_1638.enabled" -> false))
-        val isHipEnabled = false
-        Json.toJson(model) shouldBe json(isHipEnabled)
+      "produce the expected JsObject" in {
+        Json.toJson(model) shouldBe json(true)
       }
     }
   }

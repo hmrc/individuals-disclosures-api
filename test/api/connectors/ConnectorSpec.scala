@@ -109,23 +109,6 @@ trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames
 
   }
 
-  protected trait Ifs1Test extends ConnectorTest {
-
-    protected val requiredHeaders: Seq[(String, String)] = List(
-      "Authorization"     -> "Bearer ifs1-token",
-      "Environment"       -> "ifs1-environment",
-      "User-Agent"        -> "individual-disclosures-api",
-      "CorrelationId"     -> correlationId,
-      "Gov-Test-Scenario" -> "DEFAULT"
-    )
-
-    MockedAppConfig.ifs1BaseUrl returns this.baseUrl
-    MockedAppConfig.ifs1Token returns "ifs1-token"
-    MockedAppConfig.ifs1Env returns "ifs1-environment"
-    MockedAppConfig.ifs1EnvironmentHeaders returns Some(allowedHeaders)
-
-  }
-
   protected trait Ifs2Test extends ConnectorTest {
 
     protected val requiredHeaders: Seq[(String, String)] = List(

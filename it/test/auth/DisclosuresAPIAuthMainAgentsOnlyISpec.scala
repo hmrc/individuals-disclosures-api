@@ -25,9 +25,6 @@ import play.api.libs.ws.{WSRequest, WSResponse}
 
 class DisclosuresAPIAuthMainAgentsOnlyISpec extends AuthMainAgentsOnlyISpec {
 
-  override def servicesConfig: Map[String, Any] =
-    Map("feature-switch.ifs_hip_migration_1640.enabled" -> false) ++ super.servicesConfig
-
   val callingApiVersion = "2.0"
 
   val supportingAgentsNotAllowedEndpoint = "delete-disclosures"
@@ -38,7 +35,7 @@ class DisclosuresAPIAuthMainAgentsOnlyISpec extends AuthMainAgentsOnlyISpec {
 
   def sendMtdRequest(request: WSRequest): WSResponse = await(request.delete())
 
-  val downstreamUri: String = s"/income-tax/disclosures/$nino/${taxYear.asMtd}"
+  val downstreamUri: String = s"/itsd/disclosures/$nino/${taxYear.asMtd}"
 
   val maybeDownstreamResponseJson: Option[JsValue] = None
 

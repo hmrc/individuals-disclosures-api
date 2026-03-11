@@ -22,9 +22,6 @@ case class DownstreamUri[+Resp](path: String, strategy: DownstreamStrategy)
 
 object DownstreamUri {
 
-  def Ifs1Uri[Resp](path: String)(implicit appConfig: AppConfig): DownstreamUri[Resp] =
-    DownstreamUri(path, DownstreamStrategy.standardStrategy(appConfig.ifs1DownstreamConfig))
-
   def Ifs2Uri[Resp](path: String)(implicit appConfig: AppConfig): DownstreamUri[Resp] =
     DownstreamUri(path, DownstreamStrategy.standardStrategy(appConfig.ifs2DownstreamConfig))
 

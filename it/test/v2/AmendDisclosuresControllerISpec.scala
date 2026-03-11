@@ -26,7 +26,7 @@ import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.*
 
-class AmendDisclosuresControllerHipISpec extends IntegrationBaseSpec {
+class AmendDisclosuresControllerISpec extends IntegrationBaseSpec {
 
   private trait Test {
 

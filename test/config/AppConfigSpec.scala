@@ -42,20 +42,6 @@ class AppConfigSpec extends UnitSpec {
       result shouldBe "http://localhost:9769"
     }
 
-    "return the IFS1 config" in {
-      val expectedIfs1EnvHeaders = Some(
-        List(
-          "IFS1-Accept",
-          "IFS1-Gov-Test-Scenario",
-          "IFS1-Content-Type"
-        ))
-
-      simpleAppConfig.ifs1BaseUrl shouldBe "http://127.0.0.1:7777"
-      simpleAppConfig.ifs1Env shouldBe "Prod"
-      simpleAppConfig.ifs1Token shouldBe "IFS1-ABCD1234"
-      simpleAppConfig.ifs1EnvironmentHeaders shouldBe expectedIfs1EnvHeaders
-    }
-
     "return the IFS2 config" in {
       val expectedIfs2EnvHeaders = Some(
         List(
@@ -437,15 +423,6 @@ class AppConfigSpec extends UnitSpec {
            |      mtd-id-lookup {
            |        host = localhost
            |        port = 9769
-           |      }
-           |
-           |      ifs1 {
-           |        enabled = true
-           |        host = 127.0.0.1
-           |        port = 7777
-           |        env = Prod
-           |        token = IFS1-ABCD1234
-           |        environmentHeaders = ["IFS1-Accept", "IFS1-Gov-Test-Scenario", "IFS1-Content-Type"]
            |      }
            |
            |      ifs2 {
