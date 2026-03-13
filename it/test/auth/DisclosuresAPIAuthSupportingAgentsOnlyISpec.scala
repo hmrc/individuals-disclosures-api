@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,9 +25,6 @@ import play.api.libs.ws.{WSRequest, WSResponse}
 
 class DisclosuresAPIAuthSupportingAgentsOnlyISpec extends AuthSupportingAgentsAllowedISpec {
 
-  override def servicesConfig: Map[String, Any] =
-    Map("feature-switch.ifs_hip_migration_1640.enabled" -> false) ++ super.servicesConfig
-
   val callingApiVersion = "2.0"
 
   val supportingAgentsAllowedEndpoint = "delete-disclosures"
@@ -38,7 +35,7 @@ class DisclosuresAPIAuthSupportingAgentsOnlyISpec extends AuthSupportingAgentsAl
 
   def sendMtdRequest(request: WSRequest): WSResponse = await(request.delete())
 
-  val downstreamUri: String = s"/income-tax/disclosures/$nino/${taxYear.asMtd}"
+  val downstreamUri: String = s"/itsd/disclosures/$nino/${taxYear.asMtd}"
 
   val maybeDownstreamResponseJson: Option[JsValue] = None
 

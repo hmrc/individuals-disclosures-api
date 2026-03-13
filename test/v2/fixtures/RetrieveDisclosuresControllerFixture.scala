@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,27 +19,6 @@ package v2.fixtures
 import play.api.libs.json.{JsValue, Json}
 
 object RetrieveDisclosuresControllerFixture {
-
-  val fullIfsRetrieveDisclosuresResponse: JsValue = Json.parse(
-    """
-      |{
-      |  "taxAvoidance": [
-      |    {
-      |      "srn": "14211123",
-      |      "taxYear": "2020-21"
-      |    },
-      |    {
-      |      "srn": "34522678",
-      |      "taxYear": "2021-22"
-      |    }
-      |  ],
-      |  "class2Nics": {
-      |     "class2VoluntaryContributions": true
-      |  },
-      |  "submittedOn": "2020-07-06T09:37:17.000Z"
-      |}
-    """.stripMargin
-  )
 
   val fullHipRetrieveDisclosuresResponse: JsValue = Json.parse(
     """

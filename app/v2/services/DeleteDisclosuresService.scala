@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,24 +35,12 @@ class DeleteDisclosuresService @Inject() (connector: DeleteDisclosuresConnector)
       .map(_.leftMap(mapDownstreamErrors(downstreamErrorMap)))
   }
 
-  private val downstreamErrorMap: Map[String, MtdError] = {
-    val ifsErrors = Map(
-      "INVALID_TAXABLE_ENTITY_ID" -> NinoFormatError,
-      "INVALID_TAX_YEAR"          -> TaxYearFormatError,
-      "INVALID_CORRELATIONID"     -> InternalError,
-      "NO_DATA_FOUND"             -> NotFoundError,
-      "OUTSIDE_AMENDMENT_WINDOW"  -> RuleOutsideAmendmentWindowError,
-      "SERVER_ERROR"              -> InternalError,
-      "SERVICE_UNAVAILABLE"       -> InternalError
-    )
-    val hipErrors = Map(
-      "1215" -> NinoFormatError,
-      "1117" -> TaxYearFormatError,
-      "5010" -> NotFoundError,
-      "4200" -> RuleOutsideAmendmentWindowError,
-      "5000" -> RuleTaxYearNotSupportedError
-    )
-    ifsErrors ++ hipErrors
-  }
+  private val downstreamErrorMap: Map[String, MtdError] = Map(
+    "1215" -> NinoFormatError,
+    "1117" -> TaxYearFormatError,
+    "5010" -> NotFoundError,
+    "4200" -> RuleOutsideAmendmentWindowError,
+    "5000" -> RuleTaxYearNotSupportedError
+  )
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 
 package v2.models.request.amend
 
-import config.AppConfig
 import play.api.libs.functional.syntax.*
 import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 import utils.JsonUtils
@@ -31,5 +30,5 @@ object AmendDisclosuresRequestBody extends JsonUtils {
       (JsPath \ "class2Nics").readNullable[AmendClass2Nics].mapEmptyModelToNone(AmendClass2Nics.empty)
   )(AmendDisclosuresRequestBody.apply)
 
-  implicit def writes(implicit appConfig: AppConfig): OWrites[AmendDisclosuresRequestBody] = Json.writes[AmendDisclosuresRequestBody]
+  implicit val writes: OWrites[AmendDisclosuresRequestBody] = Json.writes[AmendDisclosuresRequestBody]
 }

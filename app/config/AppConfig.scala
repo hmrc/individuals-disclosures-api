@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,15 +33,6 @@ import javax.inject.{Inject, Singleton}
 trait AppConfig {
   // MTD ID Lookup Config
   def mtdIdBaseUrl: String
-
-  // IFS-1 Config
-  def ifs1BaseUrl: String
-  def ifs1Env: String
-  def ifs1Token: String
-  def ifs1EnvironmentHeaders: Option[Seq[String]]
-
-  lazy val ifs1DownstreamConfig: DownstreamConfig =
-    DownstreamConfig(baseUrl = ifs1BaseUrl, env = ifs1Env, token = ifs1Token, environmentHeaders = ifs1EnvironmentHeaders)
 
   // IFS-2 Config
   def ifs2BaseUrl: String
@@ -99,12 +90,6 @@ class AppConfigImpl @Inject() (config: ServicesConfig, val configuration: Config
 
   // MTD ID Lookup Config
   val mtdIdBaseUrl: String = config.baseUrl(serviceName = "mtd-id-lookup")
-
-  // IFS-1 Config
-  val ifs1BaseUrl: String                         = config.baseUrl("ifs1")
-  val ifs1Env: String                             = config.getString("microservice.services.ifs1.env")
-  val ifs1Token: String                           = config.getString("microservice.services.ifs1.token")
-  val ifs1EnvironmentHeaders: Option[Seq[String]] = configuration.getOptional[Seq[String]]("microservice.services.ifs1.environmentHeaders")
 
   // IFS-2 Config
   val ifs2BaseUrl: String                         = config.baseUrl("ifs2")

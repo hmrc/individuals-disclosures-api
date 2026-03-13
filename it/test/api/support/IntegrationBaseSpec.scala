@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,8 +32,6 @@ trait IntegrationBaseSpec extends UnitSpec with WireMockHelper with GuiceOneServ
   lazy val client: WSClient = app.injector.instanceOf[WSClient]
 
   def servicesConfig: Map[String, Any] = Map(
-    "microservice.services.ifs1.host"          -> mockHost,
-    "microservice.services.ifs1.port"          -> mockPort,
     "microservice.services.ifs2.host"          -> mockHost,
     "microservice.services.ifs2.port"          -> mockPort,
     "microservice.services.hip.host"           -> mockHost,

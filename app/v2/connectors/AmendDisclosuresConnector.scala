@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,10 +16,10 @@
 
 package v2.connectors
 
-import api.connectors.DownstreamUri.{HipUri, Ifs1Uri}
 import api.connectors.*
+import api.connectors.DownstreamUri.HipUri
 import api.connectors.httpparsers.StandardDownstreamHttpParser.*
-import config.{AppConfig, ConfigFeatureSwitches}
+import config.AppConfig
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.client.HttpClientV2
 import v2.models.request.amend.AmendDisclosuresRequestData
@@ -35,13 +35,9 @@ class AmendDisclosuresConnector @Inject() (val http: HttpClientV2, val appConfig
       ec: ExecutionContext,
       correlationId: String): Future[DownstreamOutcome[Unit]] = {
 
-    import request._
+    import request.*
 
-    val downstreamUri: DownstreamUri[Unit] = if (ConfigFeatureSwitches().isEnabled("ifs_hip_migration_1638")) {
-      HipUri[Unit](s"itsd/disclosures/$nino/${taxYear.asMtd}")
-    } else {
-      Ifs1Uri[Unit](s"income-tax/disclosures/$nino/${taxYear.asMtd}")
-    }
+    val downstreamUri: DownstreamUri[Unit] = HipUri[Unit](s"itsd/disclosures/$nino/${taxYear.asMtd}")
 
     put(
       body = body,

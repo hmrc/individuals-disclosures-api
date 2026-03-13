@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,12 +16,10 @@
 
 package v2.models.request.amend
 
-import config.MockAppConfig
-import play.api.Configuration
 import play.api.libs.json.{JsError, JsObject, JsValue, Json}
 import support.UnitSpec
 
-class AmendDisclosuresRequestDataBodySpec extends UnitSpec with MockAppConfig {
+class AmendDisclosuresRequestDataBodySpec extends UnitSpec {
 
   private def json(srnUpperCase: Boolean = false): JsValue = {
     lazy val srn: String = if (srnUpperCase) "SRN" else "srn"
@@ -109,16 +107,8 @@ class AmendDisclosuresRequestDataBodySpec extends UnitSpec with MockAppConfig {
     }
 
     "written to JSON" should {
-      "produce the expected JsObject when using HIP format downstream" in {
-        MockedAppConfig.featureSwitches.returns(Configuration("ifs_hip_migration_1638.enabled" -> true))
-        val isHipEnabled = true
-        Json.toJson(requestBodyModel) shouldBe json(isHipEnabled)
-      }
-
-      "produce the expected JsObject when using IFS format downstream" in {
-        MockedAppConfig.featureSwitches.returns(Configuration("ifs_hip_migration_1638.enabled" -> false))
-        val isHipEnabled = false
-        Json.toJson(requestBodyModel) shouldBe json(isHipEnabled)
+      "produce the expected JsObject" in {
+        Json.toJson(requestBodyModel) shouldBe json(true)
       }
     }
   }

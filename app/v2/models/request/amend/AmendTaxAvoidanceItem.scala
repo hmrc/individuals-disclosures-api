@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,25 +16,17 @@
 
 package v2.models.request.amend
 
-import config.{AppConfig, ConfigFeatureSwitches}
-import play.api.libs.json.{Json, OWrites, Reads}
+import play.api.libs.json.{JsPath, Json, OWrites, Reads}
+import play.api.libs.functional.syntax.toFunctionalBuilderOps
 
 case class AmendTaxAvoidanceItem(srn: String, taxYear: String)
 
 object AmendTaxAvoidanceItem {
   implicit val reads: Reads[AmendTaxAvoidanceItem] = Json.reads[AmendTaxAvoidanceItem]
 
-  implicit def writes(implicit appConfig: AppConfig): OWrites[AmendTaxAvoidanceItem] = (amendTaxAvoidanceItem: AmendTaxAvoidanceItem) => {
-    val srn = if (ConfigFeatureSwitches().isEnabled("ifs_hip_migration_1638")) {
-      "SRN"
-    } else {
-      "srn"
-    }
-
-    Json.obj(
-      srn       -> amendTaxAvoidanceItem.srn,
-      "taxYear" -> amendTaxAvoidanceItem.taxYear
-    )
-  }
+  implicit val writes: OWrites[AmendTaxAvoidanceItem] = (
+    (JsPath \ "SRN").write[String] and
+      (JsPath \ "taxYear").write[String]
+  )(o => Tuple.fromProductTyped(o))
 
 }

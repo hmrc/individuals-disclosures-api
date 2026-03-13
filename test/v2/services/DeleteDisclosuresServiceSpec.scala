@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -64,17 +64,7 @@ class DeleteDisclosuresServiceSpec extends ServiceSpec {
           await(service.delete(request)) shouldBe Left(ErrorWrapper(correlationId, error))
         }
 
-      val ifsInput = Seq(
-        ("INVALID_TAXABLE_ENTITY_ID", NinoFormatError),
-        ("INVALID_TAX_YEAR", TaxYearFormatError),
-        ("INVALID_CORRELATIONID", InternalError),
-        ("NO_DATA_FOUND", NotFoundError),
-        ("OUTSIDE_AMENDMENT_WINDOW", RuleOutsideAmendmentWindowError),
-        ("SERVER_ERROR", InternalError),
-        ("SERVICE_UNAVAILABLE", InternalError)
-      )
-
-      val hipInput = Seq(
+      val downstreamInput = Seq(
         ("1215", NinoFormatError),
         ("1117", TaxYearFormatError),
         ("5010", NotFoundError),
@@ -82,7 +72,7 @@ class DeleteDisclosuresServiceSpec extends ServiceSpec {
         ("5000", RuleTaxYearNotSupportedError)
       )
 
-      (ifsInput ++ hipInput).foreach(serviceError.tupled)
+      downstreamInput.foreach(serviceError.tupled)
     }
   }
 

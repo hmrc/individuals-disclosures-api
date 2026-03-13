@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ import sbt.*
 
 object AppDependencies {
 
-  val bootstrapPlayVersion = "9.19.0"
+  val bootstrapPlayVersion = "10.7.0"
 
   val compile: Seq[ModuleID] = List(
     "uk.gov.hmrc"                  %% "bootstrap-backend-play-30" % bootstrapPlayVersion,
@@ -28,12 +28,12 @@ object AppDependencies {
 
   val test: Seq[ModuleID] = List(
     "uk.gov.hmrc"         %% "bootstrap-test-play-30" % bootstrapPlayVersion,
-    "org.scalatestplus"   %% "scalacheck-1-18"        % "3.2.19.0",
-    "org.scalamock"       %% "scalamock"              % "7.4.0"
+    "org.scalatestplus"   %% "scalacheck-1-19"        % "3.2.19.0",
+    "org.scalamock"       %% "scalamock"              % "7.5.5"
   ).map(_ % Test)
 
   val itDependencies: Seq[ModuleID] = List(
-    "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.19.2",
-    "io.swagger.parser.v3"          % "swagger-parser-v3"    % "2.1.31"
+    "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.21.1",
+    "io.swagger.parser.v3"          % "swagger-parser-v3"    % "2.1.39"
   ).map(_ % Test)
 }
