@@ -22,7 +22,7 @@ import support.UnitSpec
 
 class RetrieveDisclosuresResponseSpec extends UnitSpec {
 
-  private val ifsJson = Json.parse(
+  private val mtdJson = Json.parse(
     """
       |{
       |   "taxAvoidance": [
@@ -39,7 +39,7 @@ class RetrieveDisclosuresResponseSpec extends UnitSpec {
     """.stripMargin
   )
 
-  private val hipJson = Json.parse(
+  private val downstreamJson = Json.parse(
     """
       |{
       |   "taxAvoidance": [
@@ -73,13 +73,8 @@ class RetrieveDisclosuresResponseSpec extends UnitSpec {
 
   "RetrieveDisclosuresResponse" when {
     "read from valid JSON" should {
-      "produce the expected RetrieveDisclosuresResponse object" when {
-        "srn is lower case" in {
-          ifsJson.as[RetrieveDisclosuresResponse] shouldBe parsedResponse
-        }
-        "srn is upper case" in {
-          hipJson.as[RetrieveDisclosuresResponse] shouldBe parsedResponse
-        }
+      "produce the expected RetrieveDisclosuresResponse object" in {
+        downstreamJson.as[RetrieveDisclosuresResponse] shouldBe parsedResponse
       }
     }
 
@@ -109,7 +104,7 @@ class RetrieveDisclosuresResponseSpec extends UnitSpec {
             |{
             |   "taxAvoidance": [
             |      {
-            |         "srn": true,
+            |         "SRN": true,
             |         "taxYear": "2020-21"
             |      }
             |   ],
@@ -126,7 +121,7 @@ class RetrieveDisclosuresResponseSpec extends UnitSpec {
 
     "written to JSON" should {
       "produce the expected JsObject" in {
-        Json.toJson(parsedResponse) shouldBe ifsJson
+        Json.toJson(parsedResponse) shouldBe mtdJson
       }
     }
   }
