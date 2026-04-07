@@ -28,7 +28,6 @@
       "type": "string",
       "description": "The date of birth of your spouse or civil partner in the format YYYY-MM-DD.",
       "format": "date",
-      "pattern": "[0-9]{4}-[0-9]{2}-[0-9]{2}$",
       "example": "1998-04-06"
     }
   },
