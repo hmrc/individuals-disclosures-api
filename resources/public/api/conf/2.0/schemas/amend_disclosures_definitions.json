@@ -8,9 +8,8 @@
     },
     "taxYear": {
       "type": "string",
-      "description": "The tax year in which the expected advantage arises. Date in the format YYYY-YY",
-      "example": "2020-21",
-      "pattern": "^[0-9]{4}-[0-9]{2}$"
+      "description": "The tax year in which the expected advantage arises. Date in the format `YYYY-YY`",
+      "example": "2020-21"
     },
     "taxAvoidance": {
       "type": "object",
@@ -30,7 +29,7 @@
         "class2VoluntaryContributions": {
           "type": "boolean",
           "description": "Indicates whether Voluntary Class 2 contributions are to be captured. The value can only be set to true.",
-          "example": "true"
+          "example": true
         }
       }
     },
