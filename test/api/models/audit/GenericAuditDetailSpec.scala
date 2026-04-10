@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,26 +49,7 @@ class GenericAuditDetailSpec extends UnitSpec {
        |   },
        |   "X-CorrelationId":"a1e8057e-fbbc-47a8-a8b4-78d9f015c253",
        |   "response":{
-       |      "httpStatus":200,
-       |      "body":{
-       |         "links":[
-       |            {
-       |               "href":"/individuals/disclosures/$nino/$taxYear",
-       |               "rel":"create-and-amend-disclosures",
-       |               "method":"PUT"
-       |            },
-       |            {
-       |               "href":"/individuals/disclosures/$nino/$taxYear",
-       |               "rel":"self",
-       |               "method":"GET"
-       |            },
-       |            {
-       |               "href":"/individuals/disclosures/$nino/$taxYear",
-       |               "rel":"delete-disclosures",
-       |               "method":"DELETE"
-       |            }
-       |         ]
-       |      }
+       |      "httpStatus":200
        |   }
        |}
     """.stripMargin
@@ -97,27 +78,7 @@ class GenericAuditDetailSpec extends UnitSpec {
     `X-CorrelationId` = correlationId,
     response = AuditResponse(
       OK,
-      Right(Some(Json.parse(s"""
-           |{
-           |   "links":[
-           |      {
-           |         "href":"/individuals/disclosures/$nino/$taxYear",
-           |         "rel":"create-and-amend-disclosures",
-           |         "method":"PUT"
-           |      },
-           |      {
-           |         "href":"/individuals/disclosures/$nino/$taxYear",
-           |         "rel":"self",
-           |         "method":"GET"
-           |      },
-           |      {
-           |         "href":"/individuals/disclosures/$nino/$taxYear",
-           |         "rel":"delete-disclosures",
-           |         "method":"DELETE"
-           |      }
-           |   ]
-           |}
-        """.stripMargin)))
+      Right(None)
     )
   )
 
