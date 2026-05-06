@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,6 +30,13 @@ class CreateMarriageAllowanceValidatorFactorySpec extends UnitSpec {
   private val validBody: JsValue = Json.parse("""{
                |  "spouseOrCivilPartnerNino": "AA123456B",
                |  "spouseOrCivilPartnerFirstName": "Marge",
+               |  "spouseOrCivilPartnerSurname": "Simpson",
+               |  "spouseOrCivilPartnerDateOfBirth": "1970-01-01"
+               |}
+               |""".stripMargin)
+
+  private val validBodyMissingFirstName: JsValue = Json.parse("""{
+               |  "spouseOrCivilPartnerNino": "AA123456B",
                |  "spouseOrCivilPartnerSurname": "Simpson",
                |  "spouseOrCivilPartnerDateOfBirth": "1970-01-01"
                |}
@@ -94,8 +101,6 @@ class CreateMarriageAllowanceValidatorFactorySpec extends UnitSpec {
 
   private val parsedNino = Nino(validNino)
 
-  private val parsedBody = CreateMarriageAllowanceRequestBody("AA123456B", Some("Marge"), "Simpson", Some("1970-01-01"))
-
   private val validatorFactory = new CreateMarriageAllowanceValidatorFactory()
 
   private def validator(nino: String, body: JsValue) = validatorFactory.validator(nino, body)
@@ -103,7 +108,19 @@ class CreateMarriageAllowanceValidatorFactorySpec extends UnitSpec {
   "validator" should {
     "return the parsed domain object" when {
       "passed a valid request" in {
-        val result: Either[ErrorWrapper, CreateMarriageAllowanceRequestData] = validator(validNino, validBody).validateAndWrapResult()
+        val parsedBody = CreateMarriageAllowanceRequestBody("AA123456B", Some("Marge"), "Simpson", Some("1970-01-01"))
+
+        val result: Either[ErrorWrapper, CreateMarriageAllowanceRequestData] =
+          validator(validNino, validBody).validateAndWrapResult()
+
+        result shouldBe Right(CreateMarriageAllowanceRequestData(parsedNino, parsedBody))
+      }
+
+      "passed a valid request with missing Civil Partner first name" in {
+        val parsedBody = CreateMarriageAllowanceRequestBody("AA123456B", None, "Simpson", Some("1970-01-01"))
+
+        val result: Either[ErrorWrapper, CreateMarriageAllowanceRequestData] =
+          validator(validNino, validBodyMissingFirstName).validateAndWrapResult()
 
         result shouldBe Right(CreateMarriageAllowanceRequestData(parsedNino, parsedBody))
       }

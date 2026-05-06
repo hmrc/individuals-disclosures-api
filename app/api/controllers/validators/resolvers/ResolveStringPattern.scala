@@ -22,8 +22,7 @@ import api.models.errors.MtdError
 
 import scala.util.matching.Regex
 
-case class ResolveStringPattern(regexFormat: Regex, defaultError: MtdError)
-  extends Resolver[String, String] {
+case class ResolveStringPattern(regexFormat: Regex, defaultError: MtdError) extends Resolver[String, String] {
 
   override def apply(value: String,
                      error: Option[MtdError],
