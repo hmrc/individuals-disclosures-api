@@ -29,16 +29,23 @@ import java.time.LocalDate
 object CreateMarriageAllowanceValidator extends RulesValidator[CreateMarriageAllowanceRequestData] {
 
   private val nameRegex = "^[A-Za-z0-9 ,.()/&'-]{1,35}$".r
-  private val resolveNameRegexPattern = ResolveStringPattern(nameRegex, RuleIncorrectOrEmptyBodyError)
   private val minYear   = 1900
   private val maxYear   = 2100
 
   override def validateBusinessRules(parsed: CreateMarriageAllowanceRequestData): Validated[Seq[MtdError], CreateMarriageAllowanceRequestData] = {
     import parsed.body._
 
-    val validatedPartnerSurname = resolveNameRegexPattern(spouseOrCivilPartnerSurname, PartnerSurnameFormatError)
+    val validatedPartnerSurname = ResolveStringPattern(
+      spouseOrCivilPartnerSurname,
+      nameRegex,
+      PartnerSurnameFormatError
+    )
 
-    val validatedPartnerFirstName = resolveNameRegexPattern(spouseOrCivilPartnerFirstName, PartnerFirstNameFormatError)
+    val validatedPartnerFirstName = ResolveStringPattern(
+      spouseOrCivilPartnerFirstName,
+      nameRegex,
+      PartnerFirstNameFormatError
+    )
 
     val validatedPartnerDateOfBirth = spouseOrCivilPartnerDateOfBirth
       .map(dob => ResolveIsoDate(dob, Some(PartnerDoBFormatError), path = None) andThen validatePartnerDoB)

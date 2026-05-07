@@ -16,74 +16,112 @@
 
 package api.controllers.validators.resolvers
 
+import api.models.errors.TaxYearFormatError
 import cats.data.Validated.{Invalid, Valid}
-import api.models.errors.RuleIncorrectOrEmptyBodyError
 import support.UnitSpec
 
 import scala.util.matching.Regex
 
 class ResolveStringPatternSpec extends UnitSpec {
 
-  private val nameRegex: Regex        = "^[A-Za-z0-9 ,.()/&'-]{1,35}$".r
-  private val resolveNameRegexPattern = ResolveStringPattern(nameRegex, RuleIncorrectOrEmptyBodyError)
+  private val taxYearRegex: Regex   = "20[1-9][0-9]-[1-9][0-9]".r
+  private val resolveTaxYearPattern = ResolveStringPattern(taxYearRegex, TaxYearFormatError)
 
   "ResolveStringPattern" should {
-    "return no errors for a mandatory string" when {
+    "return no errors" when {
       "given a matching string" in {
-        val result = resolveNameRegexPattern("some name")
-        result shouldBe Valid("some name")
+        val result = resolveTaxYearPattern("2024-25")
+        result shouldBe Valid("2024-25")
       }
 
-      "given a matching string with leading/trailing whitespace" in {
-        val result = resolveNameRegexPattern("    some name    ")
-        result shouldBe Valid("    some name    ")
-      }
-    }
-
-    "return no errors for an optional string" when {
-      "given a matching optional string" in {
-        val result = resolveNameRegexPattern(Some("some name"))
-        result shouldBe Valid(Some("some name"))
+      "given a matching string in an Option" in {
+        val result = resolveTaxYearPattern(Some("2024-25"))
+        result shouldBe Valid(Some("2024-25"))
       }
 
-      "given no string" in {
-        val result = resolveNameRegexPattern(None)
+      "given an empty Option" in {
+        val result = resolveTaxYearPattern(None)
+        result shouldBe Valid(None)
+      }
+
+      "given a matching string via the legacy apply() function" in {
+        val result = ResolveStringPattern("2024-25", taxYearRegex, TaxYearFormatError)
+        result shouldBe Valid("2024-25")
+      }
+
+      "given a matching string in an Option via the legacy apply() function" in {
+        val result = ResolveStringPattern(Some("2024-25"), taxYearRegex, TaxYearFormatError)
+        result shouldBe Valid(Some("2024-25"))
+      }
+
+      "given an empty Option via the legacy apply() function" in {
+        val result = ResolveStringPattern(None, taxYearRegex, TaxYearFormatError)
         result shouldBe Valid(None)
       }
     }
 
-    "return the expected error for a mandatory string" when {
-      "given an invalid string" in {
-        val result = resolveNameRegexPattern("!#@?")
-        result shouldBe Invalid(List(RuleIncorrectOrEmptyBodyError))
+    "return the expected error" when {
+      "given a non-matching string and no override error" in {
+        val result = resolveTaxYearPattern("does-not-match-regex")
+        result shouldBe Invalid(List(TaxYearFormatError))
+      }
+
+      "given a non-matching string in an Option and no override error" in {
+        val result = resolveTaxYearPattern(Some("does-not-match-regex"))
+        result shouldBe Invalid(List(TaxYearFormatError))
+      }
+
+      "given a non-matching string via the legacy apply() function and no override error" in {
+        val result = ResolveStringPattern("does-not-match-regex", taxYearRegex, TaxYearFormatError)
+        result shouldBe Invalid(List(TaxYearFormatError))
+      }
+
+      "given a non-matching string in an Option via the legacy apply() function and no override error" in {
+        val result = ResolveStringPattern(Some("does-not-match-regex"), taxYearRegex, TaxYearFormatError)
+        result shouldBe Invalid(List(TaxYearFormatError))
       }
 
       "given an empty string" in {
-        val result = resolveNameRegexPattern("")
-        result shouldBe Invalid(List(RuleIncorrectOrEmptyBodyError))
+        val result = resolveTaxYearPattern("")
+        result shouldBe Invalid(List(TaxYearFormatError))
       }
-  
-      "given only whitespace" in {
-        val result = resolveNameRegexPattern("    ")
-        result shouldBe Invalid(List(RuleIncorrectOrEmptyBodyError))
+
+      "given an empty string in an Option" in {
+        val result = resolveTaxYearPattern(Some(""))
+        result shouldBe Invalid(List(TaxYearFormatError))
+      }
+
+      "given an empty string via the legacy apply() function" in {
+        val result = ResolveStringPattern("", taxYearRegex, TaxYearFormatError)
+        result shouldBe Invalid(List(TaxYearFormatError))
+      }
+
+      "given an empty string in an Option via the legacy apply() function" in {
+        val result = ResolveStringPattern(Some(""), taxYearRegex, TaxYearFormatError)
+        result shouldBe Invalid(List(TaxYearFormatError))
+      }
+
+      "given a string with only spaces" in {
+        val result = resolveTaxYearPattern("   ")
+        result shouldBe Invalid(List(TaxYearFormatError))
+      }
+
+      "given a string with only spaces in an Option" in {
+        val result = resolveTaxYearPattern(Some("   "))
+        result shouldBe Invalid(List(TaxYearFormatError))
+      }
+
+      "given a string with only spaces via the legacy apply() function" in {
+        val result = ResolveStringPattern("   ", taxYearRegex, TaxYearFormatError)
+        result shouldBe Invalid(List(TaxYearFormatError))
+      }
+
+      "given a string with only spaces in an Option via the legacy apply() function" in {
+        val result = ResolveStringPattern(Some("   "), taxYearRegex, TaxYearFormatError)
+        result shouldBe Invalid(List(TaxYearFormatError))
       }
     }
 
-    "return the expected error for an optional string" when {
-      "given an invalid string" in {
-        val result = resolveNameRegexPattern(Some("a" * 322))
-        result shouldBe Invalid(List(RuleIncorrectOrEmptyBodyError))
-      }
-
-      "given an empty string" in {
-        val result = resolveNameRegexPattern(Some(""))
-        result shouldBe Invalid(List(RuleIncorrectOrEmptyBodyError))
-      }
-  
-      "given only whitespace" in {
-        val result = resolveNameRegexPattern(Some("    "))
-        result shouldBe Invalid(List(RuleIncorrectOrEmptyBodyError))
-      }
-    }
   }
+
 }

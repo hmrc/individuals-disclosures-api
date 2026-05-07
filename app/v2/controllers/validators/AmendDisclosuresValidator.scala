@@ -45,12 +45,10 @@ object AmendDisclosuresValidator extends RulesValidator[AmendDisclosuresRequestD
   private def validateTaxAvoidance(taxAvoidance: AmendTaxAvoidanceItem, arrayIndex: Int): Validated[Seq[MtdError], Unit] = {
     val srnRegex = "^[0-9]{8}$".r
 
-    val resolveSrnRegexPattern = ResolveStringPattern(srnRegex, SRNFormatError)
-
-    val validatedSRN = resolveSrnRegexPattern(
+    val validatedSRN = ResolveStringPattern(
       taxAvoidance.srn,
-      None, // Use the format error in the constructor.
-      Some(s"/taxAvoidance/$arrayIndex/srn")
+      srnRegex,
+      SRNFormatError.copy(paths = Some(List(s"/taxAvoidance/$arrayIndex/srn")))
     )
 
     val validatedTaxYear = ResolveTaxYear(taxAvoidance.taxYear, error = None, path = None) match {
