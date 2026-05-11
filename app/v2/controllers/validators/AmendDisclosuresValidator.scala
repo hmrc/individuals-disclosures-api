@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,15 +17,13 @@
 package v2.controllers.validators
 
 import api.controllers.validators.RulesValidator
-import api.controllers.validators.resolvers.ResolveTaxYear
+import api.controllers.validators.resolvers.{ResolveStringPattern, ResolveTaxYear}
 import api.models.errors.{MtdError, RuleVoluntaryClass2ValueInvalidError, SRNFormatError}
 import cats.data.Validated
 import cats.data.Validated.Invalid
 import v2.models.request.amend.{AmendClass2Nics, AmendDisclosuresRequestData, AmendTaxAvoidanceItem}
 
 object AmendDisclosuresValidator extends RulesValidator[AmendDisclosuresRequestData] {
-
-  private val SRNRegex = "^[0-9]{8}$"
 
   override def validateBusinessRules(parsed: AmendDisclosuresRequestData): Validated[Seq[MtdError], AmendDisclosuresRequestData] = {
     import parsed.body
@@ -45,8 +43,13 @@ object AmendDisclosuresValidator extends RulesValidator[AmendDisclosuresRequestD
   }
 
   private def validateTaxAvoidance(taxAvoidance: AmendTaxAvoidanceItem, arrayIndex: Int): Validated[Seq[MtdError], Unit] = {
-    val validatedSRN =
-      if (taxAvoidance.srn.matches(SRNRegex)) valid else Invalid(List(SRNFormatError.copy(paths = Some(List(s"/taxAvoidance/$arrayIndex/srn")))))
+    val srnRegex = "^[0-9]{8}$".r
+
+    val validatedSRN = ResolveStringPattern(
+      taxAvoidance.srn,
+      srnRegex,
+      SRNFormatError.copy(paths = Some(List(s"/taxAvoidance/$arrayIndex/srn")))
+    )
 
     val validatedTaxYear = ResolveTaxYear(taxAvoidance.taxYear, error = None, path = None) match {
       case Invalid(List(error: MtdError)) => Invalid(List(error.copy(paths = Some(List(s"/taxAvoidance/$arrayIndex/taxYear")))))

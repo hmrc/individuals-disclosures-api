@@ -12,14 +12,14 @@
     },
     "spouseOrCivilPartnerFirstName": {
       "type": "string",
-      "description": "Your spouse or civil partner's first name.",
+      "description": "Your spouse or civil partner's first name. Must not be empty or contain only whitespace.",
       "minLength": 1,
       "maxLength": 35,
       "example": "John"
     },
     "spouseOrCivilPartnerSurname": {
       "type": "string",
-      "description": "Your spouse or civil partner's surname.",
+      "description": "Your spouse or civil partner's surname. Must not be empty or contain only whitespace.",
       "minLength": 1,
       "maxLength": 35,
       "example": "Smith"
