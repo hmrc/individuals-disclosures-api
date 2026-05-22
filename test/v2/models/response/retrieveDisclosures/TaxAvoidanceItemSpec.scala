@@ -21,7 +21,16 @@ import support.UnitSpec
 
 class TaxAvoidanceItemSpec extends UnitSpec {
 
-  private val json = Json.parse(
+  private val downStreamJson = Json.parse(
+    """
+      |{
+      |   "SRN": "14211123",
+      |   "taxYear": "2020-21"
+      |}
+    """.stripMargin
+  )
+
+  private val mtdJson = Json.parse(
     """
       |{
       |   "srn": "14211123",
@@ -38,7 +47,7 @@ class TaxAvoidanceItemSpec extends UnitSpec {
   "TaxAvoidanceItem" when {
     "read from valid JSON" should {
       "produce the expected TaxAvoidanceItem object" in {
-        json.as[TaxAvoidanceItem] shouldBe model
+        downStreamJson.as[TaxAvoidanceItem] shouldBe model
       }
     }
 
@@ -52,7 +61,7 @@ class TaxAvoidanceItemSpec extends UnitSpec {
 
     "written to JSON" should {
       "produce the expected JsObject" in {
-        Json.toJson(model) shouldBe json
+        Json.toJson(model) shouldBe mtdJson
       }
     }
   }
