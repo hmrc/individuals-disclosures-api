@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -81,7 +81,9 @@ object RuleActiveMarriageAllowanceClaimError
       "Marriage Allowance has already been transferred to a spouse or civil partner",
       BAD_REQUEST)
 
-object RuleInvalidRequestError extends MtdError("RULE_INVALID_REQUEST", "The NINO supplied is invalid", BAD_REQUEST)
+object RuleInvalidRequestError extends MtdError("RULE_INVALID_REQUEST", "The NINO supplied is invalid", BAD_REQUEST) {
+  def forPersonalDetailsMismatch: MtdError = copy(message = "The spouse or civil partner's NINO does not match the supplied personal details")
+}
 
 object RuleOutsideAmendmentWindowError extends MtdError("RULE_OUTSIDE_AMENDMENT_WINDOW", "You are outside the amendment window", BAD_REQUEST)
 
