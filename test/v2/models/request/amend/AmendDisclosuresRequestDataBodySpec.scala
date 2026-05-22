@@ -65,12 +65,12 @@ class AmendDisclosuresRequestDataBodySpec extends UnitSpec {
       "produce an empty AmendDisclosuresRequestBody object" in {
         val emptyJson = JsObject.empty
 
-        emptyJson.as[AmendDisclosuresRequestBody] shouldBe AmendDisclosuresRequestBody.empty
+        emptyJson.as[AmendDisclosuresRequestBody] shouldBe AmendDisclosuresRequestBody(None, None)
       }
     }
 
     "read from valid JSON with empty taxAvoidance array and class2Nics object" should {
-      "produce an empty AmendDisclosuresRequestBody object" in {
+      "produce an AmendDisclosuresRequestBody with an empty List" in {
         val json = Json.parse(
           """
             |{
@@ -80,7 +80,7 @@ class AmendDisclosuresRequestDataBodySpec extends UnitSpec {
           """.stripMargin
         )
 
-        json.as[AmendDisclosuresRequestBody] shouldBe AmendDisclosuresRequestBody.empty
+        json.as[AmendDisclosuresRequestBody] shouldBe AmendDisclosuresRequestBody(Some(List()), None)
       }
     }
 
