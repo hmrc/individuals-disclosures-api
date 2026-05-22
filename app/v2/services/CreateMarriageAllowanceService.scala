@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,33 +37,26 @@ class CreateMarriageAllowanceService @Inject() (connector: CreateMarriageAllowan
       .map(_.leftMap(mapDownstreamErrors(downstreamErrorMap)))
   }
 
-  private val downstreamErrorMap = {
-    val errors = Map(
-      "INVALID_IDVALUE"                 -> NinoFormatError,
-      "DECEASED_PARTICIPANT"            -> RuleDeceasedRecipientError,
-      "RELATIONSHIP_ALREADY_EXISTS"     -> RuleActiveMarriageAllowanceClaimError,
-      "INVALID_IDTYPE"                  -> models.errors.InternalError,
-      "END_DATE_CODE_NOT_FOUND"         -> models.errors.InternalError,
-      "INVALID_CORRELATIONID"           -> models.errors.InternalError,
-      "INVALID_PAYLOAD"                 -> models.errors.InternalError,
-      "NINO_OR_TRN_NOT_FOUND"           -> RuleInvalidRequestError,
-      "INVALID_ACTUAL_END_DATE"         -> models.errors.InternalError,
-      "INVALID_PARTICIPANT_END_DATE"    -> models.errors.InternalError,
-      "INVALID_PARTICIPANT_START_DATE"  -> models.errors.InternalError,
-      "INVALID_RELATIONSHIP_CODE"       -> models.errors.InternalError,
-      "PARTICIPANT1_CANNOT_BE_UPDATED"  -> models.errors.InternalError,
-      "PARTICIPANT2_CANNOT_BE_UPDATED"  -> models.errors.InternalError,
-      "CONFIDENCE_CHECK_FAILED"         -> models.errors.InternalError,
-      "CONFIDENCE_CHECK_SURNAME_MISSED" -> models.errors.InternalError,
-      "BAD_GATEWAY"                     -> models.errors.InternalError,
-      "SERVER_ERROR"                    -> models.errors.InternalError,
-      "SERVICE_UNAVAILABLE"             -> models.errors.InternalError
-    )
-
-    val extra_errors = Map(
-      "INVALID_NINO" -> NinoFormatError
-    )
-    errors ++ extra_errors
-  }
+  private val downstreamErrorMap = Map(
+    "INVALID_IDVALUE"                 -> NinoFormatError,
+    "DECEASED_PARTICIPANT"            -> RuleDeceasedRecipientError,
+    "RELATIONSHIP_ALREADY_EXISTS"     -> RuleActiveMarriageAllowanceClaimError,
+    "INVALID_IDTYPE"                  -> InternalError,
+    "END_DATE_CODE_NOT_FOUND"         -> InternalError,
+    "INVALID_CORRELATIONID"           -> InternalError,
+    "INVALID_PAYLOAD"                 -> InternalError,
+    "NINO_OR_TRN_NOT_FOUND"           -> RuleInvalidRequestError,
+    "INVALID_ACTUAL_END_DATE"         -> InternalError,
+    "INVALID_PARTICIPANT_END_DATE"    -> InternalError,
+    "INVALID_PARTICIPANT_START_DATE"  -> InternalError,
+    "INVALID_RELATIONSHIP_CODE"       -> InternalError,
+    "PARTICIPANT1_CANNOT_BE_UPDATED"  -> InternalError,
+    "PARTICIPANT2_CANNOT_BE_UPDATED"  -> InternalError,
+    "CONFIDENCE_CHECK_FAILED"         -> RuleInvalidRequestError.forPersonalDetailsMismatch,
+    "CONFIDENCE_CHECK_SURNAME_MISSED" -> InternalError,
+    "BAD_GATEWAY"                     -> InternalError,
+    "SERVER_ERROR"                    -> InternalError,
+    "SERVICE_UNAVAILABLE"             -> InternalError
+  )
 
 }
