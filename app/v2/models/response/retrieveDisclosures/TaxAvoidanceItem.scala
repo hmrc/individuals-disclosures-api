@@ -25,7 +25,7 @@ object TaxAvoidanceItem {
   implicit val writes: Writes[TaxAvoidanceItem] = Json.writes[TaxAvoidanceItem]
 
   implicit val reads: Reads[TaxAvoidanceItem] = (
-    (JsPath \ "SRN").read[String].orElse((JsPath \ "srn").read[String]) and
+    (JsPath \ "SRN").read[String] and
       (JsPath \ "taxYear").read[String]
   )(TaxAvoidanceItem.apply)
 
