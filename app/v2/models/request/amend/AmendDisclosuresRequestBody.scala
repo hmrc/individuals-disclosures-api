@@ -23,10 +23,9 @@ import utils.JsonUtils
 case class AmendDisclosuresRequestBody(taxAvoidance: Option[Seq[AmendTaxAvoidanceItem]], class2Nics: Option[AmendClass2Nics])
 
 object AmendDisclosuresRequestBody extends JsonUtils {
-  val empty: AmendDisclosuresRequestBody = AmendDisclosuresRequestBody(None, None)
 
   implicit val reads: Reads[AmendDisclosuresRequestBody] = (
-    (JsPath \ "taxAvoidance").readNullable[Seq[AmendTaxAvoidanceItem]].mapEmptySeqToNone and
+    (JsPath \ "taxAvoidance").readNullable[Seq[AmendTaxAvoidanceItem]] and
       (JsPath \ "class2Nics").readNullable[AmendClass2Nics].mapEmptyModelToNone(AmendClass2Nics.empty)
   )(AmendDisclosuresRequestBody.apply)
 

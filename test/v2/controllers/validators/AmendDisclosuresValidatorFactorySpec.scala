@@ -144,6 +144,17 @@ class AmendDisclosuresValidatorFactorySpec extends UnitSpec with MockAppConfig {
     """.stripMargin
   )
 
+  private val emptyTaxAvoidanceBodyJson: JsValue = Json.parse(
+    """
+      |{
+      |   "taxAvoidance": [],
+      |   "class2Nics": {
+      |      "class2VoluntaryContributions": true
+      |   }
+      |}
+    """.stripMargin
+  )
+
   private val parsedNino    = Nino(validNino)
   private val parsedTaxYear = TaxYear.fromMtd(validTaxYear)
 
@@ -258,6 +269,13 @@ class AmendDisclosuresValidatorFactorySpec extends UnitSpec with MockAppConfig {
 
         result shouldBe Left(
           ErrorWrapper(correlationId, RuleVoluntaryClass2ValueInvalidError.copy(paths = Some(List("/class2Nics/class2VoluntaryContributions")))))
+      }
+
+      "passed an empty array for taxAvoidance in the request body" in new SetUp {
+        val result: Either[ErrorWrapper, AmendDisclosuresRequestData] =
+          validator(validNino, "2021-22", emptyTaxAvoidanceBodyJson).validateAndWrapResult()
+
+        result shouldBe Left(ErrorWrapper(correlationId, RuleIncorrectOrEmptyBodyError.copy(paths = Some(List("/taxAvoidance")))))
       }
     }
 
