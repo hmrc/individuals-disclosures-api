@@ -23,7 +23,7 @@ object AppDependencies {
   val compile: Seq[ModuleID] = List(
     "uk.gov.hmrc"                  %% "bootstrap-backend-play-30" % bootstrapPlayVersion,
     "org.typelevel"                %% "cats-core"                 % "2.13.0",
-    "com.github.jknack"             % "handlebars"                % "4.3.1"
+    "com.github.jknack"             % "handlebars"                % "4.5.1"
   )
 
   val test: Seq[ModuleID] = List(
@@ -33,7 +33,7 @@ object AppDependencies {
   ).map(_ % Test)
 
   val itDependencies: Seq[ModuleID] = List(
-    "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.21.2",
-    "io.swagger.parser.v3"          % "swagger-parser-v3"    % "2.1.39"
+    "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.21.4",
+    "io.swagger.parser.v3"          % "swagger-parser-v3"    % "2.1.43"
   ).map(_ % Test)
 }
