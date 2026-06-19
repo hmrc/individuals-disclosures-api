@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,8 @@ import config.rewriters.*
 import config.rewriters.DocumentationRewriters.CheckAndRewrite
 import config.{MockAppConfig, RealAppConfig}
 import controllers.{AssetsConfiguration, DefaultAssetsMetadata, RewriteableAssets}
+import org.apache.pekko.stream.Materializer
+import org.apache.pekko.stream.testkit.NoMaterializer
 import definition.{APIDefinition, APIStatus, APIVersion, ApiDefinitionFactory, Definition}
 import play.api.http.{DefaultFileMimeTypes, DefaultHttpErrorHandler, FileMimeTypesConfiguration, HttpConfiguration}
 import play.api.mvc.Result
@@ -169,6 +171,8 @@ class DocumentationControllerSpec extends ControllerBaseSpec with MockAppConfig 
 
     MockedAppConfig.featureSwitches returns Configuration("openApiFeatureTest.enabled" -> featureEnabled)
 
+    private implicit val materializer: Materializer = NoMaterializer
+
     private val apiFactory = new ApiDefinitionFactory(mockAppConfig) {
 
       override lazy val definition: Definition = Definition(
@@ -206,7 +210,7 @@ class DocumentationControllerSpec extends ControllerBaseSpec with MockAppConfig 
 
     private val assets = new RewriteableAssets(errorHandler, assetsMetadata, mock[Environment])
 
-    protected def controller = new DocumentationController(apiFactory, docRewriters, assets, cc)
+    protected def controller = new DocumentationController(apiFactory, docRewriters, assets, config, cc)
   }
 
 }
