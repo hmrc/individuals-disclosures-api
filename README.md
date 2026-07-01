@@ -1,4 +1,4 @@
-individuals-disclosures-api
+Individuals Disclosures Api
 ========================
 
 [![Apache-2.0 license](http://img.shields.io/badge/license-Apache-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
@@ -60,4 +60,4 @@ You can create a GitHub issue [here](https://github.com/hmrc/income-tax-mtd-chan
 Available on the [HMRC Developer Hub](https://developer.service.hmrc.gov.uk/api-documentation/docs/api/service/individuals-disclosures-api)
 
 ## License
-This code is open source software licensed under the [Apache 2.0 License]("http://www.apache.org/licenses/LICENSE-2.0.html")
+This code is open source software licensed under the [Apache 2.0 License](http://www.apache.org/licenses/LICENSE-2.0.html)
