@@ -16,15 +16,7 @@
 
 package v2
 
-import api.models.errors.{
-  MtdError,
-  NinoFormatError,
-  NotFoundError,
-  RuleOutsideAmendmentWindowError,
-  RuleTaxYearNotSupportedError,
-  RuleTaxYearRangeInvalidError,
-  TaxYearFormatError
-}
+import api.models.errors.*
 import api.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 import api.support.IntegrationBaseSpec
 import com.github.tomakehurst.wiremock.stubbing.StubMapping

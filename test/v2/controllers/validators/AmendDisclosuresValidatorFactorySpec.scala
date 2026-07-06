@@ -17,7 +17,7 @@
 package v2.controllers.validators
 
 import api.models.domain.{Nino, TaxYear}
-import api.models.errors._
+import api.models.errors.*
 import config.MockAppConfig
 import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec

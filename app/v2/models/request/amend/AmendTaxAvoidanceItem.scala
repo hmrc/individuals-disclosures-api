@@ -16,8 +16,8 @@
 
 package v2.models.request.amend
 
-import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 import play.api.libs.functional.syntax.toFunctionalBuilderOps
+import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 
 case class AmendTaxAvoidanceItem(srn: String, taxYear: String)
 

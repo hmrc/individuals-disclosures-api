@@ -16,8 +16,8 @@
 
 package api.connectors
 
-import mocks.MockHttpClient
 import config.MockAppConfig
+import mocks.MockHttpClient
 import uk.gov.hmrc.http.StringContextOps
 
 import scala.concurrent.Future

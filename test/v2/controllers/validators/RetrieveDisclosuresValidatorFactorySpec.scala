@@ -17,7 +17,7 @@
 package v2.controllers.validators
 
 import api.models.domain.{Nino, TaxYear}
-import api.models.errors._
+import api.models.errors.*
 import config.MockAppConfig
 import support.UnitSpec
 import v2.models.request.retrieve.RetrieveDisclosuresRequestData

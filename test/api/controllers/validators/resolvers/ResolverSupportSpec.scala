@@ -16,9 +16,9 @@
 
 package api.controllers.validators.resolvers
 
+import api.models.errors.MtdError
 import cats.data.Validated.{Invalid, Valid}
 import cats.implicits.catsSyntaxOption
-import api.models.errors.MtdError
 import support.UnitSpec
 
 import java.util.concurrent.atomic.AtomicInteger

@@ -19,6 +19,7 @@ package api.controllers.validators.resolvers
 import api.models.errors.PartnerDoBFormatError
 import cats.data.Validated.{Invalid, Valid}
 import support.UnitSpec
+
 import java.time.LocalDate
 
 class ResolveIsoDateSpec extends UnitSpec {

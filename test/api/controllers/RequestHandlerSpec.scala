@@ -26,9 +26,8 @@ import api.services.{MockAuditService, ServiceOutcome}
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
 import cats.implicits.catsSyntaxValidatedId
-import config.Deprecation._
-import config.{AppConfig, Deprecation}
-import config.MockAppConfig
+import config.Deprecation.*
+import config.{AppConfig, Deprecation, MockAppConfig}
 import org.scalamock.handlers.CallHandler
 import play.api.http.{HeaderNames, Status}
 import play.api.libs.json.{JsString, Json, OWrites}

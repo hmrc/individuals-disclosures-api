@@ -16,15 +16,15 @@
 
 package api.controllers.validators
 
-import api.controllers.validators.resolvers.{ResolveJsonObject, ResolveNino, ResolveTaxYear}
+import api.controllers.validators.resolvers.{ResolveNino, ResolveNonEmptyJsonObject, ResolveTaxYear}
 import api.models.domain.{Nino, TaxYear}
-import api.models.errors._
+import api.models.errors.*
 import cats.data.Validated
 import cats.data.Validated.Invalid
-import cats.implicits._
+import cats.implicits.*
 import org.scalamock.scalatest.MockFactory
 import play.api.http.Status.BAD_REQUEST
-import play.api.libs.json.{JsValue, Json, Reads}
+import play.api.libs.json.{JsValue, Json, OFormat, Reads}
 import support.UnitSpec
 
 class ValidatorSpec extends UnitSpec with MockFactory {
@@ -46,14 +46,14 @@ class ValidatorSpec extends UnitSpec with MockFactory {
 
   case class TestParsedRequest(nino: Nino, taxYear: TaxYear, body: TestParsedRequestBody)
   case class TestParsedRequestBody(value1: String, value2: Boolean)
-  implicit val testParsedRequestBodyReads: Reads[TestParsedRequestBody] = Json.reads[TestParsedRequestBody]
+  implicit val testParsedRequestBodyFormat: OFormat[TestParsedRequestBody] = Json.format[TestParsedRequestBody]
 
   /** The main/outermost validator.
     */
   private class TestValidator(nino: String = "AA123456A", taxYear: String = "2023-24", jsonBody: JsValue = validBody)
       extends Validator[TestParsedRequest] {
 
-    private val jsonResolver = new ResolveJsonObject[TestParsedRequestBody]
+    private val jsonResolver = new ResolveNonEmptyJsonObject[TestParsedRequestBody]()
 
     def validate: Validated[Seq[MtdError], TestParsedRequest] =
       (

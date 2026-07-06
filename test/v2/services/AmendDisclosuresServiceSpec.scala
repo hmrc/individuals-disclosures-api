@@ -19,11 +19,11 @@ package v2.services
 import api.controllers.EndpointLogContext
 import api.models.domain.{Nino, TaxYear}
 import api.models.errors
-import api.models.errors._
+import api.models.errors.*
 import api.models.outcomes.ResponseWrapper
 import api.services.ServiceSpec
 import v2.connectors.MockAmendDisclosuresConnector
-import v2.models.request.amend._
+import v2.models.request.amend.*
 
 import scala.concurrent.Future
 

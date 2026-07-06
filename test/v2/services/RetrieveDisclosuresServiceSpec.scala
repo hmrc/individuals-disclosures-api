@@ -19,7 +19,7 @@ package v2.services
 import api.controllers.EndpointLogContext
 import api.models.domain.{Nino, TaxYear, Timestamp}
 import api.models.errors
-import api.models.errors._
+import api.models.errors.*
 import api.models.outcomes.ResponseWrapper
 import api.services.ServiceSpec
 import uk.gov.hmrc.http.HeaderCarrier

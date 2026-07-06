@@ -17,10 +17,10 @@
 package api.connectors.parsers
 
 import api.connectors.DownstreamOutcome
-import api.connectors.httpparsers.StandardDownstreamHttpParser._
-import api.models.errors._
+import api.connectors.httpparsers.StandardDownstreamHttpParser.*
+import api.models.errors.*
 import api.models.outcomes.ResponseWrapper
-import play.api.http.Status._
+import play.api.http.Status.*
 import play.api.libs.json.{JsValue, Json, Reads}
 import support.UnitSpec
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}

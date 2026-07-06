@@ -35,7 +35,7 @@ class CreateMarriageAllowanceConnector @Inject() (val http: HttpClientV2, val ap
       ec: ExecutionContext,
       correlationId: String): Future[DownstreamOutcome[Unit]] = {
 
-    import request._
+    import request.*
 
     post(body, Ifs2Uri[Unit](s"income-tax/marriage-allowance/claim/nino/$nino"))
   }

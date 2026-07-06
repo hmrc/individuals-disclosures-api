@@ -19,8 +19,8 @@ package mocks
 import izumi.reflect.Tag
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
-import org.scalatest.{Assertion, TestSuite}
 import org.scalatest.matchers.should.Matchers
+import org.scalatest.{Assertion, TestSuite}
 import play.api.libs.json.JsValue
 import play.api.libs.ws.BodyWritable
 import uk.gov.hmrc.http.client.{HttpClientV2, RequestBuilder}

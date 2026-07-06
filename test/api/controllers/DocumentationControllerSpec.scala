@@ -21,9 +21,9 @@ import config.rewriters.*
 import config.rewriters.DocumentationRewriters.CheckAndRewrite
 import config.{MockAppConfig, RealAppConfig}
 import controllers.{AssetsConfiguration, DefaultAssetsMetadata, RewriteableAssets}
+import definition.*
 import org.apache.pekko.stream.Materializer
 import org.apache.pekko.stream.testkit.NoMaterializer
-import definition.{APIDefinition, APIStatus, APIVersion, ApiDefinitionFactory, Definition}
 import play.api.http.{DefaultFileMimeTypes, DefaultHttpErrorHandler, FileMimeTypesConfiguration, HttpConfiguration}
 import play.api.mvc.Result
 import play.api.{Configuration, Environment}

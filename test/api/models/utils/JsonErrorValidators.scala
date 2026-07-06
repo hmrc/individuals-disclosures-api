@@ -16,7 +16,7 @@
 
 package api.models.utils
 
-import play.api.libs.json._
+import play.api.libs.json.*
 import support.UnitSpec
 
 trait JsonErrorValidators {

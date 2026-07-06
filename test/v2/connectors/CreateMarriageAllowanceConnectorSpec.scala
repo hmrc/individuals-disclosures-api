@@ -18,7 +18,7 @@ package v2.connectors
 
 import api.connectors.ConnectorSpec
 import api.models.domain.Nino
-import api.models.errors._
+import api.models.errors.*
 import api.models.outcomes.ResponseWrapper
 import uk.gov.hmrc.http.StringContextOps
 import v2.models.request.create.{CreateMarriageAllowanceRequestBody, CreateMarriageAllowanceRequestData}

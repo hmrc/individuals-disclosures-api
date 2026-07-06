@@ -20,15 +20,16 @@ import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import api.mocks.MockIdGenerator
 import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import api.models.domain.{Nino, TaxYear}
-import api.models.errors._
+import api.models.errors.*
 import api.models.outcomes.ResponseWrapper
 import api.services.{MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService}
 import play.api.Configuration
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
 import v2.controllers.validators.MockAmendDisclosuresValidatorFactory
-import v2.models.request.amend._
+import v2.models.request.amend.*
 import v2.services.MockAmendDisclosuresService
+
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 

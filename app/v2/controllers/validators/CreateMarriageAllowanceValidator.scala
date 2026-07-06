@@ -33,7 +33,7 @@ object CreateMarriageAllowanceValidator extends RulesValidator[CreateMarriageAll
   private val maxYear   = 2100
 
   override def validateBusinessRules(parsed: CreateMarriageAllowanceRequestData): Validated[Seq[MtdError], CreateMarriageAllowanceRequestData] = {
-    import parsed.body._
+    import parsed.body.*
 
     val validatedPartnerSurname = ResolveStringPattern(
       spouseOrCivilPartnerSurname,

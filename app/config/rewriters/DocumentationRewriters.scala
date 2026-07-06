@@ -16,8 +16,8 @@
 
 package config.rewriters
 
-import controllers.Rewriter
 import config.rewriters.DocumentationRewriters.CheckAndRewrite
+import controllers.Rewriter
 
 import javax.inject.{Inject, Singleton}
 

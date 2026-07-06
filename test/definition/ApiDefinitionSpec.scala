@@ -16,8 +16,8 @@
 
 package definition
 
-import play.api.libs.json.*
 import definition.APIStatus.BETA
+import play.api.libs.json.*
 import routing.Version1
 import support.UnitSpec
 
