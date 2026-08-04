@@ -65,6 +65,7 @@ trait AppConfig {
   def apiGatewayContext: String
   def confidenceLevelConfig: ConfidenceLevelConfig
   def apiStatus(version: Version): String
+  def controlledAccessEnabled: Boolean
   def featureSwitches: Configuration
   def endpointsEnabled(version: Version): Boolean
   def endpointsEnabled(version: String): Boolean
@@ -110,8 +111,10 @@ class AppConfigImpl @Inject() (config: ServicesConfig, val configuration: Config
   // API Config
   val apiGatewayContext: String                    = config.getString("api.gateway.context")
   val confidenceLevelConfig: ConfidenceLevelConfig = configuration.get[ConfidenceLevelConfig](s"api.confidence-level-check")
-  def apiStatus(version: Version): String          = config.getString(s"api.${version.name}.status")
-  def featureSwitches: Configuration               = configuration.getOptional[Configuration](s"feature-switch").getOrElse(Configuration.empty)
+  val controlledAccessEnabled: Boolean             = config.getBoolean("api.controlled-access.enabled")
+
+  def apiStatus(version: Version): String = config.getString(s"api.${version.name}.status")
+  def featureSwitches: Configuration      = configuration.getOptional[Configuration](s"feature-switch").getOrElse(Configuration.empty)
 
   def endpointsEnabled(version: Version): Boolean = config.getBoolean(s"api.${version.name}.endpoints.enabled")
   def endpointsEnabled(version: String): Boolean  = config.getBoolean(s"api.$version.endpoints.enabled")

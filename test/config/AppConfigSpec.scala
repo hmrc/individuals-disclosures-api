@@ -382,6 +382,7 @@ class AppConfigSpec extends UnitSpec {
         |  minimumPermittedTaxYear = "2020"
         |
         |  api {
+        |   controlled-access.enabled = true
         |""".stripMargin ++
 
         versionConf ++

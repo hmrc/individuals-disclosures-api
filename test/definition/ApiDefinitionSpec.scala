@@ -16,6 +16,7 @@
 
 package definition
 
+import definition.APIAccessType.PUBLIC
 import definition.APIStatus.BETA
 import play.api.libs.json.*
 import routing.Version1
@@ -23,13 +24,14 @@ import support.UnitSpec
 
 class ApiDefinitionSpec extends UnitSpec {
 
-  val apiVersion: APIVersion       = APIVersion(Version1, BETA, endpointsEnabled = false)
+  val apiVersion: APIVersion       = APIVersion(Version1, BETA, PUBLIC, endpointsEnabled = false)
   val apiDefinition: APIDefinition = APIDefinition("b", "c", "d", Seq("e"), Seq(apiVersion), Some(false))
 
   private val apiVersionJson = Json.parse("""
       {
         "version": "1.0",
         "status": "BETA",
+        "access": "PUBLIC",
         "endpointsEnabled": false
       }
     """)
@@ -44,6 +46,7 @@ class ApiDefinitionSpec extends UnitSpec {
           {
             "version": "1.0",
             "status": "BETA",
+            "access": "PUBLIC",
             "endpointsEnabled": false
           }
         ],
@@ -62,6 +65,7 @@ class ApiDefinitionSpec extends UnitSpec {
             {
               "version": "1.0",
               "status": "BETA",
+              "access": "PUBLIC",
               "endpointsEnabled": false
             }
           ],
@@ -104,7 +108,7 @@ class ApiDefinitionSpec extends UnitSpec {
     }
   }
 
-  "the 'versions' parameter is empty" should {
+  "the 'versions' parameter is not unique" should {
     "throw an 'IllegalArgumentException'" in {
       assertThrows[IllegalArgumentException](
         apiDefinition.copy(versions = Seq(apiVersion, apiVersion))
@@ -112,7 +116,7 @@ class ApiDefinitionSpec extends UnitSpec {
     }
   }
 
-  "the 'versions' parameter is not unique" should {
+  "the 'versions' parameter is empty" should {
     "throw an 'IllegalArgumentException'" in {
       assertThrows[IllegalArgumentException](
         apiDefinition.copy(versions = Seq())

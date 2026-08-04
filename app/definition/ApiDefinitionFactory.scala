@@ -18,6 +18,7 @@ package definition
 
 import cats.data.Validated.Invalid
 import config.AppConfig
+import definition.APIAccessType.{CONTROLLED, PUBLIC}
 import play.api.Logger
 import routing.{Version, Version2}
 
@@ -39,6 +40,7 @@ class ApiDefinitionFactory @Inject() (appConfig: AppConfig) {
           APIVersion(
             version = Version2,
             status = buildAPIStatus(Version2),
+            access = if (appConfig.controlledAccessEnabled) CONTROLLED else PUBLIC,
             endpointsEnabled = appConfig.endpointsEnabled(Version2)
           )
         ),
