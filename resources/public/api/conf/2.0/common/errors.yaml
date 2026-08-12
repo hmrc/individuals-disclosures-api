@@ -141,9 +141,9 @@ components:
         code: MATCHING_RESOURCE_NOT_FOUND
         message: Matching resource not found
 
-    notFoundBusiness:
+    selfEmploymentNotFound:
       description: |
-        The supplied income source could not be found.
+        The self-employment income source could not be found.
       value:
         code: MATCHING_RESOURCE_NOT_FOUND
-        message: Matching resource not found
+        message: Self-employment income source not found

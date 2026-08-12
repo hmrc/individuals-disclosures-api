@@ -36,14 +36,14 @@ class AmendDisclosuresService @Inject() (connector: AmendDisclosuresConnector) e
       .map(_.leftMap(mapDownstreamErrors(downstreamErrorMap)))
   }
 
-  private def downstreamErrorMap: Map[String, MtdError] = Map(
+  private val downstreamErrorMap: Map[String, MtdError] = Map(
     "1000" -> InternalError,
     "1117" -> TaxYearFormatError,
     "1215" -> NinoFormatError,
     "1216" -> InternalError,
     "4200" -> RuleOutsideAmendmentWindowError,
     "5000" -> RuleTaxYearNotSupportedError,
-    "5003" -> NotFoundError,
+    "5003" -> NotFoundError.forSelfEmployment,
     "5004" -> RuleVoluntaryClass2CannotBeChangedError
   )
 

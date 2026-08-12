@@ -88,7 +88,9 @@ object RuleInvalidRequestError extends MtdError("RULE_INVALID_REQUEST", "The NIN
 object RuleOutsideAmendmentWindowError extends MtdError("RULE_OUTSIDE_AMENDMENT_WINDOW", "You are outside the amendment window", BAD_REQUEST)
 
 //Standard Errors
-object NotFoundError extends MtdError("MATCHING_RESOURCE_NOT_FOUND", "Matching resource not found", NOT_FOUND)
+object NotFoundError extends MtdError("MATCHING_RESOURCE_NOT_FOUND", "Matching resource not found", NOT_FOUND) {
+  def forSelfEmployment: MtdError = copy(message = "Self-employment income source not found")
+}
 
 object InternalError extends MtdError("INTERNAL_SERVER_ERROR", "An internal server error occurred", INTERNAL_SERVER_ERROR)
 

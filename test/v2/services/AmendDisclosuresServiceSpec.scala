@@ -16,7 +16,7 @@
 
 package v2.services
 
-import api.controllers.EndpointLogContext
+import api.connectors.DownstreamOutcome
 import api.models.domain.{Nino, TaxYear}
 import api.models.errors
 import api.models.errors.*
@@ -29,19 +29,19 @@ import scala.concurrent.Future
 
 class AmendDisclosuresServiceSpec extends ServiceSpec {
 
-  private val nino    = "AA112233A"
-  private val taxYear = "2021-22"
+  private val nino: String    = "AA112233A"
+  private val taxYear: String = "2021-22"
 
-  val taxAvoidanceModel: Seq[AmendTaxAvoidanceItem] = Seq(
+  private val taxAvoidanceModel: Seq[AmendTaxAvoidanceItem] = Seq(
     AmendTaxAvoidanceItem(
       srn = "14211123",
       taxYear = "2020-21"
     )
   )
 
-  val class2NicsModel: AmendClass2Nics = AmendClass2Nics(class2VoluntaryContributions = Some(true))
+  private val class2NicsModel: AmendClass2Nics = AmendClass2Nics(class2VoluntaryContributions = Some(true))
 
-  val amendDisclosuresRequest: AmendDisclosuresRequestData = AmendDisclosuresRequestData(
+  private val amendDisclosuresRequest: AmendDisclosuresRequestData = AmendDisclosuresRequestData(
     nino = Nino(nino),
     taxYear = TaxYear.fromMtd(taxYear),
     body = AmendDisclosuresRequestBody(
@@ -50,19 +50,14 @@ class AmendDisclosuresServiceSpec extends ServiceSpec {
     )
   )
 
-  trait Test extends MockAmendDisclosuresConnector {
-    implicit val logContext: EndpointLogContext = EndpointLogContext("c", "ep")
-
-    val service: AmendDisclosuresService = new AmendDisclosuresService(
-      connector = mockAmendDisclosuresConnector
-    )
-
+  private trait Test extends MockAmendDisclosuresConnector {
+    val service: AmendDisclosuresService = new AmendDisclosuresService(connector = mockAmendDisclosuresConnector)
   }
 
   "AmendDisclosuresService" when {
-    "amendDisclosures" must {
+    "amendDisclosures" should {
       "return correct result for a success" in new Test {
-        val outcome = Right(ResponseWrapper(correlationId, ()))
+        val outcome: DownstreamOutcome[Unit] = Right(ResponseWrapper(correlationId, ()))
 
         MockAmendDisclosuresConnector
           .amendDisclosures(amendDisclosuresRequest)
@@ -72,10 +67,8 @@ class AmendDisclosuresServiceSpec extends ServiceSpec {
       }
 
       "map errors according to spec" when {
-
         def serviceError(downstreamErrorCode: String, error: MtdError): Unit =
           s"a $downstreamErrorCode error is returned from the service" in new Test {
-
             MockAmendDisclosuresConnector
               .amendDisclosures(amendDisclosuresRequest)
               .returns(Future.successful(Left(ResponseWrapper(correlationId, DownstreamErrors.single(DownstreamErrorCode(downstreamErrorCode))))))
@@ -83,18 +76,18 @@ class AmendDisclosuresServiceSpec extends ServiceSpec {
             await(service.amendDisclosures(amendDisclosuresRequest)) shouldBe Left(ErrorWrapper(correlationId, error))
           }
 
-        val downstreamErrors = Seq(
+        val errors: Seq[(String, MtdError)] = Seq(
           ("1000", InternalError),
           ("1117", TaxYearFormatError),
           ("1215", NinoFormatError),
           ("1216", InternalError),
           ("4200", RuleOutsideAmendmentWindowError),
           ("5000", RuleTaxYearNotSupportedError),
-          ("5003", NotFoundError),
+          ("5003", NotFoundError.forSelfEmployment),
           ("5004", RuleVoluntaryClass2CannotBeChangedError)
         )
 
-        downstreamErrors.foreach(serviceError.tupled)
+        errors.foreach(serviceError.tupled)
       }
     }
   }
