@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v2.services
+package v2.delete
 
 import api.controllers.EndpointLogContext
 import api.models.domain.{Nino, TaxYear}
@@ -22,8 +22,7 @@ import api.models.errors.*
 import api.models.outcomes.ResponseWrapper
 import api.services.ServiceSpec
 import uk.gov.hmrc.http.HeaderCarrier
-import v2.connectors.MockDeleteDisclosuresConnector
-import v2.models.request.delete.DeleteDisclosuresRequestData
+import v2.delete.def1.model.request.Def1_DeleteDisclosuresRequestData
 
 import scala.concurrent.Future
 
@@ -39,7 +38,7 @@ class DeleteDisclosuresServiceSpec extends ServiceSpec {
     lazy val service = new DeleteDisclosuresService(mockDeleteDisclosuresConnector)
   }
 
-  lazy val request: DeleteDisclosuresRequestData = DeleteDisclosuresRequestData(nino, taxYear)
+  lazy val request: Def1_DeleteDisclosuresRequestData = Def1_DeleteDisclosuresRequestData(nino, taxYear)
 
   "DeleteDisclosuresService" when {
     "return correct result for a success" in new Test {
