@@ -38,11 +38,26 @@ responses:
     content:
       application/json:
         schema:
+          {{#if (enabled 'r23_whitespace_docs')}}
+          anyOf:
+            - $ref: './schemas/disclosures_retrieve/def1/retrieve_disclosures_response.json'
+            - $ref: './schemas/disclosures_retrieve/def2/retrieve_disclosures_response.json'
+            {{else}}
           $ref: './schemas/retrieve_disclosures_response.json'
+          {{/if}}
         examples:
+          {{#if (enabled 'r23_whitespace_docs')}}
+          Before TY 2026-27:
+            value:
+              $ref: './examples/disclosures_retrieve/def1/retrieve_response.json'
+          TY 2026-27 onwards:
+            value:
+              $ref: './examples/disclosures_retrieve/def2/retrieve_response.json'
+           {{else}}
           Request:
             value:
               $ref: './examples/disclosures/retrieve_response.json'
+            {{/if}}
 
   "400":
     description: Bad request
