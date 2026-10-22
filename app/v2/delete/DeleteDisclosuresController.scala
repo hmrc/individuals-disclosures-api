@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,15 +14,13 @@
  * limitations under the License.
  */
 
-package v2.controllers
+package v2.delete
 
 import api.controllers.*
 import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
 import config.AppConfig
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import utils.IdGenerator
-import v2.controllers.validators.DeleteDisclosuresValidatorFactory
-import v2.services.DeleteDisclosuresService
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext

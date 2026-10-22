@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,8 +14,12 @@
  * limitations under the License.
  */
 
-package v2.models.request.delete
+package v2.delete.def1.model.request
 
 import api.models.domain.{Nino, TaxYear}
+import v2.delete.DeleteDisclosuresSchema
+import v2.delete.model.request.DeleteDisclosuresRequestData
 
-case class DeleteDisclosuresRequestData(nino: Nino, taxYear: TaxYear)
+case class Def1_DeleteDisclosuresRequestData(nino: Nino, taxYear: TaxYear) extends DeleteDisclosuresRequestData {
+  val schema: DeleteDisclosuresSchema = DeleteDisclosuresSchema.Def1
+}

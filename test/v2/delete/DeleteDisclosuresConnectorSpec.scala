@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package v2.connectors
+package v2.delete
 
 import api.connectors.ConnectorSpec
 import api.models.domain.{Nino, TaxYear}
 import api.models.errors.*
 import api.models.outcomes.ResponseWrapper
 import uk.gov.hmrc.http.StringContextOps
-import v2.models.request.delete.DeleteDisclosuresRequestData
+import v2.delete.def1.model.request.Def1_DeleteDisclosuresRequestData
 
 import scala.concurrent.Future
 
@@ -65,7 +65,7 @@ class DeleteDisclosuresConnectorSpec extends ConnectorSpec {
   trait Test {
     self: ConnectorTest =>
 
-    protected val request: DeleteDisclosuresRequestData = DeleteDisclosuresRequestData(
+    protected val request: Def1_DeleteDisclosuresRequestData = Def1_DeleteDisclosuresRequestData(
       nino = Nino(nino),
       taxYear = TaxYear.fromMtd(taxYear)
     )

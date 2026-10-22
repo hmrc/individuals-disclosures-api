@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v2.controllers.validators
+package v2.delete.def1
 
 import api.controllers.validators.Validator
 import api.controllers.validators.resolvers.{ResolveNino, ResolveTaxYear}
@@ -22,22 +22,18 @@ import api.models.errors.MtdError
 import cats.data.Validated
 import cats.implicits.*
 import config.AppConfig
-import v2.models.request.delete.DeleteDisclosuresRequestData
+import v2.delete.def1.model.request.Def1_DeleteDisclosuresRequestData
+import v2.delete.model.request.DeleteDisclosuresRequestData
 
-import javax.inject.{Inject, Singleton}
+import javax.inject.Inject
 
-@Singleton
-class DeleteDisclosuresValidatorFactory @Inject() (appConfig: AppConfig) {
+class Def1_DeleteDisclosuresValidator @Inject() (nino: String, taxYear: String)(appConfig: AppConfig)
+    extends Validator[DeleteDisclosuresRequestData] {
 
-  def validator(nino: String, taxYear: String): Validator[DeleteDisclosuresRequestData] =
-    new Validator[DeleteDisclosuresRequestData] {
-
-      def validate: Validated[Seq[MtdError], DeleteDisclosuresRequestData] =
-        (
-          ResolveNino(nino),
-          ResolveTaxYear(appConfig.minimumPermittedTaxYear, taxYear, None, None)
-        ).mapN(DeleteDisclosuresRequestData.apply)
-
-    }
+  def validate: Validated[Seq[MtdError], DeleteDisclosuresRequestData] =
+    (
+      ResolveNino(nino),
+      ResolveTaxYear(appConfig.minimumPermittedTaxYear, taxYear, None, None)
+    ).mapN(Def1_DeleteDisclosuresRequestData.apply)
 
 }
