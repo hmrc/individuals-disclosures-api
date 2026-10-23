@@ -18,8 +18,9 @@ package v2.models.response.retrieveDisclosures
 
 import play.api.libs.json.{JsError, JsObject, Json}
 import support.UnitSpec
+import v2.retrieve.def1.model.response.Def1_TaxAvoidanceItem
 
-class TaxAvoidanceItemSpec extends UnitSpec {
+class Def1TaxAvoidanceItemSpec extends UnitSpec {
 
   private val downStreamJson = Json.parse(
     """
@@ -39,7 +40,7 @@ class TaxAvoidanceItemSpec extends UnitSpec {
     """.stripMargin
   )
 
-  private val model = TaxAvoidanceItem(
+  private val model = Def1_TaxAvoidanceItem(
     srn = "14211123",
     taxYear = "2020-21"
   )
@@ -47,7 +48,7 @@ class TaxAvoidanceItemSpec extends UnitSpec {
   "TaxAvoidanceItem" when {
     "read from valid JSON" should {
       "produce the expected TaxAvoidanceItem object" in {
-        downStreamJson.as[TaxAvoidanceItem] shouldBe model
+        downStreamJson.as[Def1_TaxAvoidanceItem] shouldBe model
       }
     }
 
@@ -55,7 +56,7 @@ class TaxAvoidanceItemSpec extends UnitSpec {
       "produce a JsError" in {
         val invalidJson = JsObject.empty
 
-        invalidJson.validate[TaxAvoidanceItem] shouldBe a[JsError]
+        invalidJson.validate[Def1_TaxAvoidanceItem] shouldBe a[JsError]
       }
     }
 

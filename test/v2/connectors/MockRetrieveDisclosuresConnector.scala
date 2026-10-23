@@ -21,8 +21,8 @@ import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.TestSuite
 import uk.gov.hmrc.http.HeaderCarrier
-import v2.models.request.retrieve.RetrieveDisclosuresRequestData
-import v2.models.response.retrieveDisclosures.RetrieveDisclosuresResponse
+import v2.retrieve.def1.model.response.Def1_RetrieveDisclosuresResponse
+import v2.retrieve.model.request.RetrieveDisclosuresRequestData
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -32,7 +32,7 @@ trait MockRetrieveDisclosuresConnector extends TestSuite with MockFactory {
 
   object MockRetrieveDisclosuresConnector {
 
-    def retrieve(request: RetrieveDisclosuresRequestData): CallHandler[Future[DownstreamOutcome[RetrieveDisclosuresResponse]]] = {
+    def retrieve(request: RetrieveDisclosuresRequestData): CallHandler[Future[DownstreamOutcome[Def1_RetrieveDisclosuresResponse]]] = {
       (mockRetrieveDisclosuresConnector
         .retrieve(_: RetrieveDisclosuresRequestData)(_: HeaderCarrier, _: ExecutionContext, _: String))
         .expects(request, *, *, *)

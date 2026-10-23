@@ -21,8 +21,8 @@ import api.services.ServiceOutcome
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.TestSuite
-import v2.models.request.retrieve.RetrieveDisclosuresRequestData
-import v2.models.response.retrieveDisclosures.RetrieveDisclosuresResponse
+import v2.retrieve.def1.model.response.Def1_RetrieveDisclosuresResponse
+import v2.retrieve.model.request.RetrieveDisclosuresRequestData
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -32,7 +32,7 @@ trait MockRetrieveDisclosuresService extends TestSuite with MockFactory {
 
   object MockRetrieveDisclosuresService {
 
-    def retrieve(requestData: RetrieveDisclosuresRequestData): CallHandler[Future[ServiceOutcome[RetrieveDisclosuresResponse]]] = {
+    def retrieve(requestData: RetrieveDisclosuresRequestData): CallHandler[Future[ServiceOutcome[Def1_RetrieveDisclosuresResponse]]] = {
       (mockRetrieveDisclosuresService
         .retrieve(_: RetrieveDisclosuresRequestData)(_: RequestContext, _: ExecutionContext))
         .expects(requestData, *, *)

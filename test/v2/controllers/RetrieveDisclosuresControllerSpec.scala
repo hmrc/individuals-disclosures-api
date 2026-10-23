@@ -26,8 +26,8 @@ import play.api.Configuration
 import play.api.mvc.Result
 import v2.controllers.validators.MockRetrieveDisclosuresValidatorFactory
 import v2.fixtures.RetrieveDisclosuresControllerFixture.mtdResponse
-import v2.models.request.retrieve.RetrieveDisclosuresRequestData
-import v2.models.response.retrieveDisclosures.{Class2Nics, RetrieveDisclosuresResponse, TaxAvoidanceItem}
+import v2.retrieve.def1.model.response.{Def1_Class2Nics, Def1_RetrieveDisclosuresResponse, Def1_TaxAvoidanceItem}
+import v2.retrieve.model.request.RetrieveDisclosuresRequestData
 import v2.services.MockRetrieveDisclosuresService
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -49,22 +49,22 @@ class RetrieveDisclosuresControllerSpec
     taxYear = TaxYear.fromMtd(taxYear)
   )
 
-  val taxAvoidanceModel: Seq[TaxAvoidanceItem] = Seq(
-    TaxAvoidanceItem(
+  val taxAvoidanceModel: Seq[Def1_TaxAvoidanceItem] = Seq(
+    Def1_TaxAvoidanceItem(
       srn = "14211123",
       taxYear = "2020-21"
     ),
-    TaxAvoidanceItem(
+    Def1_TaxAvoidanceItem(
       srn = "34522678",
       taxYear = "2021-22"
     )
   )
 
-  val class2NicsModel: Class2Nics = Class2Nics(class2VoluntaryContributions = Some(true))
+  val def1Class2NicsModel: Def1_Class2Nics = Def1_Class2Nics(class2VoluntaryContributions = Some(true))
 
-  val retrieveDisclosuresResponseModel: RetrieveDisclosuresResponse = RetrieveDisclosuresResponse(
+  val def1RetrieveDisclosuresResponseModel: Def1_RetrieveDisclosuresResponse = Def1_RetrieveDisclosuresResponse(
     taxAvoidance = Some(taxAvoidanceModel),
-    class2Nics = Some(class2NicsModel),
+    def1Class2Nics = Some(def1Class2NicsModel),
     submittedOn = Timestamp("2020-07-06T09:37:17Z")
   )
 
@@ -75,7 +75,7 @@ class RetrieveDisclosuresControllerSpec
 
         MockRetrieveDisclosuresService
           .retrieve(requestData)
-          .returns(Future.successful(Right(ResponseWrapper(correlationId, retrieveDisclosuresResponseModel))))
+          .returns(Future.successful(Right(ResponseWrapper(correlationId, def1RetrieveDisclosuresResponseModel))))
 
         runOkTest(OK, Some(mtdResponse))
 

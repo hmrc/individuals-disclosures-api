@@ -19,8 +19,9 @@ package v2.models.response.retrieveDisclosures
 import api.models.domain.Timestamp
 import play.api.libs.json.{JsError, Json}
 import support.UnitSpec
+import v2.retrieve.def1.model.response.{Def1_Class2Nics, Def1_RetrieveDisclosuresResponse, Def1_TaxAvoidanceItem}
 
-class RetrieveDisclosuresResponseSpec extends UnitSpec {
+class Def1RetrieveDisclosuresResponseSpec extends UnitSpec {
 
   private val mtdJson = Json.parse(
     """
@@ -57,24 +58,24 @@ class RetrieveDisclosuresResponseSpec extends UnitSpec {
   )
 
   private val taxAvoidanceItem = List(
-    TaxAvoidanceItem(
+    Def1_TaxAvoidanceItem(
       srn = "14211123",
       taxYear = "2020-21"
     )
   )
 
-  private val class2NicsModel = Class2Nics(class2VoluntaryContributions = Some(true))
+  private val class2NicsModel = Def1_Class2Nics(class2VoluntaryContributions = Some(true))
 
-  private val parsedResponse = RetrieveDisclosuresResponse(
+  private val parsedResponse = Def1_RetrieveDisclosuresResponse(
     taxAvoidance = Some(taxAvoidanceItem),
-    class2Nics = Some(class2NicsModel),
+    def1Class2Nics = Some(class2NicsModel),
     submittedOn = Timestamp("2020-07-06T09:37:17Z")
   )
 
   "RetrieveDisclosuresResponse" when {
     "read from valid JSON" should {
       "produce the expected RetrieveDisclosuresResponse object" in {
-        downstreamJson.as[RetrieveDisclosuresResponse] shouldBe parsedResponse
+        downstreamJson.as[Def1_RetrieveDisclosuresResponse] shouldBe parsedResponse
       }
     }
 
@@ -90,9 +91,9 @@ class RetrieveDisclosuresResponseSpec extends UnitSpec {
           """.stripMargin
         )
 
-        json.as[RetrieveDisclosuresResponse] shouldBe parsedResponse.copy(
+        json.as[Def1_RetrieveDisclosuresResponse] shouldBe parsedResponse.copy(
           taxAvoidance = None,
-          class2Nics = None,
+          def1Class2Nics = None,
           submittedOn = Timestamp("2020-07-06T09:37:17Z"))
       }
     }
@@ -115,7 +116,7 @@ class RetrieveDisclosuresResponseSpec extends UnitSpec {
             |}
           """.stripMargin
         )
-        invalidJson.validate[RetrieveDisclosuresResponse] shouldBe a[JsError]
+        invalidJson.validate[Def1_RetrieveDisclosuresResponse] shouldBe a[JsError]
       }
     }
 

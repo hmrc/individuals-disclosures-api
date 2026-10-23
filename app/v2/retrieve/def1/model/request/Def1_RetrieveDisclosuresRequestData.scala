@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,19 +14,12 @@
  * limitations under the License.
  */
 
-package v2.models.response.retrieveDisclosures
+package v2.retrieve.def1.model.request
 
-import play.api.libs.functional.syntax.toFunctionalBuilderOps
-import play.api.libs.json.{JsPath, Json, Reads, Writes}
+import api.models.domain.{Nino, TaxYear}
+import v2.retrieve.RetrieveDisclosuresSchema
+import v2.retrieve.model.request.RetrieveDisclosuresRequestData
 
-case class TaxAvoidanceItem(srn: String, taxYear: String)
-
-object TaxAvoidanceItem {
-  implicit val writes: Writes[TaxAvoidanceItem] = Json.writes[TaxAvoidanceItem]
-
-  implicit val reads: Reads[TaxAvoidanceItem] = (
-    (JsPath \ "SRN").read[String] and
-      (JsPath \ "taxYear").read[String]
-  )(TaxAvoidanceItem.apply)
-
+case class Def1_RetrieveDisclosuresRequestData(nino: Nino, taxYear: TaxYear) extends RetrieveDisclosuresRequestData {
+  override val schema: RetrieveDisclosuresSchema = RetrieveDisclosuresSchema.Def1
 }

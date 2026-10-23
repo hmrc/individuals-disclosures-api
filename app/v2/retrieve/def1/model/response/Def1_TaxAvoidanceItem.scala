@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,8 +14,19 @@
  * limitations under the License.
  */
 
-package v2.models.request.retrieve
+package v2.retrieve.def1.model.response
 
-import api.models.domain.{Nino, TaxYear}
+import play.api.libs.functional.syntax.toFunctionalBuilderOps
+import play.api.libs.json.{JsPath, Json, Reads, Writes}
 
-case class RetrieveDisclosuresRequestData(nino: Nino, taxYear: TaxYear)
+case class Def1_TaxAvoidanceItem(srn: String, taxYear: String)
+
+object Def1_TaxAvoidanceItem {
+  implicit val writes: Writes[Def1_TaxAvoidanceItem] = Json.writes[Def1_TaxAvoidanceItem]
+
+  implicit val reads: Reads[Def1_TaxAvoidanceItem] = (
+    (JsPath \ "SRN").read[String] and
+      (JsPath \ "taxYear").read[String]
+  )(Def1_TaxAvoidanceItem.apply)
+
+}

@@ -18,8 +18,9 @@ package v2.models.response.retrieveDisclosures
 
 import play.api.libs.json.{JsError, JsObject, Json}
 import support.UnitSpec
+import v2.retrieve.def1.model.response.Def1_Class2Nics
 
-class Class2NicsSpec extends UnitSpec {
+class Def1Class2NicsSpec extends UnitSpec {
 
   private val json = Json.parse(
     """
@@ -29,12 +30,12 @@ class Class2NicsSpec extends UnitSpec {
     """.stripMargin
   )
 
-  private val model = Class2Nics(class2VoluntaryContributions = Some(true))
+  private val model = Def1_Class2Nics(class2VoluntaryContributions = Some(true))
 
   "Class2Nics" when {
     "read from valid JSON" should {
       "produce the expected Class2Nics object" in {
-        json.as[Class2Nics] shouldBe model
+        json.as[Def1_Class2Nics] shouldBe model
       }
     }
 
@@ -42,7 +43,7 @@ class Class2NicsSpec extends UnitSpec {
       "produce an empty Class2Nics object" in {
         val emptyJson = JsObject.empty
 
-        emptyJson.as[Class2Nics] shouldBe Class2Nics.empty
+        emptyJson.as[Def1_Class2Nics] shouldBe Def1_Class2Nics.empty
       }
     }
 
@@ -56,7 +57,7 @@ class Class2NicsSpec extends UnitSpec {
           """.stripMargin
         )
 
-        invalidJson.validate[Class2Nics] shouldBe a[JsError]
+        invalidJson.validate[Def1_Class2Nics] shouldBe a[JsError]
       }
     }
 

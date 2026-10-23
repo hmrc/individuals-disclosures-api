@@ -22,8 +22,8 @@ import api.models.errors.*
 import api.services.{BaseService, ServiceOutcome}
 import cats.implicits.*
 import v2.connectors.RetrieveDisclosuresConnector
-import v2.models.request.retrieve.RetrieveDisclosuresRequestData
-import v2.models.response.retrieveDisclosures.RetrieveDisclosuresResponse
+import v2.retrieve.def1.model.response.Def1_RetrieveDisclosuresResponse
+import v2.retrieve.model.request.RetrieveDisclosuresRequestData
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -32,8 +32,8 @@ import scala.concurrent.{ExecutionContext, Future}
 class RetrieveDisclosuresService @Inject() (connector: RetrieveDisclosuresConnector) extends BaseService {
 
   def retrieve(request: RetrieveDisclosuresRequestData)(implicit
-      ctx: RequestContext,
-      ec: ExecutionContext): Future[ServiceOutcome[RetrieveDisclosuresResponse]] = {
+                                                        ctx: RequestContext,
+                                                        ec: ExecutionContext): Future[ServiceOutcome[Def1_RetrieveDisclosuresResponse]] = {
 
     connector
       .retrieve(request)

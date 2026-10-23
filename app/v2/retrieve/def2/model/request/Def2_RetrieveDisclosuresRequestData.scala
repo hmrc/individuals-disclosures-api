@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 
-package v2.models.response.retrieveDisclosures
+package v2.retrieve.def2.model.request
 
-import play.api.libs.json.{Json, OFormat}
+import api.models.domain.{Nino, TaxYear}
+import v2.retrieve.RetrieveDisclosuresSchema
+import v2.retrieve.model.request.RetrieveDisclosuresRequestData
 
-case class Class2Nics(class2VoluntaryContributions: Option[Boolean])
-
-object Class2Nics {
-  val empty: Class2Nics = Class2Nics(None)
-
-  implicit val format: OFormat[Class2Nics] = Json.format[Class2Nics]
+case class Def2_RetrieveDisclosuresRequestData(nino: Nino, taxYear: TaxYear) extends RetrieveDisclosuresRequestData {
+  override val schema: RetrieveDisclosuresSchema = RetrieveDisclosuresSchema.Def2
 }

@@ -19,25 +19,29 @@ package v2.controllers.validators
 import api.controllers.validators.Validator
 import api.controllers.validators.resolvers.{ResolveNino, ResolveTaxYear}
 import api.models.errors.MtdError
-import cats.data.Validated
+import cats.data.Validated.{Invalid, Valid}
 import cats.implicits.*
 import config.AppConfig
-import v2.models.request.retrieve.RetrieveDisclosuresRequestData
+import v2.retrieve.RetrieveDisclosuresSchema
+import v2.retrieve.RetrieveDisclosuresSchema.{Def1, Def2}
+import v2.retrieve.def1.Def1_RetrieveDisclosuresValidator
+import v2.retrieve.def2.Def2_RetrieveDisclosuresValidator
+import v2.retrieve.model.request.RetrieveDisclosuresRequestData
 
 import javax.inject.{Inject, Singleton}
 
 @Singleton
 class RetrieveDisclosuresValidatorFactory @Inject() (appConfig: AppConfig) {
 
-  def validator(nino: String, taxYear: String): Validator[RetrieveDisclosuresRequestData] =
-    new Validator[RetrieveDisclosuresRequestData] {
-
-      def validate: Validated[Seq[MtdError], RetrieveDisclosuresRequestData] =
-        (
-          ResolveNino(nino),
-          ResolveTaxYear(appConfig.minimumPermittedTaxYear, taxYear, None, None)
-        ).mapN(RetrieveDisclosuresRequestData.apply)
-
-    }
+  def validator(nino: String, taxYear: String): Validator[RetrieveDisclosuresRequestData] = {
+    
+    val schema = RetrieveDisclosuresSchema.schemaFor(taxYear)
+    
+    schema match
+      case Valid(Def1) => Def1_RetrieveDisclosuresValidator(nino, taxYear)
+      case Valid(Def2) => Def2_RetrieveDisclosuresValidator(nino, taxYear)
+      case Invalid(errors) => Validator.returningErrors(errors)  
+    
+  }
 
 }

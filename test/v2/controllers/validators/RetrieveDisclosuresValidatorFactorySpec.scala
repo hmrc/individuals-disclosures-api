@@ -20,7 +20,7 @@ import api.models.domain.{Nino, TaxYear}
 import api.models.errors.*
 import config.MockAppConfig
 import support.UnitSpec
-import v2.models.request.retrieve.RetrieveDisclosuresRequestData
+import v2.retrieve.model.request.RetrieveDisclosuresRequestData
 
 class RetrieveDisclosuresValidatorFactorySpec extends UnitSpec with MockAppConfig {
   private implicit val correlationId: String = "1234"

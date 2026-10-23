@@ -23,7 +23,7 @@ import cats.data.Validated.{Invalid, Valid}
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.TestSuite
-import v2.models.request.retrieve.RetrieveDisclosuresRequestData
+import v2.retrieve.model.request.RetrieveDisclosuresRequestData
 
 trait MockRetrieveDisclosuresValidatorFactory extends TestSuite with MockFactory {
 
