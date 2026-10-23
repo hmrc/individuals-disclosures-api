@@ -56,7 +56,7 @@ responses:
            {{else}}
           Request:
             value:
-              $ref: './examples/disclosures/retrieve_response.json'
+              $ref: './examples/disclosures_retrieve/def1/retrieve_response.json'
             {{/if}}
 
   "400":
