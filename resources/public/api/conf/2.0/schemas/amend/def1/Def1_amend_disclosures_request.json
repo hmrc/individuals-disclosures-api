@@ -1,0 +1,16 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": {{#if (enabled 'r23_whitespace_docs')}} "Before TY 2026-27" {{else}} "Create and Amend Disclosures Request" {{/if}},
+  "description": "Create and Amend Disclosures Request",
+  "type": "object",
+  "properties": {
+    "taxAvoidance": {
+      "type": "array",
+      "description": "Details of tax avoidance scheme",
+      "items": {
+        "$ref": "Def1_amend_disclosures_definitions.json#/definitions/taxAvoidance"
+      }
+    },
+    "class2Nics": {"$ref": "Def1_amend_disclosures_definitions.json#/definitions/class2Nics"}
+  }
+}
