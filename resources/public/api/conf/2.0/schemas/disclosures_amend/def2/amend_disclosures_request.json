@@ -8,9 +8,9 @@
       "type": "array",
       "description": "Details of tax avoidance scheme",
       "items": {
-        "$ref": "Def2_amend_disclosures_definitions.json#/definitions/taxAvoidance"
+        "$ref": "../amend_disclosures_definitions.json#/definitions/taxAvoidance"
       }
     },
-    "class2Nics": {"$ref": "Def2_amend_disclosures_definitions.json#/definitions/class2Nics"}
+    "class2Nics": {"$ref": "../amend_disclosures_definitions.json#/definitions/class2Nics"}
   }
 }
