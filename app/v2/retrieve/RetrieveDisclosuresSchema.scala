@@ -19,21 +19,22 @@ package v2.retrieve
 import api.controllers.validators.resolvers.{ResolveDetailedTaxYear, ResolveTaxYear}
 import api.models.domain.TaxYear
 import api.models.errors.MtdError
+import api.schema.DownstreamReadable
 import cats.data.Validated
 import cats.data.Validated.Valid
 import config.AppConfig
 import play.api.libs.json.Reads
 import v2.retrieve.def1.model.response.Def1_RetrieveDisclosuresResponse
 import v2.retrieve.def2.model.response.Def2_RetrieveDisclosuresResponse
+import v2.retrieve.model.response.RetrieveDisclosuresResponse
 
 import scala.math.Ordered.orderingToOrdered
-import scala.math.Ordering.Implicits.infixOrderingOps
 
-sealed trait RetrieveDisclosuresSchema
+sealed trait RetrieveDisclosuresSchema extends DownstreamReadable[RetrieveDisclosuresResponse]
 
 object RetrieveDisclosuresSchema {
 
-  case object Def1 extends RetrieveDisclosuresSchema{
+  case object Def1 extends RetrieveDisclosuresSchema {
     type DownstreamResp = Def1_RetrieveDisclosuresResponse
     val connectorReads: Reads[DownstreamResp] = Def1_RetrieveDisclosuresResponse.reads
   }

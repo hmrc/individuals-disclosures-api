@@ -22,6 +22,6 @@ import v2.retrieve.RetrieveDisclosuresSchema
 trait RetrieveDisclosuresRequestData {
   val nino: Nino
   val taxYear: TaxYear
-  
+
   val schema: RetrieveDisclosuresSchema
 }

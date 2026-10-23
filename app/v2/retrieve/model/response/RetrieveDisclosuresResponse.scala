@@ -25,7 +25,7 @@ trait RetrieveDisclosuresResponse {
 
   implicit val writes: OWrites[RetrieveDisclosuresResponse] = writesFrom {
     case def1: Def1_RetrieveDisclosuresResponse =>
-    implicitly[OWrites[Def1_RetrieveDisclosuresResponse]].writes(def1)
+      implicitly[OWrites[Def1_RetrieveDisclosuresResponse]].writes(def1)
 
     case def2: Def2_RetrieveDisclosuresResponse =>
       implicitly[OWrites[Def2_RetrieveDisclosuresResponse]].writes(def2)

@@ -24,6 +24,7 @@ import api.models.outcomes.ResponseWrapper
 import api.services.ServiceSpec
 import uk.gov.hmrc.http.HeaderCarrier
 import v2.connectors.MockRetrieveDisclosuresConnector
+import v2.retrieve.RetrieveDisclosuresService
 import v2.retrieve.def1.model.response.Def1_RetrieveDisclosuresResponse
 import v2.retrieve.model.request.RetrieveDisclosuresRequestData
 
@@ -41,8 +42,8 @@ class RetrieveDisclosuresServiceSpec extends ServiceSpec {
     lazy val service = new RetrieveDisclosuresService(mockRetrieveDisclosuresConnector)
   }
 
-  lazy val request: RetrieveDisclosuresRequestData = RetrieveDisclosuresRequestData(nino, taxYear)
-  lazy val response: Def1_RetrieveDisclosuresResponse   = Def1_RetrieveDisclosuresResponse(None, None, Timestamp("2020-07-06T09:37:17Z"))
+  lazy val request: RetrieveDisclosuresRequestData    = RetrieveDisclosuresRequestData(nino, taxYear)
+  lazy val response: Def1_RetrieveDisclosuresResponse = Def1_RetrieveDisclosuresResponse(None, None, Timestamp("2020-07-06T09:37:17Z"))
 
   "retrieve" must {
     "return correct result for a success" in new Test {

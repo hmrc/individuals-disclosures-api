@@ -23,7 +23,10 @@ import utils.JsonUtils
 import v2.retrieve.def1.model.response.Def1_Class2Nics
 import v2.retrieve.model.response.RetrieveDisclosuresResponse
 
-case class Def1_RetrieveDisclosuresResponse(taxAvoidance: Option[Seq[Def1_TaxAvoidanceItem]], def1Class2Nics: Option[Def1_Class2Nics], submittedOn: Timestamp) extends RetrieveDisclosuresResponse
+case class Def1_RetrieveDisclosuresResponse(taxAvoidance: Option[Seq[Def1_TaxAvoidanceItem]],
+                                            def1Class2Nics: Option[Def1_Class2Nics],
+                                            submittedOn: Timestamp)
+    extends RetrieveDisclosuresResponse
 
 object Def1_RetrieveDisclosuresResponse extends JsonUtils {
 

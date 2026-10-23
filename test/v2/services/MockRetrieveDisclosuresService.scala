@@ -21,6 +21,7 @@ import api.services.ServiceOutcome
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.TestSuite
+import v2.retrieve.RetrieveDisclosuresService
 import v2.retrieve.def1.model.response.Def1_RetrieveDisclosuresResponse
 import v2.retrieve.model.request.RetrieveDisclosuresRequestData
 

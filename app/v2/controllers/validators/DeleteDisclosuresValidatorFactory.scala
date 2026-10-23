@@ -27,9 +27,11 @@ import v2.models.request.delete.DeleteDisclosuresRequestData
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class DeleteDisclosuresValidatorFactory @Inject() (appConfig: AppConfig) {
+class DeleteDisclosuresValidatorFactory @Inject() (implicit appConfig: AppConfig) {
 
-  def validator(nino: String, taxYear: String): Validator[DeleteDisclosuresRequestData] =
+  def validator(nino: String, taxYear: String): Validator[DeleteDisclosuresRequestData] {
+  
+  } =
     new Validator[DeleteDisclosuresRequestData] {
 
       def validate: Validated[Seq[MtdError], DeleteDisclosuresRequestData] =

@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package v2.controllers
+package v2.retrieve
 
 import api.controllers.*
 import api.services.{EnrolmentsAuthService, MtdIdLookupService}
 import config.AppConfig
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import utils.IdGenerator
-import v2.controllers.validators.RetrieveDisclosuresValidatorFactory
+import v2.retrieve.RetrieveDisclosuresValidatorFactory
 import v2.services.*
 
 import javax.inject.{Inject, Singleton}

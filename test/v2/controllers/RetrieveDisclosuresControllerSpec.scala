@@ -26,6 +26,7 @@ import play.api.Configuration
 import play.api.mvc.Result
 import v2.controllers.validators.MockRetrieveDisclosuresValidatorFactory
 import v2.fixtures.RetrieveDisclosuresControllerFixture.mtdResponse
+import v2.retrieve.RetrieveDisclosuresController
 import v2.retrieve.def1.model.response.{Def1_Class2Nics, Def1_RetrieveDisclosuresResponse, Def1_TaxAvoidanceItem}
 import v2.retrieve.model.request.RetrieveDisclosuresRequestData
 import v2.services.MockRetrieveDisclosuresService

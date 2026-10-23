@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package v2.services
+package v2.retrieve
 
-import api.controllers.RequestContext
-import api.models.errors
-import api.models.errors.*
-import api.services.{BaseService, ServiceOutcome}
-import cats.implicits.*
-import v2.connectors.RetrieveDisclosuresConnector
+import api.connectors.DownstreamUri.HipUri
+import api.connectors.httpparsers.StandardDownstreamHttpParser.*
+import api.connectors.{BaseDownstreamConnector, DownstreamOutcome}
+import config.AppConfig
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.client.HttpClientV2
 import v2.retrieve.def1.model.response.Def1_RetrieveDisclosuresResponse
 import v2.retrieve.model.request.RetrieveDisclosuresRequestData
 
@@ -29,22 +29,18 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class RetrieveDisclosuresService @Inject() (connector: RetrieveDisclosuresConnector) extends BaseService {
+class RetrieveDisclosuresConnector @Inject() (val http: HttpClientV2, val appConfig: AppConfig) extends BaseDownstreamConnector {
 
   def retrieve(request: RetrieveDisclosuresRequestData)(implicit
-                                                        ctx: RequestContext,
-                                                        ec: ExecutionContext): Future[ServiceOutcome[Def1_RetrieveDisclosuresResponse]] = {
+      hc: HeaderCarrier,
+      ec: ExecutionContext,
+      correlationId: String): Future[DownstreamOutcome[Def1_RetrieveDisclosuresResponse]] = {
 
-    connector
-      .retrieve(request)
-      .map(_.leftMap(mapDownstreamErrors(downstreamErrorMap)))
+    import request.*
 
+    val downstreamUri = HipUri[Def1_RetrieveDisclosuresResponse](s"itsd/disclosures/$nino/${taxYear.asMtd}")
+
+    get(uri = downstreamUri)
   }
-
-  private val downstreamErrorMap: Map[String, MtdError] = Map(
-    "1215" -> NinoFormatError,
-    "1117" -> TaxYearFormatError,
-    "5010" -> NotFoundError
-  )
 
 }

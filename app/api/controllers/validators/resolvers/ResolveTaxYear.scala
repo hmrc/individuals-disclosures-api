@@ -17,38 +17,16 @@
 package api.controllers.validators.resolvers
 
 import api.models.domain.TaxYear
-import api.models.errors.{RuleTaxYearNotEndedError, *}
+import api.models.errors.*
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
 
 import java.time.Clock
 import scala.math.Ordering.Implicits.infixOrderingOps
 
-trait ResolvingTaxYear extends Resolver[String, TaxYear] {
+object ResolveTaxYear extends ResolverSupport {
 
-  private val taxYearFormat = "20[1-9][0-9]-[1-9][0-9]".r
-
-  protected def resolve(value: String, error: Option[MtdError], path: Option[String]): Validated[Seq[MtdError], TaxYear] = {
-    if (taxYearFormat.matches(value)) {
-      val startTaxYearStart: Int = 2
-      val startTaxYearEnd: Int   = 4
-
-      val endTaxYearStart: Int = 5
-      val endTaxYearEnd: Int   = 7
-
-      val start = value.substring(startTaxYearStart, startTaxYearEnd).toInt
-      val end   = value.substring(endTaxYearStart, endTaxYearEnd).toInt
-
-      if (end - start == 1) {
-        Valid(TaxYear.fromMtd(value))
-      } else {
-        Invalid(List(withError(error, RuleTaxYearRangeInvalidError, path)))
-      }
-
-    } else {
-      Invalid(List(withError(error, TaxYearFormatError, path)))
-    }
-  }
+  private val taxYearFormat = "20([1-9][0-9])-([1-9][0-9])".r
 
   val resolver: Resolver[String, TaxYear] = {
     case value @ taxYearFormat(start, end) =>
@@ -75,25 +53,8 @@ trait ResolvingTaxYear extends Resolver[String, TaxYear] {
   def apply(value: Option[String]): Validated[Seq[MtdError], Option[TaxYear]] =
     value match {
       case Some(value) => resolver(value).map(Some(_))
-      case None => Valid(None)
+      case None        => Valid(None)
     }
-
-}
-
-object ResolveTaxYear extends ResolvingTaxYear {
-
-  def apply(value: String, error: Option[MtdError], path: Option[String]): Validated[Seq[MtdError], TaxYear] =
-    resolve(value, error, path)
-
-  def apply(minimumTaxYear: Int, value: String, error: Option[MtdError], path: Option[String]): Validated[Seq[MtdError], TaxYear] =
-    resolve(value, error, path)
-      .andThen { taxYear =>
-        if (taxYear.year < minimumTaxYear) {
-          Invalid(List(RuleTaxYearNotSupportedError))
-        } else {
-          Valid(taxYear)
-        }
-      }
 
 }
 
@@ -105,7 +66,7 @@ case class ResolveDetailedTaxYear(minimumTaxYear: TaxYear,
                                   incompleteTaxYearError: MtdError = RuleTaxYearNotEndedError,
                                   formatError: MtdError = TaxYearFormatError,
                                   rangeError: MtdError = RuleTaxYearRangeInvalidError)(implicit clock: Clock = Clock.systemUTC)
-  extends ResolverSupport {
+    extends ResolverSupport {
 
   private val baseResolver: Resolver[String, TaxYear] = ResolveTaxYear.resolverWithCustomErrors(formatError, rangeError)
 

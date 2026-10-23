@@ -21,6 +21,7 @@ import api.models.domain.{Nino, TaxYear}
 import api.models.errors.*
 import api.models.outcomes.ResponseWrapper
 import uk.gov.hmrc.http.StringContextOps
+import v2.retrieve.RetrieveDisclosuresConnector
 import v2.retrieve.model.request.RetrieveDisclosuresRequestData
 
 import scala.concurrent.Future

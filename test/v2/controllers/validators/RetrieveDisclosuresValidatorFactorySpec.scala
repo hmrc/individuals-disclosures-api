@@ -20,6 +20,7 @@ import api.models.domain.{Nino, TaxYear}
 import api.models.errors.*
 import config.MockAppConfig
 import support.UnitSpec
+import v2.retrieve.RetrieveDisclosuresValidatorFactory
 import v2.retrieve.model.request.RetrieveDisclosuresRequestData
 
 class RetrieveDisclosuresValidatorFactorySpec extends UnitSpec with MockAppConfig {

@@ -17,7 +17,7 @@
 package v2.retrieve.def2
 
 import api.controllers.validators.Validator
-import api.controllers.validators.resolvers.ResolveNino
+import api.controllers.validators.resolvers.{ResolveNino, ResolverSupport}
 import api.models.domain.TaxYear
 import api.models.errors.MtdError
 import cats.data.Validated
@@ -26,10 +26,12 @@ import v2.retrieve.model.request.RetrieveDisclosuresRequestData
 
 import javax.inject.Inject
 
-class Def2_RetrieveDisclosuresValidator @Inject()(
-                                                    nino: String,
-                                                    taxYear: String
-                                                  ) extends Validator[RetrieveDisclosuresRequestData] {
+class Def2_RetrieveDisclosuresValidator @Inject() (
+    nino: String,
+    taxYear: String
+) extends Validator[RetrieveDisclosuresRequestData]
+    with ResolverSupport {
+
   override def validate: Validated[Seq[MtdError], RetrieveDisclosuresRequestData] =
     ResolveNino(nino).map { validNino =>
       Def2_RetrieveDisclosuresRequestData(
@@ -37,4 +39,5 @@ class Def2_RetrieveDisclosuresValidator @Inject()(
         taxYear = TaxYear.fromMtd(taxYear)
       )
     }
+
 }
