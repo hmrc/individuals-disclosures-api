@@ -43,7 +43,7 @@ responses:
             - $ref: './schemas/disclosures_retrieve/def1/retrieve_disclosures_response.json'
             - $ref: './schemas/disclosures_retrieve/def2/retrieve_disclosures_response.json'
             {{else}}
-          $ref: './schemas/retrieve_disclosures_response.json'
+          $ref: './schemas/disclosures_retrieve/def1/retrieve_disclosures_response.json'
           {{/if}}
         examples:
           {{#if (enabled 'r23_whitespace_docs')}}
