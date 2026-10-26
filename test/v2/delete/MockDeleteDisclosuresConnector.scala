@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package v2.connectors
+package v2.delete
 
 import api.connectors.DownstreamOutcome
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.TestSuite
 import uk.gov.hmrc.http.HeaderCarrier
-import v2.models.request.delete.DeleteDisclosuresRequestData
+import v2.delete.def1.model.request.Def1_DeleteDisclosuresRequestData
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -31,9 +31,9 @@ trait MockDeleteDisclosuresConnector extends TestSuite with MockFactory {
 
   object MockDeleteDisclosuresConnector {
 
-    def delete(request: DeleteDisclosuresRequestData): CallHandler[Future[DownstreamOutcome[Unit]]] = {
+    def delete(request: Def1_DeleteDisclosuresRequestData): CallHandler[Future[DownstreamOutcome[Unit]]] = {
       (mockDeleteDisclosuresConnector
-        .deleteDisclosures(_: DeleteDisclosuresRequestData)(_: HeaderCarrier, _: ExecutionContext, _: String))
+        .deleteDisclosures(_: Def1_DeleteDisclosuresRequestData)(_: HeaderCarrier, _: ExecutionContext, _: String))
         .expects(request, *, *, *)
     }
 

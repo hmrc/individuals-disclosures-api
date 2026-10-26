@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-package v2.services
+package v2.delete
 
 import api.controllers.RequestContext
 import api.models.errors.*
 import api.services.{BaseService, ServiceOutcome}
 import cats.implicits.toBifunctorOps
-import v2.connectors.DeleteDisclosuresConnector
-import v2.models.request.delete.DeleteDisclosuresRequestData
+import v2.delete.model.request.DeleteDisclosuresRequestData
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}

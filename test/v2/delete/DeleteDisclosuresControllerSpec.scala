@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v2.controllers
+package v2.delete
 
 import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import api.mocks.MockIdGenerator
@@ -26,9 +26,7 @@ import api.services.{MockAuditService, MockEnrolmentsAuthService, MockMtdIdLooku
 import play.api.Configuration
 import play.api.libs.json.JsValue
 import play.api.mvc.Result
-import v2.controllers.validators.MockDeleteDisclosuresValidatorFactory
-import v2.models.request.delete.DeleteDisclosuresRequestData
-import v2.services.MockDeleteDisclosuresService
+import v2.delete.def1.model.request.Def1_DeleteDisclosuresRequestData
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -45,7 +43,7 @@ class DeleteDisclosuresControllerSpec
 
   val taxYear: String = "2021-22"
 
-  val requestData: DeleteDisclosuresRequestData = DeleteDisclosuresRequestData(
+  val requestData: Def1_DeleteDisclosuresRequestData = Def1_DeleteDisclosuresRequestData(
     nino = Nino(nino),
     taxYear = TaxYear.fromMtd(taxYear)
   )
