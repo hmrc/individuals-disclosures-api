@@ -1,5 +1,5 @@
 /*
- * Copyright 2026 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,19 +14,8 @@
  * limitations under the License.
  */
 
-package v2.models.request.amend
+package v2.models.request.amend.def1.models.request
 
-import play.api.libs.functional.syntax.toFunctionalBuilderOps
-import play.api.libs.json.{JsPath, Json, OWrites, Reads}
+import api.models.domain.{Nino, TaxYear}
 
-case class AmendTaxAvoidanceItem(srn: String, taxYear: String)
-
-object AmendTaxAvoidanceItem {
-  implicit val reads: Reads[AmendTaxAvoidanceItem] = Json.reads[AmendTaxAvoidanceItem]
-
-  implicit val writes: OWrites[AmendTaxAvoidanceItem] = (
-    (JsPath \ "SRN").write[String] and
-      (JsPath \ "taxYear").write[String]
-  )(o => Tuple.fromProductTyped(o))
-
-}
+case class Def1_AmendDisclosuresRequestData(nino: Nino, taxYear: TaxYear, body: Def1_AmendDisclosuresRequestBody)

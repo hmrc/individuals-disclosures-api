@@ -27,7 +27,12 @@ import play.api.Configuration
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
 import v2.controllers.validators.MockAmendDisclosuresValidatorFactory
-import v2.models.request.amend.*
+import v2.models.request.amend.AmendDisclosuresRequestData
+import v2.models.request.amend.def1.models.request.{
+  AmendClass2Nics,
+  AmendTaxAvoidanceItem,
+  Def1_AmendDisclosuresRequestBody as AmendDisclosuresRequestBody
+}
 import v2.services.MockAmendDisclosuresService
 
 import scala.concurrent.ExecutionContext.Implicits.global

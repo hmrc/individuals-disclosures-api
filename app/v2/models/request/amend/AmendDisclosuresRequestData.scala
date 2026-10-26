@@ -17,5 +17,6 @@
 package v2.models.request.amend
 
 import api.models.domain.{Nino, TaxYear}
+import v2.models.request.amend.def1.models.request.Def1_AmendDisclosuresRequestBody
 
-case class AmendDisclosuresRequestData(nino: Nino, taxYear: TaxYear, body: AmendDisclosuresRequestBody)
+case class AmendDisclosuresRequestData(nino: Nino, taxYear: TaxYear, body: Def1_AmendDisclosuresRequestBody)

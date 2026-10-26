@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package v2.models.request.amend
+package v2.models.request.amend.def1.models.request
 
 import play.api.libs.json.{JsError, JsObject, JsValue, Json}
 import support.UnitSpec
 
-class AmendDisclosuresRequestDataBodySpec extends UnitSpec {
+class Def1_AmendDisclosuresRequestDataBodySpec extends UnitSpec {
 
   private def json(srnUpperCase: Boolean = false): JsValue = {
     lazy val srn: String = if (srnUpperCase) "SRN" else "srn"
@@ -49,28 +49,28 @@ class AmendDisclosuresRequestDataBodySpec extends UnitSpec {
 
   private val class2NicsModel = AmendClass2Nics(class2VoluntaryContributions = Some(true))
 
-  private val requestBodyModel = AmendDisclosuresRequestBody(
+  private val requestBodyModel = Def1_AmendDisclosuresRequestBody(
     taxAvoidance = Some(taxAvoidanceModel),
     class2Nics = Some(class2NicsModel)
   )
 
-  "AmendDisclosuresRequestBody" when {
+  "Def1_AmendDisclosuresRequestBody" when {
     "read from valid JSON" should {
-      "produce the expected AmendDisclosuresRequestBody object" in {
-        json().as[AmendDisclosuresRequestBody] shouldBe requestBodyModel
+      "produce the expected Def1_AmendDisclosuresRequestBody object" in {
+        json().as[Def1_AmendDisclosuresRequestBody] shouldBe requestBodyModel
       }
     }
 
     "read from empty JSON" should {
-      "produce an empty AmendDisclosuresRequestBody object" in {
+      "produce an empty Def1_AmendDisclosuresRequestBody object" in {
         val emptyJson = JsObject.empty
 
-        emptyJson.as[AmendDisclosuresRequestBody] shouldBe AmendDisclosuresRequestBody(None, None)
+        emptyJson.as[Def1_AmendDisclosuresRequestBody] shouldBe Def1_AmendDisclosuresRequestBody(None, None)
       }
     }
 
     "read from valid JSON with empty taxAvoidance array and class2Nics object" should {
-      "produce an AmendDisclosuresRequestBody with an empty List" in {
+      "produce a Def1_AmendDisclosuresRequestBody with an empty List" in {
         val json = Json.parse(
           """
             |{
@@ -80,7 +80,7 @@ class AmendDisclosuresRequestDataBodySpec extends UnitSpec {
           """.stripMargin
         )
 
-        json.as[AmendDisclosuresRequestBody] shouldBe AmendDisclosuresRequestBody(Some(List()), None)
+        json.as[Def1_AmendDisclosuresRequestBody] shouldBe Def1_AmendDisclosuresRequestBody(Some(List()), None)
       }
     }
 
@@ -102,7 +102,7 @@ class AmendDisclosuresRequestDataBodySpec extends UnitSpec {
           """.stripMargin
         )
 
-        invalidJson.validate[AmendDisclosuresRequestBody] shouldBe a[JsError]
+        invalidJson.validate[Def1_AmendDisclosuresRequestBody] shouldBe a[JsError]
       }
     }
 

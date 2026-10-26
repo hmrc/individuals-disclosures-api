@@ -21,7 +21,8 @@ import api.models.domain.{Nino, TaxYear}
 import api.models.errors.*
 import api.models.outcomes.ResponseWrapper
 import uk.gov.hmrc.http.StringContextOps
-import v2.models.request.amend.*
+import v2.models.request.amend.AmendDisclosuresRequestData
+import v2.models.request.amend.def1.models.request.{Def1_AmendDisclosuresRequestBody as AmendDisclosuresRequestBody}
 
 import scala.concurrent.Future
 

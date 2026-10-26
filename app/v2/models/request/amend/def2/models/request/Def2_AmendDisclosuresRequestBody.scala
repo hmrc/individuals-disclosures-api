@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-package v2.models.request.amend
+package v2.models.request.amend.def2.models.request
 
 import play.api.libs.functional.syntax.*
 import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 import utils.JsonUtils
 
-case class AmendDisclosuresRequestBody(taxAvoidance: Option[Seq[AmendTaxAvoidanceItem]], class2Nics: Option[AmendClass2Nics])
+case class Def2_AmendDisclosuresRequestBody(taxAvoidance: Option[Seq[AmendTaxAvoidanceItem]], class2Nics: Option[AmendClass2Nics])
 
-object AmendDisclosuresRequestBody extends JsonUtils {
+object Def2_AmendDisclosuresRequestBody extends JsonUtils {
 
-  implicit val reads: Reads[AmendDisclosuresRequestBody] = (
+  implicit val reads: Reads[Def2_AmendDisclosuresRequestBody] = (
     (JsPath \ "taxAvoidance").readNullable[Seq[AmendTaxAvoidanceItem]] and
       (JsPath \ "class2Nics").readNullable[AmendClass2Nics].mapEmptyModelToNone(AmendClass2Nics.empty)
-  )(AmendDisclosuresRequestBody.apply)
+  )(Def2_AmendDisclosuresRequestBody.apply)
 
-  implicit val writes: OWrites[AmendDisclosuresRequestBody] = Json.writes[AmendDisclosuresRequestBody]
+  implicit val writes: OWrites[Def2_AmendDisclosuresRequestBody] = Json.writes[Def2_AmendDisclosuresRequestBody]
 }

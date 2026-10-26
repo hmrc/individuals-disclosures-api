@@ -24,14 +24,15 @@ import cats.implicits.*
 import config.AppConfig
 import play.api.libs.json.JsValue
 import v2.controllers.validators.AmendDisclosuresValidator.validateBusinessRules
-import v2.models.request.amend.{AmendDisclosuresRequestBody, AmendDisclosuresRequestData}
+import v2.models.request.amend.AmendDisclosuresRequestData
+import v2.models.request.amend.def1.models.request.Def1_AmendDisclosuresRequestBody
 
 import javax.inject.{Inject, Singleton}
 
 @Singleton
 class AmendDisclosuresValidatorFactory @Inject() (implicit appConfig: AppConfig) {
 
-  private val resolveJson = new ResolveNonEmptyJsonObject[AmendDisclosuresRequestBody]()
+  private val resolveJson = new ResolveNonEmptyJsonObject[Def1_AmendDisclosuresRequestBody]()
 
   def validator(nino: String, taxYear: String, body: JsValue): Validator[AmendDisclosuresRequestData] =
     new Validator[AmendDisclosuresRequestData] {
@@ -41,7 +42,7 @@ class AmendDisclosuresValidatorFactory @Inject() (implicit appConfig: AppConfig)
           ResolveNino(nino),
           ResolveTaxYear(appConfig.minimumPermittedTaxYear, taxYear, None, None),
           resolveJson(body)
-        ).mapN(AmendDisclosuresRequestData.apply) andThen validateBusinessRules
+        ).mapN(AmendDisclosuresRequestData.apply).andThen(validateBusinessRules)
 
     }
 

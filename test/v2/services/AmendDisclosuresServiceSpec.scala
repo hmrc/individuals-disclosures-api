@@ -23,7 +23,12 @@ import api.models.errors.*
 import api.models.outcomes.ResponseWrapper
 import api.services.ServiceSpec
 import v2.connectors.MockAmendDisclosuresConnector
-import v2.models.request.amend.*
+import v2.models.request.amend.AmendDisclosuresRequestData
+import v2.models.request.amend.def1.models.request.{
+  AmendClass2Nics,
+  AmendTaxAvoidanceItem,
+  Def1_AmendDisclosuresRequestBody as AmendDisclosuresRequestBody
+}
 
 import scala.concurrent.Future
 

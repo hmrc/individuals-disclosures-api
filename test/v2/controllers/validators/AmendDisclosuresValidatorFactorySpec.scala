@@ -21,7 +21,12 @@ import api.models.errors.*
 import config.MockAppConfig
 import play.api.libs.json.{JsValue, Json}
 import support.UnitSpec
-import v2.models.request.amend.{AmendClass2Nics, AmendDisclosuresRequestBody, AmendDisclosuresRequestData, AmendTaxAvoidanceItem}
+import v2.models.request.amend.AmendDisclosuresRequestData
+import v2.models.request.amend.def1.models.request.{
+  AmendClass2Nics,
+  AmendTaxAvoidanceItem,
+  Def1_AmendDisclosuresRequestBody as AmendDisclosuresRequestBody
+}
 
 class AmendDisclosuresValidatorFactorySpec extends UnitSpec with MockAppConfig {
   private implicit val correlationId: String = "1234"

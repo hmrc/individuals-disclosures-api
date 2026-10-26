@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v2.models.request.amend
+package v2.models.request.amend.def1.models.request
 
 import play.api.libs.json.*
 import support.UnitSpec

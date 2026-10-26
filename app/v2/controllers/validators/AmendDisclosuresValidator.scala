@@ -21,7 +21,8 @@ import api.controllers.validators.resolvers.{ResolveStringPattern, ResolveTaxYea
 import api.models.errors.{MtdError, RuleVoluntaryClass2ValueInvalidError, SRNFormatError}
 import cats.data.Validated
 import cats.data.Validated.Invalid
-import v2.models.request.amend.{AmendClass2Nics, AmendDisclosuresRequestData, AmendTaxAvoidanceItem}
+import v2.models.request.amend.AmendDisclosuresRequestData
+import v2.models.request.amend.def1.models.request.{AmendClass2Nics, AmendTaxAvoidanceItem}
 
 object AmendDisclosuresValidator extends RulesValidator[AmendDisclosuresRequestData] {
 
