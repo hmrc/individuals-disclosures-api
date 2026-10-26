@@ -14,26 +14,21 @@
  * limitations under the License.
  */
 
-package v2.delete.def1
+package v2.deleteDisclosures.def1
 
 import api.controllers.validators.Validator
-import api.controllers.validators.resolvers.{ResolveNino, ResolveTaxYear}
+import api.controllers.validators.resolvers.ResolveNino
+import api.models.domain.TaxYear
 import api.models.errors.MtdError
 import cats.data.Validated
-import cats.implicits.*
-import config.AppConfig
-import v2.delete.def1.model.request.Def1_DeleteDisclosuresRequestData
-import v2.delete.model.request.DeleteDisclosuresRequestData
+import v2.deleteDisclosures.def1.model.request.Def1_DeleteDisclosuresRequestData
+import v2.deleteDisclosures.model.request.DeleteDisclosuresRequestData
 
 import javax.inject.Inject
 
-class Def1_DeleteDisclosuresValidator @Inject() (nino: String, taxYear: String)(appConfig: AppConfig)
-    extends Validator[DeleteDisclosuresRequestData] {
+class Def1_DeleteDisclosuresValidator @Inject() (nino: String, taxYear: String) extends Validator[DeleteDisclosuresRequestData] {
 
   def validate: Validated[Seq[MtdError], DeleteDisclosuresRequestData] =
-    (
-      ResolveNino(nino),
-      ResolveTaxYear(appConfig.minimumPermittedTaxYear, taxYear, None, None)
-    ).mapN(Def1_DeleteDisclosuresRequestData.apply)
+    ResolveNino(nino).map(validNino => Def1_DeleteDisclosuresRequestData(validNino, TaxYear.fromMtd(taxYear)))
 
 }

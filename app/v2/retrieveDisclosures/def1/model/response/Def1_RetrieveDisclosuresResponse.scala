@@ -17,12 +17,21 @@
 package v2.retrieveDisclosures.def1.model.response
 
 import api.models.domain.Timestamp
-import play.api.libs.json.{Json, OFormat}
+import play.api.libs.functional.syntax.*
+import play.api.libs.json.{JsPath, Json, OWrites, Reads}
+import utils.JsonUtils
 import v2.retrieveDisclosures.model.response.RetrieveDisclosuresResponse
 
 case class Def1_RetrieveDisclosuresResponse(taxAvoidance: Option[Seq[TaxAvoidanceItem]], class2Nics: Option[Class2Nics], submittedOn: Timestamp)
     extends RetrieveDisclosuresResponse
 
-object Def1_RetrieveDisclosuresResponse {
-  implicit val format: OFormat[Def1_RetrieveDisclosuresResponse] = Json.format[Def1_RetrieveDisclosuresResponse]
+object Def1_RetrieveDisclosuresResponse extends JsonUtils {
+
+  implicit val reads: Reads[Def1_RetrieveDisclosuresResponse] = (
+    (JsPath \ "taxAvoidance").readNullable[Seq[TaxAvoidanceItem]].mapEmptySeqToNone and
+      (JsPath \ "class2Nics").readNullable[Class2Nics].mapEmptyModelToNone(Class2Nics.empty) and
+      (JsPath \ "submittedOn").read[Timestamp]
+  )(Def1_RetrieveDisclosuresResponse.apply)
+
+  implicit val writes: OWrites[Def1_RetrieveDisclosuresResponse] = Json.writes[Def1_RetrieveDisclosuresResponse]
 }

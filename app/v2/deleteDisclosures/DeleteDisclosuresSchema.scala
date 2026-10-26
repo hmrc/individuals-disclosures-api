@@ -14,11 +14,20 @@
  * limitations under the License.
  */
 
-package v2.delete.model.request
+package v2.deleteDisclosures
 
-import api.models.domain.{Nino, TaxYear}
+import api.controllers.validators.resolvers.ResolveTaxYear
+import api.models.errors.MtdError
+import cats.data.Validated
+import config.AppConfig
 
-trait DeleteDisclosuresRequestData {
-  def nino: Nino
-  def taxYear: TaxYear
+sealed trait DeleteDisclosuresSchema
+
+object DeleteDisclosuresSchema {
+
+  case object Def1 extends DeleteDisclosuresSchema
+
+  def schemaFor(taxYearString: String)(implicit appConfig: AppConfig): Validated[Seq[MtdError], DeleteDisclosuresSchema] =
+    ResolveTaxYear(minimumTaxYear = appConfig.minimumPermittedTaxYear, value = taxYearString, error = None, path = None).map(_ => Def1)
+
 }

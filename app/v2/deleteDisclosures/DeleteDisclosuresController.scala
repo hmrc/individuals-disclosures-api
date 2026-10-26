@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v2.delete
+package v2.deleteDisclosures
 
 import api.controllers.*
 import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}

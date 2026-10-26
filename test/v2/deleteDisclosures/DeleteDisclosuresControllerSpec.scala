@@ -14,19 +14,18 @@
  * limitations under the License.
  */
 
-package v2.delete
+package v2.deleteDisclosures
 
 import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import api.mocks.MockIdGenerator
 import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import api.models.domain.{Nino, TaxYear}
 import api.models.errors.*
 import api.models.outcomes.ResponseWrapper
-import api.services.{MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService}
 import play.api.Configuration
 import play.api.libs.json.JsValue
 import play.api.mvc.Result
-import v2.delete.def1.model.request.Def1_DeleteDisclosuresRequestData
+import v2.deleteDisclosures.def1.model.request.Def1_DeleteDisclosuresRequestData
+import v2.deleteDisclosures.model.request.DeleteDisclosuresRequestData
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -34,22 +33,18 @@ import scala.concurrent.Future
 class DeleteDisclosuresControllerSpec
     extends ControllerBaseSpec
     with ControllerTestRunner
-    with MockEnrolmentsAuthService
-    with MockMtdIdLookupService
     with MockDeleteDisclosuresService
-    with MockDeleteDisclosuresValidatorFactory
-    with MockAuditService
-    with MockIdGenerator {
+    with MockDeleteDisclosuresValidatorFactory {
 
-  val taxYear: String = "2021-22"
+  private val taxYear: String = "2026-27"
 
-  val requestData: Def1_DeleteDisclosuresRequestData = Def1_DeleteDisclosuresRequestData(
+  private val requestData: DeleteDisclosuresRequestData = Def1_DeleteDisclosuresRequestData(
     nino = Nino(nino),
     taxYear = TaxYear.fromMtd(taxYear)
   )
 
   "DeleteDisclosuresController" should {
-    "return a successful response with header X-CorrelationId" when {
+    "return 204 NO_CONTENT" when {
       "the request received is valid" in new Test {
         willUseValidator(returningSuccess(requestData))
 
@@ -65,7 +60,7 @@ class DeleteDisclosuresControllerSpec
       "the parser validation fails" in new Test {
         willUseValidator(returning(NinoFormatError))
 
-        runErrorTestWithAudit(NinoFormatError)
+        runErrorTestWithAudit(expectedError = NinoFormatError)
       }
 
       "the service returns an error" in new Test {
@@ -75,12 +70,12 @@ class DeleteDisclosuresControllerSpec
           .delete(requestData)
           .returns(Future.successful(Left(ErrorWrapper(correlationId, TaxYearFormatError))))
 
-        runErrorTestWithAudit(TaxYearFormatError)
+        runErrorTestWithAudit(expectedError = TaxYearFormatError)
       }
     }
   }
 
-  trait Test extends ControllerTest with AuditEventChecking {
+  private trait Test extends ControllerTest with AuditEventChecking {
 
     val controller: DeleteDisclosuresController = new DeleteDisclosuresController(
       authService = mockEnrolmentsAuthService,

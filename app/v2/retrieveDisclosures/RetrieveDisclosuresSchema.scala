@@ -36,12 +36,12 @@ object RetrieveDisclosuresSchema {
 
   case object Def1 extends RetrieveDisclosuresSchema {
     type DownstreamResp = Def1_RetrieveDisclosuresResponse
-    val connectorReads: Reads[DownstreamResp] = Def1_RetrieveDisclosuresResponse.format.reads(_)
+    val connectorReads: Reads[DownstreamResp] = Def1_RetrieveDisclosuresResponse.reads
   }
 
   case object Def2 extends RetrieveDisclosuresSchema {
     type DownstreamResp = Def2_RetrieveDisclosuresResponse
-    val connectorReads: Reads[DownstreamResp] = Def2_RetrieveDisclosuresResponse.format.reads(_)
+    val connectorReads: Reads[DownstreamResp] = Def2_RetrieveDisclosuresResponse.reads
   }
 
   def schemaFor(taxYearString: String)(implicit appConfig: AppConfig): Validated[Seq[MtdError], RetrieveDisclosuresSchema] =

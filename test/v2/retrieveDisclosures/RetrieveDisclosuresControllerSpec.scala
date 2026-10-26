@@ -43,7 +43,7 @@ class RetrieveDisclosuresControllerSpec
   )
 
   "RetrieveDisclosuresController" should {
-    "return OK" when {
+    "return 200 OK" when {
       "the request received is valid" in new Test {
         willUseValidator(returningSuccess(requestData))
 

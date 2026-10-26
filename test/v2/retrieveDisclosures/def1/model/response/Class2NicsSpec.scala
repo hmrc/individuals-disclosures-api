@@ -16,7 +16,7 @@
 
 package v2.retrieveDisclosures.def1.model.response
 
-import play.api.libs.json.{JsError, JsValue, Json}
+import play.api.libs.json.{JsError, JsValue, Json, JsObject}
 import support.UnitSpec
 import v2.retrieveDisclosures.def1.fixture.Def1_RetrieveDisclosuresFixture.*
 
@@ -26,6 +26,12 @@ class Class2NicsSpec extends UnitSpec {
     "read from valid JSON" should {
       "produce the expected Class2Nics object" in {
         class2NicsJson.as[Class2Nics] shouldBe class2NicsModel
+      }
+    }
+
+    "read from empty JSON" should {
+      "produce an empty Class2Nics object" in {
+        JsObject.empty.as[Class2Nics] shouldBe Class2Nics.empty
       }
     }
 

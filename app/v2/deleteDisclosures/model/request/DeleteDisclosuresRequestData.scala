@@ -14,13 +14,11 @@
  * limitations under the License.
  */
 
-package v2.delete
+package v2.deleteDisclosures.model.request
 
-sealed trait DeleteDisclosuresSchema
+import api.models.domain.{Nino, TaxYear}
 
-object DeleteDisclosuresSchema {
-
-  case object Def1 extends DeleteDisclosuresSchema
-
-  val schema: DeleteDisclosuresSchema = Def1
+trait DeleteDisclosuresRequestData {
+  def nino: Nino
+  def taxYear: TaxYear
 }

@@ -14,28 +14,27 @@
  * limitations under the License.
  */
 
-package v2.delete
+package v2.deleteDisclosures
 
-import api.controllers.RequestContext
-import api.models.errors.ErrorWrapper
-import api.models.outcomes.ResponseWrapper
+import api.connectors.DownstreamOutcome
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.TestSuite
-import v2.delete.def1.model.request.Def1_DeleteDisclosuresRequestData
+import uk.gov.hmrc.http.HeaderCarrier
+import v2.deleteDisclosures.model.request.DeleteDisclosuresRequestData
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait MockDeleteDisclosuresService extends TestSuite with MockFactory {
+trait MockDeleteDisclosuresConnector extends TestSuite with MockFactory {
 
-  val mockDeleteDisclosuresService: DeleteDisclosuresService = mock[DeleteDisclosuresService]
+  val mockDeleteDisclosuresConnector: DeleteDisclosuresConnector = mock[DeleteDisclosuresConnector]
 
-  object MockDeleteDisclosuresService {
+  object MockDeleteDisclosuresConnector {
 
-    def delete(requestData: Def1_DeleteDisclosuresRequestData): CallHandler[Future[Either[ErrorWrapper, ResponseWrapper[Unit]]]] = {
-      (mockDeleteDisclosuresService
-        .delete(_: Def1_DeleteDisclosuresRequestData)(_: RequestContext, _: ExecutionContext))
-        .expects(requestData, *, *)
+    def deleteDisclosures(request: DeleteDisclosuresRequestData): CallHandler[Future[DownstreamOutcome[Unit]]] = {
+      (mockDeleteDisclosuresConnector
+        .deleteDisclosures(_: DeleteDisclosuresRequestData)(_: HeaderCarrier, _: ExecutionContext, _: String))
+        .expects(request, *, *, *)
     }
 
   }

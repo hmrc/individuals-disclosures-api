@@ -14,24 +14,28 @@
  * limitations under the License.
  */
 
-package v2.delete
+package v2.deleteDisclosures
 
 import api.controllers.validators.Validator
+import api.models.errors.MtdError
+import cats.data.Validated
+import cats.data.Validated.{Invalid, Valid}
 import config.AppConfig
-import v2.delete.DeleteDisclosuresSchema.Def1
-import v2.delete.def1.Def1_DeleteDisclosuresValidator
-import v2.delete.model.request.DeleteDisclosuresRequestData
+import v2.deleteDisclosures.DeleteDisclosuresSchema.*
+import v2.deleteDisclosures.def1.Def1_DeleteDisclosuresValidator
+import v2.deleteDisclosures.model.request.DeleteDisclosuresRequestData
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 
-class DeleteDisclosuresValidatorFactory @Inject() (appConfig: AppConfig) {
+@Singleton
+class DeleteDisclosuresValidatorFactory @Inject() (implicit appConfig: AppConfig) {
 
   def validator(nino: String, taxYear: String): Validator[DeleteDisclosuresRequestData] = {
-
-    val schema = DeleteDisclosuresSchema.schema
+    val schema: Validated[Seq[MtdError], DeleteDisclosuresSchema] = schemaFor(taxYear)
 
     schema match {
-      case Def1 => new Def1_DeleteDisclosuresValidator(nino, taxYear)(appConfig)
+      case Valid(Def1)     => new Def1_DeleteDisclosuresValidator(nino, taxYear)
+      case Invalid(errors) => Validator.returningErrors(errors)
     }
   }
 

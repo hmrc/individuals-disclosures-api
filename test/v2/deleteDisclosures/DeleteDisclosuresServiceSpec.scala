@@ -14,56 +14,52 @@
  * limitations under the License.
  */
 
-package v2.delete
+package v2.deleteDisclosures
 
-import api.controllers.EndpointLogContext
+import api.connectors.DownstreamOutcome
 import api.models.domain.{Nino, TaxYear}
 import api.models.errors.*
 import api.models.outcomes.ResponseWrapper
-import api.services.ServiceSpec
-import uk.gov.hmrc.http.HeaderCarrier
-import v2.delete.def1.model.request.Def1_DeleteDisclosuresRequestData
+import api.services.{ServiceOutcome, ServiceSpec}
+import v2.deleteDisclosures.def1.model.request.Def1_DeleteDisclosuresRequestData
+import v2.deleteDisclosures.model.request.DeleteDisclosuresRequestData
 
 import scala.concurrent.Future
 
 class DeleteDisclosuresServiceSpec extends ServiceSpec {
 
-  private val nino    = Nino("AA112233A")
-  private val taxYear = TaxYear.fromMtd("2021-22")
+  private val requestData: DeleteDisclosuresRequestData = Def1_DeleteDisclosuresRequestData(
+    nino = Nino("AA123456A"),
+    taxYear = TaxYear.fromMtd("2026-27")
+  )
 
-  trait Test extends MockDeleteDisclosuresConnector {
-    implicit val hc: HeaderCarrier              = HeaderCarrier()
-    implicit val logContext: EndpointLogContext = EndpointLogContext("c", "ep")
-
-    lazy val service = new DeleteDisclosuresService(mockDeleteDisclosuresConnector)
-  }
-
-  lazy val request: Def1_DeleteDisclosuresRequestData = Def1_DeleteDisclosuresRequestData(nino, taxYear)
-
-  "DeleteDisclosuresService" when {
+  "DeleteDisclosuresService" should {
     "return correct result for a success" in new Test {
-      val outcome = Right(ResponseWrapper(correlationId, ()))
+      val outcome: DownstreamOutcome[Unit] = Right(ResponseWrapper(correlationId, ()))
 
       MockDeleteDisclosuresConnector
-        .delete(request)
+        .deleteDisclosures(requestData)
         .returns(Future.successful(outcome))
 
-      await(service.delete(request)) shouldBe outcome
+      val result: ServiceOutcome[Unit] = await(service.delete(requestData))
+
+      result shouldBe outcome
     }
 
     "map errors according to spec" when {
-
       def serviceError(downstreamErrorCode: String, error: MtdError): Unit =
         s"a $downstreamErrorCode error is returned from the service" in new Test {
 
           MockDeleteDisclosuresConnector
-            .delete(request)
+            .deleteDisclosures(requestData)
             .returns(Future.successful(Left(ResponseWrapper(correlationId, DownstreamErrors.single(DownstreamErrorCode(downstreamErrorCode))))))
 
-          await(service.delete(request)) shouldBe Left(ErrorWrapper(correlationId, error))
+          val result: ServiceOutcome[Unit] = await(service.delete(requestData))
+
+          result shouldBe Left(ErrorWrapper(correlationId, error))
         }
 
-      val downstreamInput = Seq(
+      val errorMap: Seq[(String, MtdError)] = Seq(
         ("1215", NinoFormatError),
         ("1117", TaxYearFormatError),
         ("5010", NotFoundError),
@@ -71,8 +67,12 @@ class DeleteDisclosuresServiceSpec extends ServiceSpec {
         ("5000", RuleTaxYearNotSupportedError)
       )
 
-      downstreamInput.foreach(serviceError.tupled)
+      errorMap.foreach(serviceError.tupled)
     }
+  }
+
+  private trait Test extends MockDeleteDisclosuresConnector {
+    val service: DeleteDisclosuresService = new DeleteDisclosuresService(mockDeleteDisclosuresConnector)
   }
 
 }

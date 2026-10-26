@@ -19,7 +19,6 @@ package v2.retrieveDisclosures
 import api.models.errors.*
 import api.services.{AuthStub, DownstreamStub, MtdIdLookupStub}
 import api.support.IntegrationBaseSpec
-import play.api.libs.json.JsValue
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.*
 import v2.retrieveDisclosures.def2.fixture.Def2_RetrieveDisclosuresFixture.*

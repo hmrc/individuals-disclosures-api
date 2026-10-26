@@ -16,7 +16,7 @@
 
 package v2.retrieveDisclosures.def2.model.response
 
-import play.api.libs.json.{JsError, JsObject, Json}
+import play.api.libs.json.{JsError, JsObject, JsValue, Json}
 import support.UnitSpec
 import v2.retrieveDisclosures.def2.fixture.Def2_RetrieveDisclosuresFixture.*
 
@@ -26,6 +26,25 @@ class Def2_RetrieveDisclosuresResponseSpec extends UnitSpec {
     "read from valid JSON" should {
       "produce the expected Def2_RetrieveDisclosuresResponse object" in {
         downstreamResponseBodyJson.as[Def2_RetrieveDisclosuresResponse] shouldBe responseBodyModel
+      }
+    }
+
+    "read from valid JSON with empty taxAvoidance array and class2Nics object" should {
+      "produce the expected Def2_RetrieveDisclosuresResponse object" in {
+        val json: JsValue = Json.parse(
+          """
+            |{
+            |  "taxAvoidance": [],
+            |  "class2Nics": {},
+            |  "submittedOn": "2026-07-06T09:37:17.976Z"
+            |}
+          """.stripMargin
+        )
+
+        json.as[Def2_RetrieveDisclosuresResponse] shouldBe responseBodyModel.copy(
+          taxAvoidance = None,
+          class2Nics = None
+        )
       }
     }
 

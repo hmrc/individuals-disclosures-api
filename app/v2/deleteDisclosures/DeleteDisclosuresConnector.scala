@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v2.delete
+package v2.deleteDisclosures
 
 import api.connectors.DownstreamUri.HipUri
 import api.connectors.httpparsers.StandardDownstreamHttpParser.*
@@ -22,7 +22,7 @@ import api.connectors.{BaseDownstreamConnector, DownstreamOutcome}
 import config.AppConfig
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.client.HttpClientV2
-import v2.delete.model.request.DeleteDisclosuresRequestData
+import v2.deleteDisclosures.model.request.DeleteDisclosuresRequestData
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}

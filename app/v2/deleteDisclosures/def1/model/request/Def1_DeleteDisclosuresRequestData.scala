@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package v2.delete.def1.model.request
+package v2.deleteDisclosures.def1.model.request
 
 import api.models.domain.{Nino, TaxYear}
-import v2.delete.DeleteDisclosuresSchema
-import v2.delete.model.request.DeleteDisclosuresRequestData
+import v2.deleteDisclosures.DeleteDisclosuresSchema
+import v2.deleteDisclosures.model.request.DeleteDisclosuresRequestData
 
 case class Def1_DeleteDisclosuresRequestData(nino: Nino, taxYear: TaxYear) extends DeleteDisclosuresRequestData {
   val schema: DeleteDisclosuresSchema = DeleteDisclosuresSchema.Def1
