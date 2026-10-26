@@ -29,26 +29,11 @@ requestBody:
   content:
     application/json:
       schema:
-        {{#if (enabled 'r23_whitespace_docs')}}
-        anyOf:
-          - $ref: './schemas/disclosures_amend/def1/amend_disclosures_request.json'
-          - $ref: './schemas/disclosures_amend/def2/amend_disclosures_request.json'
-        {{else}}
-        $ref: './schemas/disclosures_amend/def1/amend_disclosures_request.json'
-        {{/if}}
+        $ref: './schemas/amend_disclosures_request.json'
       examples:
-        {{#if (enabled 'r23_whitespace_docs')}}
-        Before TY 2026-27:
-         value:
-            $ref: './examples/disclosures_amend/def1/amend_request.json'
-        TY 2026-27 onwards:
-         value:
-            $ref: './examples/disclosures_amend/def2/amend_request.json'
-        {{else}}
         Request:
           value:
-            $ref: './examples/disclosures_amend/def1/amend_request.json'
-        {{/if}}
+            $ref: './examples/disclosures/amend_request.json'
 
 responses:
   "204":
