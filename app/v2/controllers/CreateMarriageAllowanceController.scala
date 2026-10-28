@@ -25,9 +25,10 @@ import utils.IdGenerator
 import v2.controllers.validators.CreateMarriageAllowanceValidatorFactory
 import v2.services.CreateMarriageAllowanceService
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
+@Singleton
 class CreateMarriageAllowanceController @Inject() (val authService: EnrolmentsAuthService,
                                                    val lookupService: MtdIdLookupService,
                                                    validatorFactory: CreateMarriageAllowanceValidatorFactory,
@@ -40,7 +41,7 @@ class CreateMarriageAllowanceController @Inject() (val authService: EnrolmentsAu
   val endpointName = "create-marriage-allowance"
 
   implicit val endpointLogContext: EndpointLogContext =
-    EndpointLogContext(controllerName = "CreateMarriageAllowanceController", endpointName = "createMarriageAllowance")
+    EndpointLogContext(controllerName = "CreateMarriageAllowanceController", endpointName = endpointName)
 
   def createMarriageAllowance(nino: String): Action[JsValue] =
     authorisedAction(nino).async(parse.json) { implicit request =>
