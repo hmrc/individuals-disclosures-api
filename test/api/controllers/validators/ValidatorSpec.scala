@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -121,6 +121,22 @@ class ValidatorSpec extends UnitSpec with MockFactory {
         val result    = validator.validateAndWrapResult()
         result shouldBe Left(ErrorWrapper(correlationId, RuleIncorrectOrEmptyBodyError))
       }
+    }
+  }
+
+  "returningErrors()" should {
+    val errors: Seq[MtdError] = List(NinoFormatError, TaxYearFormatError)
+
+    "return a Validator that always returns those errors on validate" in {
+      val validator: Validator[Nothing] = Validator.returningErrors(errors)
+
+      validator.validate shouldBe Invalid(errors)
+    }
+
+    "return a Validator that returns the errors wrapped in validateAndWrapResult" in {
+      val validator: Validator[Nothing] = Validator.returningErrors(errors)
+
+      validator.validateAndWrapResult() shouldBe Left(ErrorWrapper(correlationId, BadRequestError, Some(errors)))
     }
   }
 
