@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -90,6 +90,52 @@ trait JsonErrorValidators {
     def update(path: JsPath, replacement: JsValue): JsValue = {
       val updateReads: Reads[JsObject] = __.json.update(path.json.put(replacement))
       json.as[JsObject](updateReads)
+    }
+
+    def updateArrayOrObjectField(path: String, value: JsValue): JsValue = {
+      val segments: List[String] = path.split("/").filter(_.nonEmpty).toList
+
+      def update(current: JsValue, remaining: List[String]): JsValue = remaining match {
+        case Nil => value
+
+        case key :: tail =>
+          current match {
+            case obj: JsObject =>
+              obj.value.get(key) match {
+                case Some(child)          => obj + (key -> update(child, tail))
+                case None if tail.isEmpty => obj + (key -> value)
+                case None                 => fail(s"Cannot update '$path' because '$key' does not exist")
+              }
+
+            case arr: JsArray =>
+              val index = key.toIntOption.filter(_ >= 0).getOrElse {
+                fail(s"Cannot update '$path' because '$key' is not a valid array index")
+              }
+
+              if (index >= arr.value.size) fail(s"Cannot update '$path' because array index '$index' is out of bounds")
+
+              JsArray(arr.value.updated(index, update(arr(index), tail)))
+
+            case _ => fail(s"Cannot update '$path' because an intermediate value is neither an object nor an array")
+          }
+      }
+
+      if (segments.isEmpty) fail("The path cannot be empty")
+
+      update(json, segments)
+    }
+
+    def collectPaths(base: String = ""): Seq[String] = json match {
+      case JsObject(fields) =>
+        fields.toSeq.flatMap { case (key, value) =>
+          val path = s"$base/$key"
+          path +: value.collectPaths(path)
+        }
+      case JsArray(values) =>
+        values.toSeq.zipWithIndex.flatMap { case (value, i) =>
+          value.collectPaths(s"$base/$i")
+        }
+      case _ => Seq.empty
     }
 
   }

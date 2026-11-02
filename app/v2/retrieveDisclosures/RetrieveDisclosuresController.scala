@@ -37,10 +37,7 @@ class RetrieveDisclosuresController @Inject() (val authService: EnrolmentsAuthSe
   val endpointName = "retrieve-disclosures"
 
   implicit val endpointLogContext: EndpointLogContext =
-    EndpointLogContext(
-      controllerName = "RetrieveDisclosuresController",
-      endpointName = "retrieveDisclosures"
-    )
+    EndpointLogContext(controllerName = "RetrieveDisclosuresController", endpointName = endpointName)
 
   def retrieveDisclosures(nino: String, taxYear: String): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>

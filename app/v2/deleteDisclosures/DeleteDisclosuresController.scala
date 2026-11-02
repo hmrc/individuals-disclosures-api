@@ -38,10 +38,7 @@ class DeleteDisclosuresController @Inject() (val authService: EnrolmentsAuthServ
   val endpointName = "delete-disclosures"
 
   implicit val endpointLogContext: EndpointLogContext =
-    EndpointLogContext(
-      controllerName = "DeleteDisclosuresController",
-      endpointName = "deleteDisclosures"
-    )
+    EndpointLogContext(controllerName = "DeleteDisclosuresController", endpointName = endpointName)
 
   def deleteDisclosures(nino: String, taxYear: String): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>
