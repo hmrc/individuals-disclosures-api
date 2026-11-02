@@ -1,0 +1,11 @@
+{
+  "taxAvoidance": [
+    {
+      "srn": "14211123",
+      "taxYear": "2020-21"
+    }
+  ],
+  "class2Nics": {
+    "class2VoluntaryContributions": true
+  }
+}
