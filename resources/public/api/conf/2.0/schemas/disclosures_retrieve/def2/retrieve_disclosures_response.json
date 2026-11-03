@@ -5,8 +5,9 @@
   "type": "object",
   "properties": {
     "submittedOn": {"$ref": "../retrieve_disclosures_definitions.json#/definitions/submittedOn"},
-    "taxAvoidance": {"$ref": "../retrieve_disclosures_definitions.json#/definitions/taxAvoidance"},
+    "taxAvoidance": {"$ref": "../retrieve_disclosures_definitions.json#/definitions/taxAvoidance2627"},
     "class2Nics": {"$ref": "../retrieve_disclosures_definitions.json#/definitions/class2Nics"}
   },
-  "required": ["submittedOn"]
+  "required": ["submittedOn"],
+  "additionalProperties": false
 }

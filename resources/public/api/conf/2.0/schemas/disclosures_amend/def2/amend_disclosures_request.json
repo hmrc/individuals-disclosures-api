@@ -4,13 +4,8 @@
   "description": "Create and Amend Disclosures Request",
   "type": "object",
   "properties": {
-    "taxAvoidance": {
-      "type": "array",
-      "description": "Details of tax avoidance scheme",
-      "items": {
-        "$ref": "../amend_disclosures_definitions.json#/definitions/taxAvoidance"
-      }
-    },
+    "taxAvoidance": {"$ref": "../amend_disclosures_definitions.json#/definitions/taxAvoidance2627"},
     "class2Nics": {"$ref": "../amend_disclosures_definitions.json#/definitions/class2Nics"}
-  }
+  },
+  "additionalProperties": false
 }

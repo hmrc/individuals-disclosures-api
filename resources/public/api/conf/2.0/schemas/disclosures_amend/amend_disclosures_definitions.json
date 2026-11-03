@@ -8,11 +8,20 @@
     },
     "taxYear": {
       "type": "string",
-      "description": "The tax year in which the expected advantage arises. Date in the format `YYYY-YY`",
+      "description": "The tax year in which the expected advantage arises, in the format `YYYY-YY`",
       "example": "2020-21"
     },
+    "supplementaryInformation": {
+      "type": "string",
+      "description": "{{#unless (releasedInProduction 'r23_whitespace_docs')}}[Test only] {{/unless}}Additional information relating to counter-avoidance disclosures. Must not be empty or contain only whitespace.",
+      "example": "Additional information relating to a counter-avoidance disclosure and the circumstances being disclosed.",
+      "pattern": "^[A-Za-z0-9 &'\"()*,\\-./@£]{1,4000}$"
+    },
     "taxAvoidance": {
-      "type": "object",
+      "type": "array",
+      "description": "Details of tax avoidance scheme.",
+      "items": {
+        "type": "object",
         "properties": {
           "srn": {"$ref": "#/definitions/srn"},
           "taxYear": {"$ref": "#/definitions/taxYear"}
@@ -20,18 +29,38 @@
         "required": [
           "srn",
           "taxYear"
-        ]
+        ],
+        "additionalProperties": false
+      }
+    },
+    "taxAvoidance2627": {
+      "type": "array",
+      "description": "Details of tax avoidance scheme.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "srn": {"$ref": "#/definitions/srn"},
+          "taxYear": {"$ref": "#/definitions/taxYear"},
+          "supplementaryInformation": {"$ref": "#/definitions/supplementaryInformation"}
+        },
+        "required": [
+          "srn",
+          "taxYear"
+        ],
+        "additionalProperties": false
+      }
     },
     "class2Nics": {
       "type": "object",
-      "description": "Object containing the Voluntary Class 2 National Insurance Contributions toggle",
+      "description": "Object containing the Voluntary Class 2 National Insurance Contributions toggle.",
       "properties": {
         "class2VoluntaryContributions": {
           "type": "boolean",
           "description": "Indicates whether Voluntary Class 2 contributions are to be captured. The value can only be set to true.",
           "example": true
         }
-      }
+      },
+      "additionalProperties": false
     }
   }
 }

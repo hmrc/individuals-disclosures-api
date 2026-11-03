@@ -18,7 +18,7 @@ package v2.createAmendDisclosures.def2
 
 import api.controllers.validators.RulesValidator
 import api.controllers.validators.resolvers.{ResolveStringPattern, ResolveTaxYear}
-import api.models.errors.{MtdError, RuleVoluntaryClass2ValueInvalidError, SRNFormatError}
+import api.models.errors.*
 import cats.data.Validated
 import cats.implicits.toFoldableOps
 import v2.createAmendDisclosures.def2.model.request.*
@@ -27,7 +27,8 @@ import scala.util.matching.Regex
 
 object Def2_CreateAmendDisclosuresRulesValidator extends RulesValidator[Def2_CreateAmendDisclosuresRequestData] {
 
-  private val srnRegex: Regex = "^[0-9]{8}$".r
+  private val srnRegex: Regex                      = "^[0-9]{8}$".r
+  private val supplementaryInformationRegex: Regex = """^[A-Za-z0-9 &'"()*,\-./@£]{1,4000}$""".r
 
   override def validateBusinessRules(
       parsed: Def2_CreateAmendDisclosuresRequestData): Validated[Seq[MtdError], Def2_CreateAmendDisclosuresRequestData] = {
@@ -47,8 +48,21 @@ object Def2_CreateAmendDisclosuresRulesValidator extends RulesValidator[Def2_Cre
         val basePath: String = s"/taxAvoidance/$index"
 
         combine(
-          ResolveStringPattern(taxAvoidanceItem.srn, srnRegex, SRNFormatError.withPath((s"$basePath/srn"))),
-          ResolveTaxYear(taxAvoidanceItem.taxYear, error = None, path = None).leftMap(_.map(_.withPath(s"$basePath/taxYear")))
+          ResolveStringPattern(
+            value = taxAvoidanceItem.srn,
+            regexFormat = srnRegex,
+            error = SRNFormatError.withPath(s"$basePath/srn")
+          ),
+          ResolveTaxYear(
+            value = taxAvoidanceItem.taxYear,
+            error = None,
+            path = None
+          ).leftMap(_.map(_.withPath(s"$basePath/taxYear"))),
+          ResolveStringPattern(
+            value = taxAvoidanceItem.supplementaryInformation,
+            regexFormat = supplementaryInformationRegex,
+            error = SupplementaryInformationFormatError.withPath(s"$basePath/supplementaryInformation")
+          )
         )
       }
 

@@ -19,14 +19,15 @@ package v2.createAmendDisclosures.def2.model.request
 import play.api.libs.functional.syntax.toFunctionalBuilderOps
 import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 
-case class TaxAvoidanceItem(srn: String, taxYear: String)
+case class TaxAvoidanceItem(srn: String, taxYear: String, supplementaryInformation: Option[String])
 
 object TaxAvoidanceItem {
   implicit val reads: Reads[TaxAvoidanceItem] = Json.reads[TaxAvoidanceItem]
 
   implicit val writes: OWrites[TaxAvoidanceItem] = (
     (JsPath \ "SRN").write[String] and
-      (JsPath \ "taxYear").write[String]
+      (JsPath \ "taxYear").write[String] and
+      (JsPath \ "whiteSpace").writeNullable[String]
   )(o => Tuple.fromProductTyped(o))
 
 }

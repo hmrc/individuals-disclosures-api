@@ -32,6 +32,9 @@ object ValueFormatError extends MtdError("FORMAT_VALUE", "The value must be betw
 
 object SRNFormatError extends MtdError("FORMAT_SRN_INVALID", "The provided scheme reference number is invalid", BAD_REQUEST)
 
+object SupplementaryInformationFormatError
+    extends MtdError("FORMAT_SUPPLEMENTARY_INFORMATION", "The provided supplementaryInformation is invalid", BAD_REQUEST)
+
 object PartnerFirstNameFormatError
     extends MtdError("FORMAT_SPOUSE_OR_CIVIL_PARTNERS_FIRST_NAME", "The provided spouse or civil partner's first name is invalid", BAD_REQUEST)
 

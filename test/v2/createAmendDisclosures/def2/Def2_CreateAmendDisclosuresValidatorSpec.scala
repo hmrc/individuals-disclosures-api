@@ -45,7 +45,34 @@ class Def2_CreateAmendDisclosuresValidatorSpec extends UnitSpec with JsonErrorVa
   "Def2_CreateAmendDisclosuresValidator" should {
     "return the parsed domain object" when {
       "a valid request is supplied" in {
-        validate(validNino) shouldBe Right(Def2_CreateAmendDisclosuresRequestData(parsedNino, parsedTaxYear, requestBodyModel))
+        validate() shouldBe Right(Def2_CreateAmendDisclosuresRequestData(parsedNino, parsedTaxYear, requestBodyModel))
+      }
+
+      val testCases: Seq[(String, String)] = Seq(
+        (('a' to 'z').mkString, "lowercase letters"),
+        (('A' to 'Z').mkString, "uppercase letters"),
+        (('0' to '9').mkString, "digits"),
+        ("a b", "spaces"),
+        ("""&'"()*,-./@£""", "allowed special characters"),
+        ("a", "a single character"),
+        ("a" * 4000, "4000 characters")
+      )
+
+      testCases.foreach { (value, description) =>
+        s"a valid supplementaryInformation field is supplied with $description" in {
+          val validJson: JsValue = mtdRequestBodyJson.updateArrayOrObjectField(
+            "/taxAvoidance/0/supplementaryInformation",
+            JsString(value)
+          )
+
+          validate(body = validJson) shouldBe Right(
+            Def2_CreateAmendDisclosuresRequestData(
+              parsedNino,
+              parsedTaxYear,
+              requestBodyModel.copy(taxAvoidance = Some(Seq(taxAvoidanceItemModel.copy(supplementaryInformation = Some(value)))))
+            )
+          )
+        }
       }
     }
 
@@ -110,6 +137,21 @@ class Def2_CreateAmendDisclosuresValidatorSpec extends UnitSpec with JsonErrorVa
         val invalidJson: JsValue = mtdRequestBodyJson.updateArrayOrObjectField("/taxAvoidance/0/taxYear", JsString("2026-28"))
 
         validate(body = invalidJson) shouldBe error(RuleTaxYearRangeInvalidError.withPath("/taxAvoidance/0/taxYear"))
+      }
+    }
+
+    "return SupplementaryInformationFormatError" when {
+      val invalidCharacters: Seq[(String, String)] = """:|%\!#é""".map(char => (char.toString, s"with invalid special character '$char'"))
+      val invalidLengths: Seq[(String, String)]    = Seq(0, 4001).map(length => ("a" * length, s"with an invalid length of $length"))
+
+      val testCases: Seq[(String, String)] = invalidCharacters ++ invalidLengths
+
+      testCases.foreach { (value, description) =>
+        s"an incorrectly formatted supplementaryInformation is supplied in the request body $description" in {
+          val invalidJson: JsValue = mtdRequestBodyJson.updateArrayOrObjectField("/taxAvoidance/0/supplementaryInformation", JsString(value))
+
+          validate(body = invalidJson) shouldBe error(SupplementaryInformationFormatError.withPath("/taxAvoidance/0/supplementaryInformation"))
+        }
       }
     }
 
