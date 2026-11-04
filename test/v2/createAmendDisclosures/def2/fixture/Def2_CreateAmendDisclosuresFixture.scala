@@ -23,7 +23,8 @@ object Def2_CreateAmendDisclosuresFixture {
 
   val taxAvoidanceItemModel: TaxAvoidanceItem = TaxAvoidanceItem(
     srn = "14211123",
-    taxYear = "2026-27"
+    taxYear = "2026-27",
+    supplementaryInformation = Some("Additional information relating to a counter-avoidance disclosure.")
   )
 
   val class2NicsModel: Class2Nics = Class2Nics(class2VoluntaryContributions = Some(true))
@@ -37,7 +38,8 @@ object Def2_CreateAmendDisclosuresFixture {
     """
       |{
       |  "SRN": "14211123",
-      |  "taxYear": "2026-27"
+      |  "taxYear": "2026-27",
+      |  "whiteSpace": "Additional information relating to a counter-avoidance disclosure."
       |}
     """.stripMargin
   )
@@ -63,7 +65,8 @@ object Def2_CreateAmendDisclosuresFixture {
     """
       |{
       |  "srn": "14211123",
-      |  "taxYear": "2026-27"
+      |  "taxYear": "2026-27",
+      |  "supplementaryInformation": "Additional information relating to a counter-avoidance disclosure."
       |}
     """.stripMargin
   )

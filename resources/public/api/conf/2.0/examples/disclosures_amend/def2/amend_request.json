@@ -2,7 +2,8 @@
   "taxAvoidance": [
     {
       "srn": "14211123",
-      "taxYear": "2020-21"
+      "taxYear": "2026-27",
+      "supplementaryInformation": "Additional information relating to a counter-avoidance disclosure and the circumstances being disclosed."
     }
   ],
   "class2Nics": {

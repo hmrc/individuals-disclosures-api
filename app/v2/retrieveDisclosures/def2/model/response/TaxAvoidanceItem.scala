@@ -19,14 +19,15 @@ package v2.retrieveDisclosures.def2.model.response
 import play.api.libs.functional.syntax.toFunctionalBuilderOps
 import play.api.libs.json.{JsPath, Json, Reads, Writes}
 
-case class TaxAvoidanceItem(srn: String, taxYear: String)
+case class TaxAvoidanceItem(srn: String, taxYear: String, supplementaryInformation: Option[String])
 
 object TaxAvoidanceItem {
   implicit val writes: Writes[TaxAvoidanceItem] = Json.writes[TaxAvoidanceItem]
 
   implicit val reads: Reads[TaxAvoidanceItem] = (
     (JsPath \ "SRN").read[String] and
-      (JsPath \ "taxYear").read[String]
+      (JsPath \ "taxYear").read[String] and
+      (JsPath \ "whiteSpace").readNullable[String]
   )(TaxAvoidanceItem.apply)
 
 }

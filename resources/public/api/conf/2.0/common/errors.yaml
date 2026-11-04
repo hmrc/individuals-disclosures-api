@@ -87,6 +87,13 @@ components:
         code: FORMAT_SPOUSE_OR_CIVIL_PARTNERS_DATE_OF_BIRTH
         message: The provided spouse or civil partner's date of birth date is invalid
 
+    formatSupplementaryInformation:
+      description: |
+        The format of the supplied supplementaryInformation is not valid.
+      value:
+        code: FORMAT_SUPPLEMENTARY_INFORMATION
+        message: The provided supplementaryInformation is invalid
+
     voluntaryClass2CannotBeChanged:
       description: |
         Voluntary Class 2 NICs cannot be changed after 31st Jan following the year of submission.

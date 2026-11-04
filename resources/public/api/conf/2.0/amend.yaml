@@ -89,6 +89,10 @@ responses:
             $ref: './common/errors.yaml#/components/examples/ruleTaxYearRangeInvalid'
           FORMAT_SRN_INVALID:
             $ref: './common/errors.yaml#/components/examples/srnInvalid'
+          {{#if (enabled 'r23_whitespace_docs')}}
+          FORMAT_SUPPLEMENTARY_INFORMATION:
+            $ref: './common/errors.yaml#/components/examples/formatSupplementaryInformation'
+          {{/if}}
           RULE_INCORRECT_OR_EMPTY_BODY_SUBMITTED:
             $ref: './common/errors.yaml#/components/examples/ruleIncorrectOrEmptyBody'
           RULE_VOLUNTARY_CLASS2_CANNOT_BE_CHANGED:

@@ -70,11 +70,13 @@ class Def2_CreateAmendDisclosuresControllerISpec extends IntegrationBaseSpec {
       |  "taxAvoidance": [
       |    {
       |      "srn": "142111231",
-      |      "taxYear": "2026-277"
+      |      "taxYear": "2026-277",
+      |      "supplementaryInformation": "!"
       |    },
       |    {
       |      "srn": "",
-      |      "taxYear": "2026-28"
+      |      "taxYear": "2026-28",
+      |      "supplementaryInformation": ""
       |    }
       |  ],
       |  "class2Nics": {
@@ -87,6 +89,9 @@ class Def2_CreateAmendDisclosuresControllerISpec extends IntegrationBaseSpec {
   private val allInvalidValuesRequestErrors: List[MtdError] = List(
     TaxYearFormatError.withPath("/taxAvoidance/0/taxYear"),
     SRNFormatError.withPaths(List("/taxAvoidance/0/srn", "/taxAvoidance/1/srn")),
+    SupplementaryInformationFormatError.withPaths(
+      List("/taxAvoidance/0/supplementaryInformation", "/taxAvoidance/1/supplementaryInformation")
+    ),
     RuleTaxYearRangeInvalidError.withPath("/taxAvoidance/1/taxYear"),
     RuleVoluntaryClass2ValueInvalidError.withPath("/class2Nics/class2VoluntaryContributions")
   )

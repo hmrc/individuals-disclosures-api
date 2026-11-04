@@ -45,7 +45,7 @@ class Def1_CreateAmendDisclosuresValidatorSpec extends UnitSpec with JsonErrorVa
   "Def1_CreateAmendDisclosuresValidator" should {
     "return the parsed domain object" when {
       "a valid request is supplied" in {
-        validate(validNino) shouldBe Right(Def1_CreateAmendDisclosuresRequestData(parsedNino, parsedTaxYear, requestBodyModel))
+        validate() shouldBe Right(Def1_CreateAmendDisclosuresRequestData(parsedNino, parsedTaxYear, requestBodyModel))
       }
     }
 

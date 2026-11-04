@@ -1,9 +1,10 @@
 {
-   "submittedOn": "2020-07-06T09:37:17Z",
+   "submittedOn": "2026-07-06T09:37:17.003Z",
    "taxAvoidance": [
       {
          "srn": "14211123",
-         "taxYear": "2020-21"
+         "taxYear": "2026-27",
+         "supplementaryInformation": "Additional information relating to a counter-avoidance disclosure and the circumstances being disclosed."
       }
    ],
    "class2Nics": {
